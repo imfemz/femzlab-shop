@@ -1,0 +1,5 @@
+# Sortie de build : entièrement reconstruite par `python3 build.py`.
+# La versionner ajouterait 17 Mo à l'historique à chaque modification.
+dist/
+
+.DS_Store

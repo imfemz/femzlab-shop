@@ -1,0 +1,1101 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1"><style>:root{color-scheme:light}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#faf9f5;color:#141413}img{max-width:100%}</style></head><body>
+
+<style id="i18n-css">
+.langsw{display:flex;gap:1px;position:relative;z-index:2;background:rgba(255,255,255,.09);border-radius:999px;padding:2px;margin-right:2px}
+.langsw button{font:inherit;font-size:11px;font-weight:800;letter-spacing:.05em;color:rgba(255,255,255,.62);background:transparent;border:none;cursor:pointer;padding:7px 9px;border-radius:999px;transition:.2s}
+.langsw button.on{background:#fff;color:#0A0A0A}
+.langsw button:hover:not(.on){color:#fff}
+</style>
+<meta charset="utf-8">
+<title>FemzLab — VFX Shop</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+@font-face{font-family:'Montserrat';font-weight:800;font-style:normal;font-display:swap;src:url(assets/woff2-01.woff2) format('woff2')}
+@font-face{font-family:'Inter';font-weight:400;font-style:normal;font-display:swap;src:url(assets/woff2-02.woff2) format('woff2')}
+@font-face{font-family:'Inter';font-weight:700;font-style:normal;font-display:swap;src:url(assets/woff2-03.woff2) format('woff2')}
+
+:root{
+  --paper:#E4E4DF;
+  --ink:#0A0A08;
+  --charcoal:#161616;
+  --muted:#67675F;
+  --dim:#8D8D84;
+  --line:rgba(20,20,15,.1);
+  --glass:rgba(255,255,255,.42);
+  --glass-line:rgba(255,255,255,.72);
+  --shadow:0 18px 44px rgba(25,25,18,.10);
+  --shadow-lg:0 30px 70px rgba(25,25,18,.16);
+  --r-lg:18px;
+  --lbl:'Inter',sans-serif;
+  --mono:ui-monospace,'SF Mono',SFMono-Regular,Menlo,monospace;
+  color-scheme:light;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{
+  background:var(--paper);
+  color:var(--ink);
+  font-family:'Inter',system-ui,-apple-system,sans-serif;
+  font-size:16px;line-height:1.6;
+  overflow-x:hidden;
+  -webkit-font-smoothing:antialiased;
+}
+::selection{background:rgba(5,5,5,.12)}
+a{color:inherit;text-decoration:none}
+img,video{max-width:100%;display:block}
+button{font:inherit}
+a:focus-visible,button:focus-visible{outline:2px solid var(--ink);outline-offset:3px;border-radius:4px}
+
+/* ---------- fond FIXE : dots interactifs + vignette + voile blur bas ---------- */
+#dots{position:fixed;inset:0;z-index:0;pointer-events:none}
+.vignette{position:fixed;inset:0;z-index:1;pointer-events:none;
+  background:radial-gradient(120% 90% at 50% 38%, transparent 58%, rgba(25,25,18,.11) 100%)}
+/* GradualBlur bible : 5 couches masquées par bandes, fond épargné par dots2 */
+.blurveil{position:fixed;left:0;right:0;bottom:0;height:7rem;z-index:50;pointer-events:none}
+.blurveil i{position:absolute;inset:0}
+.blurveil i:nth-child(1){backdrop-filter:blur(.19rem);-webkit-backdrop-filter:blur(.19rem);
+  -webkit-mask-image:linear-gradient(transparent 0%,#000 20%,#000 40%,transparent 40%);mask-image:linear-gradient(transparent 0%,#000 20%,#000 40%,transparent 40%)}
+.blurveil i:nth-child(2){backdrop-filter:blur(.35rem);-webkit-backdrop-filter:blur(.35rem);
+  -webkit-mask-image:linear-gradient(transparent 20%,#000 40%,#000 60%,transparent 60%);mask-image:linear-gradient(transparent 20%,#000 40%,#000 60%,transparent 60%)}
+.blurveil i:nth-child(3){backdrop-filter:blur(.53rem);-webkit-backdrop-filter:blur(.53rem);
+  -webkit-mask-image:linear-gradient(transparent 40%,#000 60%,#000 80%,transparent 80%);mask-image:linear-gradient(transparent 40%,#000 60%,#000 80%,transparent 80%)}
+.blurveil i:nth-child(4){backdrop-filter:blur(.69rem);-webkit-backdrop-filter:blur(.69rem);
+  -webkit-mask-image:linear-gradient(transparent 60%,#000 80%,#000 100%);mask-image:linear-gradient(transparent 60%,#000 80%,#000 100%)}
+.blurveil i:nth-child(5){backdrop-filter:blur(.75rem);-webkit-backdrop-filter:blur(.75rem);
+  -webkit-mask-image:linear-gradient(transparent 80%,#000 100%);mask-image:linear-gradient(transparent 80%,#000 100%)}
+#dots2{position:fixed;left:0;right:0;bottom:0;height:112px;z-index:51;pointer-events:none}
+main,nav{position:relative;z-index:2}
+footer{position:relative;z-index:60}
+
+/* labels : plus de mono — Inter bold espacé */
+.lbl,.eyebrow,.ptype,.pprice,.chip,.legal,.reviews-note,.price small,.trusted .tag{
+  font-family:var(--lbl);font-weight:700;text-transform:uppercase;letter-spacing:.08em}
+
+/* ---------- ligne de progression fixe en haut ---------- */
+#playhead{position:fixed;top:0;left:0;height:2px;width:100%;z-index:60;transform-origin:0 50%;transform:scaleX(0);
+  background:linear-gradient(90deg,#5EA2FF,#fff);box-shadow:0 0 10px rgba(94,162,255,.6)}
+
+/* ---------- logo FemzLab : wordmark rempli du gradient (un seul), fondu au scroll ---------- */
+.fixed-logo{position:fixed;top:15px;left:50%;transform:translateX(-50%);z-index:56;height:56px;aspect-ratio:2308/594;display:block;
+  transition:transform .35s cubic-bezier(.22,1,.36,1),opacity .4s ease}
+.fixed-logo .mark{position:absolute;inset:0;pointer-events:none;
+  -webkit-mask:url(assets/png-01.png) center/contain no-repeat;mask:url(assets/png-01.png) center/contain no-repeat;
+  background:linear-gradient(110deg,#5EA2FF,#A78BFF,#5ED9FF,#7C4DFF,#5EA2FF);background-size:240% 100%;
+  filter:drop-shadow(0 2px 11px rgba(94,162,255,.55));animation:logoGlow 6.5s linear infinite}
+@keyframes logoGlow{to{background-position:240% 0}}
+.fixed-logo:hover{transform:translateX(-50%) scale(1.05)}
+.fixed-logo.hidden{opacity:0;pointer-events:none;transform:translateX(-50%) scale(.94)}
+
+/* ---------- dock nav glass premium, sous le logo ---------- */
+nav.dock{position:fixed;top:84px;left:50%;transform:translateX(-50%);z-index:55;
+  display:flex;align-items:center;gap:4px;padding:6px;border-radius:999px;
+  background:rgba(15,17,23,.34);
+  backdrop-filter:blur(34px) saturate(200%) brightness(1.06);-webkit-backdrop-filter:blur(34px) saturate(200%) brightness(1.06);
+  border:1px solid rgba(255,255,255,.3);
+  box-shadow:
+    inset 0 1.5px 1px rgba(255,255,255,.5),
+    inset 0 -6px 16px rgba(0,0,0,.28),
+    inset 0 0 0 1px rgba(255,255,255,.06),
+    0 20px 54px rgba(0,0,0,.4),0 3px 10px rgba(0,0,0,.24);
+  overflow:hidden;transition:transform .45s cubic-bezier(.22,1,.36,1),box-shadow .4s,top .4s}
+nav.dock::before{content:"";position:absolute;inset:-70%;z-index:-1;pointer-events:none;
+  background:
+    radial-gradient(36% 58% at 20% 28%,rgba(120,175,255,.6),transparent 60%),
+    radial-gradient(42% 55% at 80% 64%,rgba(180,140,255,.5),transparent 62%),
+    radial-gradient(38% 48% at 52% 90%,rgba(255,255,255,.45),transparent 60%),
+    radial-gradient(30% 40% at 70% 12%,rgba(120,220,255,.4),transparent 60%);
+  filter:blur(12px);animation:dockFluid 15s ease-in-out infinite alternate}
+@keyframes dockFluid{
+  0%{transform:translate(0,0) rotate(0deg) scale(1)}
+  50%{transform:translate(8%,-6%) rotate(12deg) scale(1.18)}
+  100%{transform:translate(-7%,5%) rotate(-9deg) scale(1.08)}
+}
+.dock-scrolled{top:14px!important;transform:translateX(-50%) scale(.96)!important}
+.nav-links{display:flex;gap:2px;align-items:center;position:relative;z-index:1}
+.nav-links a{font-size:13px;color:rgba(255,255,255,.74);letter-spacing:.01em;font-weight:700;
+  padding:9px 15px;border-radius:999px;transition:color .2s,background .2s}
+.nav-links a:not(.btn):hover,.nav-links a:not(.btn):focus-visible{color:#fff;background:rgba(255,255,255,.14)}
+.btn{
+  display:inline-flex;align-items:center;justify-content:center;gap:9px;
+  border:1.5px solid currentColor;border-radius:999px;
+  padding:11px 22px;font-size:13.5px;font-weight:700;letter-spacing:.02em;
+  cursor:pointer;background:transparent;
+  transition:background .2s,color .2s,transform .2s,box-shadow .25s;
+}
+.btn svg{width:14px;height:14px}
+.btn.big{padding:15px 30px;font-size:14.5px}
+.dock .btn.solid{background:#fff;color:#0A0A0A;border-color:#fff;padding:10px 19px}
+.dock .btn.solid:hover{transform:translateY(-1px);box-shadow:0 0 24px rgba(255,255,255,.4)}
+@media (max-width:640px){
+  .fixed-logo{height:46px;top:16px}
+  nav.dock{gap:2px;padding:6px}
+}
+
+/* ---------- BANNIÈRE vidéo pleine largeur, textes par-dessus ---------- */
+.banner{
+  position:relative;overflow:hidden;background:#0A0A0B;color:#fff;
+  min-height:100vh;display:flex;flex-direction:column;justify-content:safe center;
+  padding:110px clamp(20px,5vw,48px) 96px;text-align:center;
+}
+.banner .vid{position:absolute;left:0;right:0;top:-12%;height:124%;z-index:0;will-change:transform}
+.banner .vid video{width:100%;height:100%;object-fit:cover;opacity:.42;filter:grayscale(1) contrast(1.06)}
+.banner .scrim{position:absolute;inset:0;z-index:1;
+  background:
+    radial-gradient(90% 80% at 50% 42%, transparent 30%, rgba(6,6,7,.72) 100%),
+    linear-gradient(180deg, rgba(6,6,7,.55), transparent 26%, transparent 70%, rgba(6,6,7,.82));
+}
+.banner>*{position:relative;z-index:2}
+.promo-chip{
+  display:inline-flex;align-items:center;gap:10px;margin:0 auto 26px;
+  font-family:var(--lbl);font-weight:700;font-size:11px;letter-spacing:.24em;text-transform:uppercase;
+  color:rgba(255,255,255,.82);
+  border:1px solid rgba(255,255,255,.3);border-radius:999px;padding:9px 18px;
+  background:rgba(255,255,255,.08);
+  backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);
+}
+.promo-chip b{color:#fff;font-weight:700;border:1px solid rgba(255,255,255,.5);border-radius:5px;padding:1px 8px;
+  box-shadow:0 0 16px rgba(255,255,255,.25)}
+.banner h1{
+  font-family:'Montserrat',sans-serif;font-weight:800;
+  font-size:clamp(46px,8.6vw,110px);line-height:.97;letter-spacing:-.025em;
+  text-transform:uppercase;margin:0 0 18px;text-wrap:balance;
+  text-shadow:0 10px 50px rgba(0,0,0,.45);
+}
+.shine{
+  display:inline-block;
+  background:linear-gradient(120deg,#FFFFFF 0%,#FFFFFF 34%,#8E939B 47%,#FFFFFF 60%,#FFFFFF 100%);
+  background-size:240% 100%;
+  -webkit-background-clip:text;background-clip:text;color:transparent;
+  animation:sweep 6s linear infinite;
+}
+@keyframes sweep{from{background-position:240% 0}to{background-position:-240% 0}}
+.banner .lead{max-width:580px;margin:0 auto 34px;color:rgba(255,255,255,.72);font-size:clamp(15px,1.7vw,17.5px)}
+.banner .lead strong{color:#fff;font-weight:700}
+.hero-cta{display:flex;gap:14px;justify-content:center;flex-wrap:wrap}
+.banner .btn{color:#fff}
+.banner .btn:hover{background:rgba(255,255,255,.14)}
+.banner .btn.solid{background:#fff;color:#0A0A0A;border-color:#fff}
+.banner .btn.solid:hover{transform:translateY(-1px);box-shadow:0 0 34px rgba(255,255,255,.4);background:#fff}
+.hero-meta{
+  margin-top:52px;display:flex;gap:clamp(20px,4vw,56px);justify-content:center;flex-wrap:wrap;
+  font-family:var(--lbl);font-weight:700;font-size:10.5px;letter-spacing:.2em;color:rgba(255,255,255,.5);text-transform:uppercase;
+}
+.hero-meta span b{display:block;font-size:22px;line-height:1.15;letter-spacing:0;color:#fff;font-family:'Montserrat',sans-serif;font-weight:800;font-variant-numeric:tabular-nums}
+/* odomètre : les chiffres défilent verticalement (un tour complet puis la valeur) */
+.odo{display:inline-block;height:1.15em;overflow:hidden;vertical-align:top}
+.odo-strip{display:block;transform:translateY(0);transition:transform 1.5s cubic-bezier(.22,1,.36,1);transition-delay:var(--dl,0s);will-change:transform}
+.odo-strip i{display:block;font-style:normal;height:1.15em}
+.hero-meta.count .odo-strip{transform:translateY(calc(var(--d,0) * -1.15em))}
+@media (prefers-reduced-motion:reduce){
+  .odo-strip{transition:none}
+}
+.banner .seq{opacity:0;transform:translateY(18px);animation:rise .8s cubic-bezier(.22,1,.36,1) forwards}
+.banner .seq:nth-child(2){animation-delay:.05s}
+.banner .seq:nth-child(3){animation-delay:.18s}
+.banner .seq:nth-child(4){animation-delay:.4s}
+.banner .seq:nth-child(5){animation-delay:.55s}
+.banner .seq:nth-child(6){animation-delay:.72s}
+@keyframes rise{to{opacity:1;transform:none}}
+
+/* ---------- marquee logos : strip clair plat façon « Trusted by many » ---------- */
+.trusted{position:relative;z-index:3;background:rgba(255,255,255,.55);
+  border-top:1px solid var(--line);border-bottom:1px solid var(--line);
+  backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px)}
+.trusted .band{
+  max-width:1120px;margin:0 auto;padding:22px clamp(20px,5vw,48px);
+  display:flex;align-items:center;gap:clamp(20px,4vw,44px);
+}
+.trusted .tag{
+  flex:none;font-family:var(--lbl);font-weight:400;font-size:13.5px;letter-spacing:0;
+  text-transform:none;color:var(--muted);white-space:nowrap;
+}
+.trusted .tag b{color:var(--ink);font-weight:800}
+.marquee{flex:1;min-width:0;overflow:hidden;
+  -webkit-mask-image:linear-gradient(90deg,transparent,#000 8%,#000 88%,transparent);
+  mask-image:linear-gradient(90deg,transparent,#000 8%,#000 88%,transparent)}
+.marquee-track{display:flex;align-items:center;width:max-content;animation:scroll 40s linear infinite}
+.marquee:hover .marquee-track{animation-play-state:paused}
+@keyframes scroll{to{transform:translateX(-50%)}}
+.marquee-track img{height:52px;width:auto;margin:0 clamp(28px,3.4vw,54px);
+  filter:grayscale(1);opacity:.6;transition:opacity .25s,filter .25s}
+.marquee-track img:hover{opacity:.95;filter:grayscale(1) brightness(.55)}
+@media (max-width:640px){
+  .trusted .band{flex-direction:column;gap:12px}
+  .trusted .tag{font-size:12px}
+}
+
+/* ---------- sections ---------- */
+section{max-width:1120px;margin:0 auto;padding:clamp(60px,9vh,104px) clamp(20px,5vw,48px)}
+.eyebrow{font-size:11px;color:var(--muted);display:inline-flex;align-items:center;gap:12px}
+.eyebrow::before{content:"";width:34px;height:2px;background:var(--ink)}
+.sec-head{margin-bottom:40px}
+.sec-head h2{
+  font-family:'Montserrat',sans-serif;font-weight:800;text-transform:uppercase;
+  font-size:clamp(28px,4.6vw,46px);letter-spacing:-.015em;line-height:1.04;margin-top:14px;text-wrap:balance;
+}
+.sec-head p{color:var(--muted);max-width:520px;margin-top:10px}
+/* reveal des titres par balayage (clip-path) */
+.sec-head h2{clip-path:inset(0 100% 0 0);transition:clip-path .95s cubic-bezier(.22,1,.36,1)}
+.sec-head.in h2{clip-path:inset(0 0 0 0)}
+/* magic gradient au hover des titres */
+.sec-head h2,.final h2,.profile h2{
+  background-image:linear-gradient(110deg,var(--ink) 0%,var(--ink) 38%,#5EA2FF 46%,#fff 50%,#A78BFF 56%,var(--ink) 64%,var(--ink) 100%);
+  background-size:280% 100%;background-position:200% 0;
+  -webkit-background-clip:text;background-clip:text;
+  -webkit-text-fill-color:var(--ink);transition:-webkit-text-fill-color .2s}
+.sec-head:hover h2,.final .glass:hover h2,.profile h2:hover{
+  -webkit-text-fill-color:transparent;animation:titleMagic 2.6s linear infinite}
+@keyframes titleMagic{from{background-position:200% 0}to{background-position:-120% 0}}
+@media (prefers-reduced-motion:reduce){
+  .sec-head:hover h2,.final .glass:hover h2,.profile h2:hover{animation:none;-webkit-text-fill-color:var(--ink)}
+}
+
+.rv{opacity:0;transform:translateY(24px);filter:blur(14px);
+  transition:opacity .7s cubic-bezier(.22,1,.36,1),transform .7s cubic-bezier(.22,1,.36,1),filter .7s cubic-bezier(.22,1,.36,1);
+  transition-delay:var(--d,0s)}
+.rv.in{opacity:1;transform:none;filter:blur(0)}
+
+/* ---------- cartes GLASS (DA NéoVision, version claire) ---------- */
+.card{
+  position:relative;
+  background:var(--glass);
+  border:1px solid var(--glass-line);
+  border-radius:var(--r-lg);
+  box-shadow:var(--shadow), inset 0 1.5px 0 rgba(255,255,255,.85);
+  backdrop-filter:blur(24px) saturate(165%);
+  -webkit-backdrop-filter:blur(24px) saturate(165%);
+  overflow:hidden;
+}
+/* reflet/glow qui suit le curseur (Magic Bento) */
+.glow-card::after{
+  content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;
+  border:1.5px solid transparent;
+  background:radial-gradient(240px 240px at var(--mx,50%) var(--my,50%),rgba(20,20,15,.5),transparent 70%) border-box;
+  -webkit-mask:linear-gradient(#000 0 0) padding-box,linear-gradient(#000 0 0);
+  -webkit-mask-composite:xor;mask-composite:exclude;
+  opacity:0;transition:opacity .3s;
+}
+.glow-card:hover::after{opacity:1}
+/* reflet lumineux qui suit le curseur */
+.glow-card .sheen{
+  position:absolute;inset:0;border-radius:inherit;pointer-events:none;z-index:1;
+  background:radial-gradient(300px 300px at var(--mx,50%) var(--my,50%),rgba(255,255,255,.5),transparent 65%);
+  opacity:0;transition:opacity .3s;mix-blend-mode:soft-light;
+}
+.glow-card:hover .sheen{opacity:1}
+
+.chip{
+  display:inline-flex;align-items:center;gap:8px;font-size:10px;
+  color:var(--muted);border:1px solid var(--line);border-radius:999px;padding:6px 13px;
+  background:rgba(255,255,255,.6);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);
+}
+.chip .dot{width:5px;height:5px;border-radius:50%;background:var(--ink)}
+
+
+/* ---------- grille shop ---------- */
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;perspective:750px}
+.pcard{display:flex;flex-direction:column;transition:box-shadow .3s ease,opacity .7s ease;transform-style:preserve-3d;will-change:transform}
+.pcard:hover{box-shadow:var(--shadow-lg), inset 0 1.5px 0 rgba(255,255,255,.9)}
+.pcard .media{
+  aspect-ratio:1/.86;display:flex;align-items:center;justify-content:center;
+  background:#fff;border-bottom:1px solid var(--line);overflow:hidden;position:relative;
+}
+.pcard .media video{width:86%;aspect-ratio:1;object-fit:cover}
+.pcard .media img{width:74%;filter:drop-shadow(0 18px 26px rgba(0,0,0,.2))}
+.pcard .body{padding:20px 22px 22px;display:flex;flex-direction:column;gap:10px;flex:1}
+.pcard .top{display:flex;justify-content:space-between;align-items:center;gap:10px}
+.ptype{font-size:9.5px;color:var(--dim)}
+.pprice{font-size:11px;letter-spacing:.08em;color:var(--ink);
+  border:1px solid rgba(20,20,15,.2);border-radius:999px;padding:4px 11px;white-space:nowrap;background:rgba(255,255,255,.7)}
+.pprice.free{background:var(--ink);color:#fff;border-color:var(--ink)}
+.pcard h4{font-family:'Montserrat',sans-serif;font-weight:800;font-size:19px;text-transform:uppercase;letter-spacing:-.01em}
+/* description collapsed : ouverture au hover (PC) ou au scroll (mobile, classe .open) */
+.pcard .desc{color:var(--muted);font-size:13.5px;line-height:1.5;
+  max-height:0;opacity:0;overflow:hidden;margin:0;
+  transition:max-height .55s cubic-bezier(.34,1.4,.5,1),opacity .4s ease,margin .45s cubic-bezier(.34,1.4,.5,1)}
+@media (hover:hover) and (pointer:fine){
+  .pcard:hover .desc{max-height:9em;opacity:1;margin:2px 0}
+}
+@media (hover:none){
+  .pcard.open .desc{max-height:9em;opacity:1;margin:2px 0}
+}
+.pcard .go{
+  margin-top:8px;display:inline-flex;align-items:center;gap:8px;align-self:flex-start;
+  font-size:13px;font-weight:700;color:var(--ink);
+  border-bottom:1.5px solid var(--ink);padding-bottom:3px;transition:gap .25s;
+}
+.pcard .go:hover{gap:13px}
+.pcard .go svg{width:13px;height:13px}
+
+/* ---------- pourquoi ---------- */
+.why{display:grid;grid-template-columns:repeat(2,1fr);gap:20px}
+.why .card{padding:0}
+.why .visual{border-bottom:1px solid var(--line);background:var(--charcoal)}
+.why .visual img{width:100%;aspect-ratio:16/9.6;object-fit:cover;opacity:.96}
+.why .txt{padding:26px 28px 30px}
+.why h4{font-family:'Montserrat',sans-serif;font-weight:800;text-transform:uppercase;font-size:17px;margin-bottom:9px;letter-spacing:.01em}
+.why p{color:var(--muted);font-size:14px}
+.why .wide{grid-column:1/-1;display:grid;grid-template-columns:auto 1fr;align-items:center;gap:26px;padding:26px 28px}
+.why .wide .ic{
+  width:46px;height:46px;border-radius:14px;display:flex;align-items:center;justify-content:center;
+  background:var(--charcoal);flex:none;box-shadow:0 10px 24px rgba(0,0,0,.22);
+}
+.why .wide .ic svg{width:20px;height:20px;stroke:#fff}
+
+/* ---------- retours clients ---------- */
+.reviews{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+.review{padding:26px 26px 24px;display:flex;flex-direction:column;gap:14px}
+.stars{display:flex;gap:3px}
+.stars svg{width:15px;height:15px;fill:var(--ink)}
+.review q{quotes:"« " " »";font-size:14.5px;color:#3A3A35;flex:1}
+.review q.slot{color:var(--dim);font-style:italic}
+.review .who{display:flex;align-items:center;gap:11px;border-top:1px solid var(--line);padding-top:14px}
+.review .av{
+  width:34px;height:34px;border-radius:50%;background:var(--charcoal);color:#fff;
+  display:flex;align-items:center;justify-content:center;
+  font-family:'Montserrat',sans-serif;font-weight:800;font-size:13px;flex:none;
+}
+.review .who b{display:block;font-size:13.5px;line-height:1.2}
+.review .who span{font-family:var(--lbl);font-weight:700;font-size:9px;letter-spacing:.16em;color:var(--dim);text-transform:uppercase}
+.reviews-note{margin-top:16px;font-size:10px;color:var(--dim);text-align:center;letter-spacing:.14em}
+
+/* ---------- footer ---------- */
+footer{background:var(--charcoal);color:#EDEDE8;margin-top:30px;position:relative;z-index:60}
+.foot{
+  max-width:1120px;margin:0 auto;padding:46px clamp(20px,5vw,48px);
+  display:flex;justify-content:space-between;align-items:center;gap:26px;flex-wrap:wrap;
+}
+.foot video{height:32px;width:auto}
+.foot-links{display:flex;gap:24px;font-size:12.5px;color:#A8A8A2;flex-wrap:wrap}
+.foot-links a:hover{color:#fff}
+.socials{display:flex;gap:12px}
+.socials a{
+  width:38px;height:38px;border:1px solid rgba(255,255,255,.25);border-radius:50%;
+  display:flex;align-items:center;justify-content:center;transition:background .2s,border-color .2s;
+}
+.socials a:hover{background:rgba(255,255,255,.12);border-color:rgba(255,255,255,.5)}
+.socials svg{width:16px;height:16px;stroke:#fff}
+.legal{
+  max-width:1120px;margin:0 auto;padding:0 clamp(20px,5vw,48px) 32px;
+  font-size:9.5px;letter-spacing:.14em;color:#7E7E78;
+  display:flex;justify-content:space-between;gap:14px;flex-wrap:wrap;
+}
+
+/* ---------- profil Femz (storytelling) ---------- */
+.profile{max-width:1120px}
+.profile h2{
+  font-family:'Montserrat',sans-serif;font-weight:800;text-transform:none;
+  font-size:clamp(34px,5.4vw,64px);line-height:1.02;letter-spacing:-.03em;
+  margin:0 0 clamp(38px,6vh,64px);text-wrap:balance;max-width:15ch;
+}
+.profile h2 .g{color:var(--dim)}
+.profile-grid{display:grid;grid-template-columns:minmax(0,.82fr) minmax(0,1.18fr);gap:clamp(34px,6vw,88px);align-items:start}
+.pf-photo{position:relative;border-radius:var(--r-lg);overflow:hidden;background:#161616;
+  box-shadow:var(--shadow-lg);aspect-ratio:3/4}
+.pf-photo img{width:100%;height:100%;object-fit:cover;display:block}
+/* placeholder si la photo n'est pas encore fournie */
+.pf-photo.empty{display:flex;align-items:center;justify-content:center;
+  background:radial-gradient(120% 90% at 50% 30%,#1E1E1E,#0C0C0C)}
+.pf-photo.empty .ph{text-align:center;color:#6A6A64;padding:24px}
+.pf-photo.empty .ph svg{width:40px;height:40px;stroke:#4A4A46;margin:0 auto 14px;display:block}
+.pf-photo.empty .ph b{display:block;font-family:var(--mono);font-size:12px;letter-spacing:.12em;color:#8A8A84}
+.pf-photo.empty .ph span{font-size:11.5px}
+.pf-socials{position:absolute;left:16px;bottom:16px;display:flex;gap:8px;z-index:2}
+.pf-socials a{width:34px;height:34px;border-radius:9px;display:flex;align-items:center;justify-content:center;
+  background:rgba(0,0,0,.5);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);
+  border:1px solid rgba(255,255,255,.18);transition:background .2s}
+.pf-socials a:hover{background:rgba(0,0,0,.75)}
+.pf-socials svg{width:15px;height:15px;stroke:#fff}
+.pf-id{margin-top:18px;display:flex;flex-direction:column;gap:7px}
+.pf-name{display:flex;align-items:baseline;gap:11px}
+.pf-name b{font-family:'Montserrat',sans-serif;font-weight:800;font-size:27px;letter-spacing:-.02em}
+.pf-name .real{font-size:14px;font-weight:400;color:var(--muted);letter-spacing:.01em;position:relative;padding-left:12px}
+.pf-name .real::before{content:"";position:absolute;left:0;top:50%;transform:translateY(-50%);width:1px;height:15px;background:rgba(20,20,15,.22)}
+.pf-role{font-size:12.5px;font-weight:600;letter-spacing:.01em;color:var(--dim)}
+.pf-right{display:flex;flex-direction:column}
+.pf-story{display:flex;flex-direction:column;gap:clamp(22px,3.2vh,32px);padding-top:6px}
+.pf-block b{display:block;font-size:clamp(17px,2vw,20px);font-weight:800;color:var(--ink);margin-bottom:8px;letter-spacing:-.015em;line-height:1.2}
+.pf-block p{color:#2A2A26;font-size:16px;font-weight:500;max-width:52ch;line-height:1.55}
+
+/* boîte à outils logiciels (tooltip au hover) */
+.toolbox{margin-top:clamp(42px,6vh,66px)}
+.tb-label{display:block;font-family:var(--lbl);font-weight:700;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--dim);margin-bottom:16px}
+.tools{display:flex;flex-wrap:wrap;gap:12px}
+.tool{position:relative;width:50px;height:50px;border-radius:14px;display:flex;align-items:center;justify-content:center;
+  background:#161616;color:#fff;border:1px solid rgba(255,255,255,.08);box-shadow:var(--shadow);cursor:default;
+  transition:transform .25s cubic-bezier(.34,1.4,.5,1),box-shadow .25s}
+.tool:hover,.tool:focus-visible{transform:translateY(-6px);box-shadow:var(--shadow-lg);outline:none}
+.tool b{font-family:'Montserrat',sans-serif;font-weight:800;font-size:17px;letter-spacing:-.03em}
+.tool svg{width:23px;height:23px}
+.tool .tip{position:absolute;bottom:calc(100% + 10px);left:50%;
+  transform:translateX(-50%) translateY(6px) scale(.96);transform-origin:bottom center;
+  background:#0C0C0C;color:#fff;font-size:12px;font-weight:600;white-space:nowrap;padding:6px 11px;border-radius:8px;
+  opacity:0;pointer-events:none;transition:opacity .2s,transform .25s cubic-bezier(.34,1.4,.5,1);box-shadow:0 8px 22px rgba(0,0,0,.35);z-index:5}
+.tool .tip::after{content:"";position:absolute;top:100%;left:50%;transform:translateX(-50%);border:5px solid transparent;border-top-color:#0C0C0C}
+.tool:hover .tip,.tool:focus-visible .tip{opacity:1;transform:translateX(-50%) translateY(0) scale(1)}
+
+/* ---------- assets gratuits : dossiers macOS 3D glossy ---------- */
+.assets-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:clamp(24px,3vw,42px);perspective:1300px}
+.asset{display:flex;flex-direction:column;gap:22px;text-decoration:none}
+.folder{position:relative;width:100%;aspect-ratio:1/0.98;transform-style:preserve-3d;will-change:transform;
+  transition:transform .55s cubic-bezier(.34,1.35,.5,1)}
+.asset:hover .folder{transform:translateY(-8px) rotateX(4deg) rotateY(-9deg)}
+/* onglet — bleu glass */
+.fold-tab{position:absolute;left:6%;top:2.5%;width:27%;height:8%;z-index:1;
+  background:linear-gradient(158deg,rgba(126,180,255,.62),rgba(70,120,205,.5));
+  backdrop-filter:blur(12px) saturate(150%);-webkit-backdrop-filter:blur(12px) saturate(150%);
+  border-radius:13px 16px 0 0;
+  box-shadow:inset 0 1.5px 0 rgba(255,255,255,.5);transition:box-shadow .45s}
+/* corps arrière — bleu glassmorphisme */
+.fold-back{position:absolute;left:0;right:0;top:10%;bottom:0;z-index:1;
+  background:linear-gradient(158deg,rgba(120,175,255,.5) 0%,rgba(78,132,215,.42) 46%,rgba(52,96,175,.4) 100%);
+  backdrop-filter:blur(16px) saturate(160%);-webkit-backdrop-filter:blur(16px) saturate(160%);
+  border-radius:9px 24px 24px 24px;
+  box-shadow:
+    inset 0 1.6px 0 rgba(255,255,255,.55),
+    inset 0 0 0 1px rgba(255,255,255,.18),
+    0 3px 7px rgba(30,60,120,.16),
+    0 18px 34px rgba(30,60,120,.2),
+    0 38px 64px rgba(30,60,120,.18);
+  transition:box-shadow .5s}
+/* feuille = poster PNG TRANSPARENT (le bleu du dossier transparaît autour) */
+.paper{position:absolute;left:15%;right:15%;top:2%;aspect-ratio:560/744;z-index:2;
+  transition:transform .5s cubic-bezier(.34,1.4,.5,1)}
+.paper img{width:100%;height:100%;object-fit:contain;display:block;
+  filter:drop-shadow(0 12px 24px rgba(18,32,68,.42))}
+.asset:hover .paper{transform:translateY(-6%) rotate(-1.2deg)}
+/* rabat avant — bleu glass (court → laisse voir le poster) */
+.fold-front{position:absolute;left:0;right:0;bottom:0;height:48%;z-index:3;overflow:hidden;
+  background:linear-gradient(158deg,rgba(140,190,255,.62) 0%,rgba(84,138,222,.5) 54%,rgba(58,104,185,.48) 100%);
+  backdrop-filter:blur(18px) saturate(160%);-webkit-backdrop-filter:blur(18px) saturate(160%);
+  border-radius:10px 10px 30px 30px;
+  box-shadow:inset 0 1.6px 0 rgba(255,255,255,.6),inset 0 -1px 0 rgba(30,60,120,.3);
+  transform-origin:bottom center;transform:translateZ(16px);
+  transition:transform .5s cubic-bezier(.34,1.4,.5,1),box-shadow .5s}
+/* reflet glossy qui balaie le rabat au hover */
+.fold-front::before{content:"";position:absolute;inset:-30% -10%;pointer-events:none;
+  background:linear-gradient(115deg,transparent 38%,rgba(255,255,255,.16) 50%,transparent 62%);
+  opacity:0;transform:translateX(-28%);transition:opacity .5s,transform .9s cubic-bezier(.22,1,.36,1)}
+.asset:hover .fold-front::before{opacity:1;transform:translateX(28%)}
+/* translateZ conservé → le rabat reste TOUJOURS devant le poster (pas de traversée en 3D) */
+.asset:hover .fold-front{transform:translateZ(16px) rotateX(-13deg)}
+/* glow bleu satisfaisant au hover */
+.asset:hover .fold-back{box-shadow:
+  inset 0 1.6px 0 rgba(255,255,255,.6),
+  inset 0 0 0 1px rgba(255,255,255,.22),
+  0 0 40px rgba(94,162,255,.6),
+  0 20px 42px rgba(30,60,120,.24),
+  0 42px 72px rgba(30,60,120,.18)}
+.asset:hover .fold-front{box-shadow:inset 0 1.6px 0 rgba(255,255,255,.66),0 16px 36px rgba(94,162,255,.55)}
+/* pied */
+.asset-foot{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.asset-foot .ptype{display:block;margin-bottom:3px}
+.asset-foot h4{font-family:'Montserrat',sans-serif;font-weight:800;font-size:16px;text-transform:uppercase;letter-spacing:-.01em}
+.dl{display:inline-flex;align-items:center;gap:7px;font-size:12.5px;font-weight:700;color:var(--ink);white-space:nowrap;
+  border-bottom:1.5px solid var(--ink);padding-bottom:2px;transition:gap .25s}
+.asset:hover .dl{gap:11px}
+.dl svg{width:14px;height:14px}
+@media (max-width:880px){
+  .profile-grid{grid-template-columns:1fr;gap:28px}
+  .pf-photo{max-width:380px}
+}
+
+/* ---------- responsive ---------- */
+@media (max-width:880px){
+  .grid{grid-template-columns:repeat(2,1fr)}
+  .assets-grid{grid-template-columns:repeat(2,1fr)}
+  .why{grid-template-columns:1fr}
+  .reviews{grid-template-columns:1fr}
+  .banner{min-height:82vh}
+}
+@media (max-width:720px){
+  .nav-links a:not(.btn){display:none}
+}
+@media (max-width:560px){
+  .grid{grid-template-columns:repeat(2,1fr);gap:12px}
+  .assets-grid{grid-template-columns:1fr;max-width:400px;margin:0 auto}
+  .hero-meta{gap:18px}
+}
+@media (prefers-reduced-motion:reduce){
+  .shine{animation:none;background:none;color:#fff}
+  .marquee-track{animation-duration:90s}
+  .rv,.banner .seq{opacity:1;transform:none;filter:none;transition:none;animation:none}
+  .sec-head h2{clip-path:none}
+  .pcard .desc{max-height:9em;opacity:1;margin:2px 0}
+}
+</style>
+
+<canvas id="dots" aria-hidden="true"></canvas>
+<div class="vignette" aria-hidden="true"></div>
+<div class="blurveil" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></div>
+<canvas id="dots2" aria-hidden="true"></canvas>
+
+<span id="playhead" aria-hidden="true"></span>
+<a class="fixed-logo" href="#top" aria-label="FemzLab — accueil">
+  <span class="mark" aria-hidden="true"></span>
+</a>
+<nav class="dock">
+  <div class="langsw"><button data-langbtn="fr" onclick="__setLang('fr')">FR</button><button data-langbtn="en" onclick="__setLang('en')">EN</button></div>
+  <div class="nav-links">
+    <a href="/portfolio">Portfolio</a>
+    <a href="#assets">Assets</a>
+    <a href="#profil">À propos</a>
+    <a href="https://pay.femzlab.shop/account/sessions/new">Se connecter</a>
+    <a class="btn solid" href="https://pay.femzlab.shop/account/registration/new">Rejoindre</a>
+  </div>
+</nav>
+
+<main>
+  <!-- ============ BANNIÈRE : vidéo du site + textes par-dessus ============ -->
+  <header class="banner" id="top">
+    <div class="vid" id="bannerVid" aria-hidden="true">
+      <video autoplay loop muted playsinline>
+        <source src="assets/mp4-01.mp4" type="video/mp4">
+      </video>
+    </div>
+    <div class="scrim" aria-hidden="true"></div>
+    <span class="promo-chip seq">Promo à durée limitée — code <b>VFX10</b> −10%</span>
+    <h1 class="seq">Level up<br><span class="shine">tes edits.</span></h1>
+    <p class="lead seq">Packs After Effects, banques SFX et la formation <strong>MetaVision</strong> — les mêmes assets que sur nos plus gros projets, prêts à glisser-déposer dans ta timeline.</p>
+    <div class="hero-cta seq">
+      <a class="btn solid big" href="#shop">Explorer le shop
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12l7 7 7-7"/></svg>
+      </a>
+      <a class="btn big" href="https://pay.femzlab.shop/metavision">Découvrir MetaVision</a>
+    </div>
+    <div class="hero-meta seq">
+      <span><b>6</b>Produits</span>
+      <span><b>140+</b>SFX &amp; presets</span>
+      <span><b>18</b>Leçons MetaVision</span>
+      <span><b>7j/7</b>Support Discord</span>
+    </div>
+  </header>
+
+  <!-- ============ logos clients : strip « Trusted by many » ============ -->
+  <div class="trusted">
+    <div class="band">
+      <span class="tag">Trusted by <b>many</b></span>
+      <div class="marquee">
+        <div class="marquee-track" aria-label="Adobe, Cif, Disney, Netflix, Samsung, Sony Music">
+          <img src="assets/png-02.png" alt="Adobe"><img src="assets/png-03.png" alt="Cif"><img src="assets/png-04.png" alt="Disney"><img src="assets/png-05.png" alt="Netflix"><img src="assets/png-06.png" alt="Samsung"><img src="assets/png-07.png" alt="Sony Music"><img src="assets/png-02.png" alt=""><img src="assets/png-03.png" alt=""><img src="assets/png-04.png" alt=""><img src="assets/png-05.png" alt=""><img src="assets/png-06.png" alt=""><img src="assets/png-07.png" alt=""><img src="assets/png-02.png" alt=""><img src="assets/png-03.png" alt=""><img src="assets/png-04.png" alt=""><img src="assets/png-05.png" alt=""><img src="assets/png-06.png" alt=""><img src="assets/png-07.png" alt=""><img src="assets/png-02.png" alt=""><img src="assets/png-03.png" alt=""><img src="assets/png-04.png" alt=""><img src="assets/png-05.png" alt=""><img src="assets/png-06.png" alt=""><img src="assets/png-07.png" alt=""><img src="assets/png-02.png" alt=""><img src="assets/png-03.png" alt=""><img src="assets/png-04.png" alt=""><img src="assets/png-05.png" alt=""><img src="assets/png-06.png" alt=""><img src="assets/png-07.png" alt=""><img src="assets/png-02.png" alt=""><img src="assets/png-03.png" alt=""><img src="assets/png-04.png" alt=""><img src="assets/png-05.png" alt=""><img src="assets/png-06.png" alt=""><img src="assets/png-07.png" alt="">
+        </div>
+      </div>
+    </div>
+  </div>
+
+  
+  <section id="shop">
+    <div class="sec-head rv">
+      <span class="eyebrow">VFX Shop</span>
+      <h2>Les packs</h2>
+      <p>Presets, templates et SFX pensés pour After Effects — testés en prod avant d'arriver ici.</p>
+    </div>
+    <div class="grid">
+      <article class="card glow-card pcard tilt rv" style="--d:.0s">
+        <span class="sheen" aria-hidden="true"></span>
+        <div class="media"><video autoplay loop muted playsinline aria-label="MetaVision — Formation VFX"><source src="assets/mp4-02.mp4" type="video/mp4"></video></div>
+        <div class="body">
+          <div class="top"><span class="ptype">Cours · 18 leçons</span><span class="pprice">150&nbsp;€</span></div>
+          <h4>MetaVision</h4>
+          <p class="desc">La formation VFX complète — d'After Effects niveau zéro jusqu'à tes premiers clients.</p>
+          <a class="go" href="https://pay.femzlab.shop/metavision">Voir la formation
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
+          </a>
+        </div>
+      </article>
+      <article class="card glow-card pcard tilt rv" style="--d:.08s">
+        <span class="sheen" aria-hidden="true"></span>
+        <div class="media"><video autoplay loop muted playsinline aria-label="Ultimate iOS Pack"><source src="assets/mp4-03.mp4" type="video/mp4"></video></div>
+        <div class="body">
+          <div class="top"><span class="ptype">Pack · 150+ assets</span><span class="pprice">29,95&nbsp;€</span></div>
+          <h4>Ultimate iOS Pack</h4>
+          <p class="desc">Le pack tout-en-un pour un rendu clean et moderne : icônes PNG, templates After Effects, éléments UI.</p>
+          <a class="go" href="https://pay.femzlab.shop/ultimate-ios-pack">Voir le pack
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
+          </a>
+        </div>
+      </article>
+      <article class="card glow-card pcard tilt rv" style="--d:.16s">
+        <span class="sheen" aria-hidden="true"></span>
+        <div class="media"><video autoplay loop muted playsinline aria-label="Ghost FX"><source src="assets/mp4-04.mp4" type="video/mp4"></video></div>
+        <div class="body">
+          <div class="top"><span class="ptype">Presets · 8 fichiers</span><span class="pprice">9&nbsp;€</span></div>
+          <h4>Ghost FX</h4>
+          <p class="desc">Particules pour After Effects : 4 presets de transitions + 4 overlays GhostFX.</p>
+          <a class="go" href="https://pay.femzlab.shop/ghost-fx-preset-after-effects">Voir le pack
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
+          </a>
+        </div>
+      </article>
+      <article class="card glow-card pcard tilt rv" style="--d:.0s">
+        <span class="sheen" aria-hidden="true"></span>
+        <div class="media"><video autoplay loop muted playsinline aria-label="Fade Pack"><source src="assets/mp4-05.mp4" type="video/mp4"></video></div>
+        <div class="body">
+          <div class="top"><span class="ptype">Track mattes · 10+</span><span class="pprice free">Gratuit</span></div>
+          <h4>Fade Pack</h4>
+          <p class="desc">Plus de 10 track mattes modifiables pour tes transitions — le point d'entrée idéal.</p>
+          <a class="go" href="https://pay.femzlab.shop/fade-pack">Télécharger
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v11M6 12l6 6 6-6M5 21h14"/></svg>
+          </a>
+        </div>
+      </article>
+      <article class="card glow-card pcard tilt rv" style="--d:.08s">
+        <span class="sheen" aria-hidden="true"></span>
+        <div class="media"><img src="assets/png-08.png" alt="Vortex Sound Pack" loading="lazy"></div>
+        <div class="body">
+          <div class="top"><span class="ptype">SFX · 70+ sons</span><span class="pprice">45&nbsp;€</span></div>
+          <h4>Vortex Sound Pack</h4>
+          <p class="desc">Bruitages percutants — énergie, impacts, transitions — et ambiances immersives haute qualité.</p>
+          <a class="go" href="https://pay.femzlab.shop/vortex-pack">Voir le pack
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
+          </a>
+        </div>
+      </article>
+      <article class="card glow-card pcard tilt rv" style="--d:.16s">
+        <span class="sheen" aria-hidden="true"></span>
+        <div class="media"><img src="assets/png-09.png" alt="Whoosh Sound Pack" loading="lazy"></div>
+        <div class="body">
+          <div class="top"><span class="ptype">SFX · 70+ sons</span><span class="pprice">35&nbsp;€</span></div>
+          <h4>Whoosh Sound Pack</h4>
+          <p class="desc">Le pack parfait pour dynamiser tes edits : cinématique, digital, rapide, ambient et plus.</p>
+          <a class="go" href="https://pay.femzlab.shop/sfx-whoosh-pack">Voir le pack
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
+          </a>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <!-- ============ assets gratuits (WeTransfer) ============ -->
+  <style id="rbfold-css">
+/* Dossiers Assets : vrai dossier (corps arriere + pocket avant qui se fend), verre, image qui sort devant */
+#assets .assets-grid{margin-top:58px}
+.rbfold-stage{position:relative;display:flex;align-items:center;justify-content:center;height:150px}
+.rbfold{position:relative;width:142px;height:114px;transition:transform .2s ease-in}
+.asset:hover .rbfold,.asset:focus-visible .rbfold{transform:translateY(-8px)}
+/* corps / arriere du dossier (donne le volume) */
+.rbfold__back{position:absolute;z-index:1;inset:0;border-radius:2px 16px 16px 16px;
+  background:linear-gradient(158deg,rgba(118,170,252,.55) 0%,rgba(80,135,225,.5) 55%,rgba(58,104,190,.52) 100%);
+  backdrop-filter:blur(12px) saturate(160%);-webkit-backdrop-filter:blur(12px) saturate(160%);
+  box-shadow:inset 0 1.6px 0 rgba(255,255,255,.5),0 20px 36px rgba(30,60,120,.2)}
+.rbfold__back::after{content:"";position:absolute;bottom:100%;left:0;width:46px;height:14px;border-radius:9px 9px 0 0;
+  background:linear-gradient(158deg,rgba(118,170,252,.55),rgba(72,124,214,.5));
+  backdrop-filter:blur(10px) saturate(150%);-webkit-backdrop-filter:blur(10px) saturate(150%)}
+/* image (un seul papier, sans bord) */
+.rbpaper{position:absolute;z-index:2;left:50%;bottom:9%;width:86%;height:86%;
+  display:flex;align-items:center;justify-content:center;transform:translate(-50%,0) scale(1);
+  transition:transform .4s cubic-bezier(.34,1.3,.5,1)}
+.rbpaper img{max-width:100%;max-height:100%;width:auto;height:auto;object-fit:contain;display:block;
+  filter:drop-shadow(0 14px 26px rgba(18,32,68,.42))}
+.asset:hover .rbpaper,.asset:focus-visible .rbpaper{transform:translate(-50%,-34%) scale(1.2)}
+/* pocket avant qui se fend (reactbits) */
+.rbfold__front{position:absolute;z-index:3;inset:0;border-radius:2px 16px 16px 16px;transform-origin:bottom;
+  background:linear-gradient(158deg,rgba(158,200,255,.5) 0%,rgba(104,160,242,.48) 55%,rgba(70,120,208,.5) 100%);
+  backdrop-filter:blur(6px) saturate(150%);-webkit-backdrop-filter:blur(6px) saturate(150%);
+  box-shadow:inset 0 1.5px 0 rgba(255,255,255,.6);transition:transform .35s ease-in-out}
+.asset:hover .rbfold__front,.asset:focus-visible .rbfold__front{transform:skew(15deg) scaleY(.62)}
+.asset:hover .rbfold__front.rbright,.asset:focus-visible .rbfold__front.rbright{transform:skew(-15deg) scaleY(.62)}
+@media (prefers-reduced-motion:reduce){.rbfold,.rbpaper,.rbfold__front{transition:none}}
+</style>
+  <section id="assets">
+    <div class="sec-head rv">
+      <span class="eyebrow">Assets gratuits</span>
+      <h2>À télécharger</h2>
+      <p>Clique sur un asset pour le télécharger — gratuit, direct, sans compte.</p>
+    </div>
+    <div class="assets-grid">
+      <a class="asset rv" href="https://we.tl/t-uHW22fJMC9" target="_blank" rel="noopener" style="--d:.0s">
+        <div class="rbfold-stage"><div class="rbfold"><div class="rbfold__back"></div><div class="rbpaper"><img src="assets/png-10.png" alt="Flash Effect" loading="lazy"></div><div class="rbfold__front"></div><div class="rbfold__front rbright"></div></div></div>
+        <div class="asset-foot">
+          <div><span class="ptype">Effect · After Effects</span><h4>Flash Effect</h4></div>
+          <span class="dl">Télécharger <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v11M6 12l6 6 6-6M5 21h14"/></svg></span>
+        </div>
+      </a>
+      <a class="asset rv" href="https://we.tl/t-JUAp0xvXmU" target="_blank" rel="noopener" style="--d:.08s">
+        <div class="rbfold-stage"><div class="rbfold"><div class="rbfold__back"></div><div class="rbpaper"><img src="assets/png-11.png" alt="Explosion Effect" loading="lazy"></div><div class="rbfold__front"></div><div class="rbfold__front rbright"></div></div></div>
+        <div class="asset-foot">
+          <div><span class="ptype">Effect · After Effects</span><h4>Explosion Effect</h4></div>
+          <span class="dl">Télécharger <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v11M6 12l6 6 6-6M5 21h14"/></svg></span>
+        </div>
+      </a>
+      <a class="asset rv" href="https://we.tl/t-6OhKmtw582" target="_blank" rel="noopener" style="--d:.16s">
+        <div class="rbfold-stage"><div class="rbfold"><div class="rbfold__back"></div><div class="rbpaper"><img src="assets/png-12.png" alt="Jump Effect" loading="lazy"></div><div class="rbfold__front"></div><div class="rbfold__front rbright"></div></div></div>
+        <div class="asset-foot">
+          <div><span class="ptype">Effect · After Effects</span><h4>Jump Effect</h4></div>
+          <span class="dl">Télécharger <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v11M6 12l6 6 6-6M5 21h14"/></svg></span>
+        </div>
+      </a>
+    </div>
+  </section>
+
+  <section id="pourquoi">
+    <div class="sec-head rv">
+      <span class="eyebrow">Pourquoi nos packs</span>
+      <h2>Level up tes edits</h2>
+    </div>
+    <div class="why">
+      <div class="card glow-card rv" style="--d:.0s">
+        <span class="sheen" aria-hidden="true"></span>
+        <div class="visual"><img src="assets/jpg-01.jpg" alt="Le studio FemzLab" loading="lazy"></div>
+        <div class="txt">
+          <h4>Utilisé sur nos plus gros projets</h4>
+          <p>Rejoins la ligue des professionnels qui font confiance à nos produits pour leurs projets les plus significatifs. Ta créativité mérite le meilleur.</p>
+        </div>
+      </div>
+      <div class="card glow-card rv" style="--d:.1s">
+        <span class="sheen" aria-hidden="true"></span>
+        <div class="visual"><img src="assets/jpg-02.jpg" alt="Glisser-déposer dans la timeline" loading="lazy"></div>
+        <div class="txt">
+          <h4>Polyvalence redéfinie</h4>
+          <p>Créateur de contenu, cinéaste ou passionné : nos packs s'adaptent à ton style. Élève tes projets grâce à la simplicité du glisser-déposer.</p>
+        </div>
+      </div>
+      <div class="card glow-card wide rv" style="--d:.18s">
+        <span class="sheen" aria-hidden="true"></span>
+        <a class="ic" href="https://discord.gg/xmwq2NMDTw" target="_blank" rel="noopener" aria-label="Rejoindre le Discord FemzLab"><svg viewBox="0 0 24 24" fill="#fff" width="20" height="20"><path d="M20.317 4.3698a19.7913 19.7913 0 00-4.8851-1.5152.0741.0741 0 00-.0785.0371c-.211.3753-.4447.8648-.6083 1.2495-1.8447-.2762-3.68-.2762-5.4868 0-.1636-.3933-.4058-.8742-.6177-1.2495a.077.077 0 00-.0785-.037 19.7363 19.7363 0 00-4.8852 1.515.0699.0699 0 00-.0321.0277C.5334 9.0458-.319 13.5799.0992 18.0578a.0824.0824 0 00.0312.0561c2.0528 1.5076 4.0413 2.4228 5.9929 3.0294a.0777.0777 0 00.0842-.0276c.4616-.6304.8731-1.2952 1.226-1.9942a.076.076 0 00-.0416-.1057c-.6528-.2476-1.2743-.5495-1.8722-.8923a.077.077 0 01-.0076-.1277c.1258-.0943.2517-.1923.3718-.2914a.0743.0743 0 01.0776-.0105c3.9278 1.7933 8.18 1.7933 12.0614 0a.0739.0739 0 01.0785.0095c.1202.099.246.1981.3728.2924a.077.077 0 01-.0066.1276 12.2986 12.2986 0 01-1.873.8914.0766.0766 0 00-.0407.1067c.3604.698.7719 1.3628 1.225 1.9932a.076.076 0 00.0842.0286c1.961-.6067 3.9495-1.5219 6.0023-3.0294a.077.077 0 00.0313-.0552c.5004-5.177-.8382-9.6739-3.5485-13.6604a.061.061 0 00-.0312-.0286zM8.02 15.3312c-1.1825 0-2.1569-1.0857-2.1569-2.419 0-1.3332.9555-2.4189 2.157-2.4189 1.2108 0 2.1757 1.0952 2.1568 2.419 0 1.3332-.9555 2.4189-2.1569 2.4189zm7.9748 0c-1.1825 0-2.1569-1.0857-2.1569-2.419 0-1.3332.9554-2.4189 2.1569-2.4189 1.2108 0 2.1757 1.0952 2.1568 2.419 0 1.3332-.946 2.4189-2.1568 2.4189Z"/></svg></a>
+        <div>
+          <h4>Accompagnement Discord — dispo 7j/7</h4>
+          <p>Une question sur un preset, un template qui coince ? La communauté et Femz répondent tous les jours.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ profil Femz — storytelling ============ -->
+  <section id="profil" class="profile">
+    <h2 class="rv">Une approche moderne <span class="g">du storytelling visuel.</span></h2>
+    <div class="profile-grid">
+      <div class="rv">
+        <div class="pf-photo">
+          <img src="assets/jpg-03.jpg" alt="Femz — Fémi Olu" loading="lazy">
+          <div class="pf-socials">
+            <a href="https://www.youtube.com/c/Femzprod" target="_blank" rel="noopener" aria-label="YouTube"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2.5" y="5.5" width="19" height="13" rx="4"/><path d="M10.5 9.5 15 12l-4.5 2.5v-5z"/></svg></a>
+            <a href="https://www.instagram.com/imfemz/" target="_blank" rel="noopener" aria-label="Instagram"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><path d="M17.5 6.5h.01"/></svg></a>
+          </div>
+        </div>
+        <div class="pf-id">
+          <div class="pf-name"><b>Femz</b><span class="real">Fémi Olu</span></div>
+          <span class="pf-role">Monteur · Créateur · Fondateur de FemzLab</span>
+        </div>
+      </div>
+      <div class="pf-right rv" style="--d:.1s">
+        <div class="pf-story">
+          <div class="pf-block">
+            <b>J'ai pris une caméra il y a des années — et je n'ai jamais lâché.</b>
+            <p>Des clips de musique certifiés or et platine aux campagnes des plus grandes marques, chaque projet m'a appris la même chose : une image ne vaut que par l'histoire qu'elle raconte.</p>
+          </div>
+          <div class="pf-block">
+            <b>Je ne cherche pas le beau. Je cherche l'émotion.</b>
+            <p>Un plan qui arrête le pouce, une transition qu'on rejoue, un son qu'on ressent avant même de le comprendre. Le détail n'est pas de la décoration — c'est ce qui fait qu'une vidéo reste en tête.</p>
+          </div>
+          <div class="pf-block">
+            <b>FemzLab, c'est te passer mes outils.</b>
+            <p>Les presets, packs SFX et templates qui tournent sur mes plus gros projets, je les mets entre tes mains — pour que tu passes moins de temps à galérer, et plus de temps à créer ce qui te ressemble.</p>
+          </div>
+        </div>
+        <div class="toolbox">
+          <span class="tb-label">Ma boîte à outils</span>
+          <div class="tools">
+        <span class="tool" tabindex="0"><span class="tip">Adobe Premiere Pro</span><b>Pr</b></span>
+        <span class="tool" tabindex="0"><span class="tip">Adobe After Effects</span><b>Ae</b></span>
+        <span class="tool" tabindex="0"><span class="tip">Adobe Photoshop</span><b>Ps</b></span>
+        <span class="tool" tabindex="0"><span class="tip">DaVinci Resolve</span><svg viewBox="0 0 24 24" fill="#fff"><path d="M17.621 0 5.977.004c-1.37 0-2.756.345-3.762 1.11a4.925 4.925 0 0 0-1.61 2.003C.233 3.93 0 5.02 0 5.951l.012 12.2c.002 1.604.479 3.057 1.461 4.112.984 1.056 2.462 1.683 4.331 1.691L16.856 24c1.26.005 3.095-.036 4.303-.714 1.075-.605 2.025-1.556 2.497-2.984.278-.84.345-2.084.344-3.147l-.021-11.13c-.002-.888-.15-2.023-.547-2.934-.425-.976-1.181-1.815-2.322-2.425C20.353.26 19.123 0 17.622 0zm0 .93c1.378 0 2.538.295 3.04.565.977.523 1.544 1.166 1.889 1.96.315.721.47 1.793.473 2.572l.018 11.13c.002 1.013-.097 2.257-.298 2.86-.396 1.202-1.146 1.946-2.063 2.462-.814.457-2.612.593-3.82.588l-11.05-.044c-1.657-.007-2.832-.534-3.626-1.386-.792-.851-1.212-2.06-1.212-3.485L.999 5.95c0-.829.196-1.827.474-2.437.345-.757.75-1.207 1.365-1.674C3.585 1.27 4.868.97 6.08.97zm-5.66 3.423c-1.976.089-3.204 1.658-3.214 3.29.019 1.443 1.635 3.481 2.884 4.53.12.099.154.109.33.18.062.025.198-.047.327-.135.36-.245.993-.947 1.648-1.738a7.67 7.67 0 0 0 1.031-1.683c.409-.89.261-1.599.235-1.888a3.983 3.983 0 0 0-.99-1.692 3.36 3.36 0 0 0-2.251-.864zm4.172 7.922a10.185 10.185 0 0 0-3.244.61c-.15.058-.26.1-.374.17-.057.036-.11.135-.105.292.017.433.29 1.278.624 2.27.384 1.135 1.066 2.27 1.844 2.74a3.23 3.23 0 0 0 2.53.342c.832-.243 1.595-.868 1.962-1.546.986-1.818.19-3.548-1.121-4.417-.447-.296-1.133-.445-1.89-.46-.074 0-.15-.002-.226-.001zm-8.432.038a6.201 6.201 0 0 0-.752.047c-.596.078-.932.273-1.29.51a3.177 3.177 0 0 0-1.365 1.979c-.075.552-.086 1.053.033 1.507.433 1.389 1.326 2.222 2.847 2.452.636.028 1.37-.063 1.99-.45 1.269-.782 2.08-3.17 2.412-4.742.053-.176.035-.357-.013-.42-.005-.067-.044-.113-.19-.183-.398-.192-1.32-.417-2.375-.6a7.68 7.68 0 0 0-1.297-.1z"/></svg></span>
+        <span class="tool" tabindex="0"><span class="tip">Notion</span><svg viewBox="0 0 24 24" fill="#fff"><path d="M4.459 4.208c.746.606 1.026.56 2.428.466l13.215-.793c.28 0 .047-.28-.046-.326L17.86 1.968c-.42-.326-.981-.7-2.055-.607L3.01 2.295c-.466.046-.56.28-.374.466zm.793 3.08v13.904c0 .747.373 1.027 1.214.98l14.523-.84c.841-.046.935-.56.935-1.167V6.354c0-.606-.233-.933-.748-.887l-15.177.887c-.56.047-.747.327-.747.933zm14.337.745c.093.42 0 .84-.42.888l-.7.14v10.264c-.608.327-1.168.514-1.635.514-.748 0-.935-.234-1.495-.933l-4.577-7.186v6.952L12.21 19s0 .84-1.168.84l-3.222.186c-.093-.186 0-.653.327-.746l.84-.233V9.854L7.822 9.76c-.094-.42.14-1.026.793-1.073l3.456-.233 4.764 7.279v-6.44l-1.215-.139c-.093-.514.28-.887.747-.933zM1.936 1.035l13.31-.98c1.634-.14 2.055-.047 3.082.7l4.249 2.986c.7.513.934.653.934 1.213v16.378c0 1.026-.373 1.634-1.68 1.726l-15.458.934c-.98.047-1.448-.093-1.962-.747l-3.129-4.06c-.56-.747-.793-1.306-.793-1.96V2.667c0-.839.374-1.54 1.447-1.632z"/></svg></span>
+        <span class="tool" tabindex="0"><span class="tip">Claude Code</span><svg viewBox="0 0 24 24" fill="#fff"><path d="m4.7144 15.9555 4.7174-2.6471.079-.2307-.079-.1275h-.2307l-.7893-.0486-2.6956-.0729-2.3375-.0971-2.2646-.1214-.5707-.1215-.5343-.7042.0546-.3522.4797-.3218.686.0608 1.5179.1032 2.2767.1578 1.6514.0972 2.4468.255h.3886l.0546-.1579-.1336-.0971-.1032-.0972L6.973 9.8356l-2.55-1.6879-1.3356-.9714-.7225-.4918-.3643-.4614-.1578-1.0078.6557-.7225.8803.0607.2246.0607.8925.686 1.9064 1.4754 2.4893 1.8336.3643.3035.1457-.1032.0182-.0728-.164-.2733-1.3539-2.4467-1.445-2.4893-.6435-1.032-.17-.6194c-.0607-.255-.1032-.4674-.1032-.7285L6.287.1335 6.6997 0l.9957.1336.419.3642.6192 1.4147 1.0018 2.2282 1.5543 3.0296.4553.8985.2429.8318.091.255h.1579v-.1457l.1275-1.706.2368-2.0947.2307-2.6957.0789-.7589.3764-.9107.7468-.4918.5828.2793.4797.686-.0668.4433-.2853 1.8517-.5586 2.9021-.3643 1.9429h.2125l.2429-.2429.9835-1.3053 1.6514-2.0643.7286-.8196.85-.9046.5464-.4311h1.0321l.759 1.1293-.34 1.1657-1.0625 1.3478-.8804 1.1414-1.2628 1.7-.7893 1.36.0729.1093.1882-.0183 2.8535-.607 1.5421-.2794 1.8396-.3157.8318.3886.091.3946-.3278.8075-1.967.4857-2.3072.4614-3.4364.8136-.0425.0304.0486.0607 1.5482.1457.6618.0364h1.621l3.0175.2247.7892.522.4736.6376-.079.4857-1.2142.6193-1.6393-.3886-3.825-.9107-1.3113-.3279h-.1822v.1093l1.0929 1.0686 2.0035 1.8092 2.5075 2.3314.1275.5768-.3218.4554-.34-.0486-2.2039-1.6575-.85-.7468-1.9246-1.621h-.1275v.17l.4432.6496 2.3436 3.5214.1214 1.0807-.17.3521-.6071.2125-.6679-.1214-1.3721-1.9246L14.38 17.959l-1.1414-1.9428-.1397.079-.674 7.2552-.3156.3703-.7286.2793-.6071-.4614-.3218-.7468.3218-1.4753.3886-1.9246.3157-1.53.2853-1.9004.17-.6314-.0121-.0425-.1397.0182-1.4328 1.9672-2.1796 2.9446-1.7243 1.8456-.4128.164-.7164-.3704.0667-.6618.4008-.5889 2.386-3.0357 1.4389-1.882.929-1.0868-.0062-.1579h-.0546l-6.3385 4.1164-1.1293.1457-.4857-.4554.0608-.7467.2307-.2429 1.9064-1.3114Z"/></svg></span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="avis">
+    <div class="sec-head rv">
+      <span class="eyebrow">Retours clients</span>
+      <h2>Ils l'utilisent déjà</h2>
+    </div>
+    <div class="reviews">
+      <div class="card glow-card review rv" style="--d:.0s">
+        <span class="sheen" aria-hidden="true"></span>
+        <q class="slot">Super formation&nbsp;!</q>
+        <div class="who"><span class="av">G</span><div><b>Georges A.</b><span>Élève MetaVision</span></div></div>
+      </div>
+      <div class="card glow-card review rv" style="--d:.1s">
+        <span class="sheen" aria-hidden="true"></span>
+        <q class="slot">Plus de 400 packs téléchargés, 60&nbsp;000 abonnés, 48 élèves en formation — les effets que tu vois dans mes vidéos sortent exactement d'ici.</q>
+        <div class="who"><img class="av" src="assets/jpg-04.jpg" alt="Femz"><div><b>Femz</b><span>Fondateur — 60K+ de communauté</span></div></div>
+      </div>
+      <div class="card glow-card review rv" style="--d:.2s">
+        <span class="sheen" aria-hidden="true"></span>
+        <q class="slot">Ton retour ici&nbsp;? Viens partager ton expérience sur le Discord.</q>
+        <div class="who"><span class="av"><svg viewBox="0 0 24 24" fill="#fff" style="width:58%;height:58%"><path d="M14.983 3l.123.006c2.014.214 3.527.672 4.966 1.673a1 1 0 0 1 .371.488c1.876 5.315 2.373 9.987 1.451 12.28-1.003 2.005-2.606 3.553-4.394 3.553-.732 0-1.693-.968-2.328-2.045a21.5 21.5 0 0 0 2.103-.493 1 1 0 1 0-.55-1.924c-3.32.95-6.13.95-9.45 0a1 1 0 0 0-.55 1.924c.717.204 1.416.37 2.103.494-.635 1.075-1.596 2.044-2.328 2.044-1.788 0-3.391-1.548-4.428-3.629-.888-2.217-.39-6.89 1.485-12.204a1 1 0 0 1 .371-.488c1.439-1.001 2.952-1.459 4.966-1.673a1 1 0 0 1 .935.435l.063.107.651 1.285.137-.016a12.97 12.97 0 0 1 2.643 0l.134.016.65-1.284a1 1 0 0 1 .754-.54l.122-.009zM9 10a2 2 0 0 0-1.977 1.697l-.018.154L7 12l.005.15A2 2 0 1 0 9 10zm6 0a2 2 0 0 0-1.977 1.697l-.018.154-.005.149.005.15A2 2 0 1 0 15 10z"/></svg></span><div><b>Communauté FemzLab</b><span>Discord ouvert à tous</span></div></div>
+      </div>
+    </div>
+    <p class="reviews-note rv"></p>
+  </section>
+</main>
+
+<footer>
+  <div class="foot">
+    <a href="/" aria-label="FemzLab">
+      <video autoplay loop muted playsinline aria-hidden="true">
+        <source src="assets/mov-01.mov" type='video/quicktime; codecs="hvc1"'>
+        <source src="assets/webm-01.webm" type="video/webm">
+      </video><img class="flogo-fb" style="display:none" src="assets/png-13.png" alt="FemzLab">
+    </a>
+    <div class="foot-links">
+      <a href="/portfolio">Portfolio</a>
+      <a href="#assets">Assets</a>
+      <a href="https://pay.femzlab.shop/terms">Conditions générales de vente</a>
+      <a href="https://pay.femzlab.shop/privacy">Politique de confidentialité</a>
+    </div>
+    <div class="socials">
+      <a href="https://www.instagram.com/imfemz/" aria-label="Instagram">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><path d="M17.5 6.5h.01"/></svg>
+      </a>
+      <a href="https://www.youtube.com/c/Femzprod" aria-label="YouTube">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2.5" y="5.5" width="19" height="13" rx="4"/><path d="M10.5 9.5 15 12l-4.5 2.5v-5z"/></svg>
+      </a>
+      <a href="mailto:hello@imfemz.com" aria-label="Email">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="3"/><path d="m3 7 9 6 9-6"/></svg>
+      </a>
+    </div>
+  </div>
+  <div class="legal">
+    <span>© 2026 FemzLab — hello@imfemz.com</span>
+    <span></span>
+  </div>
+</footer>
+
+<script>
+const REDUCED = matchMedia('(prefers-reduced-motion: reduce)').matches;
+const MOBILE  = matchMedia('(max-width: 880px)');
+const FINE    = matchMedia('(pointer: fine)').matches;
+
+// ---------- fond FIXE : dots gris interactifs (bulge curseur) ----------
+(function(){
+  const cv = document.getElementById('dots'), ctx = cv.getContext('2d');
+  const cv2 = document.getElementById('dots2'), ctx2 = cv2.getContext('2d');
+  let W,H,DPR,pts=[],mx=-9e3,my=-9e3,raf;
+  const SPACING=30, R=1.3, BULGE=67, RADIUS=400, STRIP=112;
+  function build(){
+    DPR=Math.min(devicePixelRatio||1,2);
+    W=innerWidth; H=innerHeight;
+    cv.width=W*DPR; cv.height=H*DPR; cv.style.width=W+'px'; cv.style.height=H+'px';
+    ctx.setTransform(DPR,0,0,DPR,0,0);
+    cv2.width=W*DPR; cv2.height=STRIP*DPR; cv2.style.width=W+'px'; cv2.style.height=STRIP+'px';
+    pts=[];
+    for(let y=SPACING/2;y<H;y+=SPACING)
+      for(let x=SPACING/2;x<W;x+=SPACING)
+        pts.push({x,y});
+  }
+  function draw(){
+    ctx.clearRect(0,0,W,H);
+    for(const p of pts){
+      const dx=p.x-mx, dy=p.y-my, d=Math.hypot(dx,dy);
+      let r=R, a=0.16, ox=0, oy=0;
+      if(d<RADIUS){
+        const f=1-d/RADIUS, push=f*f*BULGE*0.16;
+        ox=(dx/(d||1))*push; oy=(dy/(d||1))*push;
+        r=R+f*1.4; a=Math.min(.5,a+f*.3);
+      }
+      ctx.beginPath();
+      ctx.arc(p.x+ox,p.y+oy,r,0,6.2832);
+      ctx.fillStyle='rgba(96,96,88,'+a.toFixed(3)+')';
+      ctx.fill();
+    }
+    // dots2 : copie nette du bas du champ, au-dessus du voile de blur (le fond n'est jamais flouté)
+    ctx2.clearRect(0,0,cv2.width,cv2.height);
+    ctx2.drawImage(cv, 0,(H-STRIP)*DPR, W*DPR,STRIP*DPR, 0,0, W*DPR,STRIP*DPR);
+    raf=null;
+  }
+  function queue(){ if(!raf) raf=requestAnimationFrame(draw); }
+  addEventListener('resize',()=>{build();queue();});
+  if(!REDUCED && FINE){
+    addEventListener('pointermove',e=>{mx=e.clientX;my=e.clientY;queue();},{passive:true});
+    addEventListener('pointerleave',()=>{mx=my=-9e3;queue();});
+  }
+  build(); draw();
+})();
+
+// ---------- parallax soigné : la vidéo de bannière reste en place ----------
+(function(){
+  const vid=document.getElementById('bannerVid');
+  if(REDUCED) return;
+  let tick=false;
+  addEventListener('scroll',()=>{
+    if(tick) return; tick=true;
+    requestAnimationFrame(()=>{
+      const y=scrollY;
+      if(y<innerHeight*1.3) vid.style.transform='translateY('+(y*.42)+'px)';
+      tick=false;
+    });
+  },{passive:true});
+})();
+
+// ---------- odomètre des chiffres du hero ----------
+(function(){
+  document.querySelectorAll('.hero-meta b').forEach(b=>{
+    const txt=b.textContent;
+    b.textContent='';
+    let di=0;
+    [...txt].forEach(ch=>{
+      if(/\d/.test(ch)){
+        const w=document.createElement('span'); w.className='odo';
+        const s=document.createElement('span'); s.className='odo-strip';
+        for(let c=0;c<2;c++) for(let n=0;n<=9;n++){ const d=document.createElement('i'); d.textContent=n; s.appendChild(d); }
+        s.style.setProperty('--d', String(10+Number(ch))); // un tour complet + la valeur
+        s.style.setProperty('--dl', (di*0.14)+'s');        // cascade gauche → droite
+        w.appendChild(s); b.appendChild(w); di++;
+      } else {
+        b.appendChild(document.createTextNode(ch));
+      }
+    });
+  });
+  const meta=document.querySelector('.hero-meta');
+  if(REDUCED){ meta.classList.add('count'); return; }
+  const spin=()=>{                                   // re-lance un tour propre à chaque passage
+    meta.classList.remove('count');
+    const strips=meta.querySelectorAll('.odo-strip');
+    strips.forEach(s=>s.style.transition='none');
+    void meta.offsetWidth;                            // reflow → reset instantané
+    strips.forEach(s=>s.style.transition='');
+    meta.classList.add('count');
+  };
+  let firstDelay=setTimeout(spin,750);               // premier tour à l'arrivée
+  new IntersectionObserver(es=>{
+    es.forEach(e=>{ if(e.isIntersecting){ clearTimeout(firstDelay); spin(); } });
+  },{threshold:.55}).observe(meta);
+})();
+
+// ---------- tête de lecture + dock qui se condense au scroll ----------
+(function(){
+  const ph=document.getElementById('playhead');
+  const dock=document.querySelector('.dock');
+  const logo=document.querySelector('.fixed-logo');
+  let tick=false;
+  addEventListener('scroll',()=>{
+    if(tick) return; tick=true;
+    requestAnimationFrame(()=>{
+      const max=document.documentElement.scrollHeight-innerHeight;
+      ph.style.transform='scaleX('+(max>0?scrollY/max:0)+')';
+      const past=scrollY>50;
+      if(dock) dock.classList.toggle('dock-scrolled', past);
+      if(logo) logo.classList.toggle('hidden', past);
+      tick=false;
+    });
+  },{passive:true});
+})();
+
+// ---------- reveal au scroll : REJOUÉ à chaque passage ----------
+const io=new IntersectionObserver(es=>{
+  es.forEach(e=>{ e.target.classList.toggle('in', e.isIntersecting); });
+},{threshold:.12,rootMargin:'0px 0px -40px 0px'});
+document.querySelectorAll('.rv').forEach(el=>io.observe(el));
+
+// ---------- mobile : descriptions des packs ouvertes au scroll (pop back en sortie) ----------
+if(matchMedia('(hover:none)').matches){
+  const po=new IntersectionObserver(es=>{
+    es.forEach(e=> e.target.classList.toggle('open', e.isIntersecting));
+  },{threshold:.6});
+  document.querySelectorAll('.pcard').forEach(el=>po.observe(el));
+}
+
+// ---------- reflets/glow au curseur (Magic Bento) + tilt 3D subtil ----------
+document.querySelectorAll('.glow-card').forEach(el=>{
+  el.addEventListener('pointermove',e=>{
+    const r=el.getBoundingClientRect();
+    el.style.setProperty('--mx',(e.clientX-r.left)+'px');
+    el.style.setProperty('--my',(e.clientY-r.top)+'px');
+  },{passive:true});
+});
+if(FINE && !REDUCED){
+  document.querySelectorAll('.tilt').forEach(el=>{
+    let raf=null;
+    el.addEventListener('pointerenter',()=>{
+      el.style.transition='transform .18s cubic-bezier(.22,1,.36,1)';
+    });
+    el.addEventListener('pointermove',e=>{
+      if(raf) return;
+      raf=requestAnimationFrame(()=>{
+        const r=el.getBoundingClientRect();
+        const px=(e.clientX-r.left)/r.width-.5, py=(e.clientY-r.top)/r.height-.5;
+        el.style.transform='rotateX('+(-py*5)+'deg) rotateY('+(px*5)+'deg) scale(1.01)';
+        raf=null;
+      });
+    },{passive:true});
+    el.addEventListener('pointerleave',()=>{
+      if(raf){cancelAnimationFrame(raf);raf=null;}
+      el.style.transition='transform .5s cubic-bezier(.22,1,.36,1)';
+      el.style.transform='';
+      setTimeout(()=>{el.style.transition='';},520);
+    });
+  });
+
+  // ---------- tilt 3D des dossiers assets (suit le curseur, façon macOS) ----------
+  document.querySelectorAll('.asset').forEach(a=>{
+    const folder=a.querySelector('.folder');
+    let raf=null;
+    a.addEventListener('pointermove',e=>{
+      if(raf) return;
+      raf=requestAnimationFrame(()=>{
+        const r=a.getBoundingClientRect();
+        const px=(e.clientX-r.left)/r.width-.5, py=(e.clientY-r.top)/r.height-.5;
+        folder.style.transform='translateY(-8px) rotateX('+(4-py*11)+'deg) rotateY('+(px*16-9)+'deg)';
+        raf=null;
+      });
+    },{passive:true});
+    a.addEventListener('pointerleave',()=>{
+      if(raf){cancelAnimationFrame(raf);raf=null;}
+      folder.style.transform='';
+    });
+  });
+}
+</script>
+
+
+<script>
+(function(){
+  const T={"À propos": "About", "Se connecter": "Sign in", "Rejoindre": "Join", "Promo à durée limitée — code": "Limited-time offer — code", "tes edits.": "your edits.", "Packs After Effects, banques SFX et la formation": "After Effects packs, SFX libraries and the", "— les mêmes assets que sur nos plus gros projets, prêts à glisser-déposer dans ta timeline.": "— the same assets we use on our biggest projects, ready to drag and drop into your timeline.", "Explorer le shop": "Explore the shop", "Découvrir MetaVision": "Discover MetaVision", "Produits": "Products", "Leçons MetaVision": "MetaVision lessons", "Support Discord": "Discord support", "Les packs": "The packs", "Presets, templates et SFX pensés pour After Effects — testés en prod avant d'arriver ici.": "Presets, templates and SFX built for After Effects — battle-tested in production before they land here.", "Le pack tout-en-un pour un rendu clean et moderne : icônes PNG, templates After Effects, éléments UI.": "The all-in-one pack for a clean, modern look: PNG icons, After Effects templates, UI elements.", "Voir le pack": "View the pack", "Presets · 8 fichiers": "Presets · 8 files", "Particules pour After Effects : 4 presets de transitions + 4 overlays GhostFX.": "Particles for After Effects: 4 transition presets + 4 GhostFX overlays.", "Gratuit": "Free", "Plus de 10 track mattes modifiables pour tes transitions — le point d'entrée idéal.": "10+ editable track mattes for your transitions — the perfect starting point.", "Télécharger": "Download", "SFX · 70+ sons": "SFX · 70+ sounds", "Bruitages percutants — énergie, impacts, transitions — et ambiances immersives haute qualité.": "Punchy sound effects — energy, impacts, transitions — plus immersive high-quality ambiences.", "Le pack parfait pour dynamiser tes edits : cinématique, digital, rapide, ambient et plus.": "The perfect pack to energize your edits: cinematic, digital, fast, ambient and more.", "Cours · 18 leçons": "Course · 18 lessons", "La formation VFX complète — d'After Effects niveau zéro jusqu'à tes premiers clients.": "The complete VFX course — from zero in After Effects to your first clients.", "Voir la formation": "View the course", "Assets gratuits": "Free assets", "À télécharger": "Downloads", "Clique sur un asset pour le télécharger — gratuit, direct, sans compte.": "Click an asset to download it — free, instant, no account.", "Pourquoi nos packs": "Why our packs", "Level up tes edits": "Level up your edits", "Utilisé sur nos plus gros projets": "Used on our biggest projects", "Rejoins la ligue des professionnels qui font confiance à nos produits pour leurs projets les plus significatifs. Ta créativité mérite le meilleur.": "Join the league of professionals who trust our products for their most meaningful projects. Your creativity deserves the best.", "Polyvalence redéfinie": "Versatility redefined", "Créateur de contenu, cinéaste ou passionné : nos packs s'adaptent à ton style. Élève tes projets grâce à la simplicité du glisser-déposer.": "Content creator, filmmaker or enthusiast: our packs adapt to your style. Elevate your projects with simple drag-and-drop.", "Accompagnement Discord — dispo 7j/7": "Discord support — available 7 days a week", "Une question sur un preset, un template qui coince ? La communauté et Femz répondent tous les jours.": "A question about a preset, a template acting up? The community and Femz reply every day.", "Une approche moderne": "A modern approach", "du storytelling visuel.": "to visual storytelling.", "Monteur · Créateur · Fondateur de FemzLab": "Editor · Creator · Founder of FemzLab", "J'ai pris une caméra il y a des années — et je n'ai jamais lâché.": "I picked up a camera years ago — and never put it down.", "Des clips de musique certifiés or et platine aux campagnes des plus grandes marques, chaque projet m'a appris la même chose : une image ne vaut que par l'histoire qu'elle raconte.": "From gold- and platinum-certified music videos to campaigns for the biggest brands, every project taught me the same thing: an image is only worth the story it tells.", "Je ne cherche pas le beau. Je cherche l'émotion.": "I'm not after pretty. I'm after emotion.", "Un plan qui arrête le pouce, une transition qu'on rejoue, un son qu'on ressent avant même de le comprendre. Le détail n'est pas de la décoration — c'est ce qui fait qu'une vidéo reste en tête.": "A shot that stops the thumb, a transition you replay, a sound you feel before you understand it. Detail isn't decoration — it's what makes a video stick.", "FemzLab, c'est te passer mes outils.": "FemzLab is me handing you my tools.", "Les presets, packs SFX et templates qui tournent sur mes plus gros projets, je les mets entre tes mains — pour que tu passes moins de temps à galérer, et plus de temps à créer ce qui te ressemble.": "The presets, SFX packs and templates I run on my biggest projects, I put them in your hands — so you spend less time struggling and more time creating what feels like you.", "Ma boîte à outils": "My toolbox", "Retours clients": "Reviews", "Ils l'utilisent déjà": "They already use it", "Colle ici un avis client depuis Podia (Admin → Produits → Avis).": "Paste a customer review here from Podia (Admin → Products → Reviews).", "Prénom N.": "First name L.", "": "Placeholders to fill with your real Podia reviews — tell me and I'll add them.", "Conditions générales de vente": "Terms of sale", "Politique de confidentialité": "Privacy policy", "": "Redesign mockup · Podia backend unchanged"};
+  const nodes=[]; const w=document.createTreeWalker(document.body,NodeFilter.SHOW_TEXT,null);
+  let n; while(n=w.nextNode()){ const k=(n.nodeValue||'').trim(); if(k&&T[k]!==undefined) nodes.push([n,n.nodeValue,k]); }
+  function set(lang){
+    nodes.forEach(([node,fr,k])=>{ node.nodeValue = lang==='en'? fr.replace(k,T[k]) : fr; });
+    document.documentElement.lang=lang;
+    try{localStorage.setItem('femz_lang',lang)}catch(e){}
+    document.querySelectorAll('[data-langbtn]').forEach(b=>b.classList.toggle('on', b.dataset.langbtn===lang));
+  }
+  let saved=null; try{saved=localStorage.getItem('femz_lang')}catch(e){}
+  const initial = saved || ((navigator.language||navigator.userLanguage||'').toLowerCase().slice(0,2)==='en'?'en':'fr');
+  window.__setLang=set;
+  set(initial);
+})();
+</script>
+
+
+<style id="mobile-fixes">
+@media(max-width:640px){
+  /* header : la promo passe SOUS le dock au lieu d'être recouverte */
+  .promo-chip{margin-top:64px}
+  /* packs : 2 produits par ligne */
+  .grid{grid-template-columns:repeat(2,1fr)!important;gap:14px!important}
+  .grid .pcard .body{padding:12px 12px 14px}
+  .grid .pcard h4{font-size:13.5px;letter-spacing:0;line-height:1.2}
+  .grid .pcard .desc{font-size:11.5px;line-height:1.4}
+  .grid .pcard .top{flex-wrap:wrap;gap:4px;font-size:10px}
+  .grid .pcard .go{font-size:11.5px}
+  /* iOS lâche les backdrop-filter au-delà d'un quota → les dots transparaissent
+     à travers le verre des cartes. Sur mobile : cartes opaques, zéro backdrop. */
+  .card{background:#fff!important;backdrop-filter:none!important;-webkit-backdrop-filter:none!important}
+  .card .body{background:transparent}
+  /* bas de page : le canvas dots2 repeignait les points PAR-DESSUS les cartes,
+     et iOS lâche les couches du blurveil → fondu propre vers le fond à la place */
+  footer video{display:none!important}
+  .flogo-fb{display:inline-block!important;height:26px;width:auto}
+  #dots2{display:none!important}
+  .blurveil i{backdrop-filter:none!important;-webkit-backdrop-filter:none!important;mask:none!important;-webkit-mask:none!important}
+  .blurveil{background:linear-gradient(to bottom,rgba(228,228,223,0),rgba(228,228,223,.72) 62%,rgba(228,228,223,.97))}
+}
+
+.who .av{overflow:hidden;display:inline-flex;align-items:center;justify-content:center}
+img.av{object-fit:cover}
+</style>
+</body></html>

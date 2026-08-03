@@ -1,0 +1,434 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1"><style>:root{color-scheme:light}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#faf9f5;color:#141413}img{max-width:100%}</style></head><body>
+
+<style id="i18n-css">
+.langsw{display:flex;gap:1px;position:relative;z-index:2;background:rgba(255,255,255,.09);border-radius:999px;padding:2px}
+.langsw button{font:inherit;font-size:11px;font-weight:800;letter-spacing:.05em;color:rgba(255,255,255,.62);background:transparent;border:none;cursor:pointer;padding:7px 9px;border-radius:999px;transition:.2s}
+.langsw button.on{background:#fff;color:#0A0A0A}
+.langsw button:hover:not(.on){color:#fff}
+</style>
+<meta charset="utf-8">
+<title>FemzLab — Portfolio</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+@font-face{font-family:'Montserrat';font-weight:800;font-style:normal;font-display:swap;src:url(assets/woff2-01.woff2) format('woff2')}
+@font-face{font-family:'Inter';font-weight:400;font-style:normal;font-display:swap;src:url(assets/woff2-02.woff2) format('woff2')}
+@font-face{font-family:'Inter';font-weight:700;font-style:normal;font-display:swap;src:url(assets/woff2-03.woff2) format('woff2')}
+
+:root{
+  --paper:#E4E4DF;--ink:#0A0A08;--charcoal:#161616;--muted:#67675F;--dim:#8D8D84;
+  --line:rgba(20,20,15,.1);--line-strong:rgba(20,20,15,.18);
+  --shadow:0 18px 44px rgba(25,25,18,.12);--shadow-lg:0 30px 70px rgba(25,25,18,.18);
+  --accent:#5EA2FF;--r-lg:18px;--lbl:'Inter',sans-serif;
+  color-scheme:light;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--paper);color:var(--ink);font-family:'Inter',system-ui,-apple-system,sans-serif;
+  font-size:16px;line-height:1.6;overflow-x:hidden;-webkit-font-smoothing:antialiased}
+::selection{background:rgba(5,5,5,.12)}
+a{color:inherit;text-decoration:none}
+img,video{max-width:100%;display:block}
+button{font:inherit;cursor:pointer}
+a:focus-visible,button:focus-visible{outline:2px solid var(--ink);outline-offset:3px;border-radius:4px}
+
+#dots{position:fixed;inset:0;z-index:0;pointer-events:none}
+.vignette{position:fixed;inset:0;z-index:1;pointer-events:none;
+  background:radial-gradient(120% 90% at 50% 34%, transparent 56%, rgba(25,25,18,.12) 100%)}
+main,footer{position:relative;z-index:2}
+
+.lbl,.eyebrow,.pf-meta span,.legal{font-family:var(--lbl);font-weight:700;text-transform:uppercase;letter-spacing:.08em}
+
+/* ---------- ligne de progression ---------- */
+#playhead{position:fixed;top:0;left:0;height:2px;width:100%;z-index:60;transform-origin:0 50%;transform:scaleX(0);
+  background:linear-gradient(90deg,#5EA2FF,#fff);box-shadow:0 0 10px rgba(94,162,255,.6)}
+
+/* ---------- logo FemzLab : wordmark rempli du gradient (un seul), fondu au scroll ---------- */
+.fixed-logo{position:fixed;top:15px;left:50%;transform:translateX(-50%);z-index:56;height:56px;aspect-ratio:2308/594;display:block;
+  transition:transform .35s cubic-bezier(.22,1,.36,1),opacity .4s ease}
+.fixed-logo .mark{position:absolute;inset:0;pointer-events:none;
+  -webkit-mask:url(assets/png-01.png) center/contain no-repeat;mask:url(assets/png-01.png) center/contain no-repeat;
+  background:linear-gradient(110deg,#5EA2FF,#A78BFF,#5ED9FF,#7C4DFF,#5EA2FF);background-size:240% 100%;
+  filter:drop-shadow(0 2px 11px rgba(94,162,255,.55));animation:logoGlow 6.5s linear infinite}
+@keyframes logoGlow{to{background-position:240% 0}}
+.fixed-logo:hover{transform:translateX(-50%) scale(1.05)}
+.fixed-logo.hidden{opacity:0;pointer-events:none;transform:translateX(-50%) scale(.94)}
+
+/* ---------- dock nav glass premium, sous le logo ---------- */
+nav.dock{position:fixed;top:84px;left:50%;transform:translateX(-50%);z-index:55;
+  display:flex;align-items:center;gap:4px;padding:6px;border-radius:999px;
+  background:rgba(15,17,23,.34);
+  backdrop-filter:blur(34px) saturate(200%) brightness(1.06);-webkit-backdrop-filter:blur(34px) saturate(200%) brightness(1.06);
+  border:1px solid rgba(255,255,255,.3);
+  box-shadow:
+    inset 0 1.5px 1px rgba(255,255,255,.5),
+    inset 0 -6px 16px rgba(0,0,0,.28),
+    inset 0 0 0 1px rgba(255,255,255,.06),
+    0 20px 54px rgba(0,0,0,.4),0 3px 10px rgba(0,0,0,.24);
+  overflow:hidden;transition:transform .45s cubic-bezier(.22,1,.36,1),box-shadow .4s,top .4s}
+/* nappe fluide colorée qui morph (fluid glass) */
+nav.dock::before{content:"";position:absolute;inset:-70%;z-index:-1;pointer-events:none;
+  background:
+    radial-gradient(36% 58% at 20% 28%,rgba(120,175,255,.6),transparent 60%),
+    radial-gradient(42% 55% at 80% 64%,rgba(180,140,255,.5),transparent 62%),
+    radial-gradient(38% 48% at 52% 90%,rgba(255,255,255,.45),transparent 60%),
+    radial-gradient(30% 40% at 70% 12%,rgba(120,220,255,.4),transparent 60%);
+  filter:blur(12px);animation:dockFluid 15s ease-in-out infinite alternate}
+@keyframes dockFluid{
+  0%{transform:translate(0,0) rotate(0deg) scale(1)}
+  50%{transform:translate(8%,-6%) rotate(12deg) scale(1.18)}
+  100%{transform:translate(-7%,5%) rotate(-9deg) scale(1.08)}
+}
+.dock-scrolled{top:14px!important;transform:translateX(-50%) scale(.96)!important}
+.nav-links{display:flex;gap:2px;align-items:center;position:relative;z-index:1}
+.nav-links a{font-size:13px;color:rgba(255,255,255,.78);letter-spacing:.01em;font-weight:700;
+  padding:9px 15px;border-radius:999px;transition:color .2s,background .2s}
+.nav-links a:not(.btn):hover,.nav-links a.active{color:#fff;background:rgba(255,255,255,.16)}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:9px;border:1.5px solid currentColor;
+  border-radius:999px;padding:11px 22px;font-size:13.5px;font-weight:700;letter-spacing:.02em;
+  background:transparent;transition:background .2s,color .2s,transform .2s,box-shadow .25s}
+.dock .btn.solid{background:#fff;color:#0A0A0A;border:none;padding:10px 19px}
+.dock .btn.solid:hover{transform:translateY(-1px);box-shadow:0 0 24px rgba(255,255,255,.45)}
+@media (max-width:600px){.fixed-logo{height:44px}.nav-links a:not(.btn){display:none}nav.dock{top:74px}.dock-scrolled{top:14px!important}}
+
+/* ---------- hero ---------- */
+.hero{max-width:1100px;margin:0 auto;padding:clamp(160px,22vh,220px) clamp(20px,5vw,48px) clamp(30px,5vh,52px);text-align:center}
+.eyebrow{font-size:12px;color:var(--muted);display:inline-flex;align-items:center;gap:12px;letter-spacing:.24em}
+.eyebrow::before,.eyebrow::after{content:"";width:30px;height:1px;background:var(--line-strong)}
+.hero h1{font-family:'Montserrat',sans-serif;font-weight:800;text-transform:uppercase;
+  font-size:clamp(44px,8vw,96px);line-height:.98;letter-spacing:-.025em;margin:22px 0 14px;text-wrap:balance}
+.hero h1 .g{color:var(--dim)}
+.hero .lead{max-width:560px;margin:0 auto;color:var(--muted);font-size:clamp(15px,1.7vw,17.5px)}
+.hero .lead strong{color:var(--ink);font-weight:700}
+.pf-meta{margin-top:40px;display:flex;gap:clamp(20px,4vw,54px);justify-content:center;flex-wrap:wrap;font-size:11px;color:var(--dim)}
+.pf-meta span b{display:block;font-size:22px;letter-spacing:0;color:var(--ink);font-family:'Montserrat',sans-serif;font-weight:800;font-variant-numeric:tabular-nums;margin-bottom:3px}
+.hero>*{opacity:0;transform:translateY(18px);animation:rise .8s cubic-bezier(.22,1,.36,1) forwards}
+.hero .eyebrow{animation-delay:.05s}.hero h1{animation-delay:.16s}.hero .lead{animation-delay:.3s}.hero .pf-meta{animation-delay:.42s}
+@keyframes rise{to{opacity:1;transform:none}}
+
+/* ---------- section head ---------- */
+.sec-head{max-width:1100px;margin:0 auto;padding:clamp(40px,7vh,80px) clamp(20px,5vw,48px) 0;text-align:center}
+.sec-head h2{font-family:'Montserrat',sans-serif;font-weight:800;text-transform:uppercase;
+  font-size:clamp(26px,4vw,42px);letter-spacing:-.015em;margin-top:12px;
+  background-image:linear-gradient(110deg,var(--ink) 0%,var(--ink) 38%,#5EA2FF 46%,#fff 50%,#A78BFF 56%,var(--ink) 64%,var(--ink) 100%);
+  background-size:280% 100%;background-position:200% 0;-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:var(--ink);transition:-webkit-text-fill-color .2s}
+.sec-head h2:hover{-webkit-text-fill-color:transparent;animation:titleMagic 2.6s linear infinite}
+@keyframes titleMagic{from{background-position:200% 0}to{background-position:-120% 0}}
+.sec-head p{color:var(--muted);margin-top:8px;font-size:14.5px;max-width:520px;margin-left:auto;margin-right:auto}
+
+/* ---------- reels (ScrollFloat) ---------- */
+.reels{max-width:1100px;margin:0 auto;padding:clamp(26px,4vh,42px) clamp(20px,5vw,48px) clamp(50px,7vh,80px)}
+.reel-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:clamp(18px,2.4vw,30px);align-items:start}
+.reel-grid .rcard:nth-child(3n+2){margin-top:clamp(24px,5vh,56px)}
+.rcard{position:relative;opacity:0;transform:translateY(40px);filter:blur(10px);
+  transition:opacity .7s cubic-bezier(.22,1,.36,1),transform .7s cubic-bezier(.22,1,.36,1),filter .7s;transition-delay:var(--d,0s)}
+.rcard.in{opacity:1;transform:none;filter:blur(0)}
+.rframe{position:relative;aspect-ratio:9/16;border-radius:var(--r-lg);overflow:hidden;background:#0C0C0C;
+  border:1px solid var(--line);box-shadow:var(--shadow);cursor:pointer;
+  transform:translateY(var(--sf,0px));scale:1;
+  transition:scale .45s cubic-bezier(.22,1,.36,1),box-shadow .45s}
+.rcard:hover .rframe{scale:1.025;box-shadow:var(--shadow-lg)}
+.rframe video{width:100%;height:100%;object-fit:cover;display:block}
+.rframe .scrim{position:absolute;inset:0;pointer-events:none;
+  background:linear-gradient(180deg,rgba(0,0,0,.1),transparent 24%,transparent 58%,rgba(0,0,0,.6));opacity:.9;transition:opacity .35s}
+.rcard:hover .rframe .scrim{opacity:.55}
+.rframe .playpad{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;pointer-events:none;transition:opacity .3s}
+.rframe .playpad span{width:56px;height:56px;border-radius:50%;background:rgba(255,255,255,.16);
+  backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);border:1px solid rgba(255,255,255,.5);display:flex;align-items:center;justify-content:center}
+.rframe .playpad svg{width:22px;height:22px;fill:#fff;margin-left:3px}
+.rcard.playing .playpad{opacity:0}
+.rframe .cap{position:absolute;left:14px;bottom:13px;right:52px;z-index:2}
+.rframe .cap .k{font-family:var(--lbl);font-weight:700;font-size:9.5px;letter-spacing:.14em;text-transform:uppercase;color:rgba(255,255,255,.74);display:block;margin-bottom:2px}
+.rframe .cap .t{font-family:'Montserrat',sans-serif;font-weight:800;font-size:15px;color:#fff;text-transform:uppercase;letter-spacing:-.01em}
+.sound{position:absolute;right:12px;bottom:12px;z-index:3;width:34px;height:34px;border-radius:50%;
+  background:rgba(0,0,0,.5);border:1px solid rgba(255,255,255,.28);display:flex;align-items:center;justify-content:center;
+  backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);transition:background .2s}
+.sound:hover{background:rgba(0,0,0,.75)}.sound svg{width:15px;height:15px;stroke:#fff;fill:none}
+.sound .on{display:none}.sound.unmuted .on{display:block}.sound.unmuted .off{display:none}
+.rlink{display:inline-flex;align-items:center;gap:6px;margin-top:12px;font-size:12px;font-weight:700;color:var(--muted);transition:color .2s,gap .2s}
+.rlink:hover{color:var(--ink);gap:9px}.rlink svg{width:13px;height:13px}
+
+/* ---------- portfolio clips (16:9) ---------- */
+.work{max-width:1160px;margin:0 auto;padding:clamp(26px,4vh,42px) clamp(20px,5vw,48px) clamp(70px,10vh,120px)}
+.work-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:clamp(18px,2.2vw,28px);perspective:1500px}
+/* carte glass + animation « unfold » vers sa place dans la grille */
+.wcard{position:relative;display:block;border-radius:20px;overflow:hidden;
+  background:rgba(255,255,255,.4);backdrop-filter:blur(22px) saturate(165%);-webkit-backdrop-filter:blur(22px) saturate(165%);
+  border:1px solid rgba(255,255,255,.72);
+  box-shadow:var(--shadow),inset 0 1.5px 0 rgba(255,255,255,.85);
+  opacity:0;transform:perspective(1300px) rotateX(40deg) translateY(90px) scale(.9);transform-origin:50% 0;will-change:transform,opacity;
+  transition:opacity .7s cubic-bezier(.22,1,.36,1),transform .95s cubic-bezier(.32,1.18,.4,1),box-shadow .4s;transition-delay:var(--d,0s)}
+.wcard.in{opacity:1;transform:perspective(1300px) rotateX(0deg) translateY(0) scale(1)}
+.wcard.in:hover{transform:translateY(-6px);box-shadow:var(--shadow-lg),inset 0 1.5px 0 rgba(255,255,255,.85)}
+.wthumb{aspect-ratio:16/9;overflow:hidden;position:relative;margin:7px 7px 0;border-radius:14px}
+.wthumb img{width:100%;height:100%;object-fit:cover;transition:transform .55s cubic-bezier(.22,1,.36,1)}
+.wcard:hover .wthumb img{transform:scale(1.06)}
+.wthumb .pl{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
+  background:linear-gradient(180deg,rgba(0,0,0,.08),rgba(0,0,0,.32));opacity:0;transition:opacity .3s}
+.wcard:hover .wthumb .pl{opacity:1}
+.wthumb .pl span{width:54px;height:54px;border-radius:50%;background:rgba(255,0,0,.9);display:flex;align-items:center;justify-content:center;box-shadow:0 8px 24px rgba(0,0,0,.4)}
+.wthumb .pl svg{width:22px;height:22px;fill:#fff;margin-left:3px}
+.wmeta{padding:16px 16px 20px;text-align:center}
+.wmeta .a{font-family:var(--lbl);font-weight:700;font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--dim);display:block;margin-bottom:6px}
+.wmeta .t{font-family:'Montserrat',sans-serif;font-weight:800;font-size:19px;text-transform:uppercase;letter-spacing:-.015em;line-height:1.12}
+@media (max-width:820px){.reel-grid{grid-template-columns:repeat(2,1fr)}.work-grid{grid-template-columns:repeat(2,1fr)}}
+@media (max-width:520px){.reel-grid{grid-template-columns:1fr;max-width:360px;margin:0 auto}.reel-grid .rcard{margin-top:0!important}.work-grid{grid-template-columns:1fr;max-width:400px;margin:0 auto}.pf-meta{gap:18px}}
+
+/* ---------- lightbox ---------- */
+.lb{position:fixed;inset:0;z-index:200;display:none;align-items:center;justify-content:center;padding:24px;
+  background:rgba(8,8,8,.84);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px)}
+.lb.open{display:flex;animation:lbin .3s ease}@keyframes lbin{from{opacity:0}to{opacity:1}}
+.lb-inner{position:relative;height:min(86vh,900px);aspect-ratio:9/16;border-radius:20px;overflow:hidden;
+  box-shadow:0 40px 100px rgba(0,0,0,.6);background:#000;animation:lbpop .45s cubic-bezier(.34,1.4,.5,1)}
+@keyframes lbpop{from{transform:scale(.92);opacity:.4}to{transform:none;opacity:1}}
+.lb-inner video{width:100%;height:100%;object-fit:cover}
+.lb-close{position:absolute;top:14px;right:14px;z-index:4;width:38px;height:38px;border-radius:50%;background:rgba(0,0,0,.55);border:1px solid rgba(255,255,255,.3);display:flex;align-items:center;justify-content:center}
+.lb-close svg{width:16px;height:16px;stroke:#fff}
+.lb-open-ig{position:absolute;left:50%;bottom:16px;transform:translateX(-50%);z-index:4;display:inline-flex;align-items:center;gap:7px;font-size:12.5px;font-weight:700;color:#fff;background:rgba(0,0,0,.5);border:1px solid rgba(255,255,255,.3);border-radius:999px;padding:8px 16px;backdrop-filter:blur(8px)}
+.lb-open-ig svg{width:14px;height:14px}
+
+/* ---------- footer ---------- */
+footer{background:var(--charcoal);color:#EDEDE8;margin-top:20px;position:relative;z-index:2}
+.foot{max-width:1100px;margin:0 auto;padding:46px clamp(20px,5vw,48px);display:flex;justify-content:space-between;align-items:center;gap:26px;flex-wrap:wrap}
+.foot img{height:30px;width:auto;filter:brightness(0) invert(1)}
+.foot-links{display:flex;gap:24px;font-size:12.5px;color:#A8A8A2;flex-wrap:wrap}
+.foot-links a:hover{color:#fff}
+.socials{display:flex;gap:12px}
+.socials a{width:38px;height:38px;border:1px solid rgba(255,255,255,.25);border-radius:50%;display:flex;align-items:center;justify-content:center;transition:background .2s,border-color .2s}
+.socials a:hover{background:rgba(255,255,255,.12);border-color:rgba(255,255,255,.5)}
+.socials svg{width:16px;height:16px;stroke:#fff}
+.legal{max-width:1100px;margin:0 auto;padding:0 clamp(20px,5vw,48px) 32px;font-size:9.5px;letter-spacing:.14em;color:#7E7E78;display:flex;justify-content:space-between;gap:14px;flex-wrap:wrap}
+
+@media (prefers-reduced-motion:reduce){
+  .hero>*{opacity:1;transform:none;animation:none}
+  .rcard,.wcard{opacity:1;transform:none;filter:none;transition:none}
+  .fixed-logo .shine,nav.dock::before{animation:none}
+  .rframe{transform:none!important}
+}
+</style>
+
+<canvas id="dots" aria-hidden="true"></canvas>
+<div class="vignette" aria-hidden="true"></div>
+<span id="playhead" aria-hidden="true"></span>
+
+<a class="fixed-logo" href="/" aria-label="FemzLab — accueil">
+  <span class="mark" aria-hidden="true"></span>
+</a>
+<nav class="dock">
+  <div class="langsw"><button data-langbtn="fr" onclick="__setLang('fr')">FR</button><button data-langbtn="en" onclick="__setLang('en')">EN</button></div>
+  <div class="nav-links">
+    <a class="active" href="#top">Portfolio</a>
+    <a href="/#shop">Boutique</a>
+    <a href="/#assets">Assets</a>
+    <a href="/#profil">À propos</a>
+    <a class="btn solid" href="https://www.instagram.com/imfemz/" target="_blank" rel="noopener">Instagram</a>
+  </div>
+</nav>
+
+<main id="top">
+  <header class="hero">
+    <span class="eyebrow">Portfolio · Femz</span>
+    <h1>Ce que je crée<span class="g">, image par image.</span></h1>
+    <p class="lead">Des <strong>reels</strong> perso aux <strong>clips</strong> pour les plus grands noms du rap FR — VFX, montage et direction créative. Ça se lance au scroll ; clique pour le plein écran.</p>
+    <div class="pf-meta">
+      <span><b>6</b>Reels</span>
+      <span><b>12</b>Clips musique</span>
+      <span><b>VFX</b>100% maison</span>
+    </div>
+  </header>
+
+  <div class="sec-head">
+    <span class="eyebrow" style="margin:0 auto">Reels</span>
+    <h2>Mes derniers reels</h2>
+    <p>Ils se lancent quand ils entrent à l'écran — clique pour le son.</p>
+  </div>
+  <section class="reels">
+    <div class="reel-grid">
+
+      <article class="rcard" style="--d:.0s">
+        <div class="rframe" data-ig="https://www.instagram.com/imfemz/reel/DKci3FVsp4I/">
+          <video muted loop playsinline preload="metadata" poster="assets/jpg-05.jpg"><source src="assets/mp4-06.mp4" type="video/mp4"></video>
+          <div class="scrim"></div><div class="playpad"><span><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></span></div>
+          <div class="cap"><span class="k">VFX · Cinématique</span><span class="t">Lévitation</span></div><button class="sound" aria-label="Activer le son"><svg class="off" viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M11 5 6 9H2v6h4l5 4V5z"/><path d="m22 9-6 6M16 9l6 6"/></svg><svg class="on" viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M11 5 6 9H2v6h4l5 4V5z"/><path d="M15.5 8.5a5 5 0 0 1 0 7M18.5 5.5a9 9 0 0 1 0 13"/></svg></button>
+        </div>
+        <a class="rlink" href="https://www.instagram.com/imfemz/reel/DKci3FVsp4I/" target="_blank" rel="noopener">Voir sur Instagram <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7M9 7h8v8"/></svg></a>
+      </article>
+
+      <article class="rcard" style="--d:.08s">
+        <div class="rframe" data-ig="https://www.instagram.com/imfemz/reel/DUTYJRmCKGN/">
+          <video muted loop playsinline preload="metadata" poster="assets/jpg-06.jpg"><source src="assets/mp4-07.mp4" type="video/mp4"></video>
+          <div class="scrim"></div><div class="playpad"><span><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></span></div>
+          <div class="cap"><span class="k">Tuto · Workflow</span><span class="t">DaVinci Resolve</span></div><button class="sound" aria-label="Activer le son"><svg class="off" viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M11 5 6 9H2v6h4l5 4V5z"/><path d="m22 9-6 6M16 9l6 6"/></svg><svg class="on" viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M11 5 6 9H2v6h4l5 4V5z"/><path d="M15.5 8.5a5 5 0 0 1 0 7M18.5 5.5a9 9 0 0 1 0 13"/></svg></button>
+        </div>
+        <a class="rlink" href="https://www.instagram.com/imfemz/reel/DUTYJRmCKGN/" target="_blank" rel="noopener">Voir sur Instagram <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7M9 7h8v8"/></svg></a>
+      </article>
+
+      <article class="rcard" style="--d:.16s">
+        <div class="rframe" data-ig="https://www.tiktok.com/@imfemzz/video/7490948842641165590">
+          <video muted loop playsinline preload="metadata" poster="assets/jpg-07.jpg"><source src="assets/mp4-08.mp4" type="video/mp4"></video>
+          <div class="scrim"></div><div class="playpad"><span><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></span></div>
+          <div class="cap"><span class="k">TikTok · Édit</span><span class="t">@imfemzz</span></div><button class="sound" aria-label="Activer le son"><svg class="off" viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M11 5 6 9H2v6h4l5 4V5z"/><path d="m22 9-6 6M16 9l6 6"/></svg><svg class="on" viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M11 5 6 9H2v6h4l5 4V5z"/><path d="M15.5 8.5a5 5 0 0 1 0 7M18.5 5.5a9 9 0 0 1 0 13"/></svg></button>
+        </div>
+        <a class="rlink" href="https://www.tiktok.com/@imfemzz/video/7490948842641165590" target="_blank" rel="noopener">Voir sur TikTok <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7M9 7h8v8"/></svg></a>
+      </article>
+
+      <article class="rcard" style="--d:.0s">
+        <div class="rframe" data-ig="https://www.instagram.com/imfemz/reel/DLnJcwNM5Ks/">
+          <video muted loop playsinline preload="metadata" poster="assets/jpg-08.jpg"><source src="assets/mp4-09.mp4" type="video/mp4"></video>
+          <div class="scrim"></div><div class="playpad"><span><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></span></div>
+          <div class="cap"><span class="k">Édit · Motion</span><span class="t">Speed &amp; FX</span></div><button class="sound" aria-label="Activer le son"><svg class="off" viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M11 5 6 9H2v6h4l5 4V5z"/><path d="m22 9-6 6M16 9l6 6"/></svg><svg class="on" viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M11 5 6 9H2v6h4l5 4V5z"/><path d="M15.5 8.5a5 5 0 0 1 0 7M18.5 5.5a9 9 0 0 1 0 13"/></svg></button>
+        </div>
+        <a class="rlink" href="https://www.instagram.com/imfemz/reel/DLnJcwNM5Ks/" target="_blank" rel="noopener">Voir sur Instagram <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7M9 7h8v8"/></svg></a>
+      </article>
+
+      <article class="rcard" style="--d:.08s">
+        <div class="rframe" data-ig="https://www.instagram.com/imfemz/reel/DJmQ3Crsvrj/">
+          <video muted loop playsinline preload="metadata" poster="assets/jpg-09.jpg"><source src="assets/mp4-10.mp4" type="video/mp4"></video>
+          <div class="scrim"></div><div class="playpad"><span><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></span></div>
+          <div class="cap"><span class="k">Travel · Lifestyle</span><span class="t">Bruxelles</span></div><button class="sound" aria-label="Activer le son"><svg class="off" viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M11 5 6 9H2v6h4l5 4V5z"/><path d="m22 9-6 6M16 9l6 6"/></svg><svg class="on" viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M11 5 6 9H2v6h4l5 4V5z"/><path d="M15.5 8.5a5 5 0 0 1 0 7M18.5 5.5a9 9 0 0 1 0 13"/></svg></button>
+        </div>
+        <a class="rlink" href="https://www.instagram.com/imfemz/reel/DJmQ3Crsvrj/" target="_blank" rel="noopener">Voir sur Instagram <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7M9 7h8v8"/></svg></a>
+      </article>
+
+      <article class="rcard" style="--d:.16s">
+        <div class="rframe" data-ig="https://www.instagram.com/imfemz/reel/DPB4t9uiP6F/">
+          <video muted loop playsinline preload="metadata" poster="assets/jpg-10.jpg"><source src="assets/mp4-11.mp4" type="video/mp4"></video>
+          <div class="scrim"></div><div class="playpad"><span><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></span></div>
+          <div class="cap"><span class="k">Brand · Samsung</span><span class="t">#ExploreGalaxy</span></div><button class="sound" aria-label="Activer le son"><svg class="off" viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M11 5 6 9H2v6h4l5 4V5z"/><path d="m22 9-6 6M16 9l6 6"/></svg><svg class="on" viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M11 5 6 9H2v6h4l5 4V5z"/><path d="M15.5 8.5a5 5 0 0 1 0 7M18.5 5.5a9 9 0 0 1 0 13"/></svg></button>
+        </div>
+        <a class="rlink" href="https://www.instagram.com/imfemz/reel/DPB4t9uiP6F/" target="_blank" rel="noopener">Voir sur Instagram <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7M9 7h8v8"/></svg></a>
+      </article>
+
+    </div>
+  </section>
+
+  <div class="sec-head">
+    <span class="eyebrow" style="margin:0 auto">Clips &amp; montages</span>
+    <h2>Ils m'ont fait confiance</h2>
+    <p>Une sélection de clips que j'ai montés pour des artistes du rap FR. Clique pour ouvrir sur YouTube.</p>
+  </div>
+  <section class="work">
+    <div class="work-grid">
+      <a class="wcard" href="https://youtu.be/ldOcrDCTu6Q?si=XrWGqH5HaWU5OONJ" target="_blank" rel="noopener" style="--d:0.0s"><div class="wthumb"><img src="assets/jpg-11.jpg" alt="Fresh LaDouille - La R" loading="lazy"><span class="pl"><span><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></span></span></div><div class="wmeta"><span class="a">Fresh LaDouille</span><span class="t">Fresh LaDouille - La R</span></div></a>
+      <a class="wcard" href="https://youtu.be/_oExc23iTI0?si=2UjiLYFMLaAqwKfh" target="_blank" rel="noopener" style="--d:0.08s"><div class="wthumb"><img src="assets/jpg-12.jpg" alt="Anas - Quelle life" loading="lazy"><span class="pl"><span><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></span></span></div><div class="wmeta"><span class="a">AnasOfficielVEVO</span><span class="t">Anas - Quelle life</span></div></a>
+      <a class="wcard" href="https://youtu.be/F_mqShCzlAY?si=cQXkowgLMf6GF7sS" target="_blank" rel="noopener" style="--d:0.16s"><div class="wthumb"><img src="assets/jpg-13.jpg" alt="Naps" loading="lazy"><span class="pl"><span><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></span></span></div><div class="wmeta"><span class="a">Naps Officiel</span><span class="t">Naps</span></div></a>
+      <a class="wcard" href="https://youtu.be/tOEGiHJPKmQ?si=XJisGmbgRyShUb9P" target="_blank" rel="noopener" style="--d:0.0s"><div class="wthumb"><img src="assets/jpg-14.jpg" alt="DA Uzi - On se reverra plus feat. Gazo" loading="lazy"><span class="pl"><span><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></span></span></div><div class="wmeta"><span class="a">DA Uzi</span><span class="t">DA Uzi - On se reverra plus feat. Gazo</span></div></a>
+      <a class="wcard" href="https://youtu.be/CycS-v-p8v0?si=xypLK16zshuuQcoT" target="_blank" rel="noopener" style="--d:0.08s"><div class="wthumb"><img src="assets/jpg-15.jpg" alt="Denzo - Trop Dedans feat. Koba LaD" loading="lazy"><span class="pl"><span><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></span></span></div><div class="wmeta"><span class="a">Denzo Officiel</span><span class="t">Denzo - Trop Dedans feat. Koba LaD</span></div></a>
+      <a class="wcard" href="https://www.youtube.com/watch?v=hPdnhft_z9g&ab_channel=winnterzuko" target="_blank" rel="noopener" style="--d:0.16s"><div class="wthumb"><img src="assets/jpg-16.jpg" alt="winnterzuko & Skuna - Monono" loading="lazy"><span class="pl"><span><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></span></span></div><div class="wmeta"><span class="a">winnterzuko</span><span class="t">winnterzuko & Skuna - Monono</span></div></a>
+      <a class="wcard" href="https://youtu.be/2o1-RrUsnQo?si=XMEYWVJ1GLYypN7_" target="_blank" rel="noopener" style="--d:0.0s"><div class="wthumb"><img src="assets/jpg-17.jpg" alt="Fresh LaDouille  - Siete Feat. Alonzo" loading="lazy"><span class="pl"><span><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></span></span></div><div class="wmeta"><span class="a">Fresh LaDouille</span><span class="t">Fresh LaDouille  - Siete Feat. Alonzo</span></div></a>
+      <a class="wcard" href="https://youtu.be/CaB8TB91UZg?si=ZkI-RoEHOqOIzJxT" target="_blank" rel="noopener" style="--d:0.08s"><div class="wthumb"><img src="assets/jpg-18.jpg" alt="Afro S 667 ft. Freeze Corleone 667 - C10" loading="lazy"><span class="pl"><span><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></span></span></div><div class="wmeta"><span class="a">Afro S 667</span><span class="t">Afro S 667 ft. Freeze Corleone 667 - C10</span></div></a>
+      <a class="wcard" href="https://www.youtube.com/watch?v=zwHoHIz31dE&ab_channel=NAKRY" target="_blank" rel="noopener" style="--d:0.16s"><div class="wthumb"><img src="assets/jpg-19.jpg" alt="Nakry - Y'a plus one" loading="lazy"><span class="pl"><span><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></span></span></div><div class="wmeta"><span class="a">NAKRY</span><span class="t">Nakry - Y'a plus one</span></div></a>
+      <a class="wcard" href="https://www.youtube.com/watch?v=hk7dJVs0cDE&list=PLlpR5g-_3Qs6fkTWmk5N_v2jqLLcxLOe2&index=7&ab_channel=ISKOfficiel" target="_blank" rel="noopener" style="--d:0.0s"><div class="wthumb"><img src="assets/jpg-20.jpg" alt="ISK - Acharné 11" loading="lazy"><span class="pl"><span><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></span></span></div><div class="wmeta"><span class="a">ISK Officiel</span><span class="t">ISK - Acharné 11</span></div></a>
+      <a class="wcard" href="https://www.youtube.com/watch?v=d3-Ws4mGYfI&list=PLlpR5g-_3Qs6fkTWmk5N_v2jqLLcxLOe2&index=39&ab_channel=Caballero%26JeanJass" target="_blank" rel="noopener" style="--d:0.08s"><div class="wthumb"><img src="assets/jpg-21.jpg" alt="High & Fines Herbes - Saison 4 - Bande annonce officielle" loading="lazy"><span class="pl"><span><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></span></span></div><div class="wmeta"><span class="a">Caballero & JeanJass</span><span class="t">High & Fines Herbes - Saison 4 - Bande annonce officielle</span></div></a>
+      <a class="wcard" href="https://www.youtube.com/watch?v=m0Ef4V2Znk8&list=PLlpR5g-_3Qs6fkTWmk5N_v2jqLLcxLOe2&index=43&ab_channel=Fav%C3%A9" target="_blank" rel="noopener" style="--d:0.16s"><div class="wthumb"><img src="assets/jpg-22.jpg" alt="Favé - GMAIL" loading="lazy"><span class="pl"><span><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></span></span></div><div class="wmeta"><span class="a">Favé</span><span class="t">Favé - GMAIL</span></div></a>
+    </div>
+  </section>
+</main>
+
+<div class="lb" id="lb" aria-hidden="true">
+  <div class="lb-inner">
+    <button class="lb-close" id="lbClose" aria-label="Fermer"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+    <video id="lbVideo" playsinline controls loop></video>
+    <a class="lb-open-ig" id="lbIg" href="#" target="_blank" rel="noopener">Ouvrir la source <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7M9 7h8v8"/></svg></a>
+  </div>
+</div>
+
+<footer>
+  <div class="foot">
+    <a href="/" aria-label="FemzLab"><img src="assets/png-01.png" alt="FemzLab"></a>
+    <div class="foot-links">
+      <a href="/#shop">Boutique</a>
+      <a href="/#assets">Assets</a>
+      <a href="/#profil">À propos</a>
+    </div>
+    <div class="socials">
+      <a href="https://www.instagram.com/imfemz/" target="_blank" rel="noopener" aria-label="Instagram"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><path d="M17.5 6.5h.01"/></svg></a>
+      <a href="https://www.youtube.com/c/Femzprod" target="_blank" rel="noopener" aria-label="YouTube"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2.5" y="5.5" width="19" height="13" rx="4"/><path d="M10.5 9.5 15 12l-4.5 2.5v-5z"/></svg></a>
+      <a href="mailto:hello@imfemz.com" aria-label="Email"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="3"/><path d="m3 7 9 6 9-6"/></svg></a>
+    </div>
+  </div>
+  <div class="legal"><span>© 2026 FemzLab — hello@imfemz.com</span><span>Portfolio</span></div>
+</footer>
+
+<script>
+const REDUCED=matchMedia('(prefers-reduced-motion: reduce)').matches;
+const FINE=matchMedia('(pointer: fine)').matches;
+
+// dots
+(function(){const cv=document.getElementById('dots'),ctx=cv.getContext('2d');let W,H,DPR,pts=[],mx=-9e3,my=-9e3,raf;const SP=30,R=1.3,BU=67,RAD=400;
+function build(){DPR=Math.min(devicePixelRatio||1,2);W=innerWidth;H=innerHeight;cv.width=W*DPR;cv.height=H*DPR;cv.style.width=W+'px';cv.style.height=H+'px';ctx.setTransform(DPR,0,0,DPR,0,0);pts=[];for(let y=SP/2;y<H;y+=SP)for(let x=SP/2;x<W;x+=SP)pts.push({x,y});}
+function draw(){ctx.clearRect(0,0,W,H);for(const p of pts){const dx=p.x-mx,dy=p.y-my,d=Math.hypot(dx,dy);let r=R,a=.16,ox=0,oy=0;if(d<RAD){const f=1-d/RAD,pu=f*f*BU*.16;ox=(dx/(d||1))*pu;oy=(dy/(d||1))*pu;r=R+f*1.4;a=Math.min(.5,a+f*.3);}ctx.beginPath();ctx.arc(p.x+ox,p.y+oy,r,0,6.2832);ctx.fillStyle='rgba(96,96,88,'+a.toFixed(3)+')';ctx.fill();}raf=null;}
+function q(){if(!raf)raf=requestAnimationFrame(draw);}addEventListener('resize',()=>{build();q();});
+if(!REDUCED&&FINE){addEventListener('pointermove',e=>{mx=e.clientX;my=e.clientY;q();},{passive:true});addEventListener('pointerleave',()=>{mx=my=-9e3;q();});}
+build();draw();})();
+
+// playhead + dock condense
+(function(){const ph=document.getElementById('playhead'),dock=document.querySelector('.dock'),logo=document.querySelector('.fixed-logo');let t=false;
+addEventListener('scroll',()=>{if(t)return;t=true;requestAnimationFrame(()=>{const m=document.documentElement.scrollHeight-innerHeight;ph.style.transform='scaleX('+(m>0?scrollY/m:0)+')';const past=scrollY>50;if(dock)dock.classList.toggle('dock-scrolled',past);if(logo)logo.classList.toggle('hidden',past);t=false;});},{passive:true});})();
+
+// reveal
+const io=new IntersectionObserver(es=>es.forEach(e=>e.target.classList.toggle('in',e.isIntersecting)),{threshold:.14,rootMargin:'0px 0px -30px 0px'});
+document.querySelectorAll('.rcard,.wcard').forEach(el=>io.observe(el));
+
+// ---------- ScrollFloat : les reels flottent selon le scroll ----------
+(function(){
+  const cards=[...document.querySelectorAll('.reel-grid .rcard')];
+  if(REDUCED) return;
+  let t=false;
+  function upd(){
+    const vh=innerHeight;
+    cards.forEach((c,i)=>{
+      const r=c.getBoundingClientRect();
+      const center=r.top+r.height/2;
+      const d=(center-vh/2)/vh;                 // -1 (haut) .. 1 (bas)
+      const col=i%3;                            // léger déphasage par colonne
+      const off=(d*26)+(col-1)*6;               // parallax float
+      c.querySelector('.rframe').style.setProperty('--sf',off.toFixed(1)+'px');
+    });
+    t=false;
+  }
+  function q(){if(!t){t=true;requestAnimationFrame(upd);}}
+  addEventListener('scroll',q,{passive:true});addEventListener('resize',q);upd();
+})();
+
+// lecture au scroll
+document.querySelectorAll('.reel-grid .rcard').forEach(card=>{
+  const v=card.querySelector('video');if(!v)return;
+  new IntersectionObserver(es=>es.forEach(e=>{
+    if(e.isIntersecting&&e.intersectionRatio>.5){v.play().then(()=>card.classList.add('playing')).catch(()=>{});}
+    else{v.pause();card.classList.remove('playing');}
+  }),{threshold:[0,.5,1]}).observe(card);
+  if(FINE)card.addEventListener('pointerenter',()=>{v.play().then(()=>card.classList.add('playing')).catch(()=>{});});
+});
+
+// son
+document.querySelectorAll('.sound').forEach(btn=>{const v=btn.closest('.rframe').querySelector('video');
+  btn.addEventListener('click',e=>{e.stopPropagation();v.muted=!v.muted;btn.classList.toggle('unmuted',!v.muted);if(!v.muted)v.play().catch(()=>{});});});
+
+// lightbox
+const lb=document.getElementById('lb'),lbV=document.getElementById('lbVideo'),lbIg=document.getElementById('lbIg'),lbClose=document.getElementById('lbClose');
+function openLB(f){const src=f.querySelector('source').src;lbV.src=src;lbV.muted=false;lbV.currentTime=0;lbIg.href=f.dataset.ig||'#';
+  lb.classList.add('open');lb.setAttribute('aria-hidden','false');document.body.style.overflow='hidden';
+  lbV.play().catch(()=>{lbV.muted=true;lbV.play().catch(()=>{});});}
+function closeLB(){lb.classList.remove('open');lb.setAttribute('aria-hidden','true');lbV.pause();lbV.removeAttribute('src');lbV.load();document.body.style.overflow='';}
+document.querySelectorAll('.rframe').forEach(f=>f.addEventListener('click',e=>{if(e.target.closest('.sound'))return;openLB(f);}));
+lbClose.addEventListener('click',closeLB);lb.addEventListener('click',e=>{if(e.target===lb)closeLB();});
+addEventListener('keydown',e=>{if(e.key==='Escape'&&lb.classList.contains('open'))closeLB();});
+</script>
+
+
+<script>
+(function(){
+  const T={"Boutique": "Shop", "À propos": "About", "Ce que je crée": "What I create", ", image par image.": ", frame by frame.", "Des": "From", "perso aux": "to", "pour les plus grands noms du rap FR — VFX, montage et direction créative. Ça se lance au scroll ; clique pour le plein écran.": "for the biggest names in French rap — VFX, editing and creative direction. They play as you scroll; click for fullscreen.", "Clips musique": "Music videos", "100% maison": "100% in-house", "Mes derniers reels": "My latest reels", "Ils se lancent quand ils entrent à l'écran — clique pour le son.": "They start when they enter the screen — click for sound.", "VFX · Cinématique": "VFX · Cinematic", "Lévitation": "Levitation", "Voir sur Instagram": "View on Instagram", "Tuto · Workflow": "Tutorial · Workflow", "TikTok · Édit": "TikTok · Edit", "Voir sur TikTok": "View on TikTok", "Édit · Motion": "Edit · Motion", "Bruxelles": "Brussels", "Clips & montages": "Videos & edits", "Ils m'ont fait confiance": "They trusted me", "Une sélection de clips que j'ai montés pour des artistes du rap FR. Clique pour ouvrir sur YouTube.": "A selection of music videos I edited for French rap artists. Click to open on YouTube.", "Ouvrir la source": "Open the source", "Portfolio": "Portfolio · redesign mockup"};
+  const nodes=[]; const w=document.createTreeWalker(document.body,NodeFilter.SHOW_TEXT,null);
+  let n; while(n=w.nextNode()){ const k=(n.nodeValue||'').trim(); if(k&&T[k]!==undefined) nodes.push([n,n.nodeValue,k]); }
+  function set(lang){
+    nodes.forEach(([node,fr,k])=>{ node.nodeValue = lang==='en'? fr.replace(k,T[k]) : fr; });
+    document.documentElement.lang=lang; try{localStorage.setItem('femz_lang',lang)}catch(e){}
+    document.querySelectorAll('[data-langbtn]').forEach(b=>b.classList.toggle('on', b.dataset.langbtn===lang));
+  }
+  let saved=null; try{saved=localStorage.getItem('femz_lang')}catch(e){}
+  const initial = saved || ((navigator.language||navigator.userLanguage||'').toLowerCase().slice(0,2)==='en'?'en':'fr');
+  window.__setLang=set; set(initial);
+})();
+</script>
+
+</body></html>
