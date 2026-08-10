@@ -123,6 +123,7 @@ nav.dock::before{content:"";position:absolute;inset:-70%;z-index:-1;pointer-even
 }
 .dock-scrolled{top:14px!important;transform:translateX(-50%) scale(.96)!important}
 .nav-links{display:flex;gap:2px;align-items:center;position:relative;z-index:1}
+.nav-links-menu{display:flex;gap:2px;align-items:center}
 .nav-links a{font-size:13px;color:rgba(255,255,255,.74);letter-spacing:.01em;font-weight:700;
   padding:9px 15px;border-radius:999px;transition:color .2s,background .2s}
 .nav-links a:not(.btn):hover,.nav-links a:not(.btn):focus-visible{color:#fff;background:rgba(255,255,255,.14)}
@@ -137,6 +138,11 @@ nav.dock::before{content:"";position:absolute;inset:-70%;z-index:-1;pointer-even
 .btn.big{padding:15px 30px;font-size:14.5px}
 .dock .btn.solid{background:#fff;color:#0A0A0A;border-color:#fff;padding:10px 19px}
 .dock .btn.solid:hover{transform:translateY(-1px);box-shadow:0 0 24px rgba(255,255,255,.4)}
+.nav-toggle{display:none;background:transparent;border:0;padding:9px;border-radius:999px;cursor:pointer;position:relative;z-index:1}
+.nav-toggle span{display:block;width:19px;height:1.5px;background:#fff;border-radius:1px;transition:transform .25s,opacity .25s}
+.nav-toggle span+span{margin-top:4px}
+.nav-toggle[aria-expanded="true"] span:first-child{transform:translateY(2.75px) rotate(45deg)}
+.nav-toggle[aria-expanded="true"] span:last-child{transform:translateY(-2.75px) rotate(-45deg)}
 @media (max-width:640px){
   .fixed-logo{height:46px;top:16px}
   nav.dock{gap:2px;padding:6px}
@@ -521,7 +527,17 @@ footer{background:var(--charcoal);color:#EDEDE8;margin-top:30px;position:relativ
   .banner{min-height:82vh}
 }
 @media (max-width:720px){
-  .nav-links a:not(.btn){display:none}
+  nav.dock{overflow:visible}
+  .nav-toggle{display:inline-flex;flex-direction:column;align-items:center;justify-content:center}
+  .nav-links-menu{position:absolute;top:calc(100% + 12px);left:50%;transform:translateX(-50%);
+    flex-direction:column;align-items:stretch;gap:2px;min-width:210px;
+    background:rgba(15,17,23,.92);backdrop-filter:blur(34px) saturate(200%);-webkit-backdrop-filter:blur(34px) saturate(200%);
+    border:1px solid rgba(255,255,255,.16);border-radius:20px;padding:8px;
+    box-shadow:0 20px 54px rgba(0,0,0,.4);
+    opacity:0;pointer-events:none;transform:translateX(-50%) translateY(-6px);
+    transition:opacity .22s,transform .22s}
+  .nav-links-menu.open{opacity:1;pointer-events:auto;transform:translateX(-50%) translateY(0)}
+  .nav-links-menu a{display:block;text-align:center;padding:12px 15px}
 }
 @media (max-width:560px){
   .grid{grid-template-columns:repeat(2,1fr);gap:12px}
@@ -548,11 +564,14 @@ footer{background:var(--charcoal);color:#EDEDE8;margin-top:30px;position:relativ
 </a>
 <nav class="dock">
   <div class="langsw"><button data-langbtn="fr" onclick="__setLang('fr')">FR</button><button data-langbtn="en" onclick="__setLang('en')">EN</button></div>
+  <button class="nav-toggle" aria-label="Menu" aria-expanded="false" aria-controls="nav-links-menu"><span></span><span></span></button>
   <div class="nav-links">
-    <a data-track="cta_shop_nav_portfolio" href="/portfolio">Portfolio</a>
-    <a href="#assets">Assets</a>
-    <a href="#profil">À propos</a>
-    <a data-track="cta_shop_login" href="https://pay.femzlab.shop/account/sessions/new">Se connecter</a>
+    <div class="nav-links-menu" id="nav-links-menu">
+      <a data-track="cta_shop_nav_portfolio" href="/portfolio">Portfolio</a>
+      <a href="#assets">Assets</a>
+      <a href="#profil">À propos</a>
+      <a data-track="cta_shop_login" href="https://pay.femzlab.shop/account/sessions/new">Se connecter</a>
+    </div>
     <a data-track="cta_shop_signup" class="btn solid" href="https://pay.femzlab.shop/account/registration/new">Rejoindre</a>
   </div>
 </nav>
@@ -982,6 +1001,19 @@ const FINE    = matchMedia('(pointer: fine)').matches;
   const ph=document.getElementById('playhead');
   const dock=document.querySelector('.dock');
   const logo=document.querySelector('.fixed-logo');
+  const navToggle=document.querySelector('.nav-toggle');
+  const navMenu=document.getElementById('nav-links-menu');
+  if(navToggle&&navMenu){
+    const closeMenu=()=>{navMenu.classList.remove('open');navToggle.setAttribute('aria-expanded','false')};
+    navToggle.addEventListener('click',()=>{
+      const open=navMenu.classList.toggle('open');
+      navToggle.setAttribute('aria-expanded',open?'true':'false');
+    });
+    navMenu.addEventListener('click',e=>{if(e.target.closest('a'))closeMenu()});
+    document.addEventListener('click',e=>{
+      if(!dock.contains(e.target))closeMenu();
+    });
+  }
   let tick=false;
   addEventListener('scroll',()=>{
     if(tick) return; tick=true;
