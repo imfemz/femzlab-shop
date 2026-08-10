@@ -227,7 +227,8 @@ nav.dock::before{content:"";position:absolute;inset:-70%;z-index:-1;pointer-even
 .marquee-track{display:flex;align-items:center;width:max-content;animation:scroll 40s linear infinite}
 .marquee:hover .marquee-track{animation-play-state:paused}
 @keyframes scroll{to{transform:translateX(-50%)}}
-.marquee-track img{height:52px;width:auto;margin:0 clamp(28px,3.4vw,54px);
+.marquee-track img{height:auto;width:auto;max-height:52px;max-width:120px;object-fit:contain;
+  margin:0 clamp(28px,3.4vw,54px);
   filter:grayscale(1);opacity:.6;transition:opacity .25s,filter .25s}
 .marquee-track img:hover{opacity:.95;filter:grayscale(1) brightness(.55)}
 @media (max-width:640px){
