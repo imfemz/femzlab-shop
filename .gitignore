@@ -6,3 +6,9 @@ dist/
 
 # secrets locaux de wrangler (webhook Discord)
 .dev.vars
+
+# cache local de wrangler pages dev (sqlite miniflare, rien de sensible)
+.wrangler/
+
+# artefacts de la suite de tests Python
+__pycache__/
