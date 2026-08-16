@@ -360,22 +360,45 @@ section{max-width:1120px;margin:0 auto;padding:clamp(60px,9vh,104px) clamp(20px,
 }
 .why .wide .ic svg{width:20px;height:20px;stroke:#fff}
 
-/* ---------- retours clients ---------- */
-.reviews{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
-.review{padding:26px 26px 24px;display:flex;flex-direction:column;gap:14px}
-.stars{display:flex;gap:3px}
-.stars svg{width:15px;height:15px;fill:var(--ink)}
-.review q{quotes:"« " " »";font-size:14.5px;color:#3A3A35;flex:1}
-.review q.slot{color:var(--dim);font-style:italic}
-.review .who{display:flex;align-items:center;gap:11px;border-top:1px solid var(--line);padding-top:14px}
-.review .av{
-  width:34px;height:34px;border-radius:50%;background:var(--charcoal);color:#fff;
-  display:flex;align-items:center;justify-content:center;
-  font-family:'Montserrat',sans-serif;font-weight:800;font-size:13px;flex:none;
+/* ---------- retours clients : marquee ---------- */
+.mq{overflow:hidden;position:relative;padding:6px 0;
+  -webkit-mask-image:linear-gradient(90deg,transparent,#000 6%,#000 94%,transparent);
+          mask-image:linear-gradient(90deg,transparent,#000 6%,#000 94%,transparent)}
+.mqtrack{display:flex;align-items:center;gap:20px;width:max-content;
+  animation:mqscroll 64s linear infinite}
+.mq:hover .mqtrack,.mq:focus-within .mqtrack{animation-play-state:paused}
+@keyframes mqscroll{to{transform:translateX(calc(-50% - 10px))}}
+
+/* Pas de backdrop-filter ici : le marquee duplique une vingtaine de cartes et
+   Safari iOS plafonne le nombre de couches de verre par page. Blanc plein. */
+.mqcard{background:#fff;border-radius:var(--r-lg);box-shadow:var(--shadow);
+  padding:22px 24px;width:clamp(258px,25vw,340px);flex:none;margin:0;
+  display:flex;flex-direction:column;gap:14px}
+.mqcard blockquote{margin:0;font-size:14.5px;line-height:1.55;color:#3A3A35;
+  quotes:"\00ab\00a0" "\00a0\00bb"}
+.mqcard blockquote::before{content:open-quote}
+.mqcard blockquote::after{content:close-quote}
+.mqcard .who{display:flex;align-items:center;gap:11px;
+  border-top:1px solid var(--line);padding-top:14px}
+.mqcard .av{width:34px;height:34px;border-radius:50%;background:var(--charcoal);
+  color:#fff;display:flex;align-items:center;justify-content:center;flex:none;
+  font-family:'Montserrat',sans-serif;font-weight:800;font-size:13px}
+.mqcard .who-txt b{display:block;font-size:13.5px;line-height:1.2}
+.mqcard .who-txt>span{font-family:var(--lbl);font-weight:700;font-size:9px;
+  letter-spacing:.16em;color:var(--dim);text-transform:uppercase}
+.reviews-note{margin-top:18px;font-size:10px;color:var(--dim);text-align:center;
+  letter-spacing:.14em;line-height:1.7}
+
+/* Repli en grille : sous le seuil d'avis (classe posée par build.py),
+   ou si le visiteur a demandé moins d'animations. */
+.mq-static{-webkit-mask-image:none;mask-image:none}
+.mq-static .mqtrack{animation:none;width:auto;flex-wrap:wrap;justify-content:center}
+.mq-static .mqcard[aria-hidden="true"]{display:none}
+@media (prefers-reduced-motion:reduce){
+  .mq{-webkit-mask-image:none;mask-image:none}
+  .mqtrack{animation:none;width:auto;flex-wrap:wrap;justify-content:center}
+  .mqcard[aria-hidden="true"]{display:none}
 }
-.review .who b{display:block;font-size:13.5px;line-height:1.2}
-.review .who span{font-family:var(--lbl);font-weight:700;font-size:9px;letter-spacing:.16em;color:var(--dim);text-transform:uppercase}
-.reviews-note{margin-top:16px;font-size:10px;color:var(--dim);text-align:center;letter-spacing:.14em}
 
 /* ---------- footer ---------- */
 footer{background:var(--charcoal);color:#EDEDE8;margin-top:30px;position:relative;z-index:60}
@@ -842,24 +865,7 @@ footer{background:var(--charcoal);color:#EDEDE8;margin-top:30px;position:relativ
       <span class="eyebrow">Retours clients</span>
       <h2>Ils l'utilisent déjà</h2>
     </div>
-    <div class="reviews">
-      <div class="card glow-card review rv" style="--d:.0s">
-        <span class="sheen" aria-hidden="true"></span>
-        <q class="slot">Super formation&nbsp;!</q>
-        <div class="who"><span class="av">G</span><div><b>Georges A.</b><span>Élève MetaVision</span></div></div>
-      </div>
-      <div class="card glow-card review rv" style="--d:.1s">
-        <span class="sheen" aria-hidden="true"></span>
-        <q class="slot">Plus de 400 packs téléchargés, 60&nbsp;000 abonnés, 48 élèves en formation — les effets que tu vois dans mes vidéos sortent exactement d'ici.</q>
-        <div class="who"><img class="av" src="assets/jpg-04.jpg" alt="Femz"><div><b>Femz</b><span>Fondateur — 60K+ de communauté</span></div></div>
-      </div>
-      <div class="card glow-card review rv" style="--d:.2s">
-        <span class="sheen" aria-hidden="true"></span>
-        <q class="slot">Ton retour ici&nbsp;? Viens partager ton expérience sur le Discord.</q>
-        <div class="who"><span class="av"><svg viewBox="0 0 24 24" fill="#fff" style="width:58%;height:58%"><path d="M14.983 3l.123.006c2.014.214 3.527.672 4.966 1.673a1 1 0 0 1 .371.488c1.876 5.315 2.373 9.987 1.451 12.28-1.003 2.005-2.606 3.553-4.394 3.553-.732 0-1.693-.968-2.328-2.045a21.5 21.5 0 0 0 2.103-.493 1 1 0 1 0-.55-1.924c-3.32.95-6.13.95-9.45 0a1 1 0 0 0-.55 1.924c.717.204 1.416.37 2.103.494-.635 1.075-1.596 2.044-2.328 2.044-1.788 0-3.391-1.548-4.428-3.629-.888-2.217-.39-6.89 1.485-12.204a1 1 0 0 1 .371-.488c1.439-1.001 2.952-1.459 4.966-1.673a1 1 0 0 1 .935.435l.063.107.651 1.285.137-.016a12.97 12.97 0 0 1 2.643 0l.134.016.65-1.284a1 1 0 0 1 .754-.54l.122-.009zM9 10a2 2 0 0 0-1.977 1.697l-.018.154L7 12l.005.15A2 2 0 1 0 9 10zm6 0a2 2 0 0 0-1.977 1.697l-.018.154-.005.149.005.15A2 2 0 1 0 15 10z"/></svg></span><div><b>Communauté FemzLab</b><span>Discord ouvert à tous</span></div></div>
-      </div>
-    </div>
-    <p class="reviews-note rv"></p>
+    <!-- reviews:start --><!-- reviews:end -->
   </section>
 </main>
 
@@ -1097,7 +1103,7 @@ if(FINE && !REDUCED){
 
 <script>
 (function(){
-  const T={"À propos": "About", "Se connecter": "Sign in", "Rejoindre": "Join", "Promo à durée limitée — code": "Limited-time offer — code", "tes edits.": "your edits.", "Packs After Effects, banques SFX et la formation": "After Effects packs, SFX libraries and the", "— les mêmes assets que sur nos plus gros projets, prêts à glisser-déposer dans ta timeline.": "— the same assets we use on our biggest projects, ready to drag and drop into your timeline.", "Explorer le shop": "Explore the shop", "Découvrir MetaVision": "Discover MetaVision", "Produits": "Products", "Leçons MetaVision": "MetaVision lessons", "Support Discord": "Discord support", "Les packs": "The packs", "Presets, templates et SFX pensés pour After Effects — testés en prod avant d'arriver ici.": "Presets, templates and SFX built for After Effects — battle-tested in production before they land here.", "Le pack tout-en-un pour un rendu clean et moderne : icônes PNG, templates After Effects, éléments UI.": "The all-in-one pack for a clean, modern look: PNG icons, After Effects templates, UI elements.", "Voir le pack": "View the pack", "Presets · 8 fichiers": "Presets · 8 files", "Particules pour After Effects : 4 presets de transitions + 4 overlays GhostFX.": "Particles for After Effects: 4 transition presets + 4 GhostFX overlays.", "Gratuit": "Free", "Plus de 10 track mattes modifiables pour tes transitions — le point d'entrée idéal.": "10+ editable track mattes for your transitions — the perfect starting point.", "Télécharger": "Download", "SFX · 70+ sons": "SFX · 70+ sounds", "Bruitages percutants — énergie, impacts, transitions — et ambiances immersives haute qualité.": "Punchy sound effects — energy, impacts, transitions — plus immersive high-quality ambiences.", "Le pack parfait pour dynamiser tes edits : cinématique, digital, rapide, ambient et plus.": "The perfect pack to energize your edits: cinematic, digital, fast, ambient and more.", "Cours · 18 leçons": "Course · 18 lessons", "La formation VFX complète — d'After Effects niveau zéro jusqu'à tes premiers clients.": "The complete VFX course — from zero in After Effects to your first clients.", "Voir la formation": "View the course", "Assets gratuits": "Free assets", "À télécharger": "Downloads", "Clique sur un asset pour le télécharger — gratuit, direct, sans compte.": "Click an asset to download it — free, instant, no account.", "Pourquoi nos packs": "Why our packs", "Level up tes edits": "Level up your edits", "Utilisé sur nos plus gros projets": "Used on our biggest projects", "Rejoins la ligue des professionnels qui font confiance à nos produits pour leurs projets les plus significatifs. Ta créativité mérite le meilleur.": "Join the league of professionals who trust our products for their most meaningful projects. Your creativity deserves the best.", "Polyvalence redéfinie": "Versatility redefined", "Créateur de contenu, cinéaste ou passionné : nos packs s'adaptent à ton style. Élève tes projets grâce à la simplicité du glisser-déposer.": "Content creator, filmmaker or enthusiast: our packs adapt to your style. Elevate your projects with simple drag-and-drop.", "Accompagnement Discord — dispo 7j/7": "Discord support — available 7 days a week", "Une question sur un preset, un template qui coince ? La communauté et Femz répondent tous les jours.": "A question about a preset, a template acting up? The community and Femz reply every day.", "Une approche moderne": "A modern approach", "du storytelling visuel.": "to visual storytelling.", "Monteur · Créateur · Fondateur de FemzLab": "Editor · Creator · Founder of FemzLab", "J'ai pris une caméra il y a des années — et je n'ai jamais lâché.": "I picked up a camera years ago — and never put it down.", "Des clips de musique certifiés or et platine aux campagnes des plus grandes marques, chaque projet m'a appris la même chose : une image ne vaut que par l'histoire qu'elle raconte.": "From gold- and platinum-certified music videos to campaigns for the biggest brands, every project taught me the same thing: an image is only worth the story it tells.", "Je ne cherche pas le beau. Je cherche l'émotion.": "I'm not after pretty. I'm after emotion.", "Un plan qui arrête le pouce, une transition qu'on rejoue, un son qu'on ressent avant même de le comprendre. Le détail n'est pas de la décoration — c'est ce qui fait qu'une vidéo reste en tête.": "A shot that stops the thumb, a transition you replay, a sound you feel before you understand it. Detail isn't decoration — it's what makes a video stick.", "FemzLab, c'est te passer mes outils.": "FemzLab is me handing you my tools.", "Les presets, packs SFX et templates qui tournent sur mes plus gros projets, je les mets entre tes mains — pour que tu passes moins de temps à galérer, et plus de temps à créer ce qui te ressemble.": "The presets, SFX packs and templates I run on my biggest projects, I put them in your hands — so you spend less time struggling and more time creating what feels like you.", "Ma boîte à outils": "My toolbox", "Retours clients": "Reviews", "Ils l'utilisent déjà": "They already use it", "Colle ici un avis client depuis Podia (Admin → Produits → Avis).": "Paste a customer review here from Podia (Admin → Products → Reviews).", "Prénom N.": "First name L.", "": "Placeholders to fill with your real Podia reviews — tell me and I'll add them.", "Conditions générales de vente": "Terms of sale", "Politique de confidentialité": "Privacy policy", "": "Redesign mockup · Podia backend unchanged"};
+  const T={"À propos": "About", "Se connecter": "Sign in", "Rejoindre": "Join", "Promo à durée limitée — code": "Limited-time offer — code", "tes edits.": "your edits.", "Packs After Effects, banques SFX et la formation": "After Effects packs, SFX libraries and the", "— les mêmes assets que sur nos plus gros projets, prêts à glisser-déposer dans ta timeline.": "— the same assets we use on our biggest projects, ready to drag and drop into your timeline.", "Explorer le shop": "Explore the shop", "Découvrir MetaVision": "Discover MetaVision", "Produits": "Products", "Leçons MetaVision": "MetaVision lessons", "Support Discord": "Discord support", "Les packs": "The packs", "Presets, templates et SFX pensés pour After Effects — testés en prod avant d'arriver ici.": "Presets, templates and SFX built for After Effects — battle-tested in production before they land here.", "Le pack tout-en-un pour un rendu clean et moderne : icônes PNG, templates After Effects, éléments UI.": "The all-in-one pack for a clean, modern look: PNG icons, After Effects templates, UI elements.", "Voir le pack": "View the pack", "Presets · 8 fichiers": "Presets · 8 files", "Particules pour After Effects : 4 presets de transitions + 4 overlays GhostFX.": "Particles for After Effects: 4 transition presets + 4 GhostFX overlays.", "Gratuit": "Free", "Plus de 10 track mattes modifiables pour tes transitions — le point d'entrée idéal.": "10+ editable track mattes for your transitions — the perfect starting point.", "Télécharger": "Download", "SFX · 70+ sons": "SFX · 70+ sounds", "Bruitages percutants — énergie, impacts, transitions — et ambiances immersives haute qualité.": "Punchy sound effects — energy, impacts, transitions — plus immersive high-quality ambiences.", "Le pack parfait pour dynamiser tes edits : cinématique, digital, rapide, ambient et plus.": "The perfect pack to energize your edits: cinematic, digital, fast, ambient and more.", "Cours · 18 leçons": "Course · 18 lessons", "La formation VFX complète — d'After Effects niveau zéro jusqu'à tes premiers clients.": "The complete VFX course — from zero in After Effects to your first clients.", "Voir la formation": "View the course", "Assets gratuits": "Free assets", "À télécharger": "Downloads", "Clique sur un asset pour le télécharger — gratuit, direct, sans compte.": "Click an asset to download it — free, instant, no account.", "Pourquoi nos packs": "Why our packs", "Level up tes edits": "Level up your edits", "Utilisé sur nos plus gros projets": "Used on our biggest projects", "Rejoins la ligue des professionnels qui font confiance à nos produits pour leurs projets les plus significatifs. Ta créativité mérite le meilleur.": "Join the league of professionals who trust our products for their most meaningful projects. Your creativity deserves the best.", "Polyvalence redéfinie": "Versatility redefined", "Créateur de contenu, cinéaste ou passionné : nos packs s'adaptent à ton style. Élève tes projets grâce à la simplicité du glisser-déposer.": "Content creator, filmmaker or enthusiast: our packs adapt to your style. Elevate your projects with simple drag-and-drop.", "Accompagnement Discord — dispo 7j/7": "Discord support — available 7 days a week", "Une question sur un preset, un template qui coince ? La communauté et Femz répondent tous les jours.": "A question about a preset, a template acting up? The community and Femz reply every day.", "Une approche moderne": "A modern approach", "du storytelling visuel.": "to visual storytelling.", "Monteur · Créateur · Fondateur de FemzLab": "Editor · Creator · Founder of FemzLab", "J'ai pris une caméra il y a des années — et je n'ai jamais lâché.": "I picked up a camera years ago — and never put it down.", "Des clips de musique certifiés or et platine aux campagnes des plus grandes marques, chaque projet m'a appris la même chose : une image ne vaut que par l'histoire qu'elle raconte.": "From gold- and platinum-certified music videos to campaigns for the biggest brands, every project taught me the same thing: an image is only worth the story it tells.", "Je ne cherche pas le beau. Je cherche l'émotion.": "I'm not after pretty. I'm after emotion.", "Un plan qui arrête le pouce, une transition qu'on rejoue, un son qu'on ressent avant même de le comprendre. Le détail n'est pas de la décoration — c'est ce qui fait qu'une vidéo reste en tête.": "A shot that stops the thumb, a transition you replay, a sound you feel before you understand it. Detail isn't decoration — it's what makes a video stick.", "FemzLab, c'est te passer mes outils.": "FemzLab is me handing you my tools.", "Les presets, packs SFX et templates qui tournent sur mes plus gros projets, je les mets entre tes mains — pour que tu passes moins de temps à galérer, et plus de temps à créer ce qui te ressemble.": "The presets, SFX packs and templates I run on my biggest projects, I put them in your hands — so you spend less time struggling and more time creating what feels like you.", "Ma boîte à outils": "My toolbox", "Retours clients": "Reviews", "Ils l'utilisent déjà": "They already use it", "Avis recueillis par formulaire auprès de clients ayant acheté le produit. Publiés sans sélection sur la note. Mise à jour : 2026-08-16.": "Reviews collected by form from customers who purchased the product. Published without filtering on rating. Updated: 2026-08-16.", "Conditions générales de vente": "Terms of sale", "Politique de confidentialité": "Privacy policy"};
   const nodes=[]; const w=document.createTreeWalker(document.body,NodeFilter.SHOW_TEXT,null);
   let n; while(n=w.nextNode()){ const k=(n.nodeValue||'').trim(); if(k&&T[k]!==undefined) nodes.push([n,n.nodeValue,k]); }
   function set(lang){
