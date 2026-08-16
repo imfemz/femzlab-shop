@@ -23,6 +23,17 @@ const PRODUITS = new Set([
 const TEXTE_MIN = 40;
 const TEXTE_MAX = 400;
 
+// Origines autorisées à soumettre le formulaire. Une requête POST en
+// content-type text/plain est une requête CORS "simple" : elle ne déclenche
+// aucun préflight, donc le 405 sur OPTIONS ne l'arrête pas. Sans cette
+// vérification, un site tiers pourrait faire soumettre le formulaire par ses
+// propres visiteurs depuis leurs propres IP, ce qui contournerait toute
+// limitation de débit posée par IP côté Cloudflare.
+const ORIGINES_AUTORISEES = new Set([
+  "https://femzlab.shop",
+  "https://www.femzlab.shop",
+]);
+
 const json = (corps, status = 200) =>
   new Response(JSON.stringify(corps), {
     status,
@@ -63,6 +74,14 @@ function valide(c) {
   return e;
 }
 
+// Neutralise les crochets avant l'envoi à Discord : la syntaxe [texte](url) des
+// embeds Discord transforme un texte saisi en lien cliquable masqué. Un avis
+// pourrait ainsi piéger Femz avec un faux lien (ex. « vérifie ton compte Podia
+// ici ») pointant vers un site de phishing, alors même que le mail de
+// vérification lui-même l'y invite. On échappe uniquement la copie envoyée à
+// Discord — jamais la valeur validée/stockée dans reviews.json.
+const neutraliseCrochets = (v) => String(v).replace(/[[\]]/g, (c) => "\\" + c);
+
 function messageDiscord(c) {
   const note = c.note ? `${c.note}/5` : "non renseignée";
   return {
@@ -71,11 +90,11 @@ function messageDiscord(c) {
         title: "Nouvel avis client",
         color: 0x5ea2ff,
         fields: [
-          { name: "Pseudo (sera publié)", value: c.pseudo.trim() },
+          { name: "Pseudo (sera publié)", value: neutraliseCrochets(c.pseudo.trim()) },
           { name: "Produit", value: c.produit.trim() },
-          { name: "Email — à vérifier dans Podia", value: c.email.trim() },
+          { name: "Email — à vérifier dans Podia", value: neutraliseCrochets(c.email.trim()) },
           { name: "Note", value: note, inline: true },
-          { name: "Avis", value: c.texte.trim() },
+          { name: "Avis", value: neutraliseCrochets(c.texte.trim()) },
         ],
         footer: { text: "Vérifie l'achat, puis ajoute-le à src/reviews.json" },
       },
@@ -84,6 +103,13 @@ function messageDiscord(c) {
 }
 
 export const onRequestPost = async ({ request, env }) => {
+  // Une requête sans Origin (curl, certains clients légitimes, les tests en
+  // local) reste acceptée : seule une Origin explicitement étrangère au site
+  // est rejetée.
+  const origine = request.headers.get("Origin");
+  if (origine && !ORIGINES_AUTORISEES.has(origine))
+    return json({ erreurs: { _: "Origine non autorisée." } }, 403);
+
   let corps;
   try {
     corps = await request.json();
