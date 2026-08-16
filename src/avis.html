@@ -204,12 +204,12 @@ footer{background:var(--charcoal);color:#EDEDE8;margin-top:20px;position:relativ
   <button class="nav-toggle" aria-label="Menu" aria-expanded="false" aria-controls="nav-links-menu"><span></span><span></span></button>
   <div class="nav-links">
     <div class="nav-links-menu" id="nav-links-menu">
-      <a href="/portfolio">Portfolio</a>
-      <a href="/#shop">Boutique</a>
-      <a href="/#assets">Assets</a>
-      <a href="/#profil">À propos</a>
+      <a data-track="cta_avis_nav_portfolio" href="/portfolio">Portfolio</a>
+      <a data-track="cta_avis_nav_shop" href="/#shop">Boutique</a>
+      <a data-track="cta_avis_nav_assets" href="/#assets">Assets</a>
+      <a data-track="cta_avis_nav_profil" href="/#profil">À propos</a>
     </div>
-    <a class="btn solid" href="https://www.instagram.com/imfemz/" target="_blank" rel="noopener">Instagram</a>
+    <a data-track="cta_avis_instagram" class="btn solid" href="https://www.instagram.com/imfemz/" target="_blank" rel="noopener">Instagram</a>
   </div>
 </nav>
 
@@ -322,14 +322,14 @@ footer{background:var(--charcoal);color:#EDEDE8;margin-top:20px;position:relativ
   <div class="foot">
     <a href="/" aria-label="FemzLab"><img src="assets/png-01.png" alt="FemzLab"></a>
     <div class="foot-links">
-      <a href="/#shop">Boutique</a>
-      <a href="/#assets">Assets</a>
-      <a href="/#profil">À propos</a>
+      <a data-track="cta_avis_nav_shop_2" href="/#shop">Boutique</a>
+      <a data-track="cta_avis_nav_assets_2" href="/#assets">Assets</a>
+      <a data-track="cta_avis_nav_profil_2" href="/#profil">À propos</a>
     </div>
     <div class="socials">
-      <a href="https://www.instagram.com/imfemz/" target="_blank" rel="noopener" aria-label="Instagram"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><path d="M17.5 6.5h.01"/></svg></a>
-      <a href="https://www.youtube.com/c/Femzprod" target="_blank" rel="noopener" aria-label="YouTube"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2.5" y="5.5" width="19" height="13" rx="4"/><path d="M10.5 9.5 15 12l-4.5 2.5v-5z"/></svg></a>
-      <a href="mailto:hello@imfemz.com" aria-label="Email"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="3"/><path d="m3 7 9 6 9-6"/></svg></a>
+      <a data-track="cta_avis_instagram_2" href="https://www.instagram.com/imfemz/" target="_blank" rel="noopener" aria-label="Instagram"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><path d="M17.5 6.5h.01"/></svg></a>
+      <a data-track="cta_avis_youtube" href="https://www.youtube.com/c/Femzprod" target="_blank" rel="noopener" aria-label="YouTube"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2.5" y="5.5" width="19" height="13" rx="4"/><path d="M10.5 9.5 15 12l-4.5 2.5v-5z"/></svg></a>
+      <a data-track="cta_avis_email" href="mailto:hello@imfemz.com" aria-label="Email"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="3"/><path d="m3 7 9 6 9-6"/></svg></a>
     </div>
   </div>
   <div class="legal"><span>© 2026 FemzLab — hello@imfemz.com</span><span>Avis</span></div>
@@ -431,7 +431,7 @@ if(navToggle&&navMenu){
 
 <script>
 (function(){
-  const T={"Ton retour":"Your feedback","Raconte ce que le pack t'a apporté":"Tell us what the pack did for you","Deux minutes suffisent. Ton avis apparaîtra sur la page d'accueil avec ton prénom ou ton pseudo — jamais ton email, qui sert uniquement à vérifier ton achat.":"Two minutes is all it takes. Your review will appear on the homepage with your first name or handle — never your email, which is only used to verify your purchase.","Le produit":"The product","Choisis…":"Choose…","L'email de ton achat":"Your purchase email","celui utilisé au moment du paiement":"the one used at checkout","Jamais publié. Sert à vérifier l'achat.":"Never published. Used to verify the purchase.","Ton prénom ou ton pseudo":"Your first name or handle","c'est ce qui s'affichera":"this is what will be displayed","Ton avis":"Your review","Ce que tu en as fait, ce que ça t'a fait gagner…":"What you made with it, what it saved you…","Une note ?":"A rating?","facultatif":"optional","Sans note":"No rating","J'autorise FemzLab à publier cet avis et mon prénom ou pseudo sur femzlab.shop.":"I allow FemzLab to publish this review and my first name or handle on femzlab.shop.","Envoyer mon avis":"Send my review","Merci — c'est bien arrivé.":"Thanks — it came through.","Je vérifie ton achat et je publie ton avis sur la page d'accueil.":"I'll verify your purchase and publish your review on the homepage.","Retour à la boutique":"Back to the shop","Les avis sont publiés sans sélection sur la note. Ton email n'est ni publié ni conservé ailleurs que dans la notification qui m'est envoyée.":"Reviews are published without filtering on rating. Your email is neither published nor stored anywhere other than the notification sent to me.","Boutique":"Shop","À propos":"About"};
+  const T={"Ton retour":"Your feedback","Raconte ce que le pack t'a apporté":"Tell us what the pack did for you","Deux minutes suffisent. Ton avis apparaîtra sur la page d'accueil avec ton prénom ou ton pseudo — jamais ton email, qui sert uniquement à vérifier ton achat.":"Two minutes is all it takes. Your review will appear on the homepage with your first name or handle — never your email, which is only used to verify your purchase.","Le produit":"The product","Choisis…":"Choose…","L'email de ton achat":"Your purchase email","celui utilisé au moment du paiement":"the one used at checkout","Jamais publié. Sert à vérifier l'achat.":"Never published. Used to verify the purchase.","Ton prénom ou ton pseudo":"Your first name or handle","c'est ce qui s'affichera":"this is what will be displayed","Ton avis":"Your review","Ce que tu en as fait, ce que ça t'a fait gagner…":"What you made with it, what it saved you…","/400 — 40 minimum":"/400 — 40 minimum","Une note ?":"A rating?","facultatif":"optional","Sans note":"No rating","J'autorise FemzLab à publier cet avis et mon prénom ou pseudo sur femzlab.shop.":"I allow FemzLab to publish this review and my first name or handle on femzlab.shop.","Envoyer mon avis":"Send my review","Merci — c'est bien arrivé.":"Thanks — it came through.","Je vérifie ton achat et je publie ton avis sur la page d'accueil.":"I'll verify your purchase and publish your review on the homepage.","Retour à la boutique":"Back to the shop","Les avis sont publiés sans sélection sur la note. Ton email n'est ni publié ni conservé ailleurs que dans la notification qui m'est envoyée.":"Reviews are published without filtering on rating. Your email is neither published nor stored anywhere other than the notification sent to me.","Boutique":"Shop","À propos":"About"};
   const nodes=[]; const w=document.createTreeWalker(document.body,NodeFilter.SHOW_TEXT,null);
   let n; while(n=w.nextNode()){ const k=(n.nodeValue||'').trim(); if(k&&T[k]!==undefined) nodes.push([n,n.nodeValue,k]); }
   function set(lang){

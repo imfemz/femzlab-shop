@@ -69,9 +69,20 @@ Les suffixes `_2` désignent le doublon en pied de page d'un lien déjà présen
 - `cta_pf_youtube` — (icône)
 - `cta_pf_email` — (icône)
 
-## femzlab.shop/avis  (1 CTA)
+## femzlab.shop/avis  (12 CTA)
 
+- `cta_avis_nav_portfolio` — Portfolio
+- `cta_avis_nav_shop` — Boutique
+- `cta_avis_nav_assets` — Assets
+- `cta_avis_nav_profil` — À propos
+- `cta_avis_instagram` — Instagram
 - `cta_avis_envoyer` — Envoyer mon avis
+- `cta_avis_nav_shop_2` — Boutique
+- `cta_avis_nav_assets_2` — Assets
+- `cta_avis_nav_profil_2` — À propos
+- `cta_avis_instagram_2` — (icône)
+- `cta_avis_youtube` — (icône)
+- `cta_avis_email` — (icône)
 
 ## imfemz.com  (11 CTA)
 
