@@ -54,6 +54,11 @@ l'embarquer.
 En dessous de 6 avis, le rendu bascule automatiquement en grille statique :
 un marquee qui boucle sur 3 cartes se répète de façon visible.
 
+**Ne jamais purger, archiver-puis-nettoyer ou supprimer ce salon Discord.**
+C'est la seule trace de ce qui a été soumis, en face de ce qui a été publié
+dans `reviews.json` — la preuve que la mention « publiés sans sélection sur
+la note » est respectée. La perdre, c'est perdre la conformité du dispositif.
+
 ## Pourquoi les assets sont ré-embarqués au build
 
 Les pages déployées sont des fichiers HTML uniques contenant tout en base64.
