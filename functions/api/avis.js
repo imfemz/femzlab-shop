@@ -99,11 +99,19 @@ export const onRequestPost = async ({ request, env }) => {
   if (!env.DISCORD_WEBHOOK_AVIS)
     return json({ erreurs: { _: "Collecte indisponible pour le moment." } }, 500);
 
-  const envoi = await fetch(env.DISCORD_WEBHOOK_AVIS, {
-    method: "POST",
-    headers: { "content-type": "application/json" },
-    body: JSON.stringify(messageDiscord(corps)),
-  });
+  let envoi;
+  try {
+    envoi = await fetch(env.DISCORD_WEBHOOK_AVIS, {
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify(messageDiscord(corps)),
+    });
+  } catch {
+    // Une panne Discord ou DNS fait rejeter fetch() au lieu de renvoyer une
+    // réponse non-ok : sans ce filet, le client recevrait une erreur 500
+    // brute de la plateforme au lieu d'un JSON exploitable.
+    return json({ erreurs: { _: "Envoi impossible, réessaie dans un instant." } }, 502);
+  }
 
   if (!envoi.ok)
     return json({ erreurs: { _: "Envoi impossible, réessaie dans un instant." } }, 502);
