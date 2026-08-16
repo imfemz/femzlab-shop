@@ -10,6 +10,7 @@ et modifiable — c'est src/ qui fait foi.
 """
 
 import base64
+import datetime
 import json
 import pathlib
 import shutil
@@ -39,15 +40,37 @@ FIN = "<!-- reviews:end -->"
 # on bascule sur la grille statique jusqu'à ce qu'il y ait de quoi défiler.
 SEUIL_MARQUEE = 6
 
-MENTION = ("Avis recueillis par formulaire auprès de clients ayant acheté "
-           "le produit. Publiés sans sélection sur la note. "
-           "Mise à jour&nbsp;: {date}.")
+# Texte de conformité (art. L.111-7-2 et D.111-17 du code de la consommation) :
+# origine des avis, absence de tri sur la note, critère de classement retenu
+# (chronologique — voir trie_avis). Ne jamais y réinjecter de date : la date de
+# mise à jour vit dans son propre élément (voir bloc_avis) pour que cette clé
+# de traduction reste stable d'une publication à l'autre, indépendamment des
+# mises à jour de reviews.json.
+MENTION = ("Avis de clients ayant acheté le produit, recueillis par formulaire "
+           "ou transmis directement. Publiés sans sélection sur la note, "
+           "classés du plus récent au plus ancien. Aucune contrepartie n'est "
+           "fournie en échange d'un avis.")
 
 
 def echappe(texte):
     """Neutralise le HTML — reviews.json contient du texte saisi par des tiers."""
     return (str(texte).replace("&", "&amp;").replace("<", "&lt;")
             .replace(">", "&gt;").replace('"', "&quot;"))
+
+
+def date_fr(iso):
+    """Convertit une date ISO (AAAA-MM-JJ) en JJ/MM/AAAA, lisible pour un visiteur FR."""
+    return datetime.date.fromisoformat(iso).strftime("%d/%m/%Y")
+
+
+def trie_avis(liste):
+    """Trie les avis du plus récent au plus ancien (champ `date`, ISO AAAA-MM-JJ).
+
+    Rend vraie par construction la mention « classés du plus récent au plus
+    ancien » : l'ordre affiché ne dépend plus de l'ordre dans lequel les
+    entrées sont collées dans reviews.json.
+    """
+    return sorted(liste, key=lambda a: a["date"], reverse=True)
 
 
 def carte(avis, dup=False):
@@ -60,20 +83,29 @@ def carte(avis, dup=False):
         f'<figcaption class="who">'
         f'<span class="av" aria-hidden="true">{initiale}</span>'
         f'<span class="who-txt"><b>{echappe(avis["pseudo"])}</b>'
-        f'<span>{echappe(avis["produit"])}</span></span>'
+        f'<span>{echappe(avis["produit"])}</span>'
+        f'<span class="rv-date">{echappe(date_fr(avis["date"]))}</span></span>'
         f'</figcaption></figure>'
     )
 
 
 def bloc_avis(donnees):
     """Le contenu généré : conteneur, piste dupliquée, mention de collecte."""
-    liste = donnees["avis"]
+    liste = trie_avis(donnees["avis"])
     piste = "".join(carte(a) for a in liste)
     copie = "".join(carte(a, dup=True) for a in liste)
     statique = "" if len(liste) >= SEUIL_MARQUEE else " mq-static"
-    mention = MENTION.format(date=echappe(donnees.get("mise_a_jour", "")))
-    return (f'<div class="mq{statique}"><div class="mqtrack">{piste}{copie}</div></div>'
-            f'<p class="reviews-note rv">{mention}</p>')
+    maj = echappe(donnees.get("mise_a_jour", ""))
+    # La date de mise à jour est un élément séparé de la phrase traduite, et
+    # le libellé « Mise à jour » un nœud de texte séparé de la date elle-même :
+    # ni l'un ni l'autre ne change quand l'autre change, donc rien ne casse la
+    # traduction anglaise au fil des mises à jour de reviews.json.
+    return (
+        f'<div class="mq{statique}"><div class="mqtrack">{piste}{copie}</div></div>'
+        f'<p class="reviews-note rv">{MENTION} '
+        f'<span class="reviews-updated">Mise à jour'
+        f'<span class="reviews-updated-val">&nbsp;: {maj}.</span></span></p>'
+    )
 
 
 def injecte_avis(texte, donnees):

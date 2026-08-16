@@ -33,6 +33,7 @@ class TestEchappement(unittest.TestCase):
             "pseudo": "Mallory",
             "produit": "Ghost FX",
             "texte": "<script>alert(1)</script>",
+            "date": "2026-08-16",
         }
         rendu = build.carte(avis)
         self.assertNotIn("<script>", rendu)
@@ -40,19 +41,21 @@ class TestEchappement(unittest.TestCase):
 
     def test_neutralise_les_guillemets_et_esperluettes(self):
         rendu = build.carte(
-            {"pseudo": 'A"B', "produit": "R&D", "texte": "x"}
+            {"pseudo": 'A"B', "produit": "R&D", "texte": "x", "date": "2026-08-16"}
         )
         self.assertIn("&quot;", rendu)
         self.assertIn("&amp;", rendu)
 
     def test_initiale_en_majuscule(self):
         rendu = build.carte(
-            {"pseudo": "théo", "produit": "Presets Pack", "texte": "x"}
+            {"pseudo": "théo", "produit": "Presets Pack", "texte": "x",
+             "date": "2026-08-16"}
         )
         self.assertIn('<span class="av" aria-hidden="true">T</span>', rendu)
 
     def test_copie_marquee_masquee_aux_lecteurs_d_ecran(self):
-        avis = {"pseudo": "Théo", "produit": "Presets Pack", "texte": "x"}
+        avis = {"pseudo": "Théo", "produit": "Presets Pack", "texte": "x",
+                "date": "2026-08-16"}
         # `assertIn` ne suffirait pas : l'avatar porte lui aussi aria-hidden.
         # C'est bien la <figure> qui doit être masquée, et seulement en copie.
         self.assertTrue(
@@ -63,6 +66,14 @@ class TestEchappement(unittest.TestCase):
         self.assertTrue(
             build.carte(avis).startswith('<figure class="mqcard">')
         )
+
+    def test_affiche_la_date_au_format_francais(self):
+        """La date vient de reviews.json en ISO ; l'affichage est pour un lectorat FR."""
+        avis = {"pseudo": "Théo", "produit": "Presets Pack", "texte": "x",
+                "date": "2026-07-28"}
+        rendu = build.carte(avis)
+        self.assertIn('<span class="rv-date">28/07/2026</span>', rendu)
+        self.assertNotIn("2026-07-28", rendu)
 
 
 class TestInjection(unittest.TestCase):
@@ -99,6 +110,43 @@ class TestInjection(unittest.TestCase):
         self.assertIn("2026-08-16", rendu)
 
 
+class TestTri(unittest.TestCase):
+    """« classés du plus récent au plus ancien » doit être vrai par construction."""
+
+    def test_trie_avis_du_plus_recent_au_plus_ancien(self):
+        avis = [
+            {"pseudo": "Ancien", "date": "2024-01-01"},
+            {"pseudo": "Recent", "date": "2026-08-10"},
+            {"pseudo": "Milieu", "date": "2025-06-15"},
+        ]
+        trie = build.trie_avis(avis)
+        self.assertEqual([a["pseudo"] for a in trie], ["Recent", "Milieu", "Ancien"])
+
+    def test_le_rendu_respecte_l_ordre_chronologique_meme_si_le_json_ne_l_est_pas(self):
+        source = donnees(3)
+        # Volontairement dans le désordre dans reviews.json : c'est le tri de
+        # build.py, pas la discipline de Femz, qui doit garantir l'ordre affiché.
+        source["avis"][0]["pseudo"], source["avis"][0]["date"] = "Ancien", "2024-01-01"
+        source["avis"][1]["pseudo"], source["avis"][1]["date"] = "Recent", "2026-08-10"
+        source["avis"][2]["pseudo"], source["avis"][2]["date"] = "Milieu", "2025-06-15"
+
+        rendu = build.injecte_avis(f"{build.DEBUT}{build.FIN}", source)
+        self.assertLess(rendu.index(">Recent<"), rendu.index(">Milieu<"))
+        self.assertLess(rendu.index(">Milieu<"), rendu.index(">Ancien<"))
+
+
+class TestMention(unittest.TestCase):
+    def test_texte_exact_de_la_mention_legale(self):
+        """Zone à haut risque : toute reformulation doit être délibérée, pas accidentelle."""
+        attendu = (
+            "Avis de clients ayant acheté le produit, recueillis par formulaire "
+            "ou transmis directement. Publiés sans sélection sur la note, "
+            "classés du plus récent au plus ancien. Aucune contrepartie n'est "
+            "fournie en échange d'un avis."
+        )
+        self.assertEqual(build.MENTION, attendu)
+
+
 class TestFichierReel(unittest.TestCase):
     def test_reviews_json_est_valide(self):
         import json
@@ -107,7 +155,7 @@ class TestFichierReel(unittest.TestCase):
         contenu = json.loads(chemin.read_text(encoding="utf-8"))
         self.assertIn("avis", contenu)
         for avis in contenu["avis"]:
-            for cle in ("id", "pseudo", "produit", "texte"):
+            for cle in ("id", "pseudo", "produit", "texte", "date"):
                 self.assertIn(cle, avis)
 
     def test_aucun_email_dans_les_avis_publies(self):
