@@ -1,6 +1,6 @@
 # Suivi des CTA — dataLayer
 
-Conteneur GTM : `GTM-5ZD8M8DC` (installé sur femzlab.shop, /portfolio, imfemz.com, imfemz.com/kit).
+Conteneur GTM : `GTM-5ZD8M8DC` (installé sur femzlab.shop, /portfolio, /avis, imfemz.com, imfemz.com/kit).
 
 Chaque clic sur un élément `data-track` pousse dans le dataLayer :
 
@@ -68,6 +68,10 @@ Les suffixes `_2` désignent le doublon en pied de page d'un lien déjà présen
 - `cta_pf_instagram_2` — (icône)
 - `cta_pf_youtube` — (icône)
 - `cta_pf_email` — (icône)
+
+## femzlab.shop/avis  (1 CTA)
+
+- `cta_avis_envoyer` — Envoyer mon avis
 
 ## imfemz.com  (11 CTA)
 

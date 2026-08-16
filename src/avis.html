@@ -1,0 +1,470 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1">
+<!-- Google Tag Manager -->
+<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+})(window,document,'script','dataLayer','GTM-5ZD8M8DC');</script>
+<!-- End Google Tag Manager -->
+<style>:root{color-scheme:light}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#faf9f5;color:#141413}img{max-width:100%}<!-- Google Tag Manager (noscript) -->
+<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-5ZD8M8DC"
+height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+<!-- End Google Tag Manager (noscript) -->
+</style></head><body>
+
+<style id="i18n-css">
+.langsw{display:flex;gap:1px;position:relative;z-index:2;background:rgba(255,255,255,.09);border-radius:999px;padding:2px}
+.langsw button{font:inherit;font-size:11px;font-weight:800;letter-spacing:.05em;color:rgba(255,255,255,.62);background:transparent;border:none;cursor:pointer;padding:7px 9px;border-radius:999px;transition:.2s}
+.langsw button.on{background:#fff;color:#0A0A0A}
+.langsw button:hover:not(.on){color:#fff}
+</style>
+<meta charset="utf-8">
+<title>FemzLab — Donner mon avis</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+@font-face{font-family:'Montserrat';font-weight:800;font-style:normal;font-display:swap;src:url(assets/woff2-01.woff2) format('woff2')}
+@font-face{font-family:'Inter';font-weight:400;font-style:normal;font-display:swap;src:url(assets/woff2-02.woff2) format('woff2')}
+@font-face{font-family:'Inter';font-weight:700;font-style:normal;font-display:swap;src:url(assets/woff2-03.woff2) format('woff2')}
+
+:root{
+  --paper:#E4E4DF;--ink:#0A0A08;--charcoal:#161616;--muted:#67675F;--dim:#8D8D84;
+  --line:rgba(20,20,15,.1);--line-strong:rgba(20,20,15,.18);
+  --shadow:0 18px 44px rgba(25,25,18,.12);--shadow-lg:0 30px 70px rgba(25,25,18,.18);
+  --accent:#5EA2FF;--r-lg:18px;--lbl:'Inter',sans-serif;
+  color-scheme:light;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--paper);color:var(--ink);font-family:'Inter',system-ui,-apple-system,sans-serif;
+  font-size:16px;line-height:1.6;overflow-x:hidden;-webkit-font-smoothing:antialiased}
+::selection{background:rgba(5,5,5,.12)}
+a{color:inherit;text-decoration:none}
+img,video{max-width:100%;display:block}
+button{font:inherit;cursor:pointer}
+a:focus-visible,button:focus-visible{outline:2px solid var(--ink);outline-offset:3px;border-radius:4px}
+
+#dots{position:fixed;inset:0;z-index:0;pointer-events:none}
+.vignette{position:fixed;inset:0;z-index:1;pointer-events:none;
+  background:radial-gradient(120% 90% at 50% 34%, transparent 56%, rgba(25,25,18,.12) 100%)}
+main,footer{position:relative;z-index:2}
+
+.lbl,.eyebrow,.pf-meta span,.legal{font-family:var(--lbl);font-weight:700;text-transform:uppercase;letter-spacing:.08em}
+
+/* ---------- ligne de progression ---------- */
+#playhead{position:fixed;top:0;left:0;height:2px;width:100%;z-index:60;transform-origin:0 50%;transform:scaleX(0);
+  background:linear-gradient(90deg,#5EA2FF,#fff);box-shadow:0 0 10px rgba(94,162,255,.6)}
+
+/* ---------- logo FemzLab : wordmark rempli du gradient (un seul), fondu au scroll ---------- */
+.fixed-logo{position:fixed;top:15px;left:50%;transform:translateX(-50%);z-index:56;height:56px;aspect-ratio:2308/594;display:block;
+  transition:transform .35s cubic-bezier(.22,1,.36,1),opacity .4s ease}
+.fixed-logo .mark{position:absolute;inset:0;pointer-events:none;
+  -webkit-mask:url(assets/png-01.png) center/contain no-repeat;mask:url(assets/png-01.png) center/contain no-repeat;
+  background:linear-gradient(110deg,#5EA2FF,#A78BFF,#5ED9FF,#7C4DFF,#5EA2FF);background-size:240% 100%;
+  filter:drop-shadow(0 2px 11px rgba(94,162,255,.55));animation:logoGlow 6.5s linear infinite}
+@keyframes logoGlow{to{background-position:240% 0}}
+.fixed-logo:hover{transform:translateX(-50%) scale(1.05)}
+.fixed-logo.hidden{opacity:0;pointer-events:none;transform:translateX(-50%) scale(.94)}
+
+/* ---------- dock nav glass premium, sous le logo ---------- */
+nav.dock{position:fixed;top:84px;left:50%;transform:translateX(-50%);z-index:55;
+  display:flex;align-items:center;gap:4px;padding:6px;border-radius:999px;
+  background:rgba(15,17,23,.34);
+  backdrop-filter:blur(34px) saturate(200%) brightness(1.06);-webkit-backdrop-filter:blur(34px) saturate(200%) brightness(1.06);
+  border:1px solid rgba(255,255,255,.3);
+  box-shadow:
+    inset 0 1.5px 1px rgba(255,255,255,.5),
+    inset 0 -6px 16px rgba(0,0,0,.28),
+    inset 0 0 0 1px rgba(255,255,255,.06),
+    0 20px 54px rgba(0,0,0,.4),0 3px 10px rgba(0,0,0,.24);
+  overflow:hidden;transition:transform .45s cubic-bezier(.22,1,.36,1),box-shadow .4s,top .4s}
+/* nappe fluide colorée qui morph (fluid glass) */
+nav.dock::before{content:"";position:absolute;inset:-70%;z-index:-1;pointer-events:none;
+  background:
+    radial-gradient(36% 58% at 20% 28%,rgba(120,175,255,.6),transparent 60%),
+    radial-gradient(42% 55% at 80% 64%,rgba(180,140,255,.5),transparent 62%),
+    radial-gradient(38% 48% at 52% 90%,rgba(255,255,255,.45),transparent 60%),
+    radial-gradient(30% 40% at 70% 12%,rgba(120,220,255,.4),transparent 60%);
+  filter:blur(12px);animation:dockFluid 15s ease-in-out infinite alternate}
+@keyframes dockFluid{
+  0%{transform:translate(0,0) rotate(0deg) scale(1)}
+  50%{transform:translate(8%,-6%) rotate(12deg) scale(1.18)}
+  100%{transform:translate(-7%,5%) rotate(-9deg) scale(1.08)}
+}
+.dock-scrolled{top:14px!important;transform:translateX(-50%) scale(.96)!important}
+.nav-links{display:flex;gap:2px;align-items:center;position:relative;z-index:1}
+.nav-links-menu{display:flex;gap:2px;align-items:center}
+.nav-links a{font-size:13px;color:rgba(255,255,255,.78);letter-spacing:.01em;font-weight:700;
+  padding:9px 15px;border-radius:999px;transition:color .2s,background .2s}
+.nav-links a:not(.btn):hover,.nav-links a.active{color:#fff;background:rgba(255,255,255,.16)}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:9px;border:1.5px solid currentColor;
+  border-radius:999px;padding:11px 22px;font-size:13.5px;font-weight:700;letter-spacing:.02em;
+  background:transparent;transition:background .2s,color .2s,transform .2s,box-shadow .25s}
+.dock .btn.solid{background:#fff;color:#0A0A0A;border:none;padding:10px 19px}
+.dock .btn.solid:hover{transform:translateY(-1px);box-shadow:0 0 24px rgba(255,255,255,.45)}
+.nav-toggle{display:none;background:transparent;border:0;padding:9px;border-radius:999px;cursor:pointer;position:relative;z-index:1}
+.nav-toggle span{display:block;width:19px;height:1.5px;background:#fff;border-radius:1px;transition:transform .25s,opacity .25s}
+.nav-toggle span+span{margin-top:4px}
+.nav-toggle[aria-expanded="true"] span:first-child{transform:translateY(2.75px) rotate(45deg)}
+.nav-toggle[aria-expanded="true"] span:last-child{transform:translateY(-2.75px) rotate(-45deg)}
+@media (max-width:600px){
+  .fixed-logo{height:44px}
+  nav.dock{top:74px;overflow:visible}
+  .dock-scrolled{top:14px!important}
+  .nav-toggle{display:inline-flex;flex-direction:column;align-items:center;justify-content:center}
+  .nav-links-menu{position:absolute;top:calc(100% + 12px);left:50%;transform:translateX(-50%);
+    flex-direction:column;align-items:stretch;gap:2px;min-width:210px;
+    background:rgba(15,17,23,.92);backdrop-filter:blur(34px) saturate(200%);-webkit-backdrop-filter:blur(34px) saturate(200%);
+    border:1px solid rgba(255,255,255,.16);border-radius:20px;padding:8px;
+    box-shadow:0 20px 54px rgba(0,0,0,.4);
+    opacity:0;pointer-events:none;transform:translateX(-50%) translateY(-6px);
+    transition:opacity .22s,transform .22s}
+  .nav-links-menu.open{opacity:1;pointer-events:auto;transform:translateX(-50%) translateY(0)}
+  .nav-links-menu a{display:block;text-align:center;padding:12px 15px}
+}
+
+/* ---------- en-tête de section (repris de portfolio/index pour l'eyebrow + h2) ---------- */
+.eyebrow{font-size:12px;color:var(--muted);display:inline-flex;align-items:center;gap:12px;letter-spacing:.24em}
+.eyebrow::before,.eyebrow::after{content:"";width:30px;height:1px;background:var(--line-strong)}
+.sec-head{max-width:1100px;margin:0 auto;padding:clamp(40px,7vh,80px) clamp(20px,5vw,48px) 0;text-align:center}
+.sec-head h2{font-family:'Montserrat',sans-serif;font-weight:800;text-transform:uppercase;
+  font-size:clamp(26px,4vw,42px);letter-spacing:-.015em;margin-top:12px;
+  background-image:linear-gradient(110deg,var(--ink) 0%,var(--ink) 38%,#5EA2FF 46%,#fff 50%,#A78BFF 56%,var(--ink) 64%,var(--ink) 100%);
+  background-size:280% 100%;background-position:200% 0;-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:var(--ink);transition:-webkit-text-fill-color .2s}
+.sec-head h2:hover{-webkit-text-fill-color:transparent;animation:titleMagic 2.6s linear infinite}
+@keyframes titleMagic{from{background-position:200% 0}to{background-position:-120% 0}}
+.sec-head p{color:var(--muted);margin-top:8px;font-size:14.5px;max-width:520px;margin-left:auto;margin-right:auto}
+
+/* ---------- formulaire d'avis ---------- */
+.avis-wrap{max-width:640px;margin:0 auto;padding:150px 22px 70px}
+.avis-intro{color:var(--muted);font-size:15px;margin-bottom:26px}
+.avis-form{display:flex;flex-direction:column;gap:20px;padding:30px;
+  background:#fff;border-radius:var(--r-lg);box-shadow:var(--shadow)}
+.f{display:flex;flex-direction:column;gap:7px}
+.f-lbl{font-family:var(--lbl);font-weight:700;font-size:10px;letter-spacing:.14em;
+  text-transform:uppercase;color:var(--dim)}
+.f-opt{text-transform:none;letter-spacing:0;font-weight:400}
+.avis-form input[type=text],.avis-form input[type=email],
+.avis-form select,.avis-form textarea{
+  font:inherit;font-size:15px;color:var(--ink);background:#fff;
+  border:1px solid var(--line);border-radius:12px;padding:13px 14px;width:100%}
+.avis-form textarea{resize:vertical;line-height:1.55}
+.avis-form :focus-visible{outline:2px solid var(--ink);outline-offset:2px}
+.f-hint{font-size:11.5px;color:var(--dim);font-style:normal}
+.f-err{font-size:12px;color:#B3261E;font-style:normal;display:none}
+.f-err.on{display:block}
+.f-check{flex-direction:row;align-items:flex-start;gap:11px;font-size:14px;
+  color:var(--muted);line-height:1.5}
+.f-check input{margin-top:3px;flex:none;width:17px;height:17px;accent-color:var(--ink)}
+.f-check .f-err{flex-basis:100%}
+.f-trap{position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden}
+.avis-form .btn.solid{background:var(--ink);color:#fff;border:none;
+  border-radius:999px;padding:15px 26px;font-weight:700;cursor:pointer;
+  transition:transform .18s,box-shadow .18s}
+.avis-form .btn.solid:hover{transform:translateY(-1px);box-shadow:var(--shadow-lg)}
+.avis-form .btn.solid[disabled]{opacity:.55;cursor:progress;transform:none}
+.avis-ok{padding:34px 30px;text-align:center;background:#fff;
+  border-radius:var(--r-lg);box-shadow:var(--shadow)}
+.avis-ok h3{font-family:'Montserrat',sans-serif;font-weight:800;font-size:21px;
+  margin-bottom:9px}
+.avis-ok p{color:var(--muted);margin-bottom:20px}
+.avis-ok .btn.solid{display:inline-block;background:var(--ink);color:#fff;
+  border-radius:999px;padding:13px 24px;font-weight:700}
+.avis-legal{margin-top:22px;font-size:11px;color:var(--dim);text-align:center;
+  line-height:1.7}
+@media(max-width:640px){.avis-wrap{padding:130px 16px 50px}.avis-form{padding:22px}}
+
+/* ---------- footer ---------- */
+footer{background:var(--charcoal);color:#EDEDE8;margin-top:20px;position:relative;z-index:2}
+.foot{max-width:1100px;margin:0 auto;padding:46px clamp(20px,5vw,48px);display:flex;justify-content:space-between;align-items:center;gap:26px;flex-wrap:wrap}
+.foot img{height:30px;width:auto;filter:brightness(0) invert(1)}
+.foot-links{display:flex;gap:24px;font-size:12.5px;color:#A8A8A2;flex-wrap:wrap}
+.foot-links a:hover{color:#fff}
+.socials{display:flex;gap:12px}
+.socials a{width:38px;height:38px;border:1px solid rgba(255,255,255,.25);border-radius:50%;display:flex;align-items:center;justify-content:center;transition:background .2s,border-color .2s}
+.socials a:hover{background:rgba(255,255,255,.12);border-color:rgba(255,255,255,.5)}
+.socials svg{width:16px;height:16px;stroke:#fff}
+.legal{max-width:1100px;margin:0 auto;padding:0 clamp(20px,5vw,48px) 32px;font-size:9.5px;letter-spacing:.14em;color:#7E7E78;display:flex;justify-content:space-between;gap:14px;flex-wrap:wrap}
+
+@media (prefers-reduced-motion:reduce){
+  .hero>*{opacity:1;transform:none;animation:none}
+  .rcard,.wcard{opacity:1;transform:none;filter:none;transition:none}
+  .fixed-logo .shine,nav.dock::before{animation:none}
+  .rframe{transform:none!important}
+}
+</style>
+
+<canvas id="dots" aria-hidden="true"></canvas>
+<div class="vignette" aria-hidden="true"></div>
+<span id="playhead" aria-hidden="true"></span>
+
+<a class="fixed-logo" href="/" aria-label="FemzLab — accueil">
+  <span class="mark" aria-hidden="true"></span>
+</a>
+<nav class="dock">
+  <div class="langsw"><button data-langbtn="fr" onclick="__setLang('fr')">FR</button><button data-langbtn="en" onclick="__setLang('en')">EN</button></div>
+  <button class="nav-toggle" aria-label="Menu" aria-expanded="false" aria-controls="nav-links-menu"><span></span><span></span></button>
+  <div class="nav-links">
+    <div class="nav-links-menu" id="nav-links-menu">
+      <a href="/portfolio">Portfolio</a>
+      <a href="/#shop">Boutique</a>
+      <a href="/#assets">Assets</a>
+      <a href="/#profil">À propos</a>
+    </div>
+    <a class="btn solid" href="https://www.instagram.com/imfemz/" target="_blank" rel="noopener">Instagram</a>
+  </div>
+</nav>
+
+<main id="top">
+  <section class="avis-wrap">
+    <div class="sec-head rv">
+      <span class="eyebrow">Ton retour</span>
+      <h2>Raconte ce que le pack t'a apporté</h2>
+    </div>
+
+    <p class="avis-intro rv">
+      Deux minutes suffisent. Ton avis apparaîtra sur la page d'accueil avec ton
+      prénom ou ton pseudo — jamais ton email, qui sert uniquement à vérifier
+      ton achat.
+    </p>
+
+    <form class="avis-form card rv" id="avis-form" method="post" action="/api/avis">
+      <label class="f">
+        <span class="f-lbl" id="av-produit-lbl">Le produit</span>
+        <select name="produit" id="av-produit" required aria-labelledby="av-produit-lbl" aria-describedby="av-produit-err">
+          <option value="">Choisis…</option>
+          <option>METAVISION - Formation VFX</option>
+          <option>Ultimate iOS Pack</option>
+          <option>Ghost FX</option>
+          <option>Presets Pack</option>
+          <option>Vortex Sound Pack</option>
+          <option>Whoosh Sound Pack</option>
+          <option>3D Text Pack</option>
+          <option>3D Text Pack Pro</option>
+          <option>Fade Pack</option>
+          <option>META VISION - Comment vivre de sa passion ?</option>
+          <option>VFX Presets Pack</option>
+          <option>SFX Whoosh Pack</option>
+        </select>
+        <em class="f-err" id="av-produit-err" data-err="produit" role="alert"></em>
+      </label>
+
+      <label class="f">
+        <span class="f-lbl" id="av-email-lbl">L'email de ton achat</span>
+        <input type="email" name="email" id="av-email" required autocomplete="email" maxlength="254"
+               aria-labelledby="av-email-lbl" aria-describedby="av-email-hint av-email-err"
+               placeholder="celui utilisé au moment du paiement">
+        <em class="f-hint" id="av-email-hint">Jamais publié. Sert à vérifier l'achat.</em>
+        <em class="f-err" id="av-email-err" data-err="email" role="alert"></em>
+      </label>
+
+      <label class="f">
+        <span class="f-lbl" id="av-pseudo-lbl">Ton prénom ou ton pseudo</span>
+        <input type="text" name="pseudo" id="av-pseudo" required minlength="2" maxlength="40"
+               aria-labelledby="av-pseudo-lbl" aria-describedby="av-pseudo-err"
+               placeholder="c'est ce qui s'affichera">
+        <em class="f-err" id="av-pseudo-err" data-err="pseudo" role="alert"></em>
+      </label>
+
+      <label class="f">
+        <span class="f-lbl" id="av-texte-lbl">Ton avis</span>
+        <textarea name="texte" id="av-texte" required minlength="40" maxlength="400" rows="5"
+                  aria-labelledby="av-texte-lbl" aria-describedby="av-texte-hint av-texte-err"
+                  placeholder="Ce que tu en as fait, ce que ça t'a fait gagner…"></textarea>
+        <em class="f-hint" id="av-texte-hint"><span id="compteur">0</span>/400 — 40 minimum</em>
+        <em class="f-err" id="av-texte-err" data-err="texte" role="alert"></em>
+      </label>
+
+      <label class="f">
+        <span class="f-lbl" id="av-note-lbl">Une note ? <span class="f-opt">facultatif</span></span>
+        <select name="note" id="av-note" aria-labelledby="av-note-lbl" aria-describedby="av-note-err">
+          <option value="">Sans note</option>
+          <option value="5">5 sur 5</option>
+          <option value="4">4 sur 5</option>
+          <option value="3">3 sur 5</option>
+          <option value="2">2 sur 5</option>
+          <option value="1">1 sur 5</option>
+        </select>
+        <em class="f-err" id="av-note-err" data-err="note" role="alert"></em>
+      </label>
+
+      <label class="f f-check">
+        <input type="checkbox" name="consent" id="av-consent" required
+               aria-labelledby="av-consent-lbl" aria-describedby="av-consent-err">
+        <span id="av-consent-lbl">J'autorise FemzLab à publier cet avis et mon prénom ou pseudo sur
+          femzlab.shop.</span>
+        <em class="f-err" id="av-consent-err" data-err="consent" role="alert"></em>
+      </label>
+
+      <!-- champ piège anti-robots : masqué et hors du parcours clavier -->
+      <div class="f-trap" aria-hidden="true">
+        <label>Site web<input type="text" name="site" tabindex="-1" autocomplete="off"></label>
+      </div>
+
+      <button type="submit" class="btn solid" data-track="cta_avis_envoyer">
+        Envoyer mon avis
+      </button>
+      <em class="f-err" id="av-form-err" data-err="_" role="alert"></em>
+    </form>
+
+    <div class="avis-ok card" id="avis-ok" hidden>
+      <h3>Merci — c'est bien arrivé.</h3>
+      <p>Je vérifie ton achat et je publie ton avis sur la page d'accueil.</p>
+      <a class="btn solid" href="/">Retour à la boutique</a>
+    </div>
+
+    <p class="avis-legal">
+      Les avis sont publiés sans sélection sur la note. Ton email n'est ni
+      publié ni conservé ailleurs que dans la notification qui m'est envoyée.
+    </p>
+  </section>
+</main>
+
+<footer>
+  <div class="foot">
+    <a href="/" aria-label="FemzLab"><img src="assets/png-01.png" alt="FemzLab"></a>
+    <div class="foot-links">
+      <a href="/#shop">Boutique</a>
+      <a href="/#assets">Assets</a>
+      <a href="/#profil">À propos</a>
+    </div>
+    <div class="socials">
+      <a href="https://www.instagram.com/imfemz/" target="_blank" rel="noopener" aria-label="Instagram"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><path d="M17.5 6.5h.01"/></svg></a>
+      <a href="https://www.youtube.com/c/Femzprod" target="_blank" rel="noopener" aria-label="YouTube"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2.5" y="5.5" width="19" height="13" rx="4"/><path d="M10.5 9.5 15 12l-4.5 2.5v-5z"/></svg></a>
+      <a href="mailto:hello@imfemz.com" aria-label="Email"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="3"/><path d="m3 7 9 6 9-6"/></svg></a>
+    </div>
+  </div>
+  <div class="legal"><span>© 2026 FemzLab — hello@imfemz.com</span><span>Avis</span></div>
+</footer>
+
+<script>
+const REDUCED=matchMedia('(prefers-reduced-motion: reduce)').matches;
+const FINE=matchMedia('(pointer: fine)').matches;
+
+// dots
+(function(){const cv=document.getElementById('dots'),ctx=cv.getContext('2d');let W,H,DPR,pts=[],mx=-9e3,my=-9e3,raf;const SP=30,R=1.3,BU=67,RAD=400;
+function build(){DPR=Math.min(devicePixelRatio||1,2);W=innerWidth;H=innerHeight;cv.width=W*DPR;cv.height=H*DPR;cv.style.width=W+'px';cv.style.height=H+'px';ctx.setTransform(DPR,0,0,DPR,0,0);pts=[];for(let y=SP/2;y<H;y+=SP)for(let x=SP/2;x<W;x+=SP)pts.push({x,y});}
+function draw(){ctx.clearRect(0,0,W,H);for(const p of pts){const dx=p.x-mx,dy=p.y-my,d=Math.hypot(dx,dy);let r=R,a=.16,ox=0,oy=0;if(d<RAD){const f=1-d/RAD,pu=f*f*BU*.16;ox=(dx/(d||1))*pu;oy=(dy/(d||1))*pu;r=R+f*1.4;a=Math.min(.5,a+f*.3);}ctx.beginPath();ctx.arc(p.x+ox,p.y+oy,r,0,6.2832);ctx.fillStyle='rgba(96,96,88,'+a.toFixed(3)+')';ctx.fill();}raf=null;}
+function q(){if(!raf)raf=requestAnimationFrame(draw);}addEventListener('resize',()=>{build();q();});
+if(!REDUCED&&FINE){addEventListener('pointermove',e=>{mx=e.clientX;my=e.clientY;q();},{passive:true});addEventListener('pointerleave',()=>{mx=my=-9e3;q();});}
+build();draw();})();
+
+// playhead + dock condense
+(function(){const ph=document.getElementById('playhead'),dock=document.querySelector('.dock'),logo=document.querySelector('.fixed-logo');let t=false;
+addEventListener('scroll',()=>{if(t)return;t=true;requestAnimationFrame(()=>{const m=document.documentElement.scrollHeight-innerHeight;ph.style.transform='scaleX('+(m>0?scrollY/m:0)+')';const past=scrollY>50;if(dock)dock.classList.toggle('dock-scrolled',past);if(logo)logo.classList.toggle('hidden',past);t=false;});},{passive:true});
+const navToggle=document.querySelector('.nav-toggle'),navMenu=document.getElementById('nav-links-menu');
+if(navToggle&&navMenu){
+  const closeMenu=()=>{navMenu.classList.remove('open');navToggle.setAttribute('aria-expanded','false')};
+  navToggle.addEventListener('click',()=>{const open=navMenu.classList.toggle('open');navToggle.setAttribute('aria-expanded',open?'true':'false')});
+  navMenu.addEventListener('click',e=>{if(e.target.closest('a'))closeMenu()});
+  document.addEventListener('click',e=>{if(!dock.contains(e.target))closeMenu()});
+}
+})();
+</script>
+
+<script>
+(function(){
+  const form = document.getElementById('avis-form');
+  // Validation native active par défaut (fonctionne sans JS) ; une fois le
+  // script chargé, on la désactive pour reprendre la main sur l'affichage
+  // des erreurs par champ, sans perdre la sémantique "required" au repli.
+  form.noValidate = true;
+  const ok = document.getElementById('avis-ok');
+  const compteur = document.getElementById('compteur');
+  const zone = form.querySelector('[name=texte]');
+
+  zone.addEventListener('input', () => { compteur.textContent = zone.value.trim().length; });
+
+  const videErreurs = () => {
+    form.querySelectorAll('.f-err').forEach(e => { e.textContent = ''; e.classList.remove('on'); });
+    form.querySelectorAll('[aria-invalid]').forEach(el => el.removeAttribute('aria-invalid'));
+  };
+
+  const poseErreurs = (erreurs) => {
+    Object.entries(erreurs).forEach(([champ, message]) => {
+      const cible = form.querySelector(`[data-err="${champ}"]`);
+      if (cible) { cible.textContent = message; cible.classList.add('on'); }
+      const control = form.querySelector(`[name="${champ}"]`);
+      if (control) control.setAttribute('aria-invalid', 'true');
+    });
+    const premier = form.querySelector('.f-err.on');
+    if (premier) premier.scrollIntoView({behavior:'smooth', block:'center'});
+  };
+
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    videErreurs();
+    const bouton = form.querySelector('button[type=submit]');
+    bouton.disabled = true;
+
+    const d = new FormData(form);
+    const charge = {
+      produit: d.get('produit') || '',
+      email:   d.get('email') || '',
+      pseudo:  d.get('pseudo') || '',
+      texte:   d.get('texte') || '',
+      note:    d.get('note') ? Number(d.get('note')) : null,
+      consent: d.get('consent') === 'on',
+      site:    d.get('site') || ''
+    };
+
+    try {
+      const r = await fetch('/api/avis', {
+        method: 'POST',
+        headers: {'content-type':'application/json'},
+        body: JSON.stringify(charge)
+      });
+      const corps = await r.json().catch(() => ({}));
+      if (r.ok && corps.ok) {
+        form.hidden = true;
+        ok.hidden = false;
+        ok.scrollIntoView({behavior:'smooth', block:'center'});
+        return;
+      }
+      poseErreurs(corps.erreurs || {_: "Envoi impossible, réessaie dans un instant."});
+    } catch {
+      poseErreurs({_: "Pas de connexion — réessaie dans un instant."});
+    } finally {
+      bouton.disabled = false;
+    }
+  });
+})();
+</script>
+
+<script>
+(function(){
+  const T={"Ton retour":"Your feedback","Raconte ce que le pack t'a apporté":"Tell us what the pack did for you","Deux minutes suffisent. Ton avis apparaîtra sur la page d'accueil avec ton prénom ou ton pseudo — jamais ton email, qui sert uniquement à vérifier ton achat.":"Two minutes is all it takes. Your review will appear on the homepage with your first name or handle — never your email, which is only used to verify your purchase.","Le produit":"The product","Choisis…":"Choose…","L'email de ton achat":"Your purchase email","celui utilisé au moment du paiement":"the one used at checkout","Jamais publié. Sert à vérifier l'achat.":"Never published. Used to verify the purchase.","Ton prénom ou ton pseudo":"Your first name or handle","c'est ce qui s'affichera":"this is what will be displayed","Ton avis":"Your review","Ce que tu en as fait, ce que ça t'a fait gagner…":"What you made with it, what it saved you…","Une note ?":"A rating?","facultatif":"optional","Sans note":"No rating","J'autorise FemzLab à publier cet avis et mon prénom ou pseudo sur femzlab.shop.":"I allow FemzLab to publish this review and my first name or handle on femzlab.shop.","Envoyer mon avis":"Send my review","Merci — c'est bien arrivé.":"Thanks — it came through.","Je vérifie ton achat et je publie ton avis sur la page d'accueil.":"I'll verify your purchase and publish your review on the homepage.","Retour à la boutique":"Back to the shop","Les avis sont publiés sans sélection sur la note. Ton email n'est ni publié ni conservé ailleurs que dans la notification qui m'est envoyée.":"Reviews are published without filtering on rating. Your email is neither published nor stored anywhere other than the notification sent to me.","Boutique":"Shop","À propos":"About"};
+  const nodes=[]; const w=document.createTreeWalker(document.body,NodeFilter.SHOW_TEXT,null);
+  let n; while(n=w.nextNode()){ const k=(n.nodeValue||'').trim(); if(k&&T[k]!==undefined) nodes.push([n,n.nodeValue,k]); }
+  function set(lang){
+    nodes.forEach(([node,fr,k])=>{ node.nodeValue = lang==='en'? fr.replace(k,T[k]) : fr; });
+    setPH(lang);
+    document.documentElement.lang=lang; try{localStorage.setItem('femz_lang',lang)}catch(e){}
+    document.querySelectorAll('[data-langbtn]').forEach(b=>b.classList.toggle('on', b.dataset.langbtn===lang));
+  }
+  let saved=null; try{saved=localStorage.getItem('femz_lang')}catch(e){}
+  const initial = saved || ((navigator.language||navigator.userLanguage||'').toLowerCase().slice(0,2)==='en'?'en':'fr');
+  const PH={"celui utilisé au moment du paiement":"the one used at checkout",
+            "c'est ce qui s'affichera":"this is what will be displayed",
+            "Ce que tu en as fait, ce que ça t'a fait gagner…":"What you made with it, what it saved you…"};
+  const champs=[...document.querySelectorAll('[placeholder]')].map(el=>[el,el.placeholder]);
+  const setPH=(lang)=>champs.forEach(([el,fr])=>{el.placeholder = lang==='en' ? (PH[fr]||fr) : fr;});
+  window.__setLang=set; set(initial);
+})();
+</script>
+
+
+<!-- Suivi des CTA vers le dataLayer -->
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    document.querySelectorAll('[data-track]').forEach(function (el) {
+      el.addEventListener('click', function () {
+        window.dataLayer = window.dataLayer || [];
+        window.dataLayer.push({
+          'event': 'cta_click',
+          'cta_name': el.getAttribute('data-track'),
+          'cta_text': el.innerText || el.value || ''
+        });
+      });
+    });
+  });
+</script>
+</body></html>
