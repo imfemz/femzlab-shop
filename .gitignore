@@ -3,3 +3,6 @@
 dist/
 
 .DS_Store
+
+# secrets locaux de wrangler (webhook Discord)
+.dev.vars
