@@ -269,13 +269,7 @@ def injecte_avis(texte, donnees):
     return texte[:debut] + bloc_avis(donnees) + texte[fin:]
 ```
 
-Ajouter `avis.html` à `PAGES` :
-
-```python
-PAGES = [("index.html", "index.html"),
-         ("portfolio.html", "portfolio/index.html"),
-         ("avis.html", "avis/index.html")]
-```
+**Ne pas** toucher à `PAGES` dans cette tâche : `src/avis.html` n'existe pas encore et le build échouerait. C'est la Tâche 4, qui crée le fichier, qui ajoutera son entrée.
 
 Dans `main()`, appeler l'injection sur les pages qui portent les marqueurs. Remplacer la boucle existante par :
 
@@ -304,7 +298,10 @@ Expected: PASS — 11 tests.
 
 Note : `build.SRC` est un `pathlib.Path`, `pathlib.Path(build.SRC)` fonctionne quand même.
 
-`python3 build.py` échouera à cette étape avec `ValueError: substring not found` seulement si `src/avis.html` n'existe pas encore — c'est attendu, la Tâche 4 le crée. Pour vérifier le build maintenant, commenter temporairement la ligne `avis.html` de `PAGES`, ou passer directement à la Tâche 2 qui pose les marqueurs.
+Vérifier aussi que le build reste vert — aucune page ne porte encore les marqueurs, donc l'injection ne s'applique nulle part et la sortie doit être inchangée :
+
+Run: `python3 build.py`
+Expected: les deux lignes habituelles (`dist/index.html`, `dist/portfolio/index.html`) et `dist/_redirects`, sans erreur.
 
 - [ ] **Step 6: Commit**
 
@@ -426,8 +423,6 @@ Expected :
 - `2` cartes (1 avis × 2 pour la boucle)
 - `class="mq mq-static"` puis `class="mqtrack"` — la grille statique, puisque 1 < 6
 - `0` occurrence de l'ancien placeholder
-
-`build.py` échouera si `src/avis.html` n'existe pas encore. Retirer temporairement la ligne `("avis.html", "avis/index.html")` de `PAGES` pour cette vérification, et la remettre en Tâche 4.
 
 - [ ] **Step 5: Vérifier visuellement dans le navigateur**
 
@@ -692,7 +687,7 @@ contourner le piège."
 
 **Files:**
 - Create: `src/avis.html`
-- Modify: `build.py` (réactiver la ligne `avis.html` dans `PAGES` si elle a été commentée), `TRACKING.md`, `README.md`
+- Modify: `build.py` (ajouter `avis.html` à `PAGES`), `TRACKING.md`, `README.md`
 
 **Interfaces:**
 - Consumes: `POST /api/avis` (Tâche 3) et son contrat d'erreurs par champ.
@@ -947,9 +942,17 @@ Les `placeholder` ne sont pas des nœuds texte : le traducteur ne les atteint pa
 
 et appeler `setPH(lang)` depuis la fonction `set`.
 
-- [ ] **Step 5: Vérifier le build et la page**
+- [ ] **Step 5: Ajouter la page au build, puis vérifier**
 
-S'assurer que `PAGES` dans `build.py` contient bien les trois entrées, puis :
+Maintenant que `src/avis.html` existe, ajouter son entrée à `PAGES` dans `build.py` :
+
+```python
+PAGES = [("index.html", "index.html"),
+         ("portfolio.html", "portfolio/index.html"),
+         ("avis.html", "avis/index.html")]
+```
+
+Puis :
 
 ```bash
 python3 build.py && ls -la dist/avis/ && open dist/avis/index.html
