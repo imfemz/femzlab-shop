@@ -567,11 +567,19 @@ export const onRequestPost = async ({ request, env }) => {
   if (!env.DISCORD_WEBHOOK_AVIS)
     return json({ erreurs: { _: "Collecte indisponible pour le moment." } }, 500);
 
-  const envoi = await fetch(env.DISCORD_WEBHOOK_AVIS, {
-    method: "POST",
-    headers: { "content-type": "application/json" },
-    body: JSON.stringify(messageDiscord(corps)),
-  });
+  // Discord en panne ou DNS qui échoue fait *lever* fetch, il ne renvoie pas une
+  // réponse en erreur. Sans ce filet, le client reçoit un 500 brut de la plateforme
+  // au lieu du JSON que le formulaire sait lire.
+  let envoi;
+  try {
+    envoi = await fetch(env.DISCORD_WEBHOOK_AVIS, {
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify(messageDiscord(corps)),
+    });
+  } catch {
+    return json({ erreurs: { _: "Envoi impossible, réessaie dans un instant." } }, 502);
+  }
 
   if (!envoi.ok)
     return json({ erreurs: { _: "Envoi impossible, réessaie dans un instant." } }, 502);
@@ -1018,10 +1026,12 @@ ne contient que les noms actuels."
 
 ```bash
 git grep -nE "[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}" -- src/reviews.json functions/ ; echo "code $?"
-git grep -n "discord.com/api/webhooks" ; echo "code $?"
+git grep -nE "discord\.com/api/webhooks/[0-9]" ; echo "code $?"
 ```
 
 Expected : les deux commandes ne remontent rien (`code 1` — `git grep` renvoie 1 quand il ne trouve rien).
+
+Le second motif exige un identifiant numérique après `/webhooks/`, ce qui est la forme d'une vraie URL de webhook. Un motif plus lâche remonterait le texte de cette commande elle-même, présent dans ce document — un faux positif qui apprend à ignorer l'alerte.
 
 - [ ] **Step 2: Lancer la suite de tests et le build**
 
