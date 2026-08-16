@@ -10,6 +10,7 @@ et modifiable — c'est src/ qui fait foi.
 """
 
 import base64
+import json
 import pathlib
 import shutil
 import sys
@@ -28,6 +29,57 @@ MIME = {
     "mp4": "video/mp4", "mov": "video/quicktime", "webm": "video/webm",
     "woff2": "font/woff2",
 }
+
+REVIEWS = SRC / "reviews.json"
+DEBUT = "<!-- reviews:start -->"
+FIN = "<!-- reviews:end -->"
+
+# En dessous de ce nombre d'avis, le marquee se répète de façon visible :
+# on bascule sur la grille statique jusqu'à ce qu'il y ait de quoi défiler.
+SEUIL_MARQUEE = 6
+
+MENTION = ("Avis recueillis par formulaire auprès de clients ayant acheté "
+           "le produit. Publiés sans sélection sur la note. "
+           "Mise à jour&nbsp;: {date}.")
+
+
+def echappe(texte):
+    """Neutralise le HTML — reviews.json contient du texte saisi par des tiers."""
+    return (str(texte).replace("&", "&amp;").replace("<", "&lt;")
+            .replace(">", "&gt;").replace('"', "&quot;"))
+
+
+def carte(avis, dup=False):
+    """Une carte d'avis. `dup` marque la copie qui sert à boucler le défilement."""
+    cache = ' aria-hidden="true"' if dup else ""
+    initiale = echappe(avis["pseudo"][:1].upper())
+    return (
+        f'<figure class="mqcard"{cache}>'
+        f'<blockquote>{echappe(avis["texte"])}</blockquote>'
+        f'<figcaption class="who">'
+        f'<span class="av" aria-hidden="true">{initiale}</span>'
+        f'<span class="who-txt"><b>{echappe(avis["pseudo"])}</b>'
+        f'<span>{echappe(avis["produit"])}</span></span>'
+        f'</figcaption></figure>'
+    )
+
+
+def bloc_avis(donnees):
+    """Le contenu généré : conteneur, piste dupliquée, mention de collecte."""
+    liste = donnees["avis"]
+    piste = "".join(carte(a) for a in liste)
+    copie = "".join(carte(a, dup=True) for a in liste)
+    statique = "" if len(liste) >= SEUIL_MARQUEE else " mq-static"
+    mention = MENTION.format(date=echappe(donnees.get("mise_a_jour", "")))
+    return (f'<div class="mq{statique}"><div class="mqtrack">{piste}{copie}</div></div>'
+            f'<p class="reviews-note rv">{mention}</p>')
+
+
+def injecte_avis(texte, donnees):
+    """Remplace ce qui se trouve entre les marqueurs. Les marqueurs restent."""
+    debut = texte.index(DEBUT) + len(DEBUT)
+    fin = texte.index(FIN)
+    return texte[:debut] + bloc_avis(donnees) + texte[fin:]
 
 
 def data_uri(fichier):
@@ -50,8 +102,12 @@ def main():
         key=lambda p: -len(p[0]),
     )
 
+    donnees = json.loads(REVIEWS.read_text(encoding="utf-8"))
+
     for source, cible in PAGES:
         texte = (SRC / source).read_text(encoding="utf-8")
+        if DEBUT in texte:
+            texte = injecte_avis(texte, donnees)
         for chemin, uri in remplacements:
             texte = texte.replace(chemin, uri)
 
