@@ -36,7 +36,10 @@ function valide(c) {
   if (!PRODUITS.has(texte(c.produit))) e.produit = "Choisis le produit concerné.";
 
   const email = texte(c.email);
-  if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email))
+  // 254 caractères : maximum pratique d'une adresse email complète (RFC 5321).
+  // Sans ce plafond, un email démesuré passerait la regex et atteindrait le
+  // champ Discord correspondant, limité à 1024 caractères par embed.
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email) || email.length > 254)
     e.email = "Indique l'email utilisé lors de ton achat.";
 
   const pseudo = texte(c.pseudo);
