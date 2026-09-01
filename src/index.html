@@ -320,6 +320,15 @@ section{max-width:1120px;margin:0 auto;padding:clamp(60px,9vh,104px) clamp(20px,
 }
 .pcard .media video{width:86%;aspect-ratio:1;object-fit:cover}
 .pcard .media img{width:74%;filter:drop-shadow(0 18px 26px rgba(0,0,0,.2))}
+/* Carte MotionLAB : la capture du panel (sombre, très verticale) est posée
+   sur le charcoal du plugin, alignée en haut — le bas déborde et se coupe
+   proprement dans l'overflow du .media. */
+.pcard .media.ml{background:linear-gradient(180deg,#2A2D31,#1B1D20)}
+.pcard .media.ml img{width:54%;align-self:flex-start;margin-top:7%;border-radius:14px;
+  filter:drop-shadow(0 18px 30px rgba(0,0,0,.55))}
+.pcard .media .newtag{position:absolute;top:12px;left:12px;font-family:var(--lbl);font-weight:700;
+  font-size:9px;letter-spacing:.12em;text-transform:uppercase;color:#B9CBF2;
+  background:rgba(69,115,210,.3);border:1px solid rgba(94,140,220,.55);border-radius:999px;padding:4px 10px}
 .pcard .body{padding:20px 22px 22px;display:flex;flex-direction:column;gap:10px;flex:1}
 .pcard .top{display:flex;justify-content:space-between;align-items:center;gap:10px}
 .ptype{font-size:9.5px;color:var(--dim)}
@@ -648,6 +657,18 @@ footer{background:var(--charcoal);color:#EDEDE8;margin-top:30px;position:relativ
     <div class="grid">
       <article class="card glow-card pcard tilt rv" style="--d:.0s">
         <span class="sheen" aria-hidden="true"></span>
+        <div class="media ml"><span class="newtag">Nouveau</span><img src="assets/png-16.png" alt="MotionLAB — le panel dans After Effects" loading="lazy"></div>
+        <div class="body">
+          <div class="top"><span class="ptype">Plugin · AE + Premiere</span><span class="pprice">39&nbsp;€</span></div>
+          <h4>MotionLAB</h4>
+          <p class="desc">10 animations de texte et 8 outils dans un panel — le même dans After Effects et Premiere Pro.</p>
+          <a data-track="cta_shop_motionlab" class="go" href="/motionlab">Découvrir le plugin
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
+          </a>
+        </div>
+      </article>
+      <article class="card glow-card pcard tilt rv" style="--d:.08s">
+        <span class="sheen" aria-hidden="true"></span>
         <div class="media"><video autoplay loop muted playsinline aria-label="MetaVision — Formation VFX"><source src="assets/mp4-02.mp4" type="video/mp4"></video></div>
         <div class="body">
           <div class="top"><span class="ptype">Cours · 18 leçons</span><span class="pprice">150&nbsp;€</span></div>
@@ -658,7 +679,7 @@ footer{background:var(--charcoal);color:#EDEDE8;margin-top:30px;position:relativ
           </a>
         </div>
       </article>
-      <article class="card glow-card pcard tilt rv" style="--d:.08s">
+      <article class="card glow-card pcard tilt rv" style="--d:.16s">
         <span class="sheen" aria-hidden="true"></span>
         <div class="media"><video autoplay loop muted playsinline aria-label="Ultimate iOS Pack"><source src="assets/mp4-03.mp4" type="video/mp4"></video></div>
         <div class="body">
@@ -670,7 +691,7 @@ footer{background:var(--charcoal);color:#EDEDE8;margin-top:30px;position:relativ
           </a>
         </div>
       </article>
-      <article class="card glow-card pcard tilt rv" style="--d:.16s">
+      <article class="card glow-card pcard tilt rv" style="--d:.0s">
         <span class="sheen" aria-hidden="true"></span>
         <div class="media"><video autoplay loop muted playsinline aria-label="Ghost FX"><source src="assets/mp4-04.mp4" type="video/mp4"></video></div>
         <div class="body">
@@ -682,7 +703,7 @@ footer{background:var(--charcoal);color:#EDEDE8;margin-top:30px;position:relativ
           </a>
         </div>
       </article>
-      <article class="card glow-card pcard tilt rv" style="--d:.0s">
+      <article class="card glow-card pcard tilt rv" style="--d:.08s">
         <span class="sheen" aria-hidden="true"></span>
         <div class="media"><video autoplay loop muted playsinline aria-label="Fade Pack"><source src="assets/mp4-05.mp4" type="video/mp4"></video></div>
         <div class="body">
@@ -694,7 +715,7 @@ footer{background:var(--charcoal);color:#EDEDE8;margin-top:30px;position:relativ
           </a>
         </div>
       </article>
-      <article class="card glow-card pcard tilt rv" style="--d:.08s">
+      <article class="card glow-card pcard tilt rv" style="--d:.16s">
         <span class="sheen" aria-hidden="true"></span>
         <div class="media"><img src="assets/png-08.png" alt="Vortex Sound Pack" loading="lazy"></div>
         <div class="body">
@@ -706,7 +727,7 @@ footer{background:var(--charcoal);color:#EDEDE8;margin-top:30px;position:relativ
           </a>
         </div>
       </article>
-      <article class="card glow-card pcard tilt rv" style="--d:.16s">
+      <article class="card glow-card pcard tilt rv" style="--d:.0s">
         <span class="sheen" aria-hidden="true"></span>
         <div class="media"><img src="assets/png-09.png" alt="Whoosh Sound Pack" loading="lazy"></div>
         <div class="body">

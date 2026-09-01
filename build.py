@@ -23,7 +23,8 @@ DIST = ICI / "dist"
 # Chaque page source et sa destination dans dist/
 PAGES = [("index.html", "index.html"),
          ("portfolio.html", "portfolio/index.html"),
-         ("avis.html", "avis/index.html")]
+         ("avis.html", "avis/index.html"),
+         ("motionlab.html", "motionlab/index.html")]
 
 MIME = {
     "png": "image/png", "jpg": "image/jpeg", "jpeg": "image/jpeg",
