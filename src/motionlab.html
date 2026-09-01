@@ -1,7 +1,7 @@
 <!doctype html><html lang="fr"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>MotionLAB — Plugin texte After Effects & Premiere Pro | FemzLab</title>
-<meta name="description" content="10 animations de texte prêtes à poser, 8 outils d'animation, un seul panel — le même dans After Effects et Premiere Pro. Par FemzLab.">
+<meta name="description" content="10 animations de texte prêtes à poser, 8 outils d'animation, un seul panel pour After Effects et Premiere Pro. Par FemzLab.">
 <!-- Google Tag Manager -->
 <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
 new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
@@ -17,7 +17,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 :root{
   --paper:#E4E4DF;--ink:#0A0A08;--charcoal:#161616;--muted:#67675F;--dim:#8D8D84;
   --line:rgba(20,20,15,.1);--line-strong:rgba(20,20,15,.18);
-  --shadow:0 18px 44px rgba(25,25,18,.12);--shadow-lg:0 30px 70px rgba(25,25,18,.18);
+  --shadow:0 18px 44px rgba(25,25,18,.10);--shadow-lg:0 30px 70px rgba(25,25,18,.16);
   --accent:#5EA2FF;--r-lg:18px;--lbl:'Inter',sans-serif;
   /* Tokens du panel lui-même — les tuiles sombres citent la vraie UI du plugin */
   --ml-top:#2A2D31;--ml-bottom:#1B1D20;--ml-card:#34383D;--ml-txt:#E6E8EA;--ml-dim:#8A9096;--ml-blue:#4573D2;
@@ -92,7 +92,7 @@ nav.dock::before{content:"";position:absolute;inset:-70%;z-index:-1;pointer-even
 .btn{display:inline-flex;align-items:center;justify-content:center;gap:9px;border:1.5px solid currentColor;
   border-radius:999px;padding:11px 22px;font-size:13.5px;font-weight:700;letter-spacing:.02em;
   background:transparent;transition:background .2s,color .2s,transform .2s,box-shadow .25s}
-.dock .btn.solid{background:#fff;color:#0A0A0A;border:none;padding:10px 19px}
+.dock .btn.solid{background:#fff;color:#0A0A0A;border:none;padding:10px 19px;white-space:nowrap}
 .dock .btn.solid:hover{transform:translateY(-1px);box-shadow:0 0 24px rgba(255,255,255,.45)}
 .nav-toggle{display:none;background:transparent;border:0;padding:9px;border-radius:999px;cursor:pointer;position:relative;z-index:1}
 .nav-toggle span{display:block;width:19px;height:1.5px;background:#fff;border-radius:1px;transition:transform .25s,opacity .25s}
@@ -103,6 +103,7 @@ nav.dock::before{content:"";position:absolute;inset:-70%;z-index:-1;pointer-even
   .fixed-logo{height:44px}
   nav.dock{top:74px;overflow:visible}
   .dock-scrolled{top:14px!important}
+  .dock .btn.solid{padding:9px 14px;font-size:12.5px}
   .nav-toggle{display:inline-flex;flex-direction:column;align-items:center;justify-content:center}
   .nav-links-menu{position:absolute;top:calc(100% + 12px);left:50%;transform:translateX(-50%);
     flex-direction:column;align-items:stretch;gap:2px;min-width:210px;
@@ -133,22 +134,55 @@ nav.dock::before{content:"";position:absolute;inset:-70%;z-index:-1;pointer-even
 @keyframes titleMagic{from{background-position:200% 0}to{background-position:-120% 0}}
 .sec-head p{color:var(--muted);margin-top:8px;font-size:14.5px;max-width:560px;margin-left:auto;margin-right:auto}
 
-/* ---------- HERO ---------- */
-.hero{max-width:1100px;margin:0 auto;padding:170px clamp(20px,5vw,48px) 30px;
-  display:grid;grid-template-columns:1.15fr .85fr;gap:clamp(28px,5vw,64px);align-items:center;min-height:88vh}
-.hero-txt .ptag{display:inline-flex;align-items:center;gap:8px;font-size:11px;color:var(--muted);
-  border:1px solid var(--line-strong);border-radius:999px;padding:7px 14px;margin-bottom:20px;background:rgba(255,255,255,.5)}
-.hero-txt .ptag i{width:7px;height:7px;border-radius:50%;background:var(--accent);display:inline-block;
+/* ---------- S1 : HÉROS MANIFESTE + BANDE D'ACHAT ---------- */
+.ptag{display:inline-flex;align-items:center;gap:8px;font-size:11px;color:var(--muted);
+  border:1px solid var(--line-strong);border-radius:999px;padding:7px 14px;background:rgba(255,255,255,.5)}
+.ptag i{width:7px;height:7px;border-radius:50%;background:var(--accent);display:inline-block;
   box-shadow:0 0 8px rgba(94,162,255,.9);font-style:normal}
-.hero-txt h1{font-family:'Montserrat',sans-serif;font-weight:800;text-transform:uppercase;letter-spacing:-.02em;
-  font-size:clamp(44px,7vw,76px);line-height:1.02}
-.hero-txt h1 .v1{font-size:.32em;vertical-align:top;letter-spacing:.08em;color:var(--dim);
-  border:2px solid var(--line-strong);border-radius:10px;padding:2px 8px;position:relative;top:.5em;margin-left:6px}
-.hero-txt .pitch{margin-top:18px;font-size:clamp(16px,1.7vw,19px);color:var(--muted);max-width:460px;line-height:1.55}
-.hero-txt .pitch b{color:var(--ink)}
-.hero-cta{display:flex;gap:14px;margin-top:30px;flex-wrap:wrap;align-items:center}
+
+.mani{max-width:1100px;margin:0 auto;padding:clamp(120px,16vh,170px) clamp(20px,5vw,48px) 0;text-align:center}
+.mani .ptag{margin-bottom:18px}
+.mani h1{font-family:'Montserrat',sans-serif;font-weight:800;text-transform:uppercase;
+  letter-spacing:-.025em;font-size:clamp(40px,7.6vw,84px);line-height:.98;
+  display:flex;flex-direction:column;align-items:center}
+.mani .mword{display:block;position:relative}
+.mani .m2{color:var(--ink)}
+@supports (-webkit-text-stroke:2px #000){
+  .mani .m2{color:transparent;-webkit-text-stroke:2.5px var(--ink)}}
+@keyframes a-blurin-h{from{filter:blur(14px);opacity:0;letter-spacing:.12em}
+  to{filter:blur(0);opacity:1;letter-spacing:-.025em}}
+.mani.in .m1{animation:a-blurin-h 1s .05s cubic-bezier(.22,1,.36,1) both}
+.mani.in .m2{animation:a-drop 1s .5s cubic-bezier(.3,1.6,.4,1) both}
+.mani.in .m3{animation:a-pop .9s 1.05s cubic-bezier(.22,1,.36,1) both}
+.mani:not(.in) .mword{opacity:0}
+/* GREFFE B — chips nom-de-preset, style .psplit en version claire */
+.mchip{position:absolute;top:-2px;right:0;transform:translate(calc(100% + 10px),0);
+  font-family:var(--lbl);font-weight:700;font-size:9px;letter-spacing:.12em;
+  text-transform:uppercase;color:var(--muted);white-space:nowrap;
+  border:1px solid var(--line-strong);border-radius:999px;padding:3px 8px;
+  background:rgba(255,255,255,.6);opacity:0}
+.mani.in .m1 .mchip{animation:chipIn .4s 1.1s ease both}
+.mani.in .m2 .mchip{animation:chipIn .4s 1.55s ease both}
+.mani.in .m3 .mchip{animation:chipIn .4s 2s ease both}
+@keyframes chipIn{from{opacity:0;transform:translate(calc(100% + 4px),0)}
+  to{opacity:1;transform:translate(calc(100% + 10px),0)}}
+@media (max-width:700px){.mchip{display:none}} /* pas de débordement mobile */
+
+.buystrip{max-width:1100px;margin:26px auto 0;padding:0 clamp(20px,5vw,48px) 34px;
+  display:grid;grid-template-columns:1.15fr .85fr;gap:clamp(28px,5vw,64px);align-items:center}
+.mlname{font-family:'Montserrat',sans-serif;font-weight:800;text-transform:uppercase;
+  font-size:20px;letter-spacing:-.01em;margin-bottom:14px}
+.mlname .v1{font-size:11px;letter-spacing:.08em;color:var(--dim);
+  border:2px solid var(--line-strong);border-radius:8px;padding:2px 7px;
+  vertical-align:middle;margin-left:8px}
+.pitch{font-size:clamp(16px,1.7vw,19px);color:var(--muted);max-width:460px;line-height:1.55}
+.pitch b{color:var(--ink)}
+.ppay{margin-top:16px;font-family:var(--lbl);font-weight:700;font-size:12px;
+  letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.ppay b{color:var(--ink);font-size:15px;letter-spacing:0}
+.hero-cta{display:flex;gap:14px;margin-top:22px;flex-wrap:wrap;align-items:center}
 .btn-buy{display:inline-flex;align-items:center;gap:10px;background:var(--ink);color:#fff;border-radius:999px;
-  padding:16px 30px;font-weight:700;font-size:15px;letter-spacing:.01em;
+  padding:16px 30px;font-weight:700;font-size:15px;letter-spacing:.01em;white-space:nowrap;
   transition:transform .18s,box-shadow .25s}
 .btn-buy:hover{transform:translateY(-2px);box-shadow:var(--shadow-lg)}
 .btn-buy .p{font-family:var(--lbl);font-weight:700;font-size:12px;letter-spacing:.06em;
@@ -156,22 +190,56 @@ nav.dock::before{content:"";position:absolute;inset:-70%;z-index:-1;pointer-even
 .btn-ghost{display:inline-flex;align-items:center;gap:8px;border:1.5px solid var(--line-strong);border-radius:999px;
   padding:14px 24px;font-weight:700;font-size:13.5px;color:var(--muted);transition:color .2s,border-color .2s,transform .18s}
 .btn-ghost:hover{color:var(--ink);border-color:var(--ink);transform:translateY(-2px)}
-.hero-meta{display:flex;gap:18px;margin-top:26px;font-size:12px;color:var(--dim);flex-wrap:wrap}
+.hero-meta{display:flex;gap:18px;margin-top:22px;font-size:12px;color:var(--dim);flex-wrap:wrap}
 .hero-meta span{display:inline-flex;align-items:center;gap:7px}
 .hero-meta svg{width:14px;height:14px;stroke:var(--accent)}
 
 /* le panel réel — objet-héros, posé comme du hardware */
 .hero-panel{position:relative;display:flex;justify-content:center}
-.hero-panel .frame{position:relative;width:min(320px,78vw);border-radius:26px;
+.hero-panel .frame{position:relative;width:min(420px,86vw);border-radius:26px;
   transform:rotate(2.2deg);transition:transform .5s cubic-bezier(.22,1,.36,1);
   filter:drop-shadow(0 40px 80px rgba(15,20,40,.38)) drop-shadow(0 8px 22px rgba(15,20,40,.25))}
 .hero-panel:hover .frame{transform:rotate(0deg) scale(1.015)}
-.hero-panel img{border-radius:26px;width:100%}
+.hero-panel img{border-radius:26px;width:100%;height:auto}
 .hero-panel .halo{position:absolute;inset:-14%;z-index:-1;pointer-events:none;
   background:radial-gradient(52% 46% at 50% 42%,rgba(94,162,255,.34),transparent 70%);
   filter:blur(10px)}
+/* l'onglet MOTION de la capture n'existe pas encore : badge honnête posé dessus */
+.hero-panel .soon-chip{position:absolute;left:50%;top:24.6%;transform:translate(-50%,-50%);z-index:2;pointer-events:none;
+  font-family:var(--lbl);font-weight:700;font-size:9.5px;letter-spacing:.12em;text-transform:uppercase;white-space:nowrap;
+  color:#B9CBF2;background:rgba(23,24,28,.94);border:1px solid rgba(69,115,210,.55);border-radius:999px;padding:3px 9px;
+  box-shadow:0 4px 14px rgba(0,0,0,.45)}
 
-/* ---------- PRESETS : 10 tuiles sombres, chaque nom joue son animation ---------- */
+/* ---------- S2 : LE DÉFILÉ DES DIX ---------- */
+.defile{border-top:1px solid var(--line);border-bottom:1px solid var(--line);
+  margin:clamp(44px,7vh,84px) 0 0;padding:20px 0;overflow:hidden;
+  -webkit-mask-image:linear-gradient(90deg,transparent,#000 6%,#000 94%,transparent);
+  mask-image:linear-gradient(90deg,transparent,#000 6%,#000 94%,transparent)}
+.defile-track{display:flex;width:max-content;animation:defileX 44s linear infinite;will-change:transform}
+.defile:hover .defile-track{animation-play-state:paused}
+@keyframes defileX{to{transform:translateX(-50%)}}
+.defile-set{display:flex;align-items:center;gap:34px;padding-right:34px}
+.defile-set b{font-family:'Montserrat',sans-serif;font-weight:800;text-transform:uppercase;
+  font-size:clamp(34px,5.6vw,68px);letter-spacing:-.02em;white-space:nowrap;line-height:1.1}
+.defile-set b:nth-child(4n+3){color:var(--ink)}
+@supports (-webkit-text-stroke:2px #000){
+  .defile-set b:nth-child(4n+3){color:transparent;-webkit-text-stroke:2px var(--ink)}}
+.defile-set .dot{width:9px;height:9px;border-radius:50%;background:var(--accent);flex:none}
+.defile-set sup.sp{font-family:var(--lbl);font-weight:700;font-size:10px;
+  letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-left:6px}
+
+/* ---------- S3 : WORKFLOW 01/02/03 ---------- */
+.flow-wrap{max-width:1100px;margin:0 auto;padding:26px clamp(20px,5vw,48px) 0;
+  display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+.fstep{background:#fff;border-radius:var(--r-lg);box-shadow:var(--shadow);padding:28px}
+.fn{display:block;font-family:'Montserrat',sans-serif;font-weight:800;font-size:46px;
+  letter-spacing:-.02em;color:var(--dim)}
+@supports (-webkit-text-stroke:1.5px #000){.fn{color:transparent;-webkit-text-stroke:1.5px var(--ink)}}
+.fstep h3{font-family:'Montserrat',sans-serif;font-weight:800;font-size:17px;text-transform:uppercase;
+  letter-spacing:-.01em;margin-top:12px}
+.fstep p{font-size:14px;color:var(--muted);margin-top:8px;line-height:1.55}
+
+/* ---------- S4 : PRESETS : 10 tuiles sombres, chaque nom joue son animation ---------- */
 .presets-wrap{max-width:1100px;margin:0 auto;padding:26px clamp(20px,5vw,48px) 10px}
 .pgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(196px,1fr));gap:14px}
 .ptile{position:relative;overflow:hidden;border-radius:16px;
@@ -190,7 +258,9 @@ nav.dock::before{content:"";position:absolute;inset:-70%;z-index:-1;pointer-even
   letter-spacing:.1em;color:#B9CBF2;background:rgba(69,115,210,.28);border:1px solid rgba(69,115,210,.5);
   border-radius:999px;padding:3px 7px}
 
-/* animations par preset — rejouées au reveal et au survol (classe .an) */
+/* animations par preset — rejouées au reveal et au survol (classe .an)
+   NB keyframes partagées : a-drop / a-pop / a-rise sont aussi utilisées par
+   le manifeste (S1) et le CTA final (S11) — ne pas renommer. */
 .an[data-anim="bounce-in"] .pname{animation:a-bouncein 1s cubic-bezier(.22,1,.36,1) both}
 @keyframes a-bouncein{0%{transform:translateY(-140%);opacity:0}55%{transform:translateY(10%);opacity:1}75%{transform:translateY(-5%)}100%{transform:translateY(0)}}
 .an[data-anim="fade-up"] .pname{animation:a-fadeup 1s cubic-bezier(.22,1,.36,1) both}
@@ -217,7 +287,20 @@ nav.dock::before{content:"";position:absolute;inset:-70%;z-index:-1;pointer-even
   font-size:13px;color:var(--muted);text-align:center}
 .split-note b{color:var(--ink)}
 
-/* ---------- DEUX APPS ---------- */
+/* ---------- S5 : DIX ANIMATIONS, UNE SEULE SIGNATURE ---------- */
+.sig-wrap{max-width:1100px;margin:0 auto;padding:26px clamp(20px,5vw,48px) 0;
+  display:grid;grid-template-columns:1.05fr .95fr;gap:clamp(28px,5vw,60px);align-items:center}
+.sig-txt p{font-size:16px;line-height:1.65;color:var(--muted)}
+.sig-txt p+p{margin-top:14px}
+.sig-txt b{color:var(--ink)}
+.sig-fig{justify-self:center;width:100%;max-width:400px;margin:0}
+.sig-crop{width:100%;aspect-ratio:1/1.02;overflow:hidden;border-radius:20px;
+  box-shadow:var(--shadow-lg);background:linear-gradient(180deg,var(--ml-top),var(--ml-bottom))}
+.sig-crop img{width:100%;height:100%;object-fit:cover;object-position:center bottom}
+.sig-cap{margin-top:12px;font-size:12px;color:var(--dim);text-align:center;
+  font-family:var(--lbl);font-weight:700;letter-spacing:.1em;text-transform:uppercase}
+
+/* ---------- S6 : DEUX APPS ---------- */
 .apps-wrap{max-width:1100px;margin:0 auto;padding:26px clamp(20px,5vw,48px) 0;
   display:grid;grid-template-columns:1fr 1fr;gap:20px}
 .app-card{background:#fff;border-radius:var(--r-lg);box-shadow:var(--shadow);padding:28px;
@@ -248,7 +331,7 @@ nav.dock::before{content:"";position:absolute;inset:-70%;z-index:-1;pointer-even
 .eg-toggle::after{content:"";position:absolute;top:2px;right:2px;width:13px;height:13px;border-radius:50%;background:#fff}
 .eg-text{background:#101114;border-radius:8px;padding:9px 12px;font-size:12.5px;color:#E6E8EA;letter-spacing:.02em}
 
-/* ---------- OUTILS ---------- */
+/* ---------- S7 : OUTILS ---------- */
 .tools-wrap{max-width:1100px;margin:0 auto;padding:26px clamp(20px,5vw,48px) 0}
 .tgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
 .ttile{background:linear-gradient(180deg,var(--ml-top),var(--ml-bottom));border:1px solid rgba(255,255,255,.07);
@@ -263,8 +346,15 @@ nav.dock::before{content:"";position:absolute;inset:-70%;z-index:-1;pointer-even
   border:1px solid rgba(160,100,220,.4);border-radius:999px;padding:3px 8px}
 .tools-note{margin-top:14px;font-size:12.5px;color:var(--dim);text-align:center}
 
+/* ---------- S8 : CITATION CRÉATEUR ---------- */
+.quote-sec{max-width:760px;margin:0 auto;padding:clamp(56px,9vh,100px) clamp(20px,5vw,48px) 0;text-align:center}
+.qmark{display:block;font-family:'Montserrat',sans-serif;font-weight:800;font-size:64px;line-height:.7;color:var(--accent)}
+.quote-sec blockquote p{font-style:italic;font-size:clamp(19px,2.6vw,26px);line-height:1.5;color:var(--ink);margin-top:12px}
+.quote-sec figcaption{margin-top:18px;font-family:var(--lbl);font-weight:700;font-size:11px;
+  letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+
 /* ---------- MOTION coming soon ---------- */
-.soon{max-width:1100px;margin:54px auto 0;padding:0 clamp(20px,5vw,48px)}
+.soon{max-width:1100px;margin:26px auto 0;padding:0 clamp(20px,5vw,48px)}
 .soon-card{background:linear-gradient(115deg,#17181C,#232630);border-radius:var(--r-lg);
   padding:30px clamp(22px,4vw,44px);display:flex;align-items:center;gap:22px;flex-wrap:wrap;
   border:1px solid rgba(255,255,255,.08);position:relative;overflow:hidden}
@@ -275,7 +365,7 @@ nav.dock::before{content:"";position:absolute;inset:-70%;z-index:-1;pointer-even
 .soon-card p{color:#B9BDC4;font-size:14px;max-width:640px;position:relative}
 .soon-card p b{color:#fff}
 
-/* ---------- ACHAT ---------- */
+/* ---------- S9 : ACHAT ---------- */
 .buy-wrap{max-width:1100px;margin:0 auto;padding:26px clamp(20px,5vw,48px) 10px;
   display:grid;grid-template-columns:1.05fr .95fr;gap:20px;align-items:stretch}
 .buy-card{background:#fff;border-radius:var(--r-lg);box-shadow:var(--shadow-lg);padding:34px;
@@ -300,8 +390,8 @@ nav.dock::before{content:"";position:absolute;inset:-70%;z-index:-1;pointer-even
 .step div p b{color:var(--ml-txt)}
 .step div p a{color:#7FA4E8;text-decoration:underline}
 
-/* ---------- FAQ ---------- */
-.faq-wrap{max-width:720px;margin:0 auto;padding:26px clamp(20px,5vw,48px) 80px;display:flex;flex-direction:column;gap:12px}
+/* ---------- S10 : FAQ ---------- */
+.faq-wrap{max-width:720px;margin:0 auto;padding:26px clamp(20px,5vw,48px) 20px;display:flex;flex-direction:column;gap:12px}
 .faq-wrap details{background:#fff;border-radius:14px;box-shadow:var(--shadow);padding:0;overflow:hidden}
 .faq-wrap summary{list-style:none;cursor:pointer;padding:19px 24px;font-weight:700;font-size:15px;
   display:flex;justify-content:space-between;align-items:center;gap:14px}
@@ -311,6 +401,60 @@ nav.dock::before{content:"";position:absolute;inset:-70%;z-index:-1;pointer-even
 .faq-wrap details[open] summary::after{transform:rotate(45deg)}
 .faq-wrap details p{padding:0 24px 20px;color:var(--muted);font-size:14px;line-height:1.6}
 .faq-wrap details p a{text-decoration:underline}
+
+/* ---------- S11 : CTA FINAL ---------- */
+.final{max-width:900px;margin:0 auto;padding:clamp(56px,9vh,100px) clamp(20px,5vw,48px) 20px;text-align:center}
+.final h2{font-family:'Montserrat',sans-serif;font-weight:800;text-transform:uppercase;
+  font-size:clamp(30px,5.5vw,60px);letter-spacing:-.02em}
+.final.in h2{animation:a-rise 1s cubic-bezier(.22,1,.36,1) both}
+.final:not(.in) h2{opacity:0}
+.final .btn-buy{margin-top:28px;font-size:16px;padding:18px 34px}
+.final .btn-buy svg{width:16px;height:16px;stroke:currentColor;flex:none}
+.final-sub{margin-top:12px;font-size:12px;color:var(--dim);font-family:var(--lbl);
+  font-weight:700;letter-spacing:.1em;text-transform:uppercase}
+.assure{display:flex;justify-content:center;gap:26px;flex-wrap:wrap;margin-top:28px;
+  font-size:12.5px;color:var(--muted)}
+.assure span{display:inline-flex;gap:8px;align-items:center}
+.assure svg{width:16px;height:16px;stroke:var(--accent);flex:none}
+
+/* ---------- S12 : CROSS-SELL ---------- */
+.more-wrap{max-width:820px;margin:0 auto;padding:26px clamp(20px,5vw,48px) 90px}
+.mrow{display:grid;grid-template-columns:minmax(110px,auto) 1fr auto auto;gap:18px;
+  align-items:center;padding:20px 4px;border-top:1px solid var(--line)}
+.mrow:last-child{border-bottom:1px solid var(--line)}
+.mname{font-family:'Montserrat',sans-serif;font-weight:800;text-transform:uppercase;font-size:16px;letter-spacing:-.01em}
+.mdesc{font-size:13.5px;color:var(--muted)}
+.mprice{font-family:var(--lbl);font-weight:700;font-size:12px;letter-spacing:.08em;
+  text-transform:uppercase;color:var(--ink);white-space:nowrap}
+.here{font-family:var(--lbl);font-weight:700;font-size:9px;letter-spacing:.12em;text-transform:uppercase;
+  color:var(--muted);border:1px solid var(--line-strong);background:rgba(255,255,255,.6);
+  border-radius:999px;padding:3px 8px;justify-self:end;white-space:nowrap}
+.go{display:inline-flex;align-items:center;gap:8px;font-size:13px;font-weight:700;color:var(--ink);
+  border-bottom:1.5px solid var(--ink);padding-bottom:3px;transition:gap .25s;justify-self:end;white-space:nowrap}
+.go:hover{gap:13px}
+.go svg{width:13px;height:13px;stroke:currentColor;flex:none}
+@media (max-width:640px){
+  .mrow{grid-template-columns:1fr auto;row-gap:6px}
+  .mname{grid-column:1;grid-row:1}
+  .mprice{grid-column:2;grid-row:1;justify-self:end}
+  .mdesc{grid-column:1/-1;grid-row:2}
+  .here,.mrow .go{grid-column:1/-1;grid-row:3;justify-self:start}
+}
+
+/* ---------- SB : STICKY BAR MOBILE (greffe B) ---------- */
+.stickybar{position:fixed;left:12px;right:12px;
+  bottom:calc(12px + env(safe-area-inset-bottom));z-index:54;display:none;
+  align-items:center;justify-content:space-between;gap:12px;padding:8px 8px 8px 20px;
+  background:rgba(15,17,23,.6);backdrop-filter:blur(24px) saturate(180%);
+  -webkit-backdrop-filter:blur(24px) saturate(180%);
+  border:1px solid rgba(255,255,255,.22);border-radius:999px;
+  box-shadow:0 14px 40px rgba(0,0,0,.35);
+  transform:translateY(120%);transition:transform .35s cubic-bezier(.22,1,.36,1)}
+.stickybar.on{transform:translateY(0)}
+.sb-l{font-family:var(--lbl);font-weight:700;font-size:13px;color:#fff}
+.sb-btn{background:#fff;color:#0A0A0A;border-radius:999px;padding:10px 19px;
+  font-weight:700;font-size:13.5px}
+@media (max-width:720px){.stickybar{display:flex}}
 
 /* ---------- footer ---------- */
 footer{background:var(--charcoal);color:#EDEDE8;margin-top:20px;position:relative;z-index:2}
@@ -325,10 +469,14 @@ footer{background:var(--charcoal);color:#EDEDE8;margin-top:20px;position:relativ
 .legal{max-width:1100px;margin:0 auto;padding:0 clamp(20px,5vw,48px) 32px;font-size:9.5px;letter-spacing:.14em;color:#7E7E78;display:flex;justify-content:space-between;gap:14px;flex-wrap:wrap}
 
 @media (max-width:860px){
-  .hero{grid-template-columns:1fr;padding-top:150px;min-height:0;gap:44px}
-  .hero-txt{text-align:center}
-  .hero-txt .pitch{margin-left:auto;margin-right:auto}
+  .mani{padding-top:140px}
+  .buystrip{grid-template-columns:1fr;text-align:center;gap:36px}
+  .pitch{margin-left:auto;margin-right:auto}
   .hero-cta,.hero-meta{justify-content:center}
+  .hero-panel .frame{width:min(300px,74vw)}
+  .flow-wrap{grid-template-columns:1fr}
+  .sig-wrap{grid-template-columns:1fr}
+  .sig-fig{max-width:min(360px,86vw);margin:0 auto}
   .apps-wrap,.buy-wrap{grid-template-columns:1fr}
   .tgrid{grid-template-columns:repeat(2,1fr)}
 }
@@ -340,8 +488,19 @@ footer{background:var(--charcoal);color:#EDEDE8;margin-top:20px;position:relativ
 @media (prefers-reduced-motion:reduce){
   .rv{opacity:1;transform:none;filter:none;transition:none}
   .an .pname,.an[data-anim="typewriter"] .pname::after{animation:none!important}
+  .sec-head h2:hover{animation:none!important;-webkit-text-fill-color:var(--ink)}
   .fixed-logo .mark,nav.dock::before{animation:none}
-  .hero-panel .frame{transform:none}
+  .hero-panel .frame,.hero-panel:hover .frame{transform:none;transition:none}
+  .mani.in .m1,.mani.in .m2,.mani.in .m3{animation:none}
+  .mani .mword{opacity:1!important}
+  .mchip{display:none}
+  .defile{-webkit-mask-image:none;mask-image:none}
+  .defile-track{animation:none;width:auto;flex-wrap:wrap;justify-content:center}
+  .defile-set[aria-hidden="true"]{display:none}
+  .defile-set{flex-wrap:wrap;justify-content:center;padding:0 20px}
+  .final.in h2{animation:none}
+  .final h2{opacity:1!important}
+  .stickybar{transition:none}
 }
 </style></head>
 <body>
@@ -373,31 +532,94 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 
 <main id="top">
 
-  <!-- ======================= HERO ======================= -->
-  <section class="hero">
-    <div class="hero-txt rv">
-      <span class="ptag"><i></i>Plugin · After Effects + Premiere Pro</span>
-      <h1>Motion<wbr>LAB<span class="v1">V1</span></h1>
-      <p class="pitch"><b>Dix animations de texte prêtes à poser</b>, huit outils d'animation, un seul panel — le même geste dans After Effects et dans Premiere Pro.</p>
+  <!-- ======================= S1 : HÉROS MANIFESTE ======================= -->
+  <section class="mani rv">
+    <span class="ptag"><i></i>Plugin · After Effects + Premiere Pro</span>
+    <h1 aria-label="MotionLAB — des titres qui se posent tout seuls">
+      <span class="mword m1">Des titres<span class="mchip" aria-hidden="true">Blur In</span></span>
+      <span class="mword m2">qui se posent<span class="mchip" aria-hidden="true">Drop Bounce</span></span>
+      <span class="mword m3">tout seuls.<span class="mchip" aria-hidden="true">Pop Bounce</span></span>
+    </h1>
+  </section>
+  <div class="buystrip">
+    <div class="buy-left rv">
+      <p class="mlname">MotionLAB<span class="v1">V1</span></p>
+      <p class="pitch"><b>Dix animations de texte prêtes à poser</b>, huit outils d'animation, un seul panel pour After Effects et Premiere Pro.</p>
+      <p class="ppay"><b>39&nbsp;€</b> · paiement unique · à toi pour toujours</p>
       <div class="hero-cta">
         <a data-track="cta_ml_acheter_hero" class="btn-buy" href="https://pay.femzlab.shop/motionlab">Acheter MotionLAB <span class="p">39&nbsp;€</span></a>
-        <a data-track="cta_ml_voir_presets" class="btn-ghost" href="#presets">Voir les animations</a>
+        <a data-track="cta_ml_voir_presets" class="btn-ghost" href="#presets">Voir les 10 animations</a>
       </div>
       <div class="hero-meta">
-        <span><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>Paiement unique</span>
-        <span><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>Mises à jour V1 incluses</span>
         <span><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>Téléchargement immédiat</span>
+        <span><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>Mises à jour V1 incluses</span>
+        <span><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>Checkout sécurisé via Podia</span>
       </div>
     </div>
     <div class="hero-panel rv" style="--d:.12s">
       <div class="frame">
         <span class="halo" aria-hidden="true"></span>
-        <img src="assets/png-16.png" alt="Le panel MotionLAB dans After Effects : preview BOUNCE IN, contrôles SPEED, BOUNCE et SPLIT, bouton ADD et les huit outils." width="530" height="1300">
+        <img src="assets/png-17.png" alt="Le panel MotionLAB : onglet Texts actif avec la preview BOUNCE IN ; onglet Motion (bientôt) et onglet Favorites." width="900" height="1035" fetchpriority="high">
+        <span class="soon-chip" aria-hidden="true">Bientôt</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ======================= S2 : LE DÉFILÉ DES DIX ======================= -->
+  <section class="defile" role="img" aria-label="Les dix presets : Bounce In, Fade Up, Blur In, Stretch, Typewriter, Font Flip, Count-Up, Rise Bounce, Pop Bounce, Drop Bounce">
+    <div class="defile-track">
+      <div class="defile-set">
+        <b>Bounce In<sup class="sp">Split</sup></b><span class="dot"></span>
+        <b>Fade Up<sup class="sp">Split</sup></b><span class="dot"></span>
+        <b>Blur In<sup class="sp">Split</sup></b><span class="dot"></span>
+        <b>Stretch</b><span class="dot"></span>
+        <b>Typewriter</b><span class="dot"></span>
+        <b>Font Flip</b><span class="dot"></span>
+        <b>Count-Up</b><span class="dot"></span>
+        <b>Rise Bounce<sup class="sp">Split</sup></b><span class="dot"></span>
+        <b>Pop Bounce<sup class="sp">Split</sup></b><span class="dot"></span>
+        <b>Drop Bounce<sup class="sp">Split</sup></b><span class="dot"></span>
+      </div>
+      <div class="defile-set" aria-hidden="true">
+        <b>Bounce In<sup class="sp">Split</sup></b><span class="dot"></span>
+        <b>Fade Up<sup class="sp">Split</sup></b><span class="dot"></span>
+        <b>Blur In<sup class="sp">Split</sup></b><span class="dot"></span>
+        <b>Stretch</b><span class="dot"></span>
+        <b>Typewriter</b><span class="dot"></span>
+        <b>Font Flip</b><span class="dot"></span>
+        <b>Count-Up</b><span class="dot"></span>
+        <b>Rise Bounce<sup class="sp">Split</sup></b><span class="dot"></span>
+        <b>Pop Bounce<sup class="sp">Split</sup></b><span class="dot"></span>
+        <b>Drop Bounce<sup class="sp">Split</sup></b><span class="dot"></span>
       </div>
     </div>
   </section>
 
-  <!-- ======================= PRESETS ======================= -->
+  <!-- ======================= S3 : WORKFLOW 01/02/03 ======================= -->
+  <div class="sec-head rv">
+    <span class="eyebrow">Le geste</span>
+    <h2>Tape. Règle. Add.</h2>
+    <p>Le même workflow dans les deux applications.</p>
+  </div>
+  <div class="flow-wrap">
+    <article class="fstep rv" style="--d:.0s">
+      <span class="fn">01</span>
+      <h3>Tape ton texte</h3>
+      <p>Écris directement dans le panel : le texte de preview est éditable, tu vois l'animation sur tes propres mots.</p>
+    </article>
+    <article class="fstep rv" style="--d:.08s">
+      <span class="fn">02</span>
+      <h3>Choisis et règle</h3>
+      <p>Un preset parmi les dix, la vitesse de 0,5× à 2×, l'intensité selon le preset, le mode mot ou lettre par lettre.</p>
+    </article>
+    <article class="fstep rv" style="--d:.16s">
+      <span class="fn">03</span>
+      <h3>Clique ADD</h3>
+      <p>Dans After Effects, l'animation se pose en vraies keyframes sur ton calque. Dans Premiere Pro, en titre animé directement sur ta timeline.</p>
+    </article>
+  </div>
+
+  <!-- ======================= S4 : PRESETS ======================= -->
   <div class="sec-head rv" id="presets">
     <span class="eyebrow">10 presets texte</span>
     <h2>Chaque animation, en un clic</h2>
@@ -419,7 +641,26 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     <p class="split-note rv"><b>SPLIT :</b> six des dix presets s'animent aussi <b>lettre par lettre</b>, avec un décalage réglable entre chaque lettre — dans After Effects comme dans Premiere Pro.</p>
   </div>
 
-  <!-- ======================= DEUX APPS ======================= -->
+  <!-- ======================= S5 : UNE SEULE SIGNATURE ======================= -->
+  <div class="sec-head rv">
+    <span class="eyebrow">La thèse</span>
+    <h2>Dix animations. Une seule signature.</h2>
+  </div>
+  <div class="sig-wrap">
+    <div class="sig-txt rv">
+      <p>Les dix presets sortent du même moteur : même famille de courbes, mêmes conventions d'amorti, même sens du timing.</p>
+      <p>Tu peux les mélanger dans un même montage — ils auront toujours l'air de venir de la même main.</p>
+      <p>Et réglables sans casser : vitesse de 0,5× à 2×, intensité par preset — tu adaptes, la signature reste.</p>
+    </div>
+    <figure class="sig-fig rv" style="--d:.1s">
+      <div class="sig-crop">
+        <img src="assets/png-16.png" alt="La grille des dix presets texte dans le panel MotionLAB." width="900" height="1973">
+      </div>
+      <figcaption class="sig-cap">Les dix presets, dans le panel.</figcaption>
+    </figure>
+  </div>
+
+  <!-- ======================= S6 : DEUX APPS ======================= -->
   <div class="sec-head rv">
     <span class="eyebrow">Un panel, deux apps</span>
     <h2>After Effects et Premiere Pro</h2>
@@ -434,7 +675,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
       <ul>
         <li><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg><span><b>De vraies keyframes</b> posées sur ton calque texte — tu retouches les courbes de vitesse comme d'habitude.</span></li>
         <li><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg><span>Réglages avant le clic : <b>vitesse, intensité, split mot ou lettres</b> — l'animation est posée déjà calée.</span></li>
-        <li><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg><span>Les <b>huit outils</b> du panel : recadrage, remplissage, tête de lecture, alignement, rebond, wiggle, tracé, cascade.</span></li>
+        <li><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg><span><b>Huit outils</b> dans le panel : recadrage, remplissage, tête de lecture, alignement, rebond, wiggle, tracé, cascade.</span></li>
         <li><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg><span><b>Favoris</b> pour retrouver tes combinaisons en un clic.</span></li>
       </ul>
     </article>
@@ -457,7 +698,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     </article>
   </div>
 
-  <!-- ======================= OUTILS ======================= -->
+  <!-- ======================= S7 : OUTILS ======================= -->
   <div class="sec-head rv">
     <span class="eyebrow">La boîte à outils</span>
     <h2>Huit gestes qui reviennent tout le temps</h2>
@@ -477,18 +718,17 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     <p class="tools-note rv">Dans Premiere Pro, les outils compatibles avec la timeline sont marqués — les autres travaillent sur les calques After Effects.</p>
   </div>
 
-  <!-- ======================= MOTION COMING SOON ======================= -->
-  <div class="soon">
-    <div class="soon-card rv">
-      <span class="lbl">Bientôt · inclus dans la V1</span>
-      <p><b>MOTION</b> — une bibliothèque d'animations prêtes à poser (intros, cartes, éléments graphiques), directement dans le panel. Elle arrivera dans une <b>mise à jour gratuite</b> pour tous ceux qui ont la V1.</p>
-    </div>
-  </div>
+  <!-- ======================= S8 : CITATION CRÉATEUR ======================= -->
+  <figure class="quote-sec rv">
+    <span class="qmark" aria-hidden="true">«</span>
+    <blockquote><p>Je refaisais les mêmes titres à la main, montage après montage. MotionLAB, c'est ces gestes-là réduits à un clic — pour garder mon temps pour ce qui compte : l'émotion.</p></blockquote>
+    <figcaption>Femz · monteur, clips certifiés or &amp; platine · fondateur FemzLab</figcaption>
+  </figure>
 
-  <!-- ======================= ACHAT ======================= -->
+  <!-- ======================= S9 : DANS LA BOÎTE ======================= -->
   <div class="sec-head rv" id="acheter">
-    <span class="eyebrow">Un paiement, tout compris</span>
-    <h2>Passe tes titres au niveau au-dessus</h2>
+    <span class="eyebrow">Tout compris</span>
+    <h2>Dans la boîte</h2>
   </div>
   <div class="buy-wrap">
     <div class="buy-card rv">
@@ -497,11 +737,12 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
         <li><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg><span>Le panel MotionLAB pour <b>After Effects et Premiere Pro</b> — un seul fichier .zxp</span></li>
         <li><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg><span><b>10 presets texte</b>, dont 6 avec le mode lettre par lettre</span></li>
         <li><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg><span><b>8 outils d'animation</b> pour les gestes du quotidien</span></li>
-        <li><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg><span>Les templates <b>MOGRT intégrés</b>, pilotés depuis Essential Graphics</span></li>
-        <li><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg><span>Les <b>mises à jour de la V1</b>, dont la bibliothèque MOTION à venir</span></li>
+        <li><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg><span>Templates MOGRT intégrés, pilotés depuis Essential Graphics</span></li>
+        <li><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg><span>Les Favoris : tes combinaisons preset + réglages, mémorisées dans le panel</span></li>
+        <li><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg><span>Mises à jour de la V1 incluses, dont la bibliothèque MOTION à venir</span></li>
       </ul>
       <a data-track="cta_ml_acheter_bas" class="btn-buy" href="https://pay.femzlab.shop/motionlab">Acheter MotionLAB <span class="p">39&nbsp;€</span></a>
-      <p class="buy-compat">Testé sur After Effects 2025 et Premiere Pro 2025, sur Mac.<br>Une question avant d'acheter ? <a href="mailto:hello@imfemz.com" style="text-decoration:underline">hello@imfemz.com</a></p>
+      <p class="buy-compat">Développé et testé sur After Effects 2025 et Premiere Pro 2025 (Mac). Un souci avec ta config ? <a data-track="cta_ml_contact_compat" href="mailto:hello@imfemz.com" style="text-decoration:underline">Écris-moi</a>, on regarde ensemble.</p>
     </div>
     <div class="install-card rv" style="--d:.1s">
       <h3>Installé en trois minutes</h3>
@@ -510,8 +751,14 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
       <div class="step"><span class="n">3</span><div><p><b>Relance After Effects ou Premiere Pro</b>, puis ouvre <b>Fenêtre → Extensions → MotionLAB</b>. Le panel se docke où tu veux.</p></div></div>
     </div>
   </div>
+  <div class="soon">
+    <div class="soon-card rv">
+      <span class="lbl">Bientôt · inclus dans la V1</span>
+      <p><b>MOTION</b> — une bibliothèque d'animations prêtes à poser (intros, cartes, éléments graphiques), directement dans le panel. Elle arrivera dans une <b>mise à jour gratuite</b> pour tous ceux qui ont la V1.</p>
+    </div>
+  </div>
 
-  <!-- ======================= FAQ ======================= -->
+  <!-- ======================= S10 : FAQ ======================= -->
   <div class="sec-head rv">
     <span class="eyebrow">Questions fréquentes</span>
     <h2>Avant d'acheter</h2>
@@ -523,16 +770,67 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     </details>
     <details class="rv" style="--d:.05s">
       <summary>Quelles versions sont supportées ?</summary>
-      <p>MotionLAB est développé et testé sur After Effects 2025 et Premiere Pro 2025 (Mac). Si ta version pose problème, écris-moi — je regarde avec toi : <a href="mailto:hello@imfemz.com">hello@imfemz.com</a>.</p>
+      <p>MotionLAB est développé et testé sur After Effects 2025 et Premiere Pro 2025 (Mac). Si ta version pose problème, écris-moi — je regarde avec toi : <a data-track="cta_ml_contact_faq_versions" href="mailto:hello@imfemz.com">hello@imfemz.com</a>.</p>
     </details>
     <details class="rv" style="--d:.1s">
+      <summary>Je peux l'utiliser sur des projets clients ?</summary>
+      <p>Oui. Projets clients, contenus monétisés : aucune restriction d'usage. La seule limite : ne pas revendre ni repartager le fichier lui-même.</p>
+    </details>
+    <details class="rv" style="--d:.15s">
+      <summary>Comment je reçois le plugin après l'achat ?</summary>
+      <p>Immédiatement. Le paiement passe par Podia : tu télécharges le .zxp juste après l'achat, et tu peux le re-télécharger à tout moment depuis ton compte.</p>
+    </details>
+    <details class="rv" style="--d:.2s">
       <summary>Comment je reçois les mises à jour ?</summary>
       <p>Toutes les mises à jour de la V1 sont incluses — la bibliothèque MOTION comprise. Tu re-télécharges simplement le fichier depuis ton compte, et tu le réinstalles par-dessus.</p>
     </details>
-    <details class="rv" style="--d:.15s">
-      <summary>Et si je bloque à l'installation ?</summary>
-      <p>Écris-moi à <a href="mailto:hello@imfemz.com">hello@imfemz.com</a> ou passe sur le <a href="https://discord.gg/xmwq2NMDTw" target="_blank" rel="noopener">Discord FemzLab</a> — on débloque ça ensemble.</p>
+    <details class="rv" style="--d:.25s">
+      <summary>Et si ça ne me convient pas ?</summary>
+      <p>MotionLAB est un fichier numérique, il n'y a donc pas de remboursement automatique. Mais si quelque chose coince, écris-moi — on trouve une solution. Le détail est dans les <a href="https://pay.femzlab.shop/terms" target="_blank" rel="noopener">CGV</a>.</p>
     </details>
+    <details class="rv" style="--d:.3s">
+      <summary>Et si je bloque à l'installation ?</summary>
+      <p>Écris-moi à <a data-track="cta_ml_contact_faq_install" href="mailto:hello@imfemz.com">hello@imfemz.com</a> ou passe sur le <a data-track="cta_ml_discord_faq" href="https://discord.gg/xmwq2NMDTw" target="_blank" rel="noopener">Discord FemzLab</a> — on débloque ça ensemble.</p>
+    </details>
+  </div>
+
+  <!-- ======================= S11 : CTA FINAL ======================= -->
+  <section class="final rv">
+    <h2>Prêt à poser tes titres ?</h2>
+    <a data-track="cta_ml_acheter_final" class="btn-buy" href="https://pay.femzlab.shop/motionlab">Débloquer MotionLAB — 39&nbsp;€ <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 5l7 7-7 7"/></svg></a>
+    <p class="final-sub">Paiement unique · Checkout sécurisé via Podia</p>
+    <div class="assure">
+      <span><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v11M6 12l6 6 6-6M5 21h14"/></svg>Téléchargement immédiat</span>
+      <span><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2.5" y="5.5" width="19" height="13" rx="4"/><path d="M10.5 9.5 15 12l-4.5 2.5v-5z"/></svg>After Effects + Premiere Pro</span>
+      <span><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17 3l4 4L8 20l-5 1 1-5 13-13z"/></svg>Tout reste éditable</span>
+      <span><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="7" width="18" height="13" rx="2"/><path d="M8 7V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>Usage commercial autorisé</span>
+    </div>
+  </section>
+
+  <!-- ======================= S12 : CROSS-SELL ======================= -->
+  <div class="sec-head rv">
+    <span class="eyebrow">Et après</span>
+    <h2>Complète ton setup</h2>
+  </div>
+  <div class="more-wrap">
+    <div class="mrow rv">
+      <span class="mname">MotionLAB</span>
+      <span class="mdesc">Le panel que tu viens de voir</span>
+      <span class="mprice">39&nbsp;€</span>
+      <span class="here">Tu es ici</span>
+    </div>
+    <div class="mrow rv" style="--d:.05s">
+      <span class="mname">MetaVision</span>
+      <span class="mdesc">La formation VFX complète — 18 leçons</span>
+      <span class="mprice">150&nbsp;€ ou 2×75&nbsp;€</span>
+      <a data-track="cta_ml_cross_metavision" class="go" href="https://pay.femzlab.shop/metavision">Voir la formation <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 5l7 7-7 7"/></svg></a>
+    </div>
+    <div class="mrow rv" style="--d:.1s">
+      <span class="mname">La boutique</span>
+      <span class="mdesc">Packs SFX, presets et gratuits</span>
+      <span class="mprice">—</span>
+      <a data-track="cta_ml_cross_shop" class="go" href="/#shop">Explorer <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 5l7 7-7 7"/></svg></a>
+    </div>
   </div>
 
 </main>
@@ -553,6 +851,12 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
   </div>
   <div class="legal"><span>© 2026 FemzLab — hello@imfemz.com</span><span>MotionLAB</span></div>
 </footer>
+
+<!-- Sticky bar mobile (greffe B) -->
+<div class="stickybar" aria-hidden="true">
+  <span class="sb-l">MotionLAB — 39&nbsp;€</span>
+  <a data-track="cta_ml_acheter_sticky" class="sb-btn" href="https://pay.femzlab.shop/motionlab" tabindex="-1">Acheter</a>
+</div>
 
 <script>
 const REDUCED=matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -615,18 +919,58 @@ if(navToggle&&navMenu){
     })(t0);
   }
 })();
+
+// Sticky bar mobile : deux sentinelles IO — la barre s'arme quand la buystrip
+// sort de l'écran, se masque quand un autre CTA d'achat est visible
+// (buy-wrap, final, footer). Jamais deux CTA d'achat à l'écran.
+(function(){
+  const sb=document.querySelector('.stickybar');if(!sb)return;
+  const strip=document.querySelector('.buystrip');if(!strip)return;
+  const btn=sb.querySelector('.sb-btn');
+  const others=[document.querySelector('.buy-wrap'),document.querySelector('.final'),document.querySelector('footer')].filter(Boolean);
+  const mq=matchMedia('(max-width:720px)');
+  let stripOut=false;const vis=new Set();
+  function upd(){
+    const on=stripOut&&vis.size===0&&mq.matches;
+    sb.classList.toggle('on',on);
+    sb.setAttribute('aria-hidden',on?'false':'true');
+    if(btn)btn.tabIndex=on?0:-1;
+  }
+  new IntersectionObserver(es=>{es.forEach(e=>{stripOut=!e.isIntersecting;});upd();},{threshold:0}).observe(strip);
+  const io2=new IntersectionObserver(es=>{es.forEach(e=>{if(e.isIntersecting)vis.add(e.target);else vis.delete(e.target);});upd();},{threshold:0});
+  others.forEach(el=>io2.observe(el));
+  if(mq.addEventListener)mq.addEventListener('change',upd);
+})();
 </script>
 
 <script>
 (function(){
   const T={
     "Plugin · After Effects + Premiere Pro":"Plugin · After Effects + Premiere Pro",
-    "Acheter — 39 €":"Buy — €39",
+    "Acheter — 39 €":"Buy — €39",
+    "39 €":"€39",
+    "MotionLAB — 39 €":"MotionLAB — €39",
+    "Bientôt":"Soon",
+    "Des titres":"Titles",
+    "qui se posent":"that land",
+    "tout seuls.":"on their own.",
+    "Dix animations de texte prêtes à poser":"Ten drop-in text animations",
+    ", huit outils d'animation, un seul panel pour After Effects et Premiere Pro.":", eight animation tools, one panel for After Effects and Premiere Pro.",
+    "· paiement unique · à toi pour toujours":"· one-time payment · yours forever",
     "Acheter MotionLAB":"Buy MotionLAB",
-    "Voir les animations":"See the animations",
-    "Paiement unique":"One-time payment",
-    "Mises à jour V1 incluses":"V1 updates included",
+    "Voir les 10 animations":"See the 10 animations",
     "Téléchargement immédiat":"Instant download",
+    "Mises à jour V1 incluses":"V1 updates included",
+    "Checkout sécurisé via Podia":"Secure checkout via Podia",
+    "Le geste":"The move",
+    "Tape. Règle. Add.":"Type. Tweak. Add.",
+    "Le même workflow dans les deux applications.":"The same workflow in both apps.",
+    "Tape ton texte":"Type your text",
+    "Écris directement dans le panel : le texte de preview est éditable, tu vois l'animation sur tes propres mots.":"Write straight into the panel: the preview text is editable, so you see the animation on your own words.",
+    "Choisis et règle":"Pick and tweak",
+    "Un preset parmi les dix, la vitesse de 0,5× à 2×, l'intensité selon le preset, le mode mot ou lettre par lettre.":"One of the ten presets, speed from 0.5× to 2×, intensity per preset, word or letter-by-letter mode.",
+    "Clique ADD":"Hit ADD",
+    "Dans After Effects, l'animation se pose en vraies keyframes sur ton calque. Dans Premiere Pro, en titre animé directement sur ta timeline.":"In After Effects the animation lands as real keyframes on your layer. In Premiere Pro, as an animated title straight on your timeline.",
     "10 presets texte":"10 text presets",
     "Chaque animation, en un clic":"Every animation, one click away",
     "Tu tapes ton texte, tu choisis, tu règles la vitesse, tu cliques ADD. Survole les tuiles : chacune joue sa propre animation.":"Type your text, pick a preset, set the speed, hit ADD. Hover the tiles: each one plays its own animation.",
@@ -640,6 +984,16 @@ if(navToggle&&navMenu){
     "Monte et amortit":"Rises and damps",
     "Pop avec overshoot":"Pops with overshoot",
     "Tombe de haut":"Falls from above",
+    "SPLIT :":"SPLIT:",
+    "six des dix presets s'animent aussi":"six of the ten presets also animate",
+    "lettre par lettre":"letter by letter",
+    ", avec un décalage réglable entre chaque lettre — dans After Effects comme dans Premiere Pro.":", with an adjustable delay between each letter — in After Effects and Premiere Pro alike.",
+    "La thèse":"The thesis",
+    "Dix animations. Une seule signature.":"Ten animations. One signature.",
+    "Les dix presets sortent du même moteur : même famille de courbes, mêmes conventions d'amorti, même sens du timing.":"All ten presets come out of the same engine: same family of curves, same damping conventions, same sense of timing.",
+    "Tu peux les mélanger dans un même montage — ils auront toujours l'air de venir de la même main.":"Mix them within a single edit — they'll always look like they come from the same hand.",
+    "Et réglables sans casser : vitesse de 0,5× à 2×, intensité par preset — tu adaptes, la signature reste.":"And adjustable without breaking: speed from 0.5× to 2×, per-preset intensity — you adapt, the signature stays.",
+    "Les dix presets, dans le panel.":"The ten presets, inside the panel.",
     "Un panel, deux apps":"One panel, two apps",
     "After Effects et Premiere Pro":"After Effects and Premiere Pro",
     "Un seul fichier à installer. Le panel détecte l'application et s'adapte — mêmes presets, mêmes réglages.":"One file to install. The panel detects the app and adapts — same presets, same controls.",
@@ -647,6 +1001,21 @@ if(navToggle&&navMenu){
     "Clés natives, tout reste éditable":"Native keyframes, everything stays editable",
     "Dans Premiere Pro":"In Premiere Pro",
     "Pilotage depuis Essential Graphics":"Controlled from Essential Graphics",
+    "De vraies keyframes":"Real keyframes",
+    "posées sur ton calque texte — tu retouches les courbes de vitesse comme d'habitude.":"set on your text layer — you tweak the speed curves as usual.",
+    "Réglages avant le clic :":"Settings before the click:",
+    "vitesse, intensité, split mot ou lettres":"speed, intensity, word or letter split",
+    "— l'animation est posée déjà calée.":"— the animation lands already timed.",
+    "Huit outils":"Eight tools",
+    "dans le panel : recadrage, remplissage, tête de lecture, alignement, rebond, wiggle, tracé, cascade.":"in the panel: crop, fill, playhead, align, bounce, wiggle, path, stagger.",
+    "Favoris":"Favorites",
+    "pour retrouver tes combinaisons en un clic.":"to recall your combos in one click.",
+    "Le clic ADD pose un":"One click on ADD drops an",
+    "titre animé directement sur ta timeline":"animated title straight on your timeline",
+    "— pas d'aller-retour After Effects.":"— no round-trip to After Effects.",
+    "Texte, vitesse, intensité, split lettre par lettre :":"Text, speed, intensity, letter-by-letter split:",
+    "tout se modifie après coup":"everything can be changed afterwards",
+    "dans Essential Graphics.":"in Essential Graphics.",
     "Ton texte, modifiable ici":"Your text, editable here",
     "La boîte à outils":"The toolbox",
     "Huit gestes qui reviennent tout le temps":"Eight moves you make all the time",
@@ -661,21 +1030,70 @@ if(navToggle&&navMenu){
     "Décale tes calques en cascade, d'un coup.":"Staggers your layers in a cascade, at once.",
     "Aussi dans Premiere":"Also in Premiere",
     "Dans Premiere Pro, les outils compatibles avec la timeline sont marqués — les autres travaillent sur les calques After Effects.":"In Premiere Pro, the timeline-compatible tools are marked — the rest work on After Effects layers.",
-    "Bientôt · inclus dans la V1":"Coming soon · included in V1",
-    "Un paiement, tout compris":"One payment, everything included",
-    "Passe tes titres au niveau au-dessus":"Take your titles up a level",
+    "Je refaisais les mêmes titres à la main, montage après montage. MotionLAB, c'est ces gestes-là réduits à un clic — pour garder mon temps pour ce qui compte : l'émotion.":"I kept rebuilding the same titles by hand, edit after edit. MotionLAB is those moves cut down to one click — so my time goes to what matters: the emotion.",
+    "Femz · monteur, clips certifiés or & platine · fondateur FemzLab":"Femz · editor, gold & platinum certified videos · founder of FemzLab",
+    "Tout compris":"All in",
+    "Dans la boîte":"In the box",
+    "Paiement unique":"One-time payment",
+    "Le panel MotionLAB pour":"The MotionLAB panel for",
+    "— un seul fichier .zxp":"— a single .zxp file",
+    ", dont 6 avec le mode lettre par lettre":", 6 of them with letter-by-letter mode",
+    "8 outils d'animation":"8 animation tools",
+    "pour les gestes du quotidien":"for the everyday moves",
+    "Templates MOGRT intégrés, pilotés depuis Essential Graphics":"Built-in MOGRT templates, driven from Essential Graphics",
+    "Les Favoris : tes combinaisons preset + réglages, mémorisées dans le panel":"Favorites: your preset + settings combos, saved in the panel",
+    "Mises à jour de la V1 incluses, dont la bibliothèque MOTION à venir":"All V1 updates included, upcoming MOTION library too",
+    "Développé et testé sur After Effects 2025 et Premiere Pro 2025 (Mac). Un souci avec ta config ?":"Built and tested on After Effects 2025 and Premiere Pro 2025 (Mac). An issue with your setup?",
+    "Écris-moi":"Write me",
+    ", on regarde ensemble.":", we'll sort it out together.",
     "Installé en trois minutes":"Installed in three minutes",
+    "Télécharge ZXP Installer":"Download ZXP Installer",
+    "(gratuit, par aescripts) — c'est l'installeur standard des extensions Adobe.":"(free, by aescripts) — the standard installer for Adobe extensions.",
+    "Glisse MotionLAB.zxp":"Drag MotionLAB.zxp",
+    "dans la fenêtre de ZXP Installer. C'est tout.":"into the ZXP Installer window. That's it.",
+    "Relance After Effects ou Premiere Pro":"Restart After Effects or Premiere Pro",
+    ", puis ouvre":", then open",
+    "Fenêtre → Extensions → MotionLAB":"Window → Extensions → MotionLAB",
+    ". Le panel se docke où tu veux.":". The panel docks wherever you want.",
+    "Bientôt · inclus dans la V1":"Coming soon · included in V1",
+    "— une bibliothèque d'animations prêtes à poser (intros, cartes, éléments graphiques), directement dans le panel. Elle arrivera dans une":"— a library of ready-to-drop animations (intros, cards, graphic elements), right inside the panel. It will arrive as a",
+    "mise à jour gratuite":"free update",
+    "pour tous ceux qui ont la V1.":"for everyone who owns V1.",
     "Questions fréquentes":"Frequently asked",
     "Avant d'acheter":"Before you buy",
     "Ça marche vraiment dans les deux applications ?":"Does it really work in both apps?",
     "Oui. C'est le même fichier .zxp : une fois installé, le panel apparaît dans After Effects et dans Premiere Pro. Dans After Effects il pose de vraies keyframes ; dans Premiere il pose un titre animé sur la timeline, modifiable dans Essential Graphics.":"Yes. It's the same .zxp file: once installed, the panel shows up in both After Effects and Premiere Pro. In After Effects it lays down real keyframes; in Premiere it drops an animated title on the timeline, editable in Essential Graphics.",
     "Quelles versions sont supportées ?":"Which versions are supported?",
-    "MotionLAB est développé et testé sur After Effects 2025 et Premiere Pro 2025 (Mac). Si ta version pose problème, écris-moi — je regarde avec toi : hello@imfemz.com.":"MotionLAB is built and tested on After Effects 2025 and Premiere Pro 2025 (Mac). If your version acts up, write me — we'll look at it together: hello@imfemz.com.",
+    "MotionLAB est développé et testé sur After Effects 2025 et Premiere Pro 2025 (Mac). Si ta version pose problème, écris-moi — je regarde avec toi :":"MotionLAB is built and tested on After Effects 2025 and Premiere Pro 2025 (Mac). If your version acts up, write me — we'll look at it together:",
+    "Je peux l'utiliser sur des projets clients ?":"Can I use it on client work?",
+    "Oui. Projets clients, contenus monétisés : aucune restriction d'usage. La seule limite : ne pas revendre ni repartager le fichier lui-même.":"Yes. Client projects, monetized content: no usage restriction. The only limit: don't resell or re-share the file itself.",
+    "Comment je reçois le plugin après l'achat ?":"How do I get the plugin after purchase?",
+    "Immédiatement. Le paiement passe par Podia : tu télécharges le .zxp juste après l'achat, et tu peux le re-télécharger à tout moment depuis ton compte.":"Immediately. Payment goes through Podia: you download the .zxp right after purchase, and you can re-download it anytime from your account.",
     "Comment je reçois les mises à jour ?":"How do I get updates?",
     "Toutes les mises à jour de la V1 sont incluses — la bibliothèque MOTION comprise. Tu re-télécharges simplement le fichier depuis ton compte, et tu le réinstalles par-dessus.":"All V1 updates are included — the MOTION library too. Just re-download the file from your account and reinstall it on top.",
+    "Et si ça ne me convient pas ?":"What if it's not for me?",
+    "MotionLAB est un fichier numérique, il n'y a donc pas de remboursement automatique. Mais si quelque chose coince, écris-moi — on trouve une solution. Le détail est dans les":"MotionLAB is a digital file, so there's no automatic refund. But if something's off, write me — we'll figure it out. Details in the",
+    "CGV":"terms",
     "Et si je bloque à l'installation ?":"What if I get stuck installing?",
-    "Testé sur After Effects 2025 et Premiere Pro 2025, sur Mac.":"Tested on After Effects 2025 and Premiere Pro 2025, on Mac.",
-    "Une question avant d'acheter ?":"A question before buying?",
+    "Écris-moi à":"Write me at",
+    "ou passe sur le":"or hop on the",
+    "— on débloque ça ensemble.":"— we'll get you unstuck together.",
+    "Prêt à poser tes titres ?":"Ready to set your titles?",
+    "Débloquer MotionLAB — 39 €":"Unlock MotionLAB — €39",
+    "Paiement unique · Checkout sécurisé via Podia":"One-time payment · Secure checkout via Podia",
+    "Tout reste éditable":"Everything stays editable",
+    "Usage commercial autorisé":"Commercial use allowed",
+    "Et après":"What's next",
+    "Complète ton setup":"Complete your setup",
+    "Le panel que tu viens de voir":"The panel you've just seen",
+    "Tu es ici":"You are here",
+    "La formation VFX complète — 18 leçons":"The complete VFX course — 18 lessons",
+    "150 € ou 2×75 €":"€150 or 2×€75",
+    "Voir la formation":"See the course",
+    "La boutique":"The shop",
+    "Packs SFX, presets et gratuits":"SFX packs, presets and freebies",
+    "Explorer":"Browse",
+    "Acheter":"Buy",
     "Boutique":"Shop",
     "À propos":"About"
   };
