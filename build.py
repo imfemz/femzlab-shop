@@ -152,6 +152,11 @@ def main():
 
     shutil.copyfile(SRC / "_redirects", DIST / "_redirects")
     print("dist/_redirects")
+    # fichiers annexes servis tels quels (version du plugin + en-têtes CORS)
+    for extra in ("_headers", "motionlab-version.json"):
+        if (SRC / extra).exists():
+            shutil.copyfile(SRC / extra, DIST / extra)
+            print(f"dist/{extra}")
 
 
 if __name__ == "__main__":
