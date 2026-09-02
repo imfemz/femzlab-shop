@@ -706,7 +706,15 @@ footer{background:var(--charcoal);color:#EDEDE8;margin-top:20px;position:relativ
   .demo{grid-template-columns:1fr}
   .demo-stage{order:-1;min-height:280px}
   .demo-panel{border-right:none;border-top:1px solid rgba(255,255,255,.07)}
-  .dp-list{display:grid;grid-template-columns:repeat(2,1fr)}
+  .dp-list{display:grid;grid-template-columns:repeat(2,1fr);
+    max-height:298px;overflow-y:auto;-webkit-overflow-scrolling:touch;
+    overscroll-behavior:contain;padding-right:4px;
+    scrollbar-width:thin;scrollbar-color:rgba(255,255,255,.22) transparent}
+  /* indice visuel : la liste continue en dessous */
+  .demo-panel{position:relative}
+  .demo-panel::after{content:"";position:absolute;left:0;right:0;bottom:0;height:34px;
+    background:linear-gradient(180deg,transparent,rgba(20,22,25,.92));
+    pointer-events:none;border-radius:0 0 var(--r-lg) var(--r-lg)}
   .stg{font-size:clamp(22px,7.4vw,34px)}
 }
 @media (max-width:480px){
