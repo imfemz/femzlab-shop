@@ -196,7 +196,7 @@ nav.dock::before{content:"";position:absolute;inset:-70%;z-index:-1;pointer-even
 .btn-buy{display:inline-flex;align-items:center;gap:10px;background:var(--ink);color:#fff;border-radius:999px;
   padding:16px 30px;font-weight:700;font-size:15px;letter-spacing:.01em;white-space:nowrap;
   transition:transform .18s,box-shadow .25s}
-.btn-buy:hover{transform:translateY(-2px);box-shadow:var(--shadow-lg)}
+.btn-buy:hover{transform:translateY(-2px);box-shadow:0 10px 34px rgba(94,162,255,.45),0 0 0 2px rgba(94,162,255,.3)}
 .btn-buy .p{font-family:var(--lbl);font-weight:700;font-size:12px;letter-spacing:.06em;
   background:rgba(255,255,255,.16);border-radius:999px;padding:4px 10px}
 .btn-ghost{display:inline-flex;align-items:center;gap:8px;border:1.5px solid var(--line-strong);border-radius:999px;
@@ -252,7 +252,7 @@ nav.dock::before{content:"";position:absolute;inset:-70%;z-index:-1;pointer-even
 /* ---------- S4 : PRESETS — preview interactive « à la Bart » : le panel à
    gauche (liste + réglages), la scène animée à droite. Le JS pilote tout
    (sélection, texte custom, split, vitesse, boucle). ---------- */
-.presets-wrap{max-width:1100px;margin:0 auto;padding:26px clamp(20px,5vw,48px) 10px}
+.presets-wrap{max-width:1100px;margin:0 auto;padding:26px clamp(20px,5vw,48px) clamp(48px,7vh,80px)}
 .demo{display:grid;grid-template-columns:300px 1fr;border-radius:20px;overflow:hidden;
   background:linear-gradient(180deg,var(--ml-top),var(--ml-bottom));
   border:1px solid rgba(255,255,255,.07);box-shadow:var(--shadow-lg)}
@@ -345,7 +345,7 @@ nav.dock::before{content:"";position:absolute;inset:-70%;z-index:-1;pointer-even
   font-family:var(--lbl);font-weight:700;letter-spacing:.1em;text-transform:uppercase}
 
 /* ---------- S6 : DEUX APPS ---------- */
-.apps-wrap{max-width:1100px;margin:0 auto;padding:26px clamp(20px,5vw,48px) 0;
+.apps-wrap{max-width:1100px;margin:0 auto;padding:26px clamp(20px,5vw,48px) clamp(48px,7vh,80px);
   display:grid;grid-template-columns:1fr 1fr;gap:20px}
 .app-card{background:#fff;border-radius:var(--r-lg);box-shadow:var(--shadow);padding:28px;
   display:flex;flex-direction:column;gap:14px}
@@ -448,21 +448,24 @@ nav.dock::before{content:"";position:absolute;inset:-70%;z-index:-1;pointer-even
    grand trajet + ressort + délais bien espacés pour que la cascade se lise */
 .ts-bar{left:8%;height:11%;border-radius:4px;background:linear-gradient(135deg,#4573D2,#6B93E0);
   box-shadow:0 6px 16px rgba(69,115,210,.35)}
-.ts-bar.b1{top:15%;width:78%}.ts-bar.b2{top:35%;width:52%}.ts-bar.b3{top:55%;width:66%}.ts-bar.b4{top:75%;width:40%}
-/* phase 1 : les calques se posent · phase 2 : le stagger réel — le même
-   mouvement pour chaque calque, départs décalés qui se chevauchent
-   (délai .18s < durée .75s), vélocité lisse */
-.playing .ts-bar{animation:t-pose .45s cubic-bezier(.2,.7,.35,1) both,
-  t-wave .75s cubic-bezier(.65,0,.35,1) both}
-.playing .ts-bar.b1{animation-delay:.2s,1.15s}
-.playing .ts-bar.b2{animation-delay:.28s,1.33s}
-.playing .ts-bar.b3{animation-delay:.36s,1.51s}
-.playing .ts-bar.b4{animation-delay:.44s,1.69s}
+.ts-bar.b1{top:15%}.ts-bar.b2{top:35%}.ts-bar.b3{top:55%}.ts-bar.b4{top:75%}
+.ts-bar{width:52%}
+/* réplique de la comp AE « stagger » de Femz : les calques se posent
+   alignés, puis leurs points d'entrée glissent en escalier — chaque barre
+   part pendant que la précédente est encore en mouvement, vélocité lisse.
+   État de base (reduced motion) = l'escalier final. */
+.ts-bar{transform:translateX(var(--sx,0px))}
+.ts-bar.b1{--sx:0px}.ts-bar.b2{--sx:34px}.ts-bar.b3{--sx:68px}.ts-bar.b4{--sx:102px}
+.playing .ts-bar{animation:t-pose .4s ease-out both,t-stairs .8s cubic-bezier(.65,0,.35,1) both}
+.playing .ts-bar.b1{animation-delay:.15s,1.05s}
+.playing .ts-bar.b2{animation-delay:.23s,1.17s}
+.playing .ts-bar.b3{animation-delay:.31s,1.29s}
+.playing .ts-bar.b4{animation-delay:.39s,1.41s}
 @keyframes t-pose{from{opacity:0}to{opacity:1}}
-@keyframes t-wave{0%{transform:translateX(0)}50%{transform:translateX(34px)}100%{transform:translateX(0)}}
+@keyframes t-stairs{from{transform:translateX(0)}to{transform:translateX(var(--sx,0px))}}
 
 /* ---------- S8 : CITATION CRÉATEUR ---------- */
-.quote-sec{max-width:760px;margin:0 auto;padding:clamp(56px,9vh,100px) clamp(20px,5vw,48px) 0;text-align:center}
+.quote-sec{max-width:760px;margin:0 auto;padding:clamp(56px,9vh,100px) clamp(20px,5vw,48px);text-align:center}
 .qmark{display:block;font-family:'Montserrat',sans-serif;font-weight:800;font-size:64px;line-height:.7;color:var(--accent)}
 .quote-sec blockquote p{font-style:italic;font-size:clamp(19px,2.6vw,26px);line-height:1.5;color:var(--ink);margin-top:12px}
 .quote-sec figcaption{margin-top:18px;font-family:var(--lbl);font-weight:700;font-size:11px;
@@ -494,13 +497,38 @@ nav.dock::before{content:"";position:absolute;inset:-70%;z-index:-1;pointer-even
 .buy-card li b{color:var(--ink)}
 .buy-card .btn-buy{justify-content:center;font-size:16px;padding:18px 30px}
 .buy-compat{font-size:12px;color:var(--dim);text-align:center;line-height:1.6}
-.install-card{background:linear-gradient(180deg,var(--ml-top),var(--ml-bottom));border-radius:var(--r-lg);
+.install-card{justify-content:center;background:linear-gradient(180deg,var(--ml-top),var(--ml-bottom));border-radius:var(--r-lg);
   padding:34px;display:flex;flex-direction:column;gap:20px;border:1px solid rgba(255,255,255,.07)}
 .install-card h3{font-family:'Montserrat',sans-serif;font-weight:800;font-size:17px;text-transform:uppercase;color:var(--ml-txt)}
 .step{display:flex;gap:16px;align-items:flex-start}
-.step .n{width:30px;height:30px;border-radius:9px;background:rgba(69,115,210,.25);border:1px solid rgba(69,115,210,.5);
-  color:#B9CBF2;font-family:'Montserrat',sans-serif;font-weight:800;font-size:13px;
-  display:flex;align-items:center;justify-content:center;flex:none}
+/* pictos d'étapes animés — minimalistes, en boucle douce, coupés en
+   reduced-motion. 1: la flèche descend dans le plateau (téléchargement).
+   2: le fichier glisse dans la fenêtre (glisser-déposer).
+   3: le panneau vient se docker dans l'app. */
+.ipic{position:relative;width:52px;height:52px;border-radius:12px;background:#101114;
+  border:1px solid rgba(255,255,255,.09);flex:none;overflow:hidden}
+.ipic i{position:absolute;display:block}
+.ip-tray{left:13px;right:13px;bottom:12px;height:2px;background:#7FA4E8;border-radius:2px}
+.ip-tray::before,.ip-tray::after{content:"";position:absolute;bottom:0;width:2px;height:7px;background:#7FA4E8;border-radius:2px}
+.ip-tray::before{left:0}.ip-tray::after{right:0}
+.ip-arrow{left:50%;top:9px;width:2px;height:14px;background:#E6E8EA;border-radius:2px;transform:translateX(-50%)}
+.ip-arrow::after{content:"";position:absolute;left:50%;bottom:-1px;width:8px;height:8px;
+  border-right:2px solid #E6E8EA;border-bottom:2px solid #E6E8EA;transform:translateX(-50%) rotate(45deg);border-radius:1px}
+@keyframes ip-dl{0%,15%{transform:translate(-50%,-4px);opacity:0}35%{opacity:1}
+  60%,70%{transform:translate(-50%,9px);opacity:1}90%,100%{transform:translate(-50%,9px);opacity:0}}
+.ipic .ip-arrow{animation:ip-dl 2.6s ease-in-out infinite}
+.ip-win{inset:11px;border:1.5px solid rgba(255,255,255,.35);border-radius:6px}
+.ip-file{left:8px;top:50%;width:14px;height:14px;margin-top:-7px;border-radius:4px;
+  background:linear-gradient(135deg,#4573D2,#6B93E0);
+  animation:ip-drop 2.6s cubic-bezier(.65,0,.35,1) infinite}
+@keyframes ip-drop{0%,12%{transform:translateX(-16px);opacity:0}30%{opacity:1}
+  55%,70%{transform:translateX(11px);opacity:1}88%,100%{transform:translateX(11px);opacity:0}}
+.ip-app{inset:11px;border:1.5px solid rgba(255,255,255,.35);border-radius:6px}
+.ip-dock{top:13px;bottom:13px;right:13px;width:9px;border-radius:3px;
+  background:linear-gradient(135deg,#4573D2,#6B93E0);transform-origin:right center;
+  animation:ip-in 2.6s cubic-bezier(.65,0,.35,1) infinite}
+@keyframes ip-in{0%,15%{transform:translateX(14px);opacity:0}35%{opacity:1}
+  55%,75%{transform:translateX(0);opacity:1}92%,100%{transform:translateX(0);opacity:0}}
 .step div p{font-size:13.5px;color:var(--ml-dim);line-height:1.5}
 .step div p b{color:var(--ml-txt)}
 .step div p a{color:#7FA4E8;text-decoration:underline}
@@ -518,9 +546,9 @@ nav.dock::before{content:"";position:absolute;inset:-70%;z-index:-1;pointer-even
 .faq-wrap details p a{text-decoration:underline}
 
 /* ---------- S11 : CTA FINAL ---------- */
-.final{max-width:900px;margin:0 auto;padding:clamp(56px,9vh,100px) clamp(20px,5vw,48px) 20px;text-align:center}
+.final{max-width:900px;margin:0 auto;padding:clamp(56px,9vh,100px) clamp(20px,5vw,48px);text-align:center}
 .final h2{font-family:'Montserrat',sans-serif;font-weight:800;text-transform:uppercase;
-  font-size:clamp(30px,5.5vw,60px);letter-spacing:-.02em}
+  font-size:clamp(30px,5.5vw,60px);letter-spacing:-.02em;line-height:1.08}
 .final.in h2{animation:a-rise .9s cubic-bezier(.28,1.45,.45,1) both}
 .final:not(.in) h2{opacity:0}
 .final .btn-buy{margin-top:28px;font-size:16px;padding:18px 34px}
@@ -533,9 +561,16 @@ nav.dock::before{content:"";position:absolute;inset:-70%;z-index:-1;pointer-even
 .assure svg{width:16px;height:16px;stroke:var(--accent);flex:none}
 
 /* ---------- S12 : CROSS-SELL ---------- */
-.more-wrap{max-width:820px;margin:0 auto;padding:26px clamp(20px,5vw,48px) 90px}
-.mrow{display:grid;grid-template-columns:minmax(110px,auto) 1fr auto auto;gap:18px;
+.more-wrap{max-width:820px;margin:0 auto;padding:26px clamp(20px,5vw,48px) 10px}
+.mrow{display:grid;grid-template-columns:44px minmax(110px,auto) 1fr auto auto;gap:18px;
   align-items:center;padding:20px 4px;border-top:1px solid var(--line)}
+.mtile{width:44px;height:44px;border-radius:11px;display:flex;align-items:center;justify-content:center;
+  font-family:'Montserrat',sans-serif;font-weight:800;font-size:13px;letter-spacing:.02em;flex:none}
+.mtile.ml{background:linear-gradient(135deg,var(--ml-top),var(--ml-bottom));color:#7FA4E8;
+  box-shadow:inset 0 0 0 1px rgba(255,255,255,.08)}
+.mtile.mv{background:#1B1A2E;color:#B9B6FF}
+.mtile.fl{background:#fff;color:var(--ink);border:1px solid var(--line-strong)}
+.mtile.fl svg{width:18px;height:18px}
 .mrow:last-child{border-bottom:1px solid var(--line)}
 .mname{font-family:'Montserrat',sans-serif;font-weight:800;text-transform:uppercase;font-size:16px;letter-spacing:-.01em}
 .mdesc{font-size:13.5px;color:var(--muted)}
@@ -549,11 +584,12 @@ nav.dock::before{content:"";position:absolute;inset:-70%;z-index:-1;pointer-even
 .go:hover{gap:13px}
 .go svg{width:13px;height:13px;stroke:currentColor;flex:none}
 @media (max-width:640px){
-  .mrow{grid-template-columns:1fr auto;row-gap:6px}
-  .mname{grid-column:1;grid-row:1}
-  .mprice{grid-column:2;grid-row:1;justify-self:end}
-  .mdesc{grid-column:1/-1;grid-row:2}
-  .here,.mrow .go{grid-column:1/-1;grid-row:3;justify-self:start}
+  .mrow{grid-template-columns:38px 1fr auto;row-gap:6px}
+  .mtile{width:38px;height:38px;grid-column:1;grid-row:1/3;align-self:start}
+  .mname{grid-column:2;grid-row:1}
+  .mprice{grid-column:3;grid-row:1;justify-self:end}
+  .mdesc{grid-column:2/-1;grid-row:2}
+  .here,.mrow .go{grid-column:2/-1;grid-row:3;justify-self:start}
 }
 
 /* ---------- SB : STICKY BAR MOBILE (greffe B) ---------- */
@@ -568,7 +604,8 @@ nav.dock::before{content:"";position:absolute;inset:-70%;z-index:-1;pointer-even
 .stickybar.on{transform:translateY(0)}
 .sb-l{font-family:var(--lbl);font-weight:700;font-size:13px;color:#fff}
 .sb-btn{background:#fff;color:#0A0A0A;border-radius:999px;padding:10px 19px;
-  font-weight:700;font-size:13.5px}
+  font-weight:700;font-size:13.5px;transition:box-shadow .25s}
+.sb-btn:hover{box-shadow:0 0 18px rgba(94,162,255,.6)}
 @media (max-width:720px){.stickybar{display:flex}}
 
 /* ---------- footer ---------- */
@@ -606,7 +643,7 @@ footer{background:var(--charcoal);color:#EDEDE8;margin-top:20px;position:relativ
 
 @media (prefers-reduced-motion:reduce){
   .rv{opacity:1;transform:none;filter:none;transition:none}
-  .stg *,.ts *{animation:none!important}
+  .stg *,.ts *,.ipic i{animation:none!important}
   .sec-head h2:hover{animation:none!important;-webkit-text-fill-color:var(--ink)}
   .fixed-logo .mark,nav.dock::before{animation:none}
   .hero-panel .frame,.hero-panel:hover .frame{transform:none;transition:none}
@@ -672,7 +709,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
       <div class="hero-meta">
         <span><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>Téléchargement immédiat</span>
         <span><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>Mises à jour V1 incluses</span>
-        <span><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>Checkout sécurisé via Podia</span>
+        <span><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>Paiement sécurisé (CB ou PayPal)</span>
       </div>
     </div>
     <div class="hero-panel rv" style="--d:.12s">
@@ -903,9 +940,18 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     </div>
     <div class="install-card rv" style="--d:.1s">
       <h3>Installé en trois minutes</h3>
-      <div class="step"><span class="n">1</span><div><p><b>Télécharge ZXP Installer</b> (gratuit, par aescripts) — c'est l'installeur standard des extensions Adobe.</p></div></div>
-      <div class="step"><span class="n">2</span><div><p><b>Glisse MotionLAB.zxp</b> dans la fenêtre de ZXP Installer. C'est tout.</p></div></div>
-      <div class="step"><span class="n">3</span><div><p><b>Relance After Effects ou Premiere Pro</b>, puis ouvre <b>Fenêtre → Extensions → MotionLAB</b>. Le panel se docke où tu veux.</p></div></div>
+      <div class="step">
+        <span class="ipic" aria-hidden="true"><i class="ip-tray"></i><i class="ip-arrow"></i></span>
+        <div><p><b><a data-track="cta_ml_zxp_installer" href="https://aescripts.com/learn/zxp-installer/" target="_blank" rel="noopener">Télécharge ZXP Installer</a></b> (gratuit, par aescripts) — c'est l'installeur standard des extensions Adobe.</p></div>
+      </div>
+      <div class="step">
+        <span class="ipic" aria-hidden="true"><i class="ip-win"></i><i class="ip-file"></i></span>
+        <div><p><b>Glisse MotionLAB.zxp</b> dans la fenêtre de ZXP Installer. C'est tout.</p></div>
+      </div>
+      <div class="step">
+        <span class="ipic" aria-hidden="true"><i class="ip-app"></i><i class="ip-dock"></i></span>
+        <div><p><b>Relance After Effects ou Premiere Pro</b>, puis ouvre <b>Fenêtre → Extensions → MotionLAB</b>. Le panel se docke où tu veux.</p></div>
+      </div>
     </div>
   </div>
   <div class="soon">
@@ -957,7 +1003,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
   <section class="final rv">
     <h2>Prêt à poser tes titres ?</h2>
     <a data-track="cta_ml_acheter_final" class="btn-buy" href="https://pay.femzlab.shop/motionlab">Débloquer MotionLAB — 39&nbsp;€ <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 5l7 7-7 7"/></svg></a>
-    <p class="final-sub">Paiement unique · Checkout sécurisé via Podia</p>
+    <p class="final-sub">Paiement unique · CB ou PayPal · 100 % sécurisé</p>
     <div class="assure">
       <span><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v11M6 12l6 6 6-6M5 21h14"/></svg>Téléchargement immédiat</span>
       <span><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2.5" y="5.5" width="19" height="13" rx="4"/><path d="M10.5 9.5 15 12l-4.5 2.5v-5z"/></svg>After Effects + Premiere Pro</span>
@@ -967,30 +1013,36 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
   </section>
 
   <!-- ======================= S12 : CROSS-SELL ======================= -->
+  <section class="band">
   <div class="sec-head rv">
     <span class="eyebrow">Et après</span>
     <h2>Complète ton setup</h2>
   </div>
   <div class="more-wrap">
     <div class="mrow rv">
+      <span class="mtile ml" aria-hidden="true">ML</span>
       <span class="mname">MotionLAB</span>
       <span class="mdesc">Le panel que tu viens de voir</span>
       <span class="mprice">39&nbsp;€</span>
       <span class="here">Tu es ici</span>
     </div>
     <div class="mrow rv" style="--d:.05s">
+      <span class="mtile mv" aria-hidden="true">MV</span>
       <span class="mname">MetaVision</span>
       <span class="mdesc">La formation VFX complète — 18 leçons</span>
       <span class="mprice">150&nbsp;€ ou 2×75&nbsp;€</span>
       <a data-track="cta_ml_cross_metavision" class="go" href="https://pay.femzlab.shop/metavision">Voir la formation <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 5l7 7-7 7"/></svg></a>
     </div>
     <div class="mrow rv" style="--d:.1s">
+      <span class="mtile fl" aria-hidden="true"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><rect x="2" y="2" width="5" height="5" rx="1.2"/><rect x="9" y="2" width="5" height="5" rx="1.2"/><rect x="2" y="9" width="5" height="5" rx="1.2"/><rect x="9" y="9" width="5" height="5" rx="1.2"/></svg></span>
       <span class="mname">La boutique</span>
       <span class="mdesc">Packs SFX, presets et gratuits</span>
       <span class="mprice">—</span>
       <a data-track="cta_ml_cross_shop" class="go" href="/#shop">Explorer <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 5l7 7-7 7"/></svg></a>
     </div>
   </div>
+  </section>
+
 
 </main>
 
@@ -3528,7 +3580,7 @@ function mlDemo(rootSel,itemSel,period,play){
     "Voir les 10 animations":"See the 10 animations",
     "Téléchargement immédiat":"Instant download",
     "Mises à jour V1 incluses":"V1 updates included",
-    "Checkout sécurisé via Podia":"Secure checkout via Podia",
+    "Paiement sécurisé (CB ou PayPal)":"Secure payment (card or PayPal)",
     "Le geste":"The move",
     "Tape. Règle. Add.":"Type. Tweak. Add.",
     "Le même workflow dans les deux applications.":"The same workflow in both apps.",
@@ -3650,7 +3702,7 @@ function mlDemo(rootSel,itemSel,period,play){
     "— on débloque ça ensemble.":"— we'll get you unstuck together.",
     "Prêt à poser tes titres ?":"Ready to set your titles?",
     "Débloquer MotionLAB — 39 €":"Unlock MotionLAB — €39",
-    "Paiement unique · Checkout sécurisé via Podia":"One-time payment · Secure checkout via Podia",
+    "Paiement unique · CB ou PayPal · 100 % sécurisé":"One-time payment · Card or PayPal · 100% secure",
     "Tout reste éditable":"Everything stays editable",
     "Usage commercial autorisé":"Commercial use allowed",
     "Et après":"What's next",
