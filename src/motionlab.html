@@ -454,7 +454,7 @@ nav.dock::before{content:"";position:absolute;inset:-70%;z-index:-1;pointer-even
 .app-card li b{color:var(--ink)}
 
 /* mock Essential Graphics — montre le pilotage Premiere sans capture floue */
-.eg-mock{margin-top:4px;background:linear-gradient(180deg,#232326,#1B1B1E);border-radius:13px;
+.eg-mock{margin-top:auto;background:linear-gradient(180deg,#232326,#1B1B1E);border-radius:13px;
   border:1px solid rgba(255,255,255,.08);padding:16px 18px;display:flex;flex-direction:column;gap:11px}
 .eg-row{display:flex;align-items:center;justify-content:space-between;gap:12px}
 .eg-lbl{font-family:var(--lbl);font-weight:700;font-size:9.5px;letter-spacing:.12em;text-transform:uppercase;color:#9FA3AA}
@@ -469,7 +469,7 @@ nav.dock::before{content:"";position:absolute;inset:-70%;z-index:-1;pointer-even
 
 /* maquette TOOLS du panel dans la carte AE — styles, glow de bord suiveur
    de curseur et dock magnification repris du vrai plugin */
-.atm{margin-top:16px;background:linear-gradient(180deg,#232326,#1B1B1E);border-radius:13px;
+.atm{margin-top:auto;background:linear-gradient(180deg,#232326,#1B1B1E);border-radius:13px;
   border:1px solid rgba(255,255,255,.08);padding:14px 16px 16px}
 .atm-lbl{font-family:var(--lbl);font-weight:700;font-size:9.5px;letter-spacing:.12em;
   text-transform:uppercase;color:#9FA3AA;margin-bottom:10px}
@@ -707,7 +707,9 @@ nav.dock::before{content:"";position:absolute;inset:-70%;z-index:-1;pointer-even
 /* les deux hôtes qui alternent en slide dans le carré */
 .ip-app{inset:11px;border:1.5px solid rgba(255,255,255,.35);border-radius:6px;overflow:hidden}
 .ip-ae,.ip-pr{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
-  font-family:'Montserrat',sans-serif;font-weight:800;font-size:15px;font-style:normal}
+  font-family:'Montserrat',sans-serif;font-weight:800;font-size:15px;font-style:normal;
+  padding-left:1.8px}/* centre optique : l'encre Montserrat est asymétrique */
+.ip-pr{padding-left:3.7px}
 .ip-ae{color:#B9B6FF;animation:ip-slide-a 4.4s cubic-bezier(.65,0,.35,1) infinite}
 .ip-pr{color:#D9A9FF;animation:ip-slide-b 4.4s cubic-bezier(.65,0,.35,1) infinite}
 @keyframes ip-slide-a{0%,38%{transform:translateX(0)}48%,88%{transform:translateX(-30px)}98%,100%{transform:translateX(0)}}
