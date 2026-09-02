@@ -155,8 +155,8 @@ nav.dock::before{content:"";position:absolute;inset:-70%;z-index:-1;pointer-even
 @keyframes a-blurin-h{from{filter:blur(14px);opacity:0;letter-spacing:.12em}
   to{filter:blur(0);opacity:1;letter-spacing:-.025em}}
 .mani.in .m1{animation:a-blurin-h 1s .05s cubic-bezier(.22,1,.36,1) both}
-.mani.in .m2{animation:a-drop 1s .5s cubic-bezier(.3,1.6,.4,1) both}
-.mani.in .m3{animation:a-pop .9s 1.05s cubic-bezier(.22,1,.36,1) both}
+.mani.in .m2{animation:a-drop 1.15s .5s linear both}
+.mani.in .m3{animation:a-pop .85s 1.2s cubic-bezier(.3,1.6,.5,1) both}
 .mani:not(.in) .mword{opacity:0}
 /* GREFFE B — chips nom-de-preset, style .psplit en version claire */
 .mchip{position:absolute;top:-2px;right:0;transform:translate(calc(100% + 10px),0);
@@ -286,13 +286,12 @@ nav.dock::before{content:"";position:absolute;inset:-70%;z-index:-1;pointer-even
   letter-spacing:.1em;text-transform:uppercase;color:#D9A9FF;background:rgba(120,60,180,.22);
   border:1px solid rgba(160,100,220,.4);border-radius:999px;padding:2px 7px;flex:none}
 .dp-item.on .pr-ok{color:#fff;background:rgba(255,255,255,.16);border-color:rgba(255,255,255,.4)}
-/* la scène : même matière que la preview du vrai panel (sombre pointillée) */
+/* la scène : blanc cassé uni (Femz) — le panneau sombre reste à gauche,
+   la preview claire à droite, comme la réf */
 .demo-stage{position:relative;display:flex;align-items:center;justify-content:center;
-  min-height:420px;padding:30px;overflow:hidden;background-color:#0F1013;
-  background-image:radial-gradient(rgba(255,255,255,.075) 1px,transparent 1.3px);
-  background-size:15px 15px}
+  min-height:420px;padding:30px;overflow:hidden;background:#EFEFEA}
 .stg-text{font-family:'Montserrat',sans-serif;font-weight:800;text-transform:uppercase;
-  font-size:clamp(26px,4.6vw,54px);letter-spacing:.02em;color:#fff;text-align:center;
+  font-size:clamp(26px,4.6vw,54px);letter-spacing:.02em;color:var(--ink);text-align:center;
   line-height:1.15;max-width:100%;overflow-wrap:anywhere}
 .stg-l{display:inline-block;will-change:transform,opacity,filter;min-width:.28em}
 .stg-text.tw::after{content:"";display:inline-block;width:3px;height:.82em;background:var(--accent);
@@ -301,16 +300,39 @@ nav.dock::before{content:"";position:absolute;inset:-70%;z-index:-1;pointer-even
 /* keyframes des presets — partagées : a-drop / a-pop / a-rise servent aussi
    au manifeste (S1) et au CTA final (S11), ne pas renommer. Les états `to`
    correspondent au style de base (repos) : sans animation, tout est posé. */
-@keyframes a-bouncein{0%{transform:translateY(-140%);opacity:0}55%{transform:translateY(10%);opacity:1}75%{transform:translateY(-5%)}100%{transform:translateY(0)}}
+/* Rebonds : la courbe d'accélération vit DANS chaque segment (chute
+   accélérée → impact → rebond amorti). Une ease unique appliquée segment
+   par segment décélérait avant l'impact et cassait la vélocité à chaque
+   keyframe — c'était le rebond « pas fluide ». Les listes de transform
+   restent identiques à chaque étape (translateY+scaleY) pour une
+   interpolation directe, sans décomposition matricielle. */
+@keyframes a-bouncein{
+  0%{transform:translateY(-140%) scaleY(1.02);opacity:0;animation-timing-function:cubic-bezier(.5,0,.82,.36)}
+  36%{transform:translateY(-6%) scaleY(1.02);opacity:1;animation-timing-function:cubic-bezier(.3,0,.7,1)}
+  41%{transform:translateY(0) scaleY(.9);animation-timing-function:cubic-bezier(.16,.66,.3,1)}
+  60%{transform:translateY(-14%) scaleY(1.02);animation-timing-function:cubic-bezier(.6,0,.82,.4)}
+  75%{transform:translateY(0) scaleY(.96);animation-timing-function:cubic-bezier(.2,.75,.35,1)}
+  86%{transform:translateY(-3.5%) scaleY(1);animation-timing-function:cubic-bezier(.55,0,.78,.5)}
+  100%{transform:translateY(0) scaleY(1)}}
 @keyframes a-fadeup{from{transform:translateY(70%);opacity:0}to{transform:none;opacity:1}}
 @keyframes a-blurin{from{filter:blur(14px);opacity:0;letter-spacing:.18em}to{filter:blur(0);opacity:1;letter-spacing:.02em}}
 @keyframes a-stretch{0%{transform:scaleX(2.1) scaleY(.6);opacity:0}45%{transform:scaleX(.85) scaleY(1.12);opacity:1}100%{transform:scale(1)}}
 @keyframes a-type{from{clip-path:inset(0 100% 0 0)}to{clip-path:inset(0 0 0 0)}}
 @keyframes a-caret{50%{opacity:0}}
 @keyframes a-flip{0%{transform:rotateX(210deg);opacity:0}55%{transform:rotateX(-28deg);opacity:1}80%{transform:rotateX(14deg)}100%{transform:rotateX(0)}}
-@keyframes a-rise{0%{transform:translateY(120%);opacity:0}55%{transform:translateY(-9%);opacity:1}78%{transform:translateY(4%)}100%{transform:translateY(0)}}
-@keyframes a-pop{0%{transform:scale(0);opacity:0}60%{transform:scale(1.18);opacity:1}80%{transform:scale(.94)}100%{transform:scale(1)}}
-@keyframes a-drop{0%{transform:translateY(-160%) scaleY(1.15);opacity:0}55%{transform:translateY(12%) scaleY(.88);opacity:1}78%{transform:translateY(-4%) scaleY(1.02)}100%{transform:translateY(0) scaleY(1)}}
+/* a-rise / a-pop : ressorts mono-segment — l'overshoot vient d'une bezier
+   qui dépasse 1, la vélocité reste continue du départ à la pose (le plus
+   fluide possible). L'ease se règle là où l'animation est appelée. */
+@keyframes a-rise{from{transform:translateY(130%);opacity:0}to{transform:translateY(0);opacity:1}}
+@keyframes a-pop{from{transform:scale(0);opacity:0}to{transform:scale(1);opacity:1}}
+@keyframes a-drop{
+  0%{transform:translateY(-180%) scaleY(1.05);opacity:0;animation-timing-function:cubic-bezier(.55,0,.85,.36)}
+  36%{transform:translateY(-10%) scaleY(1.05);opacity:1;animation-timing-function:cubic-bezier(.3,0,.7,1)}
+  42%{transform:translateY(0) scaleY(.8);animation-timing-function:cubic-bezier(.15,.65,.3,1)}
+  60%{transform:translateY(-20%) scaleY(1.04);animation-timing-function:cubic-bezier(.6,0,.85,.4)}
+  76%{transform:translateY(0) scaleY(.95);animation-timing-function:cubic-bezier(.2,.75,.35,1)}
+  88%{transform:translateY(-4%) scaleY(1);animation-timing-function:cubic-bezier(.55,0,.8,.5)}
+  100%{transform:translateY(0) scaleY(1)}}
 
 .split-note{max-width:1100px;margin:16px auto 0;padding:0 clamp(20px,5vw,48px);
   font-size:13px;color:var(--muted);text-align:center}
@@ -366,7 +388,7 @@ nav.dock::before{content:"";position:absolute;inset:-70%;z-index:-1;pointer-even
 .tools-note{margin-top:14px;font-size:12.5px;color:var(--dim);text-align:center}
 /* la mini-comp : un cadre 16/9, un « calque » bleu, une timeline */
 .ts{position:relative;width:min(440px,86%);aspect-ratio:16/9;
-  border:1.5px solid rgba(255,255,255,.16);border-radius:10px}
+  border:1.5px solid rgba(20,20,15,.22);border-radius:10px}
 .ts i{position:absolute;display:block}
 .ts-layer{left:50%;top:50%;width:38%;height:32%;transform:translate(-50%,-50%);
   background:linear-gradient(135deg,#4573D2,#6B93E0);border-radius:8px;
@@ -374,43 +396,70 @@ nav.dock::before{content:"";position:absolute;inset:-70%;z-index:-1;pointer-even
 /* CROP : le cadre accent se resserre sur le calque */
 .ts-cropbox{left:31%;top:34%;width:38%;height:32%;border:2px solid var(--accent);
   border-radius:8px;box-shadow:0 0 16px rgba(94,162,255,.5)}
-.go .ts-cropbox{animation:t-crop 1s .25s cubic-bezier(.22,1,.36,1) both}
+.playing .ts-cropbox{animation:t-crop 1s .25s cubic-bezier(.22,1,.36,1) both}
 @keyframes t-crop{from{left:2%;top:3%;width:96%;height:94%;opacity:.65}to{left:31%;top:34%;width:38%;height:32%;opacity:1}}
 /* FILL : le calque s'étire plein cadre */
 .ts-layer.f{width:96%;height:90%;border-radius:7px}
-.go .ts-layer.f{animation:t-fill .95s .25s cubic-bezier(.22,1.18,.36,1) both}
+.playing .ts-layer.f{animation:t-fill .95s .25s cubic-bezier(.22,1.18,.36,1) both}
 @keyframes t-fill{from{transform:translate(-50%,-50%) scale(.38);opacity:.7}to{transform:translate(-50%,-50%) scale(1);opacity:1}}
 /* CURSOR : le clip vient se caler sur la tête de lecture */
 .ts-tl{position:absolute;left:6%;right:6%;bottom:9%;height:17%;border-radius:6px;background:#101114}
 .ts-ph{left:58%;top:-24%;bottom:-24%;width:2px;background:#fff;box-shadow:0 0 10px rgba(255,255,255,.8)}
 .ts-clip{left:58%;width:30%;top:16%;bottom:16%;border-radius:4px;background:linear-gradient(135deg,#4573D2,#6B93E0)}
-.go .ts-clip{animation:t-cursor 1s .3s cubic-bezier(.22,1,.36,1) both}
+.playing .ts-clip{animation:t-cursor 1s .3s cubic-bezier(.22,1,.36,1) both}
 @keyframes t-cursor{from{left:9%}88%{left:59.5%}to{left:58%}}
 /* ALIGN : le calque revient au centre, guides qui flashent */
 .ts-gh{background:rgba(94,162,255,.55);opacity:0}
 .ts-gh.v{left:50%;top:4%;bottom:4%;width:1px}
 .ts-gh.h{top:50%;left:3%;right:3%;height:1px}
-.go .ts-layer.al{animation:t-align .9s .25s cubic-bezier(.22,1,.36,1) both}
+.playing .ts-layer.al{animation:t-align .9s .25s cubic-bezier(.22,1,.36,1) both}
 @keyframes t-align{from{transform:translate(-118%,-124%)}82%{transform:translate(-47%,-47%)}to{transform:translate(-50%,-50%)}}
-.go .ts-gh{animation:t-guide 1.5s .25s ease both}
+.playing .ts-gh{animation:t-guide 1.5s .25s ease both}
 @keyframes t-guide{0%,25%{opacity:0}45%,75%{opacity:1}100%{opacity:0}}
 /* BOUNCE : chute avec écrasement */
-.go .ts-layer.bo{animation:t-bounce 1.1s .25s cubic-bezier(.3,1.5,.4,1) both}
-@keyframes t-bounce{0%{transform:translate(-50%,-320%) scaleY(1.12);opacity:0}55%{transform:translate(-50%,-38%) scaleY(.82);opacity:1}78%{transform:translate(-50%,-56%) scaleY(1.04)}100%{transform:translate(-50%,-50%) scaleY(1)}}
+.playing .ts-layer.bo{animation:t-bounce 1.2s .25s linear both}
+@keyframes t-bounce{
+  0%{transform:translate(-50%,-320%) scaleY(1.06);opacity:0;animation-timing-function:cubic-bezier(.55,0,.85,.36)}
+  36%{transform:translate(-50%,-62%) scaleY(1.06);opacity:1;animation-timing-function:cubic-bezier(.3,0,.7,1)}
+  42%{transform:translate(-50%,-50%) scaleY(.82);animation-timing-function:cubic-bezier(.15,.65,.3,1)}
+  60%{transform:translate(-50%,-78%) scaleY(1.03);animation-timing-function:cubic-bezier(.6,0,.85,.4)}
+  76%{transform:translate(-50%,-50%) scaleY(.95);animation-timing-function:cubic-bezier(.2,.75,.35,1)}
+  88%{transform:translate(-50%,-56%) scaleY(1);animation-timing-function:cubic-bezier(.55,0,.8,.5)}
+  100%{transform:translate(-50%,-50%) scaleY(1)}}
 /* WIGGLE : tremblement organique qui s'amortit */
-.go .ts-layer.wi{animation:t-wiggle 1.4s .25s ease-in-out both}
+.playing .ts-layer.wi{animation:t-wiggle 1.4s .25s ease-in-out both}
 @keyframes t-wiggle{0%,100%{transform:translate(-50%,-50%) rotate(0)}12%{transform:translate(-54%,-46%) rotate(-2.4deg)}26%{transform:translate(-45%,-53%) rotate(2deg)}40%{transform:translate(-53%,-48%) rotate(-1.6deg)}55%{transform:translate(-47%,-52%) rotate(1.2deg)}70%{transform:translate(-51%,-49%) rotate(-.7deg)}85%{transform:translate(-49.5%,-50.5%) rotate(.4deg)}}
-/* PATH : le point suit le tracé (SMIL), le tracé pointillé est dessiné */
+/* PATH : ① le tracé se dessine ② le carré se pose à l'entrée du tracé
+   ③ il parcourt le chemin en accélérant jusqu'au bout.
+   Scène à taille FIXE 320×180 : le path() CSS du carré (px) et le viewBox
+   du SVG partagent ainsi le même repère, alignement garanti. Sans .go
+   (reduced motion), les états de base montrent la fin : tracé dessiné,
+   carré posé au bout. */
+.ts.ts-fix{width:320px;aspect-ratio:auto;height:180px}
 .ts-svg{position:absolute;inset:0;width:100%;height:100%}
-.ts-path{stroke:#6B93E0;stroke-width:2;stroke-dasharray:6 8;opacity:.9}
-.ts-dotp{fill:#fff;filter:drop-shadow(0 0 8px rgba(94,162,255,.9))}
-/* STAGGER : les barres tombent en cascade */
-.ts-bar{left:8%;height:11%;border-radius:4px;background:linear-gradient(135deg,#4573D2,#6B93E0)}
+.ts-path{stroke:#4573D2;stroke-width:2;opacity:.75;stroke-linecap:round;
+  stroke-dasharray:100;stroke-dashoffset:0}
+.playing .ts-path{animation:t-draw .85s .15s cubic-bezier(.4,0,.2,1) both}
+@keyframes t-draw{from{stroke-dashoffset:100}to{stroke-dashoffset:0}}
+/* ancré centre sur (0,0) de la scène : offset-path:path() translate depuis
+   la position layoutée de l'élément, pas depuis l'origine du repère */
+.ts-sq{left:-2px;top:-2px;width:22px;height:22px;border-radius:5px;
+  background:linear-gradient(135deg,#4573D2,#6B93E0);
+  box-shadow:0 6px 18px rgba(69,115,210,.5);
+  offset-path:path('M30 150 C 90 30, 200 30, 290 120');offset-rotate:0deg;offset-distance:100%}
+.playing .ts-sq{animation:t-sq-in .35s .95s cubic-bezier(.3,1.6,.5,1) both,
+  t-sq-move 1.3s 1.4s cubic-bezier(.6,0,.9,.55) both}
+@keyframes t-sq-in{from{opacity:0;transform:scale(0)}to{opacity:1;transform:scale(1)}}
+@keyframes t-sq-move{from{offset-distance:0%}to{offset-distance:100%}}
+/* STAGGER : le même mouvement pour chaque calque, décalé dans le temps —
+   grand trajet + ressort + délais bien espacés pour que la cascade se lise */
+.ts-bar{left:8%;height:11%;border-radius:4px;background:linear-gradient(135deg,#4573D2,#6B93E0);
+  box-shadow:0 6px 16px rgba(69,115,210,.35)}
 .ts-bar.b1{top:15%;width:78%}.ts-bar.b2{top:35%;width:52%}.ts-bar.b3{top:55%;width:66%}.ts-bar.b4{top:75%;width:40%}
-.go .ts-bar{animation:t-stag .7s cubic-bezier(.22,1,.36,1) both}
-.go .ts-bar.b1{animation-delay:.25s}.go .ts-bar.b2{animation-delay:.4s}
-.go .ts-bar.b3{animation-delay:.55s}.go .ts-bar.b4{animation-delay:.7s}
-@keyframes t-stag{from{transform:translateX(-26px);opacity:0}to{transform:none;opacity:1}}
+.playing .ts-bar{animation:t-stag .8s cubic-bezier(.3,1.4,.45,1) both}
+.playing .ts-bar.b1{animation-delay:.25s}.playing .ts-bar.b2{animation-delay:.45s}
+.playing .ts-bar.b3{animation-delay:.65s}.playing .ts-bar.b4{animation-delay:.85s}
+@keyframes t-stag{from{transform:translateX(-90px);opacity:0}to{transform:none;opacity:1}}
 
 /* ---------- S8 : CITATION CRÉATEUR ---------- */
 .quote-sec{max-width:760px;margin:0 auto;padding:clamp(56px,9vh,100px) clamp(20px,5vw,48px) 0;text-align:center}
@@ -472,7 +521,7 @@ nav.dock::before{content:"";position:absolute;inset:-70%;z-index:-1;pointer-even
 .final{max-width:900px;margin:0 auto;padding:clamp(56px,9vh,100px) clamp(20px,5vw,48px) 20px;text-align:center}
 .final h2{font-family:'Montserrat',sans-serif;font-weight:800;text-transform:uppercase;
   font-size:clamp(30px,5.5vw,60px);letter-spacing:-.02em}
-.final.in h2{animation:a-rise 1s cubic-bezier(.22,1,.36,1) both}
+.final.in h2{animation:a-rise .9s cubic-bezier(.28,1.45,.45,1) both}
 .final:not(.in) h2{opacity:0}
 .final .btn-buy{margin-top:28px;font-size:16px;padding:18px 34px}
 .final .btn-buy svg{width:16px;height:16px;stroke:currentColor;flex:none}
@@ -1001,23 +1050,30 @@ if(navToggle&&navMenu){
 function mlDemo(rootSel,itemSel,period,play){
   const root=document.querySelector(rootSel);if(!root)return;
   const items=[...root.querySelectorAll(itemSel)];if(!items.length)return;
-  let idx=0,locked=false,visible=false;
+  let idx=0,locked=false,visible=false,timer=null;
+  // le minuteur repart après CHAQUE lecture (clic compris) : une séquence
+  // n'est jamais coupée en plein milieu par le tick de la boucle
+  function arm(){
+    if(REDUCED)return;
+    clearTimeout(timer);
+    timer=setTimeout(()=>{
+      if(!visible){arm();return;}
+      if(!locked){idx=(idx+1)%items.length;items.forEach((el,j)=>el.classList.toggle('on',j===idx));}
+      play(items[idx]);arm();
+    },period);
+  }
   function select(i,fromUser){
     idx=i;items.forEach((el,j)=>el.classList.toggle('on',j===i));
     if(fromUser)locked=true;
-    play(items[i]);
+    play(items[i]);arm();
   }
   items.forEach((el,i)=>el.addEventListener('click',()=>select(i,true)));
   new IntersectionObserver(es=>{es.forEach(e=>{
     const was=visible;visible=e.isIntersecting;
-    if(visible&&!was&&!REDUCED)play(items[idx]); // première entrée à l'écran : on joue direct
+    if(visible&&!was&&!REDUCED){play(items[idx]);arm();} // première entrée : on joue direct
   });},{threshold:.2}).observe(root);
-  if(!REDUCED)setInterval(()=>{
-    if(!visible)return;
-    if(locked)play(items[idx]);
-    else select((idx+1)%items.length,false);
-  },period);
-  return {replay:()=>play(items[idx])};
+  arm();
+  return {replay:()=>{play(items[idx]);arm();}};
 }
 
 // -- Démo presets : texte custom, split mot/lettres, vitesse --
@@ -1029,16 +1085,16 @@ function mlDemo(rootSel,itemSel,period,play){
   const speedVal=document.getElementById('dp-speed-val');
   let mode='word';
   const ANIMS={
-    'bounce-in':{kf:'a-bouncein',d:1000,e:'cubic-bezier(.22,1,.36,1)'},
+    'bounce-in':{kf:'a-bouncein',d:1150,e:'linear'},
     'fade-up':{kf:'a-fadeup',d:1000,e:'cubic-bezier(.22,1,.36,1)'},
     'blur-in':{kf:'a-blurin',d:1100,e:'ease-out'},
     'stretch':{kf:'a-stretch',d:1000,e:'cubic-bezier(.22,1.4,.4,1)'},
     'typewriter':{type:true,d:1100},
     'font-flip':{kf:'a-flip',d:1200,e:'cubic-bezier(.22,1,.36,1)'},
     'count-up':{count:true},
-    'rise-bounce':{kf:'a-rise',d:1000,e:'cubic-bezier(.22,1,.36,1)'},
-    'pop-bounce':{kf:'a-pop',d:900,e:'cubic-bezier(.22,1,.36,1)'},
-    'drop-bounce':{kf:'a-drop',d:1000,e:'cubic-bezier(.3,1.6,.4,1)'}};
+    'rise-bounce':{kf:'a-rise',d:900,e:'cubic-bezier(.28,1.45,.45,1)'},
+    'pop-bounce':{kf:'a-pop',d:850,e:'cubic-bezier(.3,1.6,.5,1)'},
+    'drop-bounce':{kf:'a-drop',d:1200,e:'linear'}};
   let cuRaf=null;
   function runCount(target,dur){
     if(cuRaf)cancelAnimationFrame(cuRaf);
@@ -1105,13 +1161,11 @@ function mlDemo(rootSel,itemSel,period,play){
     align:'<div class="ts"><i class="ts-gh v"></i><i class="ts-gh h"></i><i class="ts-layer al"></i></div>',
     bounce:'<div class="ts"><i class="ts-layer bo"></i></div>',
     wiggle:'<div class="ts"><i class="ts-layer wi"></i></div>',
-    path:'<div class="ts"><svg viewBox="0 0 320 180" class="ts-svg" aria-hidden="true"><path class="ts-path" d="M30 150 C 90 30, 200 30, 290 120" fill="none"/><circle class="ts-dotp" r="9" cx="290" cy="120"><animateMotion dur="1.6s" begin="0.2s" fill="freeze" calcMode="spline" keyPoints="0;1" keyTimes="0;1" keySplines=".3 0 .2 1" path="M30 150 C 90 30, 200 30, 290 120"/></circle></svg></div>',
+    path:'<div class="ts ts-fix"><svg viewBox="0 0 320 180" class="ts-svg" aria-hidden="true"><path class="ts-path" d="M30 150 C 90 30, 200 30, 290 120" pathLength="100" fill="none"/></svg><i class="ts-sq"></i></div>',
     stagger:'<div class="ts"><i class="ts-bar b1"></i><i class="ts-bar b2"></i><i class="ts-bar b3"></i><i class="ts-bar b4"></i></div>'};
   function play(item){
-    let html=SC[item.dataset.tool]||'';
-    if(REDUCED)html=html.replace(/<animateMotion[^>]*\/?>(<\/animateMotion>)?/,'');
-    stage.innerHTML=html;
-    if(!REDUCED)requestAnimationFrame(()=>{const sc=stage.firstElementChild;if(sc)sc.classList.add('go');});
+    stage.innerHTML=SC[item.dataset.tool]||'';
+    if(!REDUCED)requestAnimationFrame(()=>{const sc=stage.firstElementChild;if(sc)sc.classList.add('playing');});
   }
   mlDemo('#demo-tools','.dp-item',3800,play);
   play(document.querySelector('#demo-tools .dp-item.on'));
