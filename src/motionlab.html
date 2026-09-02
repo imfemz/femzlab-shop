@@ -234,9 +234,12 @@ nav.dock::before{content:"";position:absolute;inset:-70%;z-index:-1;pointer-even
   transition:transform .5s cubic-bezier(.22,1,.36,1);
   box-shadow:
     0 1px 0 rgba(255,255,255,.08) inset,
-    12px 16px 0 -2px #101114,
-    24px 32px 60px rgba(15,20,40,.4),
-    0 30px 80px rgba(15,20,40,.35)}
+    1px 1px 0 #191c20,2px 2px 0 #181b1f,3px 3px 0 #171a1e,4px 4px 0 #16191d,
+    5px 5px 0 #15181c,6px 6px 0 #14171b,7px 7px 0 #13161a,8px 8px 0 #121519,
+    9px 9px 0 #111418,10px 10px 0 #101317,11px 11px 0 #0f1216,12px 12px 0 #0e1115,
+    13px 13px 0 #0d1014,14px 14px 0 #0c0f13,
+    26px 34px 60px rgba(15,20,40,.42),
+    0 30px 80px rgba(15,20,40,.32)}
 .hero-panel:hover .hpanel{transform:rotateX(3deg) rotateY(-4deg) scale(1.01)}
 /* sweep glow : un anneau conique qui tourne, masqué sur l'arête seule */
 @property --hpa{syntax:'<angle>';inherits:false;initial-value:0deg}
@@ -282,6 +285,14 @@ nav.dock::before{content:"";position:absolute;inset:-70%;z-index:-1;pointer-even
   text-transform:uppercase;color:var(--ml-dim)}
 .hp-controls svg{width:10px;height:6px;stroke:currentColor;flex:none}
 .hp-controls i{flex:1;height:1px;background:rgba(255,255,255,.08)}
+/* le post-it collé en bas-droite de la box */
+.hp-postit{position:absolute;right:-16px;bottom:-18px;transform:rotate(6deg);
+  width:88px;padding:12px 10px 14px;background:linear-gradient(180deg,#FFEF9E,#FFE370);
+  color:#5A4A12;font-family:var(--lbl);font-weight:700;font-size:10.5px;line-height:1.25;
+  text-align:center;letter-spacing:.02em;border-radius:2px 2px 8px 2px;
+  box-shadow:0 10px 22px rgba(25,25,18,.3),0 2px 5px rgba(25,25,18,.2)}
+.hp-postit::before{content:"";position:absolute;top:-7px;left:50%;transform:translateX(-50%) rotate(-3deg);
+  width:38px;height:13px;background:rgba(255,255,255,.5);border:1px solid rgba(25,25,18,.06)}
 
 /* ---------- S2 : LE DÉFILÉ DES DIX ---------- */
 /* discret façon Gaku : bandeau-étiquette, pas un titre géant (Femz) */
@@ -365,7 +376,9 @@ nav.dock::before{content:"";position:absolute;inset:-70%;z-index:-1;pointer-even
   background:radial-gradient(115% 92% at 50% 48%,transparent 55%,rgba(25,25,18,.12) 100%)}
 /* .stg reçoit les .pv-text / .pv-letter créés par les web() du plugin —
    mêmes classes que le vrai panneau de preview */
-.stg{font-family:'Montserrat',sans-serif;font-weight:800;text-transform:uppercase;
+/* pas de text-transform : la preview respecte la casse tapée (comme le
+   plugin depuis le fix fontCapsOption) */
+.stg{font-family:'Montserrat',sans-serif;font-weight:800;
   font-size:clamp(26px,4.6vw,54px);letter-spacing:.02em;color:var(--ink);text-align:center;
   line-height:1.15;max-width:100%;overflow-wrap:anywhere}
 .stg .pv-text{display:inline-block}
@@ -766,6 +779,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
         <div class="hp-controls" aria-hidden="true">Controls
           <svg viewBox="0 0 10 6" fill="none" stroke-width="1.4" stroke-linecap="round"><path d="M1 1l4 4 4-4"/></svg><i></i>
         </div>
+        <span class="hp-postit">Fully<br>customisable</span>
       </div>
     </div>
   </div>
@@ -875,20 +889,20 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
   <!-- ======================= S5 : UNE SEULE SIGNATURE ======================= -->
   <section class="band">
   <div class="sec-head rv">
-    <span class="eyebrow">La thèse</span>
-    <h2>Dix animations. Une seule signature.</h2>
+    <span class="eyebrow">Le système de favoris</span>
+    <h2>Crée tes propres presets.</h2>
   </div>
   <div class="sig-wrap">
     <div class="sig-txt rv">
-      <p>Les dix presets sortent du même moteur : même famille de courbes, mêmes conventions d'amorti, même sens du timing.</p>
-      <p>Tu peux les mélanger dans un même montage — ils auront toujours l'air de venir de la même main.</p>
-      <p>Et réglables sans casser : vitesse de 0,5× à 2×, intensité par preset — tu adaptes, la signature reste.</p>
+      <p>Règle un preset à ta main — vitesse, intensité, mot ou lettres — puis étoile-le : la combinaison devient un favori. Ton preset à toi.</p>
+      <p>Tes favoris se rappellent en un clic, dans After Effects comme dans Premiere Pro — ta signature, prête à poser sur chaque montage.</p>
+      <p>Et sous le capot, les dix presets partagent le même moteur : tout ce que tu crées garde la même cohérence.</p>
     </div>
     <figure class="sig-fig rv" style="--d:.1s">
       <div class="sig-crop">
-        <img src="assets/png-16.png" alt="La grille des dix presets texte dans le panel MotionLAB." width="900" height="1973">
+        <img src="assets/png-16.png" alt="La grille des dix presets texte dans le panel MotionLAB, chaque carte avec son étoile de favori." width="900" height="1973">
       </div>
-      <figcaption class="sig-cap">Les dix presets, dans le panel.</figcaption>
+      <figcaption class="sig-cap">L'étoile sur chaque carte : ta combinaison, mémorisée.</figcaption>
     </figure>
   </div>
 
@@ -3545,7 +3559,7 @@ function mlDemo(rootSel,itemSel,period,play){
     if(!preset)return;
     stage.__mlWaveToken=(stage.__mlWaveToken||0)+1;
     stage.innerHTML='';
-    const P={speed:1,split:'word'};
+    const P={speed:1,split:'letters',stagger:0.05};
     if(id==='count-up')P.countTo=128;
     preset.web(stage,NAMES[id],P);
   },2600);
@@ -3609,10 +3623,10 @@ function mlDemo(rootSel,itemSel,period,play){
   // la vérité. Fenêtres = in/out des comps, lecture en boucle.
   // Sources : docs/ae-captures/.
   const AE_VIDS={
-    align:{src:'assets/mp4-06.mp4',fz:2.3},
-    bounce:{src:'assets/mp4-08.mp4',fz:1.0},
-    stagger:{src:'assets/mp4-09.mp4',fz:3.4},
-    path:{src:'assets/mp4-07.mp4',fz:3.4}};
+    align:{src:'assets/mp4-12.mp4',fz:2.3},
+    bounce:{src:'assets/mp4-14.mp4',fz:1.0},
+    stagger:{src:'assets/mp4-15.mp4',fz:3.4},
+    path:{src:'assets/mp4-13.mp4',fz:3.4}};
   function buildVid(cfg){
     const v=document.createElement('video');
     v.className='ts-vid';v.muted=true;v.loop=true;v.playsInline=true;
@@ -3647,7 +3661,7 @@ function mlDemo(rootSel,itemSel,period,play){
       const v=document.createElement('video');
       v.className='et-vid';v.muted=true;v.loop=true;v.playsInline=true;
       v.setAttribute('muted','');v.setAttribute('playsinline','');
-      v.src='assets/mp4-10.mp4';
+      v.src='assets/mp4-16.mp4';
       if(REDUCED){v.addEventListener('loadedmetadata',()=>{v.currentTime=2.9;},{once:true});}
       else{v.autoplay=true;v.play&&v.play().catch(()=>{});}
       scene.appendChild(v);
@@ -3726,12 +3740,12 @@ function mlDemo(rootSel,itemSel,period,play){
     "six des dix presets s'animent aussi":"six of the ten presets also animate",
     "lettre par lettre":"letter by letter",
     ", avec un décalage réglable entre chaque lettre — dans After Effects comme dans Premiere Pro.":", with an adjustable delay between each letter — in After Effects and Premiere Pro alike.",
-    "La thèse":"The thesis",
-    "Dix animations. Une seule signature.":"Ten animations. One signature.",
-    "Les dix presets sortent du même moteur : même famille de courbes, mêmes conventions d'amorti, même sens du timing.":"All ten presets come out of the same engine: same family of curves, same damping conventions, same sense of timing.",
-    "Tu peux les mélanger dans un même montage — ils auront toujours l'air de venir de la même main.":"Mix them within a single edit — they'll always look like they come from the same hand.",
-    "Et réglables sans casser : vitesse de 0,5× à 2×, intensité par preset — tu adaptes, la signature reste.":"And adjustable without breaking: speed from 0.5× to 2×, per-preset intensity — you adapt, the signature stays.",
-    "Les dix presets, dans le panel.":"The ten presets, inside the panel.",
+    "Le système de favoris":"The favorites system",
+    "Crée tes propres presets.":"Create your own presets.",
+    "Règle un preset à ta main — vitesse, intensité, mot ou lettres — puis étoile-le : la combinaison devient un favori. Ton preset à toi.":"Tune a preset your way — speed, intensity, word or letters — then star it: the combination becomes a favorite. Your own preset.",
+    "Tes favoris se rappellent en un clic, dans After Effects comme dans Premiere Pro — ta signature, prête à poser sur chaque montage.":"Your favorites come back in one click, in After Effects and Premiere Pro alike — your signature, ready to drop on every edit.",
+    "Et sous le capot, les dix presets partagent le même moteur : tout ce que tu crées garde la même cohérence.":"And under the hood, all ten presets share the same engine: everything you create keeps the same coherence.",
+    "L'étoile sur chaque carte : ta combinaison, mémorisée.":"The star on every card: your combination, saved.",
     "Un panel, deux apps":"One panel, two apps",
     "After Effects et Premiere Pro":"After Effects and Premiere Pro",
     "Un seul fichier à installer. Le panel détecte l'application et s'adapte — mêmes presets, mêmes réglages.":"One file to install. The panel detects the app and adapts — same presets, same controls.",
