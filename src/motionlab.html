@@ -231,16 +231,17 @@ nav.dock::before{content:"";position:absolute;inset:-70%;z-index:-1;pointer-even
 .hero-panel{position:relative;display:flex;justify-content:center;perspective:1200px}
 .hpanel{position:relative;width:min(400px,86vw);border-radius:24px;padding:22px 18px 16px;
   background:linear-gradient(180deg,var(--ml-top),var(--ml-bottom));
-  transform:rotateX(6deg) rotateY(-9deg);transform-style:preserve-3d;
+  transform:rotateX(8deg) rotateY(-16deg);transform-style:preserve-3d;
   transition:transform .5s cubic-bezier(.22,1,.36,1);
   box-shadow:0 1px 0 rgba(255,255,255,.08) inset,
     26px 34px 60px rgba(15,20,40,.42),0 30px 80px rgba(15,20,40,.32)}
 /* l'épaisseur : 8 plaques empilées en profondeur réelle (translateZ) —
    elles tournent AVEC la box, l'extrusion reste vraie sous tous les angles */
 .hp-d{position:absolute;inset:0;border-radius:24px;pointer-events:none;
-  background:#101317;transform:translateZ(calc(var(--z)*-2.2px))}
-.hp-d:nth-child(odd){background:#0d1014}
-.hero-panel:hover .hpanel{transform:rotateX(3deg) rotateY(-4deg) scale(1.01)}
+  background:hsl(222 18% calc(13% - var(--z)*0.55%));
+  border:1px solid hsl(222 16% calc(17% - var(--z)*0.6%));
+  transform:translateZ(calc(var(--z)*-3px))}
+.hero-panel:hover .hpanel{transform:rotateX(4deg) rotateY(-7deg) scale(1.01)}
 /* sweep glow : un anneau conique qui tourne, masqué sur l'arête seule */
 @property --hpa{syntax:'<angle>';inherits:false;initial-value:0deg}
 .hpanel::after{content:"";position:absolute;inset:-2px;border-radius:26px;padding:2px;z-index:5;
@@ -551,28 +552,39 @@ nav.dock::before{content:"";position:absolute;inset:-70%;z-index:-1;pointer-even
 .ip-arrow{left:50%;top:9px;width:2px;height:14px;background:#E6E8EA;border-radius:2px;transform:translateX(-50%)}
 .ip-arrow::after{content:"";position:absolute;left:50%;bottom:-1px;width:8px;height:8px;
   border-right:2px solid #E6E8EA;border-bottom:2px solid #E6E8EA;transform:translateX(-50%) rotate(45deg);border-radius:1px}
-@keyframes ip-dl{0%,12%{transform:translate(-50%,-5px);opacity:0}28%{opacity:1}
-  46%{transform:translate(-50%,9px)}56%{transform:translate(-50%,4px)}
-  64%{transform:translate(-50%,9px)}70%{transform:translate(-50%,7px)}
-  76%,82%{transform:translate(-50%,9px);opacity:1}94%,100%{transform:translate(-50%,9px);opacity:0}}
+@keyframes ip-dl{
+  0%,10%{transform:translate(-50%,-6px);opacity:0;animation-timing-function:cubic-bezier(.55,0,.85,.36)}
+  18%{opacity:1;animation-timing-function:cubic-bezier(.55,0,.85,.36)}
+  34%{transform:translate(-50%,9px);animation-timing-function:cubic-bezier(.17,.67,.35,1)}
+  46%{transform:translate(-50%,3.5px);animation-timing-function:cubic-bezier(.6,0,.8,.4)}
+  56%{transform:translate(-50%,9px);animation-timing-function:cubic-bezier(.2,.7,.38,1)}
+  64%{transform:translate(-50%,6.2px);animation-timing-function:cubic-bezier(.6,0,.8,.45)}
+  71%{transform:translate(-50%,9px);animation-timing-function:cubic-bezier(.25,.7,.4,1)}
+  76%{transform:translate(-50%,7.8px);animation-timing-function:cubic-bezier(.55,0,.75,.5)}
+  80%,86%{transform:translate(-50%,9px);opacity:1}
+  95%,100%{transform:translate(-50%,9px);opacity:0}}
 .ipic .ip-arrow{animation:ip-dl 2.6s ease-in-out infinite}
-/* dossier : base + rabat qui s'entrouvre quand le fichier arrive */
-.ip-fold{left:12px;right:12px;bottom:13px;height:18px;border-radius:3px;
-  background:#2A2D31;border:1.5px solid rgba(255,255,255,.35);border-top:none}
-.ip-flap{left:12px;right:12px;bottom:29px;height:7px;border-radius:3px 3px 0 0;
-  background:#34383D;border:1.5px solid rgba(255,255,255,.35);border-bottom:none;
+/* dossier (réf reactbits Folder) : arrière avec onglet, le fichier entre,
+   le rabat avant s'ouvre puis se referme — cycle complet */
+.ipic.fo{perspective:120px}
+.ip-back{left:11px;right:11px;top:16px;bottom:12px;border-radius:4px;
+  background:#3a3f46;border:1.5px solid rgba(255,255,255,.3)}
+.ip-back::before{content:"";position:absolute;top:-6px;left:0;width:13px;height:6px;
+  border-radius:3px 3px 0 0;background:#3a3f46;border:1.5px solid rgba(255,255,255,.3);border-bottom:none}
+.ip-file{left:50%;top:6px;width:13px;height:13px;margin-left:-6.5px;border-radius:4px;
+  background:linear-gradient(135deg,#4573D2,#6B93E0);z-index:1;
+  animation:ip-drop 3.2s cubic-bezier(.65,0,.35,1) infinite}
+@keyframes ip-drop{0%,20%{transform:translateY(-4px);opacity:0}30%{opacity:1}
+  50%,60%{transform:translateY(18px);opacity:1}66%,100%{transform:translateY(20px);opacity:0}}
+.ip-front{left:11px;right:11px;top:22px;bottom:12px;border-radius:4px;z-index:2;
+  background:linear-gradient(180deg,#2A2D31,#22252a);border:1.5px solid rgba(255,255,255,.4);
   transform-origin:bottom center;
-  animation:ip-flap 2.8s cubic-bezier(.65,0,.35,1) infinite}
-@keyframes ip-flap{0%,30%{transform:rotateX(0)}45%,72%{transform:rotateX(-38deg)}88%,100%{transform:rotateX(0)}}
-.ip-file{left:50%;top:7px;width:13px;height:13px;margin-left:-6.5px;border-radius:4px;
-  background:linear-gradient(135deg,#4573D2,#6B93E0);
-  animation:ip-drop 2.8s cubic-bezier(.65,0,.35,1) infinite}
-@keyframes ip-drop{0%,26%{transform:translateY(-6px);opacity:0}38%{opacity:1}
-  58%,66%{transform:translateY(21px);opacity:1}74%,100%{transform:translateY(23px);opacity:0}}
+  animation:ip-open 3.2s cubic-bezier(.65,0,.35,1) infinite}
+@keyframes ip-open{0%,16%{transform:rotateX(0)}32%,58%{transform:rotateX(-52deg)}76%,100%{transform:rotateX(0)}}
 /* les deux hôtes qui alternent en slide dans le carré */
 .ip-app{inset:11px;border:1.5px solid rgba(255,255,255,.35);border-radius:6px;overflow:hidden}
 .ip-ae,.ip-pr{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
-  font-family:'Montserrat',sans-serif;font-weight:800;font-size:11px}
+  font-family:'Montserrat',sans-serif;font-weight:800;font-size:15px;font-style:normal}
 .ip-ae{color:#B9B6FF;animation:ip-slide-a 4.4s cubic-bezier(.65,0,.35,1) infinite}
 .ip-pr{color:#D9A9FF;animation:ip-slide-b 4.4s cubic-bezier(.65,0,.35,1) infinite}
 @keyframes ip-slide-a{0%,38%{transform:translateX(0)}48%,88%{transform:translateX(-30px)}98%,100%{transform:translateX(0)}}
@@ -771,7 +783,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     </div>
     <div class="hero-panel rv" style="--d:.12s">
       <div class="hpanel" role="img" aria-label="Le panel MotionLAB : logo animé, onglets Texts, Motion (bientôt) et Favorites, preview des dix presets en boucle.">
-        <i class="hp-d" style="--z:1"></i><i class="hp-d" style="--z:2"></i><i class="hp-d" style="--z:3"></i><i class="hp-d" style="--z:4"></i><i class="hp-d" style="--z:5"></i><i class="hp-d" style="--z:6"></i><i class="hp-d" style="--z:7"></i><i class="hp-d" style="--z:8"></i>
+        <i class="hp-d" style="--z:1"></i><i class="hp-d" style="--z:2"></i><i class="hp-d" style="--z:3"></i><i class="hp-d" style="--z:4"></i><i class="hp-d" style="--z:5"></i><i class="hp-d" style="--z:6"></i><i class="hp-d" style="--z:7"></i><i class="hp-d" style="--z:8"></i><i class="hp-d" style="--z:9"></i><i class="hp-d" style="--z:10"></i><i class="hp-d" style="--z:11"></i><i class="hp-d" style="--z:12"></i><i class="hp-d" style="--z:13"></i><i class="hp-d" style="--z:14"></i>
         <span class="halo" aria-hidden="true"></span>
         <div class="hp-logo" aria-hidden="true"><span class="lg" style="--i:0">m</span><span class="lg" style="--i:1">o</span><span class="lg" style="--i:2">t</span><span class="lg" style="--i:3">i</span><span class="lg" style="--i:4">o</span><span class="lg" style="--i:5">n</span><span class="lg" style="--i:6">L</span><span class="lg" style="--i:7">A</span><span class="lg" style="--i:8">B</span><span class="hp-v1">V1</span></div>
         <div class="hp-tabs" aria-hidden="true">
@@ -1012,7 +1024,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
         <div><p><b><a data-track="cta_ml_zxp_installer" href="https://aescripts.com/learn/zxp-installer/" target="_blank" rel="noopener">Télécharge ZXP Installer</a></b> (gratuit, par aescripts) — c'est l'installeur standard des extensions Adobe.</p></div>
       </div>
       <div class="step">
-        <span class="ipic" aria-hidden="true"><i class="ip-file"></i><i class="ip-flap"></i><i class="ip-fold"></i></span>
+        <span class="ipic fo" aria-hidden="true"><i class="ip-back"></i><i class="ip-file"></i><i class="ip-front"></i></span>
         <div><p><b>Glisse MotionLAB.zxp</b> dans la fenêtre de ZXP Installer. C'est tout.</p></div>
       </div>
       <div class="step">
