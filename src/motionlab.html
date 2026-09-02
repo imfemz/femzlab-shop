@@ -469,10 +469,10 @@ nav.dock::before{content:"";position:absolute;inset:-70%;z-index:-1;pointer-even
 
 /* maquette TOOLS du panel dans la carte AE — styles, glow de bord suiveur
    de curseur et dock magnification repris du vrai plugin */
-.atm{margin-top:auto;background:linear-gradient(180deg,#232326,#1B1B1E);border-radius:13px;
-  border:1px solid rgba(255,255,255,.08);padding:14px 16px 16px}
+.atm{margin-top:auto;background:linear-gradient(180deg,#F4F4F6,#E9EAED);border-radius:13px;
+  border:1px solid rgba(20,20,15,.10);padding:14px 16px 16px}
 .atm-lbl{font-family:var(--lbl);font-weight:700;font-size:9.5px;letter-spacing:.12em;
-  text-transform:uppercase;color:#9FA3AA;margin-bottom:10px}
+  text-transform:uppercase;color:#6B7076;margin-bottom:10px}
 #atm-tools{position:relative;display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
 .atool{
   --edge-sensitivity:30;
@@ -481,7 +481,7 @@ nav.dock::before{content:"";position:absolute;inset:-70%;z-index:-1;pointer-even
   --glow-padding:10px;
   --cone-spread:25;
   --fill-opacity:.5;
-  --card-bg:rgba(30,33,38,.55);
+  --card-bg:rgba(255,255,255,.72);
   --edge-proximity:0;
   --cursor-angle:45deg;
   --glow-color:hsl(217deg 100% 68% / 100%);
@@ -501,16 +501,16 @@ nav.dock::before{content:"";position:absolute;inset:-70%;z-index:-1;pointer-even
   --gradient-base:linear-gradient(#4D8DFF 0 100%);
   isolation:isolate;position:relative;
   display:flex;flex-direction:column;align-items:center;gap:4px;
-  padding:10px 0 8px;border:1px solid rgba(255,255,255,.08);border-radius:14px;
-  background:rgba(30,33,38,.55);
-  box-shadow:inset 0 1px 0 rgba(255,255,255,.10),0 2px 5px rgba(0,0,0,.35);
+  padding:10px 0 8px;border:1px solid rgba(20,20,15,.10);border-radius:14px;
+  background:rgba(255,255,255,.72);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.9),0 2px 5px rgba(25,25,18,.10);
   cursor:pointer;transform-origin:bottom center;
   transition:background .12s,box-shadow .12s,transform .12s;min-width:0}
-.atool:hover{background:#3D4248;
-  box-shadow:inset 0 1px 0 rgba(255,255,255,.10),0 3px 8px rgba(0,0,0,.4)}
-.atool:active{border-color:#4573D2;box-shadow:inset 0 1px 3px rgba(0,0,0,.4)}
+.atool:hover{background:#fff;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.9),0 4px 10px rgba(25,25,18,.14)}
+.atool:active{border-color:#4573D2;box-shadow:inset 0 1px 3px rgba(25,25,18,.14)}
 .at-ico{color:#4573D2;display:flex}
-.at-lbl{font-family:'Inter',sans-serif;font-size:8px;font-weight:600;letter-spacing:1px;color:#8A9096}
+.at-lbl{font-family:'Inter',sans-serif;font-size:8px;font-weight:600;letter-spacing:1px;color:#5A5F66}
 .atool::before,.atool::after,.atool > .edge-light{
   content:'';position:absolute;inset:0;border-radius:inherit;
   transition:opacity .25s ease-out;z-index:-1}
