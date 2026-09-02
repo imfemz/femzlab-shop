@@ -343,11 +343,11 @@ section{max-width:1120px;margin:0 auto;padding:clamp(60px,9vh,104px) clamp(20px,
 .pcard .media.ml{background:linear-gradient(180deg,#2A2D31,#1B1D20);perspective:900px}
 .mlbox{position:relative;width:64%;margin-top:6%;align-self:flex-start;border-radius:16px;
   padding:14px 12px 10px;background:linear-gradient(180deg,#2A2D31,#1B1D20);
-  transform:rotateX(5deg) rotateY(-7deg);
-  box-shadow:0 1px 0 rgba(255,255,255,.08) inset,
-    1px 1px 0 #191c20,2px 2px 0 #171a1e,3px 3px 0 #15181c,4px 4px 0 #13161a,
-    5px 5px 0 #111418,6px 6px 0 #0f1216,7px 7px 0 #0d1014,8px 8px 0 #0c0f13,
-    18px 24px 44px rgba(15,20,40,.45)}
+  transform:rotateX(5deg) rotateY(-7deg);transform-style:preserve-3d;
+  box-shadow:0 1px 0 rgba(255,255,255,.08) inset,18px 24px 44px rgba(15,20,40,.45)}
+.mb-d{position:absolute;inset:0;border-radius:16px;pointer-events:none;
+  background:#101317;transform:translateZ(calc(var(--z)*-1.8px))}
+.mb-d:nth-child(odd){background:#0d1014}
 @property --mba{syntax:'<angle>';inherits:false;initial-value:0deg}
 .mlbox::after{content:"";position:absolute;inset:-2px;border-radius:18px;padding:2px;
   background:conic-gradient(from var(--mba),transparent 0 72%,rgba(94,162,255,.15) 80%,#5EA2FF 88%,rgba(94,162,255,.15) 96%,transparent 100%);
@@ -713,6 +713,7 @@ footer{background:var(--charcoal);color:#EDEDE8;margin-top:30px;position:relativ
         <span class="sheen" aria-hidden="true"></span>
         <div class="media ml"><span class="newtag">Nouveau</span>
           <div class="mlbox" role="img" aria-label="Le panel MotionLAB : logo animé, onglets et preview des presets en boucle.">
+            <i class="mb-d" style="--z:1"></i><i class="mb-d" style="--z:2"></i><i class="mb-d" style="--z:3"></i><i class="mb-d" style="--z:4"></i><i class="mb-d" style="--z:5"></i><i class="mb-d" style="--z:6"></i>
             <div class="mb-logo" aria-hidden="true"><span class="lg" style="--i:0">m</span><span class="lg" style="--i:1">o</span><span class="lg" style="--i:2">t</span><span class="lg" style="--i:3">i</span><span class="lg" style="--i:4">o</span><span class="lg" style="--i:5">n</span><span class="lg" style="--i:6">L</span><span class="lg" style="--i:7">A</span><span class="lg" style="--i:8">B</span></div>
             <div class="mb-tabs" aria-hidden="true"><span class="on">Texts</span><span>Motion</span><span>Favorites</span></div>
             <div class="mb-stage" aria-hidden="true"><span id="mlbox-word">BOUNCE IN</span></div>

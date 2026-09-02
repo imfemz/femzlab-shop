@@ -233,18 +233,17 @@ nav.dock::before{content:"";position:absolute;inset:-70%;z-index:-1;pointer-even
   background:linear-gradient(180deg,var(--ml-top),var(--ml-bottom));
   transform:rotateX(6deg) rotateY(-9deg);transform-style:preserve-3d;
   transition:transform .5s cubic-bezier(.22,1,.36,1);
-  box-shadow:
-    0 1px 0 rgba(255,255,255,.08) inset,
-    1px 1px 0 #191c20,2px 2px 0 #181b1f,3px 3px 0 #171a1e,4px 4px 0 #16191d,
-    5px 5px 0 #15181c,6px 6px 0 #14171b,7px 7px 0 #13161a,8px 8px 0 #121519,
-    9px 9px 0 #111418,10px 10px 0 #101317,11px 11px 0 #0f1216,12px 12px 0 #0e1115,
-    13px 13px 0 #0d1014,14px 14px 0 #0c0f13,
-    26px 34px 60px rgba(15,20,40,.42),
-    0 30px 80px rgba(15,20,40,.32)}
+  box-shadow:0 1px 0 rgba(255,255,255,.08) inset,
+    26px 34px 60px rgba(15,20,40,.42),0 30px 80px rgba(15,20,40,.32)}
+/* l'épaisseur : 8 plaques empilées en profondeur réelle (translateZ) —
+   elles tournent AVEC la box, l'extrusion reste vraie sous tous les angles */
+.hp-d{position:absolute;inset:0;border-radius:24px;pointer-events:none;
+  background:#101317;transform:translateZ(calc(var(--z)*-2.2px))}
+.hp-d:nth-child(odd){background:#0d1014}
 .hero-panel:hover .hpanel{transform:rotateX(3deg) rotateY(-4deg) scale(1.01)}
 /* sweep glow : un anneau conique qui tourne, masqué sur l'arête seule */
 @property --hpa{syntax:'<angle>';inherits:false;initial-value:0deg}
-.hpanel::after{content:"";position:absolute;inset:-2px;border-radius:26px;padding:2px;
+.hpanel::after{content:"";position:absolute;inset:-2px;border-radius:26px;padding:2px;z-index:5;
   background:conic-gradient(from var(--hpa),transparent 0 72%,rgba(94,162,255,.15) 80%,#5EA2FF 88%,rgba(94,162,255,.15) 96%,transparent 100%);
   -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);
   -webkit-mask-composite:xor;mask-composite:exclude;
@@ -286,14 +285,17 @@ nav.dock::before{content:"";position:absolute;inset:-70%;z-index:-1;pointer-even
   text-transform:uppercase;color:var(--ml-dim)}
 .hp-controls svg{width:10px;height:6px;stroke:currentColor;flex:none}
 .hp-controls i{flex:1;height:1px;background:rgba(255,255,255,.08)}
-/* le post-it collé en bas-droite de la box */
-.hp-postit{position:absolute;right:-16px;bottom:-18px;transform:rotate(6deg);
-  width:88px;padding:12px 10px 14px;background:linear-gradient(180deg,#FFEF9E,#FFE370);
-  color:#5A4A12;font-family:var(--lbl);font-weight:700;font-size:10.5px;line-height:1.25;
-  text-align:center;letter-spacing:.02em;border-radius:2px 2px 8px 2px;
-  box-shadow:0 10px 22px rgba(25,25,18,.3),0 2px 5px rgba(25,25,18,.2)}
-.hp-postit::before{content:"";position:absolute;top:-7px;left:50%;transform:translateX(-50%) rotate(-3deg);
-  width:38px;height:13px;background:rgba(255,255,255,.5);border:1px solid rgba(25,25,18,.06)}
+/* la pilule badge (réf Femz) : sombre, bord blanc épais, wiggle léger,
+   DEVANT tout (sweep compris) */
+.hp-postit{position:absolute;right:-22px;bottom:-16px;z-index:6;white-space:nowrap;
+  padding:11px 18px;background:#17181C;color:#fff;
+  font-family:var(--lbl);font-weight:800;font-size:11px;letter-spacing:.12em;
+  text-transform:uppercase;border:4px solid #fff;border-radius:999px;
+  box-shadow:0 12px 28px rgba(25,25,18,.35);
+  animation:hp-wiggle 5s ease-in-out infinite;transform:rotate(-5deg)}
+.hp-postit::before{content:"\2733\00A0\00A0"}
+@keyframes hp-wiggle{0%,100%{transform:rotate(-5deg)}25%{transform:rotate(-2.5deg)}
+  50%{transform:rotate(-6.5deg)}75%{transform:rotate(-3.5deg)}}
 
 /* ---------- S2 : LE DÉFILÉ DES DIX ---------- */
 /* discret façon Gaku : bandeau-étiquette, pas un titre géant (Femz) */
@@ -701,7 +703,7 @@ footer{background:var(--charcoal);color:#EDEDE8;margin-top:20px;position:relativ
   .sec-head h2:hover{animation:none!important;-webkit-text-fill-color:var(--ink)}
   .fixed-logo .mark,nav.dock::before{animation:none}
   .hpanel,.hero-panel:hover .hpanel{transform:none;transition:none}
-  .hpanel::after,.hp-logo .lg{animation:none}
+  .hpanel::after,.hp-logo .lg,.hp-postit{animation:none}
   .mani.in .m1,.mani.in .m2,.mani.in .m3{animation:none}
   .mani .mword{opacity:1!important}
   .mchip{display:none}
@@ -769,6 +771,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     </div>
     <div class="hero-panel rv" style="--d:.12s">
       <div class="hpanel" role="img" aria-label="Le panel MotionLAB : logo animé, onglets Texts, Motion (bientôt) et Favorites, preview des dix presets en boucle.">
+        <i class="hp-d" style="--z:1"></i><i class="hp-d" style="--z:2"></i><i class="hp-d" style="--z:3"></i><i class="hp-d" style="--z:4"></i><i class="hp-d" style="--z:5"></i><i class="hp-d" style="--z:6"></i><i class="hp-d" style="--z:7"></i><i class="hp-d" style="--z:8"></i>
         <span class="halo" aria-hidden="true"></span>
         <div class="hp-logo" aria-hidden="true"><span class="lg" style="--i:0">m</span><span class="lg" style="--i:1">o</span><span class="lg" style="--i:2">t</span><span class="lg" style="--i:3">i</span><span class="lg" style="--i:4">o</span><span class="lg" style="--i:5">n</span><span class="lg" style="--i:6">L</span><span class="lg" style="--i:7">A</span><span class="lg" style="--i:8">B</span><span class="hp-v1">V1</span></div>
         <div class="hp-tabs" aria-hidden="true">
@@ -780,7 +783,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
         <div class="hp-controls" aria-hidden="true">Controls
           <svg viewBox="0 0 10 6" fill="none" stroke-width="1.4" stroke-linecap="round"><path d="M1 1l4 4 4-4"/></svg><i></i>
         </div>
-        <span class="hp-postit">Fully<br>customisable</span>
+        <span class="hp-postit">Fully customisable</span>
       </div>
     </div>
   </div>
