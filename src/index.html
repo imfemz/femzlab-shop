@@ -314,7 +314,9 @@ section{max-width:1120px;margin:0 auto;padding:clamp(60px,9vh,104px) clamp(20px,
 
 /* ---------- grille shop ---------- */
 .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;perspective:750px}
-.pcard{display:flex;flex-direction:column;transition:box-shadow .3s ease,opacity .7s ease;transform-style:preserve-3d;will-change:transform}
+.pcard{position:relative;display:flex;flex-direction:column;transition:box-shadow .3s ease,opacity .7s ease;transform-style:preserve-3d;will-change:transform}
+/* toute la carte est cliquable : le lien s'étend sur la surface entière */
+.pcard .go::after{content:"";position:absolute;inset:0;z-index:10}
 .pcard:hover{box-shadow:var(--shadow-lg), inset 0 1.5px 0 rgba(255,255,255,.9)}
 .pcard .media{
   aspect-ratio:1/.86;display:flex;align-items:center;justify-content:center;
@@ -363,6 +365,9 @@ section{max-width:1120px;margin:0 auto;padding:clamp(60px,9vh,104px) clamp(20px,
   font-variation-settings:'EDPT' 100,'EHLT' 12;
   animation:mb-edpt 1.4s ease-in-out infinite;animation-delay:calc(var(--i,0)*90ms)}
 @keyframes mb-edpt{0%,100%{font-variation-settings:'EDPT' 100,'EHLT' 12}50%{font-variation-settings:'EDPT' 196,'EHLT' 12}}
+.mb-logo .lg-img{display:none;height:19px;vertical-align:middle}
+.no-colr .mb-logo .lg{display:none}
+.no-colr .mb-logo .lg-img{display:inline-block}
 .mb-tabs{display:flex;gap:5px;margin-bottom:8px}
 .mb-tabs span{flex:1;text-align:center;font-family:var(--lbl);font-weight:700;font-size:6.5px;
   letter-spacing:.08em;text-transform:uppercase;color:#8A9096;
@@ -717,7 +722,7 @@ footer{background:var(--charcoal);color:#EDEDE8;margin-top:30px;position:relativ
         <div class="media ml"><span class="newtag">Nouveau</span>
           <div class="mlbox" role="img" aria-label="Le panel MotionLAB : logo animé, onglets et preview des presets en boucle.">
             <i class="mb-d" style="--z:1"></i><i class="mb-d" style="--z:2"></i><i class="mb-d" style="--z:3"></i><i class="mb-d" style="--z:4"></i><i class="mb-d" style="--z:5"></i><i class="mb-d" style="--z:6"></i><i class="mb-d" style="--z:7"></i><i class="mb-d" style="--z:8"></i><i class="mb-d" style="--z:9"></i><i class="mb-d" style="--z:10"></i>
-            <div class="mb-logo" aria-hidden="true"><span class="lg" style="--i:0">m</span><span class="lg" style="--i:1">o</span><span class="lg" style="--i:2">t</span><span class="lg" style="--i:3">i</span><span class="lg" style="--i:4">o</span><span class="lg" style="--i:5">n</span><span class="lg" style="--i:6">L</span><span class="lg" style="--i:7">A</span><span class="lg" style="--i:8">B</span></div>
+            <div class="mb-logo" aria-hidden="true"><span class="lg" style="--i:0">m</span><span class="lg" style="--i:1">o</span><span class="lg" style="--i:2">t</span><span class="lg" style="--i:3">i</span><span class="lg" style="--i:4">o</span><span class="lg" style="--i:5">n</span><span class="lg" style="--i:6">L</span><span class="lg" style="--i:7">A</span><span class="lg" style="--i:8">B</span><img class="lg-img" src="assets/png-21.png" alt="MotionLAB"></div>
             <div class="mb-tabs" aria-hidden="true"><span class="on">Texts</span><span>Motion</span><span>Favorites</span></div>
             <div class="mb-stage" aria-hidden="true"><span id="mlbox-word">BOUNCE IN</span></div>
             <div class="mb-controls" aria-hidden="true">Controls<i></i></div>
@@ -1259,5 +1264,22 @@ img.av{object-fit:cover}
       });
     });
   });
+</script>
+
+<script>
+(function(){
+  function chk(){
+    try{
+      var c=document.createElement('canvas');c.width=c.height=48;
+      var x=c.getContext('2d');x.font='40px NablaLogo';x.fillStyle='#000';x.fillText('B',4,40);
+      var d=x.getImageData(0,0,48,48).data;
+      for(var i=0;i<d.length;i+=4){
+        if(d[i+3]>60&&(Math.abs(d[i]-d[i+1])>16||Math.abs(d[i+1]-d[i+2])>16||Math.abs(d[i]-d[i+2])>16))return;
+      }
+      document.documentElement.classList.add('no-colr');
+    }catch(e){document.documentElement.classList.add('no-colr');}
+  }
+  if(document.fonts&&document.fonts.load){document.fonts.load('40px NablaLogo').then(chk,chk);}else{chk();}
+})();
 </script>
 </body></html>
