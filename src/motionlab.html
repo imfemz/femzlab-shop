@@ -259,9 +259,17 @@ nav.dock::before{content:"";position:absolute;inset:-70%;z-index:-1;pointer-even
   font-variation-settings:'EDPT' 100,'EHLT' 12;
   animation:hp-edpt 1.4s ease-in-out infinite;animation-delay:calc(var(--i,0)*90ms)}
 @keyframes hp-edpt{0%,100%{font-variation-settings:'EDPT' 100,'EHLT' 12}50%{font-variation-settings:'EDPT' 196,'EHLT' 12}}
-.hp-logo .lg-img{display:none;height:34px;vertical-align:middle}
+.hp-logo .lgs{display:none;vertical-align:middle;white-space:nowrap;font-size:0;line-height:0;--ls:.25}
+.hp-logo .lgs i{display:inline-block;height:calc(136px*var(--ls));width:calc(var(--lw)*var(--ls)*1px);
+  background-image:url(assets/png-21.png);background-repeat:no-repeat;
+  background-size:calc(650px*var(--ls)) calc(136px*var(--ls));
+  background-position:calc(var(--lx)*var(--ls)*-1px) 0;
+  transform-origin:50% 100%;animation:lgs-pulse 1.4s ease-in-out infinite;
+  animation-delay:calc(var(--i,0)*90ms)}
+@keyframes lgs-pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.08)}}
+@media (prefers-reduced-motion:reduce){.hp-logo .lgs i{animation:none}}
 .no-colr .hp-logo .lg{display:none}
-.no-colr .hp-logo .lg-img{display:inline-block}
+.no-colr .hp-logo .lgs{display:inline-block}
 .hp-v1{font-family:var(--lbl);font-weight:700;font-size:9px;letter-spacing:.08em;color:var(--ml-dim);
   border:1px solid rgba(255,255,255,.14);border-radius:6px;padding:2px 5px;
   vertical-align:top;margin-left:7px;display:inline-block}
@@ -458,6 +466,118 @@ nav.dock::before{content:"";position:absolute;inset:-70%;z-index:-1;pointer-even
 .eg-toggle{width:30px;height:17px;border-radius:999px;background:var(--ml-blue);position:relative;flex:none}
 .eg-toggle::after{content:"";position:absolute;top:2px;right:2px;width:13px;height:13px;border-radius:50%;background:#fff}
 .eg-text{background:#101114;border-radius:8px;padding:9px 12px;font-size:12.5px;color:#E6E8EA;letter-spacing:.02em}
+
+/* maquette TOOLS du panel dans la carte AE — styles, glow de bord suiveur
+   de curseur et dock magnification repris du vrai plugin */
+.atm{margin-top:16px;background:linear-gradient(180deg,#232326,#1B1B1E);border-radius:13px;
+  border:1px solid rgba(255,255,255,.08);padding:14px 16px 16px}
+.atm-lbl{font-family:var(--lbl);font-weight:700;font-size:9.5px;letter-spacing:.12em;
+  text-transform:uppercase;color:#9FA3AA;margin-bottom:10px}
+#atm-tools{position:relative;display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.atool{
+  --edge-sensitivity:30;
+  --color-sensitivity:calc(var(--edge-sensitivity) + 20);
+  --border-radius:14px;
+  --glow-padding:10px;
+  --cone-spread:25;
+  --fill-opacity:.5;
+  --card-bg:rgba(30,33,38,.55);
+  --edge-proximity:0;
+  --cursor-angle:45deg;
+  --glow-color:hsl(217deg 100% 68% / 100%);
+  --glow-color-60:hsl(217deg 100% 68% / 60%);
+  --glow-color-50:hsl(217deg 100% 68% / 50%);
+  --glow-color-40:hsl(217deg 100% 68% / 40%);
+  --glow-color-30:hsl(217deg 100% 68% / 30%);
+  --glow-color-20:hsl(217deg 100% 68% / 20%);
+  --glow-color-10:hsl(217deg 100% 68% / 10%);
+  --gradient-one:radial-gradient(at 80% 55%, #4D8DFF 0px, transparent 50%);
+  --gradient-two:radial-gradient(at 69% 34%, #6FB0FF 0px, transparent 50%);
+  --gradient-three:radial-gradient(at 8% 6%, #38BDF8 0px, transparent 50%);
+  --gradient-four:radial-gradient(at 41% 38%, #4D8DFF 0px, transparent 50%);
+  --gradient-five:radial-gradient(at 86% 85%, #6FB0FF 0px, transparent 50%);
+  --gradient-six:radial-gradient(at 82% 18%, #38BDF8 0px, transparent 50%);
+  --gradient-seven:radial-gradient(at 51% 4%, #6FB0FF 0px, transparent 50%);
+  --gradient-base:linear-gradient(#4D8DFF 0 100%);
+  isolation:isolate;position:relative;
+  display:flex;flex-direction:column;align-items:center;gap:4px;
+  padding:10px 0 8px;border:1px solid rgba(255,255,255,.08);border-radius:14px;
+  background:rgba(30,33,38,.55);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.10),0 2px 5px rgba(0,0,0,.35);
+  cursor:pointer;transform-origin:bottom center;
+  transition:background .12s,box-shadow .12s,transform .12s;min-width:0}
+.atool:hover{background:#3D4248;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.10),0 3px 8px rgba(0,0,0,.4)}
+.atool:active{border-color:#4573D2;box-shadow:inset 0 1px 3px rgba(0,0,0,.4)}
+.at-ico{color:#4573D2;display:flex}
+.at-lbl{font-family:'Inter',sans-serif;font-size:8px;font-weight:600;letter-spacing:1px;color:#8A9096}
+.atool::before,.atool::after,.atool > .edge-light{
+  content:'';position:absolute;inset:0;border-radius:inherit;
+  transition:opacity .25s ease-out;z-index:-1}
+.atool:not(:hover)::before,.atool:not(:hover)::after,.atool:not(:hover) > .edge-light{
+  opacity:0;transition:opacity .75s ease-in-out}
+.atool::before{
+  border:1px solid transparent;
+  background:
+    linear-gradient(var(--card-bg) 0 100%) padding-box,
+    linear-gradient(rgb(255 255 255 / 0%) 0% 100%) border-box,
+    var(--gradient-one) border-box,
+    var(--gradient-two) border-box,
+    var(--gradient-three) border-box,
+    var(--gradient-four) border-box,
+    var(--gradient-five) border-box,
+    var(--gradient-six) border-box,
+    var(--gradient-seven) border-box,
+    var(--gradient-base) border-box;
+  opacity:calc((var(--edge-proximity) - var(--color-sensitivity)) / (100 - var(--color-sensitivity)));
+  mask-image:conic-gradient(from var(--cursor-angle) at center,
+    black calc(var(--cone-spread) * 1%),
+    transparent calc((var(--cone-spread) + 15) * 1%),
+    transparent calc((100 - var(--cone-spread) - 15) * 1%),
+    black calc((100 - var(--cone-spread)) * 1%))}
+.atool::after{
+  border:1px solid transparent;
+  background:
+    var(--gradient-one) padding-box,
+    var(--gradient-two) padding-box,
+    var(--gradient-three) padding-box,
+    var(--gradient-four) padding-box,
+    var(--gradient-five) padding-box,
+    var(--gradient-six) padding-box,
+    var(--gradient-seven) padding-box,
+    var(--gradient-base) padding-box;
+  mask-image:
+    linear-gradient(to bottom, black, black),
+    radial-gradient(ellipse at 50% 50%, black 40%, transparent 65%),
+    radial-gradient(ellipse at 66% 66%, black 5%, transparent 40%),
+    radial-gradient(ellipse at 33% 33%, black 5%, transparent 40%),
+    radial-gradient(ellipse at 66% 33%, black 5%, transparent 40%),
+    radial-gradient(ellipse at 33% 66%, black 5%, transparent 40%),
+    conic-gradient(from var(--cursor-angle) at center, transparent 5%, black 15%, black 85%, transparent 95%);
+  mask-composite:subtract, add, add, add, add, add;
+  opacity:calc(var(--fill-opacity) * (var(--edge-proximity) - var(--color-sensitivity)) / (100 - var(--color-sensitivity)));
+  mix-blend-mode:soft-light}
+.atool > .edge-light{
+  inset:calc(var(--glow-padding) * -1);pointer-events:none;z-index:1;
+  mask-image:conic-gradient(from var(--cursor-angle) at center, black 2.5%, transparent 10%, transparent 90%, black 97.5%);
+  opacity:calc((var(--edge-proximity) - var(--edge-sensitivity)) / (100 - var(--edge-sensitivity)));
+  mix-blend-mode:plus-lighter}
+.atool > .edge-light::before{
+  content:'';position:absolute;inset:var(--glow-padding);border-radius:inherit;
+  box-shadow:
+    inset 0 0 0 1px var(--glow-color),
+    inset 0 0 1px 0 var(--glow-color-60),
+    inset 0 0 3px 0 var(--glow-color-50),
+    inset 0 0 6px 0 var(--glow-color-40),
+    inset 0 0 15px 0 var(--glow-color-30),
+    inset 0 0 25px 2px var(--glow-color-20),
+    inset 0 0 50px 2px var(--glow-color-10),
+    0 0 1px 0 var(--glow-color-60),
+    0 0 3px 0 var(--glow-color-50),
+    0 0 6px 0 var(--glow-color-40),
+    0 0 15px 0 var(--glow-color-30),
+    0 0 25px 2px var(--glow-color-20),
+    0 0 50px 2px var(--glow-color-10)}
 
 /* ---------- S7 : OUTILS — même gabarit démo : liste à gauche, mini-scène
    « comp » à droite qui joue le geste sélectionné ---------- */
@@ -797,7 +917,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
       <div class="hpanel" role="img" aria-label="Le panel MotionLAB : logo animé, onglets Texts, Motion (bientôt) et Favorites, preview des dix presets en boucle.">
         <i class="hp-d" style="--z:1"></i><i class="hp-d" style="--z:2"></i><i class="hp-d" style="--z:3"></i><i class="hp-d" style="--z:4"></i><i class="hp-d" style="--z:5"></i><i class="hp-d" style="--z:6"></i><i class="hp-d" style="--z:7"></i><i class="hp-d" style="--z:8"></i><i class="hp-d" style="--z:9"></i><i class="hp-d" style="--z:10"></i><i class="hp-d" style="--z:11"></i><i class="hp-d" style="--z:12"></i><i class="hp-d" style="--z:13"></i><i class="hp-d" style="--z:14"></i>
         <span class="halo" aria-hidden="true"></span>
-        <div class="hp-logo" aria-hidden="true"><span class="lg" style="--i:0">m</span><span class="lg" style="--i:1">o</span><span class="lg" style="--i:2">t</span><span class="lg" style="--i:3">i</span><span class="lg" style="--i:4">o</span><span class="lg" style="--i:5">n</span><span class="lg" style="--i:6">L</span><span class="lg" style="--i:7">A</span><span class="lg" style="--i:8">B</span><img class="lg-img" src="assets/png-21.png" alt="MotionLAB"><span class="hp-v1">V1</span></div>
+        <div class="hp-logo" aria-hidden="true"><span class="lg" style="--i:0">m</span><span class="lg" style="--i:1">o</span><span class="lg" style="--i:2">t</span><span class="lg" style="--i:3">i</span><span class="lg" style="--i:4">o</span><span class="lg" style="--i:5">n</span><span class="lg" style="--i:6">L</span><span class="lg" style="--i:7">A</span><span class="lg" style="--i:8">B</span><span class="lgs"><i style="--i:0;--lx:0;--lw:89.5"></i><i style="--i:1;--lx:89.5;--lw:70.7"></i><i style="--i:2;--lx:160.2;--lw:64.8"></i><i style="--i:3;--lx:225;--lw:70.7"></i><i style="--i:4;--lx:295.7;--lw:70.7"></i><i style="--i:5;--lx:366.4;--lw:70.7"></i><i style="--i:6;--lx:437.1;--lw:64.8"></i><i style="--i:7;--lx:501.9;--lw:76.6"></i><i style="--i:8;--lx:578.5;--lw:77.8"></i></span><span class="hp-v1">V1</span></div>
         <div class="hp-tabs" aria-hidden="true">
           <span class="hp-tab on">Texts</span>
           <span class="hp-tab"><span class="hp-soon">Bientôt</span>Motion</span>
@@ -954,6 +1074,20 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
         <li><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg><span><b>Huit outils</b> dans le panel : recadrage, remplissage, tête de lecture, alignement, rebond, wiggle, tracé, cascade.</span></li>
         <li><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg><span><b>Favoris</b> pour retrouver tes combinaisons en un clic.</span></li>
       </ul>
+
+      <div class="atm" role="img" aria-label="La barre d'outils du panel : les huit gestes, avec le survol du vrai plugin.">
+        <div class="atm-lbl">Tools</div>
+        <div id="atm-tools" aria-hidden="true">
+          <span class="atool" data-t="crop"><span class="edge-light"></span><span class="at-ico"><svg viewBox="0 0 16 16" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 7V3H7M13 7V3H9M3 9V13H7M13 9V13H9"/></svg></span><span class="at-lbl">CROP</span></span>
+          <span class="atool" data-t="fill"><span class="edge-light"></span><span class="at-ico"><svg viewBox="0 0 16 16" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12L12 4M4 9V12H7M12 7V4H9"/></svg></span><span class="at-lbl">FILL</span></span>
+          <span class="atool" data-t="cursor"><span class="edge-light"></span><span class="at-ico"><svg viewBox="0 0 16 16" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 2V14M2 8H4M4 5.5L7 8L4 10.5"/></svg></span><span class="at-lbl">CURSOR</span></span>
+          <span class="atool" data-t="align"><span class="edge-light"></span><span class="at-ico"><svg viewBox="0 0 16 16" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="8" cy="8" r="5"/><path d="M8 1V4M8 12V15M1 8H4M12 8H15"/><circle cx="8" cy="8" r="1" fill="currentColor" stroke="none"/></svg></span><span class="at-lbl">ALIGN</span></span>
+          <span class="atool" data-t="bounce"><span class="edge-light"></span><span class="at-ico"><svg viewBox="0 0 16 16" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="3" cy="3" r="1.3" fill="currentColor" stroke="none"/><path d="M3 3C3 3 3 12 6.5 12C10 12 10 6 10 6"/><path d="M10 6C10 6 10 12 12.5 12"/></svg></span><span class="at-lbl">BOUNCE</span></span>
+          <span class="atool" data-t="wiggle"><span class="edge-light"></span><span class="at-ico"><svg viewBox="0 0 16 16" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M1 8L4 3L7 13L10 3L13 13L15 8"/></svg></span><span class="at-lbl">WIGGLE</span></span>
+          <span class="atool" data-t="path"><span class="edge-light"></span><span class="at-ico"><svg viewBox="0 0 16 16" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 13C2 13 2 3 8 3S14 13 14 13"/><circle cx="8" cy="3" r="1.3" fill="currentColor" stroke="none"/></svg></span><span class="at-lbl">PATH</span></span>
+          <span class="atool" data-t="stagger"><span class="edge-light"></span><span class="at-ico"><svg viewBox="0 0 16 16" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 4H8M5 8H11M8 12H14"/></svg></span><span class="at-lbl">STAGGER</span></span>
+        </div>
+      </div>
     </article>
     <article class="app-card rv" style="--d:.1s">
       <div class="ah">
@@ -3924,5 +4058,81 @@ function mlDemo(rootSel,itemSel,period,play){
   }
   if(document.fonts&&document.fonts.load){document.fonts.load('40px NablaLogo').then(chk,chk);}else{chk();}
 })();
+</script>
+<script>
+// -- Maquette TOOLS (carte AE) : Border Glow suiveur de curseur + dock
+//    magnification, math reprise du vrai panel --
+(function(){
+  var toolsEl=document.getElementById('atm-tools');if(!toolsEl)return;
+  function setBorderGlowVars(el,clientX,clientY){
+    var rect=el.getBoundingClientRect();
+    var x=clientX-rect.left,y=clientY-rect.top;
+    var cx=rect.width/2,cy=rect.height/2;
+    var dx=x-cx,dy=y-cy;
+    var kx=Infinity,ky=Infinity;
+    if(dx!==0)kx=cx/Math.abs(dx);
+    if(dy!==0)ky=cy/Math.abs(dy);
+    var edge=Math.min(Math.max(1/Math.min(kx,ky),0),1);
+    var angle=0;
+    if(dx!==0||dy!==0){
+      var deg=Math.atan2(dy,dx)*(180/Math.PI)+90;
+      if(deg<0)deg+=360;
+      angle=deg;
+    }
+    el.style.setProperty('--edge-proximity',(edge*100).toFixed(3));
+    el.style.setProperty('--cursor-angle',angle.toFixed(3)+'deg');
+  }
+  toolsEl.addEventListener('pointermove',function(e){
+    var btn=e.target.closest&&e.target.closest('.atool');
+    if(!btn)return;
+    setBorderGlowVars(btn,e.clientX,e.clientY);
+  });
+  if(REDUCED)return;
+  var tools=toolsEl.querySelectorAll('.atool');
+  var PEAK=1.22,SIGMA=40,LERP=0.3;
+  var layout=[];
+  function recomputeLayout(){
+    for(var i=0;i<tools.length;i++){
+      var t=tools[i];
+      var prevCurrent=(layout[i]&&layout[i].el===t)?layout[i].current:1;
+      layout[i]={el:t,centerX:t.offsetLeft+t.offsetWidth/2,centerY:t.offsetTop+t.offsetHeight/2,current:prevCurrent};
+    }
+  }
+  recomputeLayout();
+  window.addEventListener('resize',recomputeLayout);
+  var tracking=false,lastClientX=0,lastClientY=0,rafId=null;
+  function tick(){
+    var toolsRect=toolsEl.getBoundingClientRect();
+    var mx=lastClientX-toolsRect.left,my=lastClientY-toolsRect.top;
+    for(var i=0;i<layout.length;i++){
+      var item=layout[i];
+      var dx=mx-item.centerX,dy=my-item.centerY;
+      var target=1+(PEAK-1)*Math.exp(-(dx*dx+dy*dy)/(2*SIGMA*SIGMA));
+      item.current+=(target-item.current)*LERP;
+      item.el.style.transform='scale('+item.current.toFixed(3)+')';
+    }
+    rafId=requestAnimationFrame(tick);
+  }
+  function onMove(e){
+    lastClientX=e.clientX;lastClientY=e.clientY;
+    if(!tracking){
+      tracking=true;
+      for(var i=0;i<tools.length;i++)tools[i].style.transitionDuration='.12s, .12s, 0s';
+      rafId=requestAnimationFrame(tick);
+    }
+  }
+  function onLeave(){
+    tracking=false;
+    if(rafId!==null){cancelAnimationFrame(rafId);rafId=null;}
+    for(var i=0;i<layout.length;i++)layout[i].current=1;
+    for(var j=0;j<tools.length;j++){
+      tools[j].style.transitionDuration='.12s, .12s, .2s';
+      tools[j].style.transform='';
+    }
+  }
+  toolsEl.addEventListener('mousemove',onMove);
+  toolsEl.addEventListener('mouseleave',onLeave);
+})();
+
 </script>
 </body></html>
