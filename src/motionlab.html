@@ -337,6 +337,47 @@ nav.dock::before{content:"";position:absolute;inset:-70%;z-index:-1;pointer-even
   letter-spacing:-.01em;margin-top:12px}
 .fstep p{font-size:14px;color:var(--muted);margin-top:8px;line-height:1.55}
 
+/* ---------- S3 : GUIDES — vidéo (rendu de la comp « colo 3 ») + carte
+   explicative avec mini-panel interactif (chips plateforme → calque guide
+   posé sur une comp 9:16 ou 16:9, re-clic = retiré, comme dans le plugin) */
+.guides-wrap{max-width:1100px;margin:0 auto;padding:26px clamp(20px,5vw,48px) 0;
+  display:grid;grid-template-columns:1.3fr .9fr;gap:20px;align-items:stretch}
+.gcol{display:flex;flex-direction:column;gap:20px;min-width:0}
+.gv{position:relative;aspect-ratio:16/9;border-radius:var(--r-lg);overflow:hidden;
+  background:#1B1D20;box-shadow:var(--shadow-lg)}
+.gv video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block}
+.gcard{background:#fff;border-radius:var(--r-lg);box-shadow:var(--shadow);padding:24px;
+  display:flex;flex-direction:column;gap:10px;flex:1}
+.gcard h3{font-family:'Montserrat',sans-serif;font-weight:800;font-size:17px;text-transform:uppercase;letter-spacing:-.01em}
+.gcard p{font-size:14px;color:var(--muted);line-height:1.55}
+.gcard-note{font-size:11.5px;color:var(--dim);margin-top:auto}
+/* tuile charcoal (DA : l'UI du produit se cite en sombre) qui prend toute la
+   hauteur de la colonne ; la comp 9:16 s'étire avec la scène */
+.gmini{background:linear-gradient(180deg,#2A2D31,#1B1D20);border-radius:var(--r-lg);
+  border:1px solid rgba(255,255,255,.08);box-shadow:var(--shadow-lg);
+  padding:12px;display:flex;flex-direction:column;gap:10px;min-width:0}
+.gm-tabs{display:flex;gap:2px;padding:3px;background:#34383D;border:1px solid rgba(255,255,255,.06);border-radius:12px}
+.gm-tab{flex:1 1 auto;min-width:0;font-family:var(--lbl);font-weight:700;font-size:9.5px;letter-spacing:.06em;
+  text-transform:uppercase;color:#8A9096;background:transparent;border:none;border-radius:9px;
+  padding:7px 4px;cursor:pointer;white-space:nowrap;transition:background .15s,color .15s}
+.gm-tab:hover{background:#3D4248;color:#fff}
+.gm-tab.on{background:var(--ml-blue);color:#fff;box-shadow:0 1px 4px rgba(0,0,0,.28)}
+.gm-stage{flex:1;min-height:250px;display:flex;align-items:center;justify-content:center;
+  background:#101114;border-radius:10px;overflow:hidden;position:relative}
+.gm-stage::after{content:"";position:absolute;inset:0;pointer-events:none;
+  background:radial-gradient(100% 90% at 50% 50%,transparent 45%,rgba(0,0,0,.45) 100%)}
+.gm-comp{position:relative;overflow:hidden;border-radius:6px;box-shadow:0 8px 24px rgba(0,0,0,.5);z-index:1}
+.gm-comp.v{align-self:stretch;margin:12px 0;height:auto;aspect-ratio:9/16}
+.gm-comp.h{align-self:center;width:min(100% - 24px,372px);aspect-ratio:16/9}
+.gm-sample{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
+  background:radial-gradient(120% 80% at 30% 18%,#5EA2FF 0,#2E4A7A 38%,#1B1D20 75%)}
+.gm-sample span{font-family:'Montserrat',sans-serif;font-weight:800;text-transform:uppercase;
+  font-size:15px;letter-spacing:.02em;color:rgba(255,255,255,.9);transform:rotate(-8deg)}
+.gm-ov{position:absolute;inset:0;width:100%;height:100%;display:block;opacity:0;transition:opacity .25s}
+.gm-ov.on{opacity:.94}
+.gm-note{font-family:var(--lbl);font-weight:700;font-size:9.5px;letter-spacing:.1em;text-transform:uppercase;
+  color:#8A9096!important;text-align:center;line-height:1.4!important}
+
 /* ---------- S4 : PRESETS — preview interactive « à la Bart » : le panel à
    gauche (liste + réglages), la scène animée à droite. Le JS pilote tout
    (sélection, texte custom, split, vitesse, boucle). ---------- */
@@ -858,6 +899,8 @@ footer{background:var(--charcoal);color:#EDEDE8;margin-top:20px;position:relativ
   .hero-cta,.hero-meta{justify-content:center}
   .hpanel{width:min(300px,80vw)}
   .flow-wrap{grid-template-columns:1fr}
+  .guides-wrap{grid-template-columns:1fr}
+  .gm-stage{flex:none;height:250px}
   .sig-wrap{grid-template-columns:1fr}
   .sig-fig{max-width:min(360px,86vw);margin:0 auto}
   .apps-wrap,.buy-wrap{grid-template-columns:1fr}
@@ -994,29 +1037,44 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     </div>
   </section>
 
-  <!-- ======================= S3 : WORKFLOW 01/02/03 ======================= -->
+  <!-- ======================= S3 : GUIDES (V1.01) — rendu de la comp « colo 3 » + mini-panel interactif ======================= -->
   <section class="band">
-  <div class="sec-head rv">
-    <span class="eyebrow">Le geste</span>
-    <h2>Tape. Règle. Add.</h2>
-    <p>Le même workflow dans les deux applications.</p>
+  <div class="sec-head rv" id="guides">
+    <span class="eyebrow">Nouveau · V1.01</span>
+    <h2>Reste dans le cadre.</h2>
+    <p>Les vraies interfaces Instagram, TikTok et YouTube posées sur ta comp en un clic — tu vois ce que les boutons cachent avant d'exporter.</p>
   </div>
-  <div class="flow-wrap">
-    <article class="fstep rv" style="--d:.0s">
-      <span class="fn">01</span>
-      <h3>Tape ton texte</h3>
-      <p>Écris directement dans le panel : le texte de preview est éditable, tu vois l'animation sur tes propres mots.</p>
-    </article>
-    <article class="fstep rv" style="--d:.08s">
-      <span class="fn">02</span>
-      <h3>Choisis et règle</h3>
-      <p>Un preset parmi les dix, la vitesse de 0,5× à 2×, l'intensité selon le preset, le mode mot ou lettre par lettre.</p>
-    </article>
-    <article class="fstep rv" style="--d:.16s">
-      <span class="fn">03</span>
-      <h3>Clique ADD</h3>
-      <p>L'animation se pose en vraies keyframes dans After Effects, en titre animé dans Premiere Pro — et ça marche aussi sur les textes déjà présents dans tes projets : tu animes l'existant en un clic.</p>
-    </article>
+  <div class="guides-wrap">
+    <div class="gcol">
+      <div class="gv rv" id="gv-scene" role="img" aria-label="Dans After Effects : les guides TikTok, Instagram et YouTube se posent sur la comp, puis un reel qui reste dans le cadre."></div>
+      <article class="gcard rv" style="--d:.08s">
+        <h3>L'onglet Guides</h3>
+        <p>Un clic : l'interface de la plateforme s'importe en calque guide, calée au pixel sur ta comp 9:16 ou 16:9 — 1080p, 2K ou 4K. Elle n'apparaît jamais à l'export. Re-clic : elle disparaît.</p>
+        <p class="gcard-note">Arrive dans la V1.01, gratuite pour tous ceux qui ont la V1.</p>
+      </article>
+    </div>
+    <aside class="gmini rv" id="gmini" style="--d:.14s" role="group" aria-label="Aperçu interactif : choisis une plateforme, le guide se pose sur la comp.">
+        <div class="gm-tabs">
+          <button type="button" class="gm-tab on" data-g="instagram" data-track="cta_ml_guide_instagram">Instagram</button>
+          <button type="button" class="gm-tab" data-g="tiktok" data-track="cta_ml_guide_tiktok">TikTok</button>
+          <button type="button" class="gm-tab" data-g="shorts" data-track="cta_ml_guide_shorts">Shorts</button>
+          <button type="button" class="gm-tab" data-g="youtube169" data-track="cta_ml_guide_youtube">YouTube 16:9</button>
+        </div>
+        <div class="gm-stage">
+          <div class="gm-comp v" id="gm-comp">
+            <div class="gm-sample"><span class="gm-s-v">Ton reel</span><span class="gm-s-h" hidden>Ta vidéo</span></div>
+            <img class="gm-ov on" data-g="instagram" src="assets/png-23.png" alt="" width="720" height="1280" loading="lazy">
+            <img class="gm-ov" data-g="tiktok" src="assets/png-24.png" alt="" width="720" height="1280" loading="lazy">
+            <img class="gm-ov" data-g="shorts" src="assets/png-25.png" alt="" width="720" height="1280" loading="lazy">
+            <img class="gm-ov" data-g="youtube169" src="assets/png-26.png" alt="" width="1280" height="720" loading="lazy">
+          </div>
+        </div>
+        <p class="gm-note" data-g="instagram">Instagram Reels · calque guide, jamais rendu</p>
+        <p class="gm-note" data-g="tiktok" hidden>TikTok · calque guide, jamais rendu</p>
+        <p class="gm-note" data-g="shorts" hidden>YouTube Shorts · calque guide, jamais rendu</p>
+        <p class="gm-note" data-g="youtube169" hidden>YouTube 16:9 · lecteur desktop, jamais rendu</p>
+        <p class="gm-note" data-g="off" hidden>Guide retiré — re-clique pour le reposer.</p>
+    </aside>
   </div>
 
   </section>
@@ -3848,6 +3906,47 @@ function mlDemo(rootSel,itemSel,period,play){
   play(document.querySelector('#demo-tools .dp-item.on'));
 })();
 
+// Section GUIDES : vidéo (rendu de la comp « colo 3 ») chargée à l'approche.
+(function(){
+  const scene=document.getElementById('gv-scene');if(!scene)return;
+  let built=false;
+  new IntersectionObserver(es=>{es.forEach(e=>{
+    if(e.isIntersecting&&!built){
+      built=true;
+      const v=document.createElement('video');
+      v.muted=true;v.loop=true;v.playsInline=true;
+      v.setAttribute('muted','');v.setAttribute('playsinline','');
+      v.src='assets/mp4-23.mp4';
+      if(REDUCED){v.addEventListener('loadedmetadata',()=>{v.currentTime=1.8;},{once:true});}
+      else{v.autoplay=true;v.play&&v.play().catch(()=>{});}
+      scene.appendChild(v);
+    }
+  });},{threshold:.2}).observe(scene);
+})();
+
+// Mini-panel GUIDES : chip = plateforme, le calque guide se pose sur la comp
+// (9:16 ou 16:9) ; re-clic sur la chip active = guide retiré, comme dans le plugin.
+(function(){
+  const box=document.getElementById('gmini');if(!box)return;
+  const comp=document.getElementById('gm-comp');
+  const tabs=[...box.querySelectorAll('.gm-tab')],ovs=[...box.querySelectorAll('.gm-ov')],notes=[...box.querySelectorAll('.gm-note')];
+  const sv=box.querySelector('.gm-s-v'),sh=box.querySelector('.gm-s-h');
+  let g='instagram',on=true;
+  function render(){
+    const wide=g==='youtube169';
+    comp.classList.toggle('h',wide);comp.classList.toggle('v',!wide);
+    sv.hidden=wide;sh.hidden=!wide;
+    tabs.forEach(t=>t.classList.toggle('on',on&&t.dataset.g===g));
+    ovs.forEach(o=>o.classList.toggle('on',on&&o.dataset.g===g));
+    notes.forEach(n=>{n.hidden=!(on?n.dataset.g===g:n.dataset.g==='off');});
+  }
+  tabs.forEach(t=>t.addEventListener('click',()=>{
+    if(on&&t.dataset.g===g){on=false;}else{g=t.dataset.g;on=true;}
+    render();
+  }));
+  render();
+})();
+
 // Essential Graphics (carte Premiere) : maquette interactive — chaque réglage
 // rejoue le titre avec les valeurs saisies (vitesse, rebond, lettres, décalage).
 (function(){
@@ -3925,6 +4024,19 @@ function mlDemo(rootSel,itemSel,period,play){
     "39 €":"€39",
     "MotionLAB — 39 €":"MotionLAB — €39",
     "Bientôt":"Soon",
+    "Nouveau · V1.01":"New · V1.01",
+    "Reste dans le cadre.":"Stay in frame.",
+    "Les vraies interfaces Instagram, TikTok et YouTube posées sur ta comp en un clic — tu vois ce que les boutons cachent avant d'exporter.":"The real Instagram, TikTok and YouTube interfaces laid over your comp in one click — you see what the buttons hide before you export.",
+    "L'onglet Guides":"The Guides tab",
+    "Un clic : l'interface de la plateforme s'importe en calque guide, calée au pixel sur ta comp 9:16 ou 16:9 — 1080p, 2K ou 4K. Elle n'apparaît jamais à l'export. Re-clic : elle disparaît.":"One click: the platform's interface comes in as a guide layer, pixel-aligned to your 9:16 or 16:9 comp — 1080p, 2K or 4K. It never shows in the export. Click again: it's gone.",
+    "Ton reel":"Your reel",
+    "Ta vidéo":"Your video",
+    "Instagram Reels · calque guide, jamais rendu":"Instagram Reels · guide layer, never rendered",
+    "TikTok · calque guide, jamais rendu":"TikTok · guide layer, never rendered",
+    "YouTube Shorts · calque guide, jamais rendu":"YouTube Shorts · guide layer, never rendered",
+    "YouTube 16:9 · lecteur desktop, jamais rendu":"YouTube 16:9 · desktop player, never rendered",
+    "Guide retiré — re-clique pour le reposer.":"Guide removed — click again to put it back.",
+    "Arrive dans la V1.01, gratuite pour tous ceux qui ont la V1.":"Coming in V1.01, free for everyone who owns V1.",
     "Ton contenu,":"Your content,",
     "niveau studio.":"studio-grade.",
     "Modifie le texte ou un réglage : le titre se rejoue avec tes valeurs.":"Edit the text or a setting: the title replays with your values.",
