@@ -520,14 +520,8 @@ nav.dock::before{content:"";position:absolute;inset:-70%;z-index:-1;pointer-even
 .eg-prev{height:66px;display:flex;align-items:center;justify-content:center;overflow:hidden;
   background:#fff;border:1px solid var(--line);border-radius:9px;
   font-family:'Montserrat',sans-serif;font-weight:800;font-size:22px;letter-spacing:.01em;color:var(--ink)}
-.eg-prev span{display:inline-block;white-space:pre;
-  animation:egDrop var(--dur,2.2s) cubic-bezier(.22,.9,.3,1) var(--d,0s) infinite both}
-@keyframes egDrop{0%{transform:translateY(calc(var(--amp,40) * -1px));opacity:0}
-  16%{transform:translateY(0);opacity:1}
-  28%{transform:translateY(calc(var(--amp,40) * -.38px))}
-  40%{transform:translateY(0)}
-  48%{transform:translateY(calc(var(--amp,40) * -.13px))}
-  56%,100%{transform:translateY(0);opacity:1}}
+.eg-prev .pv-text{display:inline-block}
+.eg-prev .pv-letter{display:inline-block;white-space:pre;will-change:transform,opacity}
 .eg-text{font:inherit;font-size:12.5px;font-weight:600;color:var(--ink);background:#fff;
   border:1px solid var(--line-strong);border-radius:8px;padding:8px 11px;width:100%}
 .eg-text:focus-visible{outline:2px solid var(--accent);outline-offset:1px}
@@ -656,6 +650,26 @@ nav.dock::before{content:"";position:absolute;inset:-70%;z-index:-1;pointer-even
     0 0 15px 0 var(--glow-color-30),
     0 0 25px 2px var(--glow-color-20),
     0 0 50px 2px var(--glow-color-10)}
+
+/* flèche de liaison : la maquette TOOLS de la carte AE « désigne » la
+   section qui détaille ces mêmes huit outils */
+.tools-arrow{max-width:1100px;margin:-6px auto -18px;padding:0 clamp(20px,5vw,48px);
+  display:flex;justify-content:flex-start;pointer-events:none}
+.tools-arrow svg{width:150px;height:86px;overflow:visible;margin-left:11%;
+  color:var(--muted);opacity:.75}
+.tools-arrow path{stroke:currentColor;stroke-width:1.6;fill:none;stroke-linecap:round}
+.tools-arrow .ta-head{stroke-width:1.6;fill:none;stroke-linejoin:round}
+@media (max-width:860px){
+  .tools-arrow{justify-content:center;margin:2px auto -14px}
+  .tools-arrow svg{margin-left:0;width:104px;height:62px}
+}
+@media (prefers-reduced-motion:no-preference){
+  .tools-arrow.in .ta-line{stroke-dasharray:210;stroke-dashoffset:210;
+    animation:ta-draw .9s cubic-bezier(.5,0,.2,1) .1s forwards}
+  .tools-arrow.in .ta-head{opacity:0;animation:ta-head .3s ease-out .8s forwards}
+}
+@keyframes ta-draw{to{stroke-dashoffset:0}}
+@keyframes ta-head{to{opacity:1}}
 
 /* ---------- S7 : OUTILS — même gabarit démo : liste à gauche, mini-scène
    « comp » à droite qui joue le geste sélectionné ---------- */
@@ -1193,12 +1207,19 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
         <div class="eg-prev" id="eg-prev" aria-hidden="true"></div>
         <input id="eg-text" class="eg-text" type="text" value="MotionLAB" maxlength="16" autocomplete="off" spellcheck="false" autocapitalize="off" aria-label="Texte du titre" data-track="cta_ml_eg_text">
         <div class="eg-row"><span class="eg-lbl">Speed</span><input id="eg-speed" class="eg-range" type="range" min="0.5" max="2" step="0.05" value="1" aria-label="Speed"><span class="eg-val" id="eg-speed-v">1.00</span></div>
-        <div class="eg-row"><span class="eg-lbl">Bounce</span><input id="eg-bounce" class="eg-range" type="range" min="0" max="100" step="1" value="64" aria-label="Bounce"><span class="eg-val" id="eg-bounce-v">64</span></div>
+        <div class="eg-row"><span class="eg-lbl">Bounce</span><input id="eg-bounce" class="eg-range" type="range" min="0" max="100" step="1" value="50" aria-label="Bounce"><span class="eg-val" id="eg-bounce-v">50</span></div>
         <div class="eg-row"><span class="eg-lbl">Letters</span><label class="eg-toggle"><input id="eg-letters" type="checkbox" checked aria-label="Letters"><i></i></label></div>
-        <div class="eg-row"><span class="eg-lbl">Stagger</span><input id="eg-stagger" class="eg-range" type="range" min="0" max="150" step="5" value="60" aria-label="Stagger"><span class="eg-val" id="eg-stagger-v">60&nbsp;ms</span></div>
+        <div class="eg-row"><span class="eg-lbl">Stagger</span><input id="eg-stagger" class="eg-range" type="range" min="0" max="150" step="5" value="50" aria-label="Stagger"><span class="eg-val" id="eg-stagger-v">50&nbsp;ms</span></div>
         <p class="eg-hint">Modifie le texte ou un réglage : le titre se rejoue avec tes valeurs.</p>
       </div>
     </article>
+  </div>
+
+  <div class="tools-arrow rv" aria-hidden="true">
+    <svg viewBox="0 0 150 86" fill="none">
+      <path class="ta-line" d="M9 3C9 31 19 53 45 67c20 11 45 15 77 17"/>
+      <path class="ta-head" d="M110 74l13 10-13 6"/>
+    </svg>
   </div>
 
   <!-- ======================= S7 : OUTILS ======================= -->
@@ -3955,24 +3976,29 @@ function mlDemo(rootSel,itemSel,period,play){
         sp=document.getElementById('eg-speed'),bo=document.getElementById('eg-bounce'),
         le=document.getElementById('eg-letters'),st=document.getElementById('eg-stagger');
   const fmt=(id,v)=>{document.getElementById(id).textContent=v;};
+  // Le titre est joué par le MOTEUR du plugin (preset bounce-in), pas par des
+  // keyframes maison : mêmes conversions d'unités que le panel (bounce /100,
+  // stagger /1000), donc exactement la courbe obtenue en montage.
+  const preset=(window.MLPresets||[]).find(pr=>pr.id==='bounce-in');
+  let loop=null,visible=true;
   function play(){
+    clearTimeout(loop);
     const speed=parseFloat(sp.value)||1,amp=parseInt(bo.value,10),stag=parseInt(st.value,10),letters=le.checked;
-    fmt('eg-speed-v',speed.toFixed(2));fmt('eg-bounce-v',amp);fmt('eg-stagger-v',stag+' ms');
+    fmt('eg-speed-v',speed.toFixed(2));fmt('eg-bounce-v',amp);fmt('eg-stagger-v',stag+' ms');
     const s=(txt.value||'MotionLAB').slice(0,16);
-    const parts=letters?Array.from(s):[s];
     prev.replaceChildren();
-    const dur=(2.2/speed)+(letters?(parts.length-1)*stag/1000:0);
-    parts.forEach((ch,i)=>{const e=document.createElement('span');e.textContent=ch;
-      e.style.setProperty('--amp',String(22+amp*.7));
-      e.style.setProperty('--dur',dur.toFixed(3)+'s');
-      e.style.setProperty('--d',letters?(i*stag/1000).toFixed(3)+'s':'0s');
-      prev.appendChild(e);});
+    if(!preset||REDUCED){prev.textContent=s;return;}
+    const dur=preset.web(prev,s,{speed:speed,bounce:amp/100,
+      split:letters?'letters':'word',stagger:stag/1000})||900;
+    // rejoué après une pause — comme quand on retouche un réglage dans EG
+    loop=setTimeout(()=>{visible?play():(loop=setTimeout(play,1200));},dur+1300);
   }
   let t;const bump=()=>{clearTimeout(t);t=setTimeout(play,60);};
   [sp,bo,st].forEach(r=>r.addEventListener('input',bump));
   le.addEventListener('change',play);
   txt.addEventListener('input',bump);
-  if(REDUCED){play();prev.querySelectorAll('span').forEach(e=>{e.style.animation='none';});}else play();
+  new IntersectionObserver(es=>{es.forEach(e=>{visible=e.isIntersecting;});},{threshold:.2}).observe(box);
+  play();
 })();
 
 // Scène « extension tuto » (carte installation) : rendu capture de la comp.
