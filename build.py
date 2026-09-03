@@ -24,7 +24,8 @@ DIST = ICI / "dist"
 PAGES = [("index.html", "index.html"),
          ("portfolio.html", "portfolio/index.html"),
          ("avis.html", "avis/index.html"),
-         ("motionlab.html", "motionlab/index.html")]
+         ("motionlab.html", "motionlab/index.html"),
+         ("metavision.html", "metavision/index.html")]
 
 MIME = {
     "png": "image/png", "jpg": "image/jpeg", "jpeg": "image/jpeg",

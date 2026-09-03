@@ -1,0 +1,947 @@
+<!doctype html><html lang="fr"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>MetaVision — Formation VFX After Effects | FemzLab</title>
+<link rel="icon" type="image/png" href="assets/favicon.png">
+<meta name="description" content="La formation VFX sur After Effects : trois modules, des invités, le Fade Pack offert et un accompagnement sur Discord. 150 € ou 2 × 75 €. Par Femz.">
+<!-- Google Tag Manager -->
+<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+})(window,document,'script','dataLayer','GTM-5ZD8M8DC');</script>
+<!-- End Google Tag Manager -->
+<style>
+@font-face{font-family:'Montserrat';font-weight:800;font-style:normal;font-display:swap;src:url(assets/woff2-01.woff2) format('woff2')}
+@font-face{font-family:'Inter';font-weight:400;font-style:normal;font-display:swap;src:url(assets/woff2-02.woff2) format('woff2')}
+@font-face{font-family:'Inter';font-weight:700;font-style:normal;font-display:swap;src:url(assets/woff2-03.woff2) format('woff2')}
+
+:root{
+  --paper:#E4E4DF;--ink:#0A0A08;--charcoal:#161616;--muted:#67675F;--dim:#8D8D84;
+  --line:rgba(20,20,15,.1);--line-strong:rgba(20,20,15,.18);
+  --shadow:0 18px 44px rgba(25,25,18,.10);--shadow-lg:0 30px 70px rgba(25,25,18,.16);
+  --accent:#5EA2FF;--r-lg:18px;--lbl:'Inter',sans-serif;
+  /* Accent typographique : même famille que --accent/--ml-blue mais assez
+     foncé pour rester lisible sur paper (≈4.3:1) ; le glow reste en #5EA2FF */
+  --accent-deep:#3E63C4;
+  /* Tuiles charcoal : réservées à ce qui cite After Effects (frise, « Ce qu'il te faut ») */
+  --ml-top:#2A2D31;--ml-bottom:#1B1D20;--ml-card:#34383D;--ml-txt:#E6E8EA;--ml-dim:#8A9096;--ml-blue:#4573D2;
+  color-scheme:light;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--paper);color:var(--ink);font-family:'Inter',system-ui,-apple-system,sans-serif;
+  font-size:16px;line-height:1.6;overflow-x:hidden;-webkit-font-smoothing:antialiased}
+::selection{background:rgba(5,5,5,.12)}
+a{color:inherit;text-decoration:none}
+img,video{max-width:100%;display:block}
+button{font:inherit;cursor:pointer}
+a:focus-visible,button:focus-visible,summary:focus-visible{outline:2px solid var(--ink);outline-offset:3px;border-radius:4px}
+
+#dots{position:fixed;inset:0;z-index:0;pointer-events:none}
+.vignette{position:fixed;inset:0;z-index:1;pointer-events:none;
+  background:radial-gradient(120% 90% at 50% 34%, transparent 56%, rgba(25,25,18,.12) 100%)}
+main,footer{position:relative;z-index:2}
+/* clip garde le body sans overflow horizontal sans casser fixed ni sticky */
+main{overflow-x:hidden;overflow-x:clip}
+
+.lbl,.eyebrow,.legal,.ptag{font-family:var(--lbl);font-weight:700;text-transform:uppercase;letter-spacing:.08em}
+
+#playhead{position:fixed;top:0;left:0;height:2px;width:100%;z-index:60;transform-origin:0 50%;transform:scaleX(0);
+  background:linear-gradient(90deg,#5EA2FF,#fff);box-shadow:0 0 10px rgba(94,162,255,.6)}
+
+/* ---------- logo + dock (identiques au reste du site) ---------- */
+.fixed-logo{position:fixed;top:15px;left:50%;transform:translateX(-50%);z-index:56;height:56px;aspect-ratio:2308/594;display:block;
+  transition:transform .35s cubic-bezier(.22,1,.36,1),opacity .4s ease}
+.fixed-logo .mark{position:absolute;inset:0;pointer-events:none;
+  -webkit-mask:url(assets/png-01.png) center/contain no-repeat;mask:url(assets/png-01.png) center/contain no-repeat;
+  background:linear-gradient(110deg,#5EA2FF,#A78BFF,#5ED9FF,#7C4DFF,#5EA2FF);background-size:240% 100%;
+  filter:drop-shadow(0 2px 11px rgba(94,162,255,.55));animation:logoGlow 6.5s linear infinite}
+@keyframes logoGlow{to{background-position:240% 0}}
+.fixed-logo:hover{transform:translateX(-50%) scale(1.05)}
+.fixed-logo.hidden{opacity:0;pointer-events:none;transform:translateX(-50%) scale(.94)}
+
+nav.dock{position:fixed;top:84px;left:50%;transform:translateX(-50%);z-index:55;
+  display:flex;align-items:center;gap:4px;padding:6px;border-radius:999px;
+  background:rgba(15,17,23,.34);
+  backdrop-filter:blur(34px) saturate(200%) brightness(1.06);-webkit-backdrop-filter:blur(34px) saturate(200%) brightness(1.06);
+  border:1px solid rgba(255,255,255,.3);
+  box-shadow:
+    inset 0 1.5px 1px rgba(255,255,255,.5),
+    inset 0 -6px 16px rgba(0,0,0,.28),
+    inset 0 0 0 1px rgba(255,255,255,.06),
+    0 20px 54px rgba(0,0,0,.4),0 3px 10px rgba(0,0,0,.24);
+  overflow:hidden;transition:transform .45s cubic-bezier(.22,1,.36,1),box-shadow .4s,top .4s}
+nav.dock::before{content:"";position:absolute;inset:-70%;z-index:-1;pointer-events:none;
+  background:
+    radial-gradient(36% 58% at 20% 28%,rgba(120,175,255,.6),transparent 60%),
+    radial-gradient(42% 55% at 80% 64%,rgba(180,140,255,.5),transparent 62%),
+    radial-gradient(38% 48% at 52% 90%,rgba(255,255,255,.45),transparent 60%),
+    radial-gradient(30% 40% at 70% 12%,rgba(120,220,255,.4),transparent 60%);
+  filter:blur(12px);animation:dockFluid 15s ease-in-out infinite alternate}
+@keyframes dockFluid{
+  0%{transform:translate(0,0) rotate(0deg) scale(1)}
+  50%{transform:translate(8%,-6%) rotate(12deg) scale(1.18)}
+  100%{transform:translate(-7%,5%) rotate(-9deg) scale(1.08)}
+}
+.dock-scrolled{top:14px!important;transform:translateX(-50%) scale(.96)!important}
+.langsw{display:flex;gap:1px;position:relative;z-index:2;background:rgba(255,255,255,.09);border-radius:999px;padding:2px}
+.langsw button{font:inherit;font-size:11px;font-weight:800;letter-spacing:.05em;color:rgba(255,255,255,.62);background:transparent;border:none;cursor:pointer;padding:7px 9px;border-radius:999px;transition:.2s}
+.langsw button.on{background:#fff;color:#0A0A0A}
+.langsw button:hover:not(.on){color:#fff}
+.nav-links{display:flex;gap:2px;align-items:center;position:relative;z-index:1}
+.nav-links-menu{display:flex;gap:2px;align-items:center}
+.nav-links a{font-size:13px;color:rgba(255,255,255,.78);letter-spacing:.01em;font-weight:700;
+  padding:9px 15px;border-radius:999px;transition:color .2s,background .2s}
+.nav-links a:not(.btn):hover,.nav-links a.active{color:#fff;background:rgba(255,255,255,.16)}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:9px;border:1.5px solid currentColor;
+  border-radius:999px;padding:11px 22px;font-size:13.5px;font-weight:700;letter-spacing:.02em;
+  background:transparent;transition:background .2s,color .2s,transform .2s,box-shadow .25s}
+.dock .btn.solid{background:#fff;color:#0A0A0A;border:none;padding:10px 19px;white-space:nowrap}
+.dock .btn.solid:hover{transform:translateY(-1px);box-shadow:0 0 24px rgba(255,255,255,.45)}
+.nav-toggle{display:none;background:transparent;border:0;padding:9px;border-radius:999px;cursor:pointer;position:relative;z-index:1}
+.nav-toggle span{display:block;width:19px;height:1.5px;background:#fff;border-radius:1px;transition:transform .25s,opacity .25s}
+.nav-toggle span+span{margin-top:4px}
+.nav-toggle[aria-expanded="true"] span:first-child{transform:translateY(2.75px) rotate(45deg)}
+.nav-toggle[aria-expanded="true"] span:last-child{transform:translateY(-2.75px) rotate(-45deg)}
+@media (max-width:600px){
+  .fixed-logo{height:44px}
+  nav.dock{top:74px;overflow:visible}
+  .dock-scrolled{top:14px!important}
+  .dock .btn.solid{padding:9px 14px;font-size:12.5px}
+  .nav-toggle{display:inline-flex;flex-direction:column;align-items:center;justify-content:center}
+  .nav-links-menu{position:absolute;top:calc(100% + 12px);left:50%;transform:translateX(-50%);
+    flex-direction:column;align-items:stretch;gap:2px;min-width:210px;
+    background:rgba(15,17,23,.92);backdrop-filter:blur(34px) saturate(200%);-webkit-backdrop-filter:blur(34px) saturate(200%);
+    border:1px solid rgba(255,255,255,.16);border-radius:20px;padding:8px;
+    box-shadow:0 20px 54px rgba(0,0,0,.4);
+    opacity:0;pointer-events:none;transform:translateX(-50%) translateY(-6px);
+    transition:opacity .22s,transform .22s}
+  .nav-links-menu.open{opacity:1;pointer-events:auto;transform:translateX(-50%) translateY(0)}
+  .nav-links-menu a{display:block;text-align:center;padding:12px 15px}
+}
+
+/* ---------- bandes de section : alternance points / blanc cassé ---------- */
+.band{background:#F6F6F2;padding-bottom:clamp(48px,7vh,80px)}
+
+/* ---------- reveals (motif du site : rejoués à chaque scroll) ---------- */
+.rv{opacity:0;transform:translateY(22px);filter:blur(14px);will-change:opacity,transform,filter;
+  transition:opacity .7s cubic-bezier(.22,1,.36,1),transform .7s cubic-bezier(.22,1,.36,1),filter .7s cubic-bezier(.22,1,.36,1);
+  transition-delay:var(--d,0s)}
+.rv.in{opacity:1;transform:none;filter:none}
+
+/* ---------- en-têtes de section ---------- */
+.eyebrow{font-size:12px;color:var(--muted);display:inline-flex;align-items:center;gap:12px;letter-spacing:.24em}
+.eyebrow::before,.eyebrow::after{content:"";width:30px;height:1px;background:var(--line-strong)}
+.sec-head{max-width:1100px;margin:0 auto;padding:clamp(48px,8vh,92px) clamp(20px,5vw,48px) 0;text-align:center}
+.sec-head h2{font-family:'Montserrat',sans-serif;font-weight:800;text-transform:uppercase;
+  font-size:clamp(26px,4vw,42px);letter-spacing:-.015em;margin-top:12px;
+  background-image:linear-gradient(110deg,var(--ink) 0%,var(--ink) 38%,#5EA2FF 46%,#fff 50%,#A78BFF 56%,var(--ink) 64%,var(--ink) 100%);
+  background-size:280% 100%;background-position:200% 0;-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:var(--ink);transition:-webkit-text-fill-color .2s}
+.sec-head h2:hover{-webkit-text-fill-color:transparent;animation:titleMagic 2.6s linear infinite}
+@keyframes titleMagic{from{background-position:200% 0}to{background-position:-120% 0}}
+.sec-head p{color:var(--muted);margin-top:8px;font-size:14.5px;max-width:560px;margin-left:auto;margin-right:auto}
+
+/* ---------- S1 : HÉROS MANIFESTE + BUY BOX ---------- */
+.ptag{display:inline-flex;align-items:center;gap:8px;font-size:11px;color:var(--muted);
+  border:1px solid var(--line-strong);border-radius:999px;padding:7px 14px;background:rgba(255,255,255,.5)}
+.ptag i{width:7px;height:7px;border-radius:50%;background:var(--accent);display:inline-block;
+  box-shadow:0 0 8px rgba(94,162,255,.9);font-style:normal}
+
+.mani{max-width:1100px;margin:0 auto;padding:clamp(120px,16vh,170px) clamp(20px,5vw,48px) 0;text-align:center}
+.mani .ptag{margin-bottom:18px}
+.mani h1{font-family:'Montserrat',sans-serif;font-weight:800;text-transform:uppercase;
+  letter-spacing:-.025em;font-size:clamp(40px,7.6vw,84px);line-height:.98;
+  display:flex;flex-direction:column;align-items:center}
+.mani .mword{display:block;position:relative}
+.mani .m2{color:var(--accent-deep);
+  text-shadow:0 0 16px rgba(94,162,255,.45),0 0 52px rgba(94,162,255,.28)}
+@keyframes a-blurin-h{from{filter:blur(14px);opacity:0;letter-spacing:.12em}
+  to{filter:blur(0);opacity:1;letter-spacing:-.025em}}
+.mani.in .m1{animation:a-blurin-h 1s .05s cubic-bezier(.22,1,.36,1) both}
+.mani.in .m2{animation:a-drop 1.15s .5s linear both}
+.mani.in .m3{animation:a-pop .85s 1.2s cubic-bezier(.3,1.6,.5,1) both}
+.mani:not(.in) .mword{opacity:0}
+
+.buystrip{max-width:1100px;margin:26px auto 0;padding:0 clamp(20px,5vw,48px) 34px;
+  display:grid;grid-template-columns:1.15fr .85fr;gap:clamp(28px,5vw,64px);align-items:center}
+.buy-left{background:#fff;border-radius:var(--r-lg);box-shadow:var(--shadow);
+  padding:clamp(24px,3.4vw,40px)}
+.mlname{font-family:'Montserrat',sans-serif;font-weight:800;text-transform:uppercase;
+  font-size:20px;letter-spacing:-.01em;margin-bottom:14px}
+.mlname .v1{font-size:11px;letter-spacing:.08em;color:var(--dim);
+  border:2px solid var(--line-strong);border-radius:8px;padding:2px 7px;
+  vertical-align:middle;margin-left:8px}
+.pitch{font-size:clamp(16px,1.7vw,19px);color:var(--muted);max-width:460px;line-height:1.55}
+.pitch b{color:var(--ink)}
+.ppay{margin-top:16px;font-family:var(--lbl);font-weight:700;font-size:12px;
+  letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.ppay b{color:var(--ink);font-size:15px;letter-spacing:0}
+.hero-cta{display:flex;gap:14px;margin-top:22px;flex-wrap:wrap;align-items:center}
+.btn-buy{display:inline-flex;align-items:center;gap:10px;background:var(--ink);color:#fff;border-radius:999px;
+  padding:16px 30px;font-weight:700;font-size:15px;letter-spacing:.01em;white-space:nowrap;
+  transition:transform .18s,box-shadow .25s}
+.btn-buy:hover{transform:translateY(-2px);box-shadow:0 10px 34px rgba(94,162,255,.45),0 0 0 2px rgba(94,162,255,.3)}
+.btn-buy .p{font-family:var(--lbl);font-weight:700;font-size:12px;letter-spacing:.06em;
+  background:rgba(255,255,255,.16);border-radius:999px;padding:4px 10px}
+.btn-ghost{display:inline-flex;align-items:center;gap:8px;border:1.5px solid var(--line-strong);border-radius:999px;
+  padding:14px 24px;font-weight:700;font-size:13.5px;color:var(--muted);transition:color .2s,border-color .2s,transform .18s}
+.btn-ghost:hover{color:var(--ink);border-color:var(--ink);transform:translateY(-2px)}
+.hero-meta{display:flex;gap:18px;margin-top:22px;font-size:12px;color:var(--dim);flex-wrap:wrap}
+.hero-meta span{display:inline-flex;align-items:center;gap:7px}
+.hero-meta svg{width:14px;height:14px;stroke:var(--accent)}
+
+/* la carte MetaVision en rotation (mp4-02) */
+.hero-media{margin:0;display:flex;justify-content:center;align-items:center}
+.hero-media video{width:min(340px,70vw);aspect-ratio:1;object-fit:cover;border-radius:24px;background:#fff;box-shadow:var(--shadow-lg)}
+
+/* ---------- S2 : LE DÉFILÉ DES LEÇONS ---------- */
+.defile{border-top:1px solid var(--line);border-bottom:1px solid var(--line);
+  margin:clamp(44px,7vh,84px) 0 0;padding:13px 0;overflow:hidden;
+  -webkit-mask-image:linear-gradient(90deg,transparent,#000 6%,#000 94%,transparent);
+  mask-image:linear-gradient(90deg,transparent,#000 6%,#000 94%,transparent)}
+.defile-track{display:flex;width:max-content;animation:defileX 36s linear infinite;will-change:transform}
+.defile:hover .defile-track{animation-play-state:paused}
+@keyframes defileX{to{transform:translateX(-50%)}}
+.defile-set{display:flex;align-items:center;gap:26px;padding-right:26px}
+.defile-set b{font-family:'Montserrat',sans-serif;font-weight:800;text-transform:uppercase;
+  font-size:14px;letter-spacing:.09em;white-space:nowrap;line-height:1.2;color:var(--ink)}
+.defile-set b:nth-child(4n+3){color:var(--accent-deep);text-shadow:0 0 12px rgba(94,162,255,.5)}
+.defile-set .dot{width:5px;height:5px;border-radius:50%;background:var(--accent);flex:none}
+
+/* keyframes partagées : manifeste (S1) et CTA final (S10) */
+@keyframes a-rise{from{transform:translateY(130%);opacity:0}to{transform:translateY(0);opacity:1}}
+@keyframes a-pop{from{transform:scale(0);opacity:0}to{transform:scale(1);opacity:1}}
+@keyframes a-drop{
+  0%{transform:translateY(-180%) scaleY(1.05);opacity:0;animation-timing-function:cubic-bezier(.55,0,.85,.36)}
+  36%{transform:translateY(-10%) scaleY(1.05);opacity:1;animation-timing-function:cubic-bezier(.3,0,.7,1)}
+  42%{transform:translateY(0) scaleY(.8);animation-timing-function:cubic-bezier(.15,.65,.3,1)}
+  60%{transform:translateY(-20%) scaleY(1.04);animation-timing-function:cubic-bezier(.6,0,.85,.4)}
+  76%{transform:translateY(0) scaleY(.95);animation-timing-function:cubic-bezier(.2,.75,.35,1)}
+  88%{transform:translateY(-4%) scaleY(1);animation-timing-function:cubic-bezier(.55,0,.8,.5)}
+  100%{transform:translateY(0) scaleY(1)}}
+
+/* ---------- S3 : CE QUE TU SAURAS FAIRE ---------- */
+.gain-wrap{max-width:1100px;margin:0 auto;padding:26px clamp(20px,5vw,48px) 0;display:grid;grid-template-columns:repeat(4,1fr);gap:20px}
+.gain{background:#fff;border-radius:var(--r-lg);box-shadow:var(--shadow);padding:28px}
+.glbl{font-family:var(--lbl);font-weight:700;font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--dim)}
+.gain h3{font-family:'Montserrat',sans-serif;font-weight:800;font-size:17px;text-transform:uppercase;letter-spacing:-.01em;margin-top:10px;line-height:1.2}
+.gain p{font-size:14px;color:var(--muted);margin-top:8px;line-height:1.55}
+
+/* ---------- S4 : L'APERÇU — manifeste + vidéo de présentation ---------- */
+.sig-cap{margin-top:12px;font-size:12px;color:var(--dim);text-align:center;
+  font-family:var(--lbl);font-weight:700;letter-spacing:.1em;text-transform:uppercase}
+.apercu{max-width:1100px;margin:0 auto;padding:26px clamp(20px,5vw,48px) 0;display:grid;grid-template-columns:1fr 1.1fr;gap:clamp(28px,5vw,64px);align-items:center}
+.apercu-txt p{font-size:16px;line-height:1.65;color:var(--muted)}
+.apercu-txt p+p{margin-top:14px}
+.apercu-txt b{color:var(--ink)}
+.th-sign{display:block;margin-top:18px;font-family:var(--lbl);font-weight:700;font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--dim)}
+.apercu-fig{margin:0;justify-self:end;width:100%;max-width:560px}
+.apercu-box{position:relative;aspect-ratio:16/9;border-radius:var(--r-lg);overflow:hidden;background:#101114;box-shadow:var(--shadow-lg)}
+.apercu-box video{width:100%;height:100%;object-fit:cover}
+.apercu-play{position:absolute;inset:0;margin:auto;width:64px;height:64px;border-radius:50%;background:#fff;border:0;display:flex;align-items:center;justify-content:center;box-shadow:0 10px 30px rgba(0,0,0,.35);transition:transform .2s}
+.apercu-play:hover{transform:scale(1.06)}
+.apercu-play svg{width:22px;height:22px;fill:var(--ink);margin-left:3px}
+
+/* ---------- S5 : LE PROGRAMME — élément signature ---------- */
+.prog-strip{max-width:1100px;margin:26px auto 0;padding:0 clamp(20px,5vw,48px)}
+.prog-strip img{width:100%;aspect-ratio:1800/210;object-fit:cover;object-position:50% 42.3%;border-radius:var(--r-lg);
+  background:linear-gradient(180deg,var(--ml-top),var(--ml-bottom));filter:saturate(.35) brightness(.9);box-shadow:var(--shadow)}
+.prog{max-width:1100px;margin:0 auto;padding:18px clamp(20px,5vw,48px) 0}
+.prog-mod,.prog-end{display:grid;grid-template-columns:280px 1fr;gap:clamp(24px,4vw,56px);padding:40px 0;border-top:1px solid var(--line-strong)}
+.prog-end{padding:26px 0}
+.prog-head{position:sticky;top:96px;align-self:start}
+.prog-num{display:block;font-family:'Montserrat',sans-serif;font-weight:800;font-size:clamp(64px,8vw,104px);line-height:.9;letter-spacing:-.04em;color:var(--accent-deep);text-shadow:0 0 18px rgba(94,162,255,.35)}
+.prog-tag{font-family:'Montserrat',sans-serif;font-weight:800;font-size:22px;text-transform:uppercase;letter-spacing:-.01em}
+.prog-head h3{font-family:'Montserrat',sans-serif;font-weight:800;font-size:22px;text-transform:uppercase;letter-spacing:-.01em;margin-top:12px;line-height:1.15}
+.prog-head .sub{font-size:14px;color:var(--muted);margin-top:8px;max-width:250px;line-height:1.5}
+.prog-head .cnt{display:inline-block;margin-top:12px;font-family:var(--lbl);font-weight:700;font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--dim)}
+.prog-end .prog-head .cnt{margin-top:0;margin-left:12px;vertical-align:middle}
+.prog-list{list-style:none;display:flex;flex-direction:column}
+.prog-list li{display:grid;grid-template-columns:56px 1fr auto;column-gap:16px;row-gap:4px;align-items:baseline;padding:15px 0;border-top:1px solid var(--line)}
+.prog-list li:first-child{border-top:none;padding-top:4px}
+.ln{font-family:'Montserrat',sans-serif;font-weight:800;font-size:22px;letter-spacing:-.02em;line-height:1;font-variant-numeric:tabular-nums}
+.lt{font-weight:700;font-size:16px;line-height:1.35}
+.lsub{grid-column:2/-1;font-size:12.5px;color:var(--dim)}
+.feat{font-family:var(--lbl);font-weight:700;font-size:9px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);border:1px solid var(--line-strong);background:rgba(255,255,255,.6);border-radius:999px;padding:3px 8px;white-space:nowrap;justify-self:end}
+.prog-warn{display:block;margin-top:10px;padding:14px 16px;border-radius:14px;background:#fff;box-shadow:var(--shadow);font-size:13.5px;color:var(--muted);border-top:none}
+.prog-warn b{color:var(--ink)}
+
+/* ---------- S6 : LES INVITÉS ---------- */
+.guest-wrap{max-width:1100px;margin:0 auto;padding:26px clamp(20px,5vw,48px) 0;display:grid;grid-template-columns:repeat(4,1fr);gap:20px}
+.guest{background:#fff;border-radius:var(--r-lg);box-shadow:var(--shadow);padding:24px}
+.g-tile{width:40px;height:40px;border-radius:10px;background:#1B1A2E;color:#B9B6FF;display:flex;align-items:center;justify-content:center;font-family:'Montserrat',sans-serif;font-weight:800;font-size:15px;margin-bottom:14px}
+.guest h3{font-family:'Montserrat',sans-serif;font-weight:800;font-size:18px;text-transform:uppercase;letter-spacing:-.01em}
+.guest .glbl{display:block;margin-top:10px}
+.guest p{font-size:14px;color:var(--muted);margin-top:6px;line-height:1.45}
+
+/* ---------- S7 : CITATION CRÉATEUR ---------- */
+.quote-sec{max-width:760px;margin:0 auto;padding:clamp(56px,9vh,100px) clamp(20px,5vw,48px);text-align:center}
+.qmark{display:block;font-family:'Montserrat',sans-serif;font-weight:800;font-size:64px;line-height:.7;color:var(--accent)}
+.quote-sec blockquote p{font-style:italic;font-size:clamp(19px,2.6vw,26px);line-height:1.5;color:var(--ink);margin-top:12px}
+.quote-sec figcaption{margin-top:18px;font-family:var(--lbl);font-weight:700;font-size:11px;
+  letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+
+/* ---------- S8 : DANS LA BOÎTE + CE QU'IL TE FAUT ---------- */
+.buy-wrap{max-width:1100px;margin:0 auto;padding:26px clamp(20px,5vw,48px) 10px;
+  display:grid;grid-template-columns:1.05fr .95fr;gap:20px;align-items:stretch}
+.buy-card{background:#fff;border-radius:var(--r-lg);box-shadow:var(--shadow-lg);padding:34px;
+  display:flex;flex-direction:column;gap:18px}
+.price-line{display:flex;align-items:baseline;gap:14px;flex-wrap:wrap}
+.price-line .price{font-family:'Montserrat',sans-serif;font-weight:800;font-size:52px;letter-spacing:-.02em}
+.price-line .once{font-size:12px;color:var(--dim);font-family:var(--lbl);font-weight:700;letter-spacing:.1em;text-transform:uppercase}
+.buy-card ul{list-style:none;display:flex;flex-direction:column;gap:11px;font-size:14.5px;color:var(--muted)}
+.buy-card li{display:flex;gap:11px;align-items:flex-start;line-height:1.45}
+.buy-card li svg{width:16px;height:16px;stroke:var(--accent);flex:none;margin-top:3px}
+.buy-card li b{color:var(--ink)}
+.buy-card .btn-buy{justify-content:center;font-size:16px;padding:18px 30px}
+.buy-compat{font-size:12px;color:var(--dim);text-align:center;line-height:1.6}
+.need-card{background:linear-gradient(180deg,var(--ml-top),var(--ml-bottom));border-radius:var(--r-lg);padding:34px;display:flex;flex-direction:column;gap:4px;border:1px solid rgba(255,255,255,.07);color:var(--ml-txt)}
+.need-card h3{font-family:'Montserrat',sans-serif;font-weight:800;font-size:17px;text-transform:uppercase;color:var(--ml-txt);margin-bottom:10px}
+.need{display:grid;grid-template-columns:44px 1fr;gap:14px;padding:14px 0;border-top:1px solid rgba(255,255,255,.07);align-items:start}
+.need-badge{width:44px;height:44px;border-radius:10px;background:#1F2226;border:1px solid rgba(255,255,255,.1);display:flex;align-items:center;justify-content:center;font-family:'Montserrat',sans-serif;font-weight:800;font-size:14px;color:#E6E8EA}
+.need-badge.ae{color:#9999FF}
+.need-txt b{display:block;font-size:14.5px;color:#fff}
+.need-txt span{display:block;font-size:13px;color:var(--ml-dim);line-height:1.5;margin-top:3px}
+.need-txt b .need-tag{display:inline-block;margin-left:8px;margin-top:0;vertical-align:middle;font-family:var(--lbl);font-weight:700;font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:#B9CBF2;background:rgba(69,115,210,.25);border:1px solid rgba(69,115,210,.5);border-radius:999px;padding:3px 9px;line-height:1.2}
+.need-foot{margin-top:14px;font-size:13px;color:var(--ml-dim)}
+
+/* ---------- S9 : FAQ ---------- */
+.faq-wrap{max-width:720px;margin:0 auto;padding:26px clamp(20px,5vw,48px) 20px;display:flex;flex-direction:column;gap:12px}
+.faq-wrap details{background:#fff;border-radius:14px;box-shadow:var(--shadow);padding:0;overflow:hidden}
+.faq-wrap summary{list-style:none;cursor:pointer;padding:19px 24px;font-weight:700;font-size:15px;
+  display:flex;justify-content:space-between;align-items:center;gap:14px}
+.faq-wrap summary::-webkit-details-marker{display:none}
+.faq-wrap summary::after{content:"+";font-family:'Montserrat',sans-serif;font-weight:800;font-size:19px;
+  color:var(--dim);transition:transform .25s}
+.faq-wrap details[open] summary::after{transform:rotate(45deg)}
+.faq-wrap details p{padding:0 24px 20px;color:var(--muted);font-size:14px;line-height:1.6}
+.faq-wrap details p a{text-decoration:underline}
+
+/* ---------- S10 : CTA FINAL ---------- */
+.final{max-width:900px;margin:0 auto;padding:clamp(56px,9vh,100px) clamp(20px,5vw,48px);text-align:center}
+.final h2{font-family:'Montserrat',sans-serif;font-weight:800;text-transform:uppercase;
+  font-size:clamp(30px,5.5vw,60px);letter-spacing:-.02em;line-height:1.08}
+.final.in h2{animation:a-rise .9s cubic-bezier(.28,1.45,.45,1) both}
+.final:not(.in) h2{opacity:0}
+.final .btn-buy{margin-top:28px;font-size:16px;padding:18px 34px}
+.final .btn-buy svg{width:16px;height:16px;stroke:currentColor;flex:none}
+.final-sub{margin-top:12px;font-size:12px;color:var(--dim);font-family:var(--lbl);
+  font-weight:700;letter-spacing:.1em;text-transform:uppercase}
+.assure{display:flex;justify-content:center;gap:26px;flex-wrap:wrap;margin-top:28px;
+  font-size:12.5px;color:var(--muted)}
+.assure span{display:inline-flex;gap:8px;align-items:center}
+.assure svg{width:16px;height:16px;stroke:var(--accent);flex:none}
+
+/* ---------- S11 : CROSS-SELL ---------- */
+.more-wrap{max-width:820px;margin:0 auto;padding:26px clamp(20px,5vw,48px) 10px}
+.mrow{display:grid;grid-template-columns:44px minmax(110px,auto) 1fr auto auto;gap:18px;
+  align-items:center;padding:20px 4px;border-top:1px solid var(--line)}
+.mtile{width:44px;height:44px;border-radius:11px;display:flex;align-items:center;justify-content:center;
+  font-family:'Montserrat',sans-serif;font-weight:800;font-size:13px;letter-spacing:.02em;flex:none}
+.mtile.ml{background:linear-gradient(135deg,var(--ml-top),var(--ml-bottom));color:#7FA4E8;
+  box-shadow:inset 0 0 0 1px rgba(255,255,255,.08)}
+.mtile.mv{background:#1B1A2E;color:#B9B6FF}
+.mtile.io{background:#fff;color:var(--ink);border:1px solid var(--line-strong);font-size:11px}
+.mtile.gh{background:#101114;color:#E6E8EA}
+.mrow:last-child{border-bottom:1px solid var(--line)}
+.mname{font-family:'Montserrat',sans-serif;font-weight:800;text-transform:uppercase;font-size:16px;letter-spacing:-.01em}
+.mdesc{font-size:13.5px;color:var(--muted)}
+.mprice{font-family:var(--lbl);font-weight:700;font-size:12px;letter-spacing:.08em;
+  text-transform:uppercase;color:var(--ink);white-space:nowrap}
+.here{font-family:var(--lbl);font-weight:700;font-size:9px;letter-spacing:.12em;text-transform:uppercase;
+  color:var(--muted);border:1px solid var(--line-strong);background:rgba(255,255,255,.6);
+  border-radius:999px;padding:3px 8px;justify-self:end;white-space:nowrap}
+.go{display:inline-flex;align-items:center;gap:8px;font-size:13px;font-weight:700;color:var(--ink);
+  border-bottom:1.5px solid var(--ink);padding-bottom:3px;transition:gap .25s;justify-self:end;white-space:nowrap}
+.go:hover{gap:13px}
+.go svg{width:13px;height:13px;stroke:currentColor;flex:none}
+@media (max-width:640px){
+  .mrow{grid-template-columns:38px 1fr auto;row-gap:6px}
+  .mtile{width:38px;height:38px;grid-column:1;grid-row:1/3;align-self:start}
+  .mname{grid-column:2;grid-row:1}
+  .mprice{grid-column:3;grid-row:1;justify-self:end}
+  .mdesc{grid-column:2/-1;grid-row:2}
+  .here,.mrow .go{grid-column:2/-1;grid-row:3;justify-self:start}
+}
+
+/* ---------- SB : STICKY BAR MOBILE ---------- */
+.stickybar{position:fixed;left:12px;right:12px;
+  bottom:calc(12px + env(safe-area-inset-bottom));z-index:54;display:none;
+  align-items:center;justify-content:space-between;gap:12px;padding:8px 8px 8px 20px;
+  background:rgba(15,17,23,.6);backdrop-filter:blur(24px) saturate(180%);
+  -webkit-backdrop-filter:blur(24px) saturate(180%);
+  border:1px solid rgba(255,255,255,.22);border-radius:999px;
+  box-shadow:0 14px 40px rgba(0,0,0,.35);
+  transform:translateY(120%);transition:transform .35s cubic-bezier(.22,1,.36,1)}
+.stickybar.on{transform:translateY(0)}
+.sb-l{font-family:var(--lbl);font-weight:700;font-size:13px;color:#fff}
+.sb-btn{background:#fff;color:#0A0A0A;border-radius:999px;padding:10px 19px;
+  font-weight:700;font-size:13.5px;transition:box-shadow .25s}
+.sb-btn:hover{box-shadow:0 0 18px rgba(94,162,255,.6)}
+@media (max-width:720px){.stickybar{display:flex}}
+
+/* ---------- footer ---------- */
+footer{background:var(--charcoal);color:#EDEDE8;margin-top:20px;position:relative;z-index:2}
+.foot{max-width:1100px;margin:0 auto;padding:46px clamp(20px,5vw,48px);display:flex;justify-content:space-between;align-items:center;gap:26px;flex-wrap:wrap}
+.foot img{height:30px;width:auto;filter:brightness(0) invert(1)}
+.foot-links{display:flex;gap:24px;font-size:12.5px;color:#A8A8A2;flex-wrap:wrap}
+.foot-links a:hover{color:#fff}
+.socials{display:flex;gap:12px}
+.socials a{width:38px;height:38px;border:1px solid rgba(255,255,255,.25);border-radius:50%;display:flex;align-items:center;justify-content:center;transition:background .2s,border-color .2s}
+.socials a:hover{background:rgba(255,255,255,.12);border-color:rgba(255,255,255,.5)}
+.socials svg{width:16px;height:16px;stroke:#fff}
+.legal{max-width:1100px;margin:0 auto;padding:0 clamp(20px,5vw,48px) 32px;font-size:9.5px;letter-spacing:.14em;color:#7E7E78;display:flex;justify-content:space-between;gap:14px;flex-wrap:wrap}
+
+/* ---------- responsive ---------- */
+@media (max-width:860px){
+  .mani{padding-top:120px}
+  .buystrip{grid-template-columns:1fr;text-align:center;gap:28px}
+  .pitch{margin-left:auto;margin-right:auto}
+  .hero-cta,.hero-meta{justify-content:center}
+  .hero-media video{width:200px;border-radius:18px}
+  .gain-wrap{grid-template-columns:1fr 1fr}
+  .apercu{grid-template-columns:1fr}
+  .apercu-fig{order:-1;justify-self:stretch;max-width:none}
+  .prog-mod,.prog-end{grid-template-columns:1fr;gap:16px;padding:28px 0}
+  .prog-head{position:static;display:grid;grid-template-columns:auto 1fr;column-gap:16px;align-items:baseline}
+  .prog-num{font-size:56px;grid-row:1/4}
+  .prog-head h3{margin-top:0}
+  .prog-head .sub{max-width:none}
+  .prog-list li{grid-template-columns:44px 1fr}
+  .feat{grid-column:2;justify-self:start}
+  .guest-wrap{grid-template-columns:1fr 1fr}
+  .buy-wrap{grid-template-columns:1fr}
+}
+@media (max-width:700px){.prog-strip{display:none}}
+@media (max-width:600px){.gain-wrap{grid-template-columns:1fr}}
+@media (max-width:480px){
+  .mani h1{font-size:36px}
+  .guest-wrap{grid-template-columns:1fr}
+}
+
+@media (prefers-reduced-motion:reduce){
+  .rv{opacity:1;transform:none;filter:none;transition:none}
+  .sec-head h2:hover{animation:none!important;-webkit-text-fill-color:var(--ink)}
+  .fixed-logo .mark,nav.dock::before{animation:none}
+  .mani.in .m1,.mani.in .m2,.mani.in .m3{animation:none}
+  .mani .mword{opacity:1!important}
+  .defile{-webkit-mask-image:none;mask-image:none}
+  .defile-track{animation:none;width:auto;flex-wrap:wrap;justify-content:center}
+  .defile-set[aria-hidden="true"]{display:none}
+  .defile-set{flex-wrap:wrap;justify-content:center;padding:0 20px}
+  .final.in h2{animation:none}
+  .final h2{opacity:1!important}
+  .stickybar{transition:none}
+  .apercu-play{transition:none}
+}
+</style></head>
+<body>
+<!-- Google Tag Manager (noscript) -->
+<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-5ZD8M8DC"
+height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+<!-- End Google Tag Manager (noscript) -->
+
+<canvas id="dots" aria-hidden="true"></canvas>
+<div class="vignette" aria-hidden="true"></div>
+<span id="playhead" aria-hidden="true"></span>
+
+<a class="fixed-logo" href="/" aria-label="FemzLab — accueil">
+  <span class="mark" aria-hidden="true"></span>
+</a>
+<nav class="dock">
+  <div class="langsw"><button data-langbtn="fr" onclick="__setLang('fr')">FR</button><button data-langbtn="en" onclick="__setLang('en')">EN</button></div>
+  <button class="nav-toggle" aria-label="Menu" aria-expanded="false" aria-controls="nav-links-menu"><span></span><span></span></button>
+  <div class="nav-links">
+    <div class="nav-links-menu" id="nav-links-menu">
+      <a data-track="cta_mv_nav_portfolio" href="/portfolio">Portfolio</a>
+      <a data-track="cta_mv_nav_shop" href="/#shop">Boutique</a>
+      <a data-track="cta_mv_nav_assets" href="/#assets">Assets</a>
+      <a data-track="cta_mv_nav_profil" href="/#profil">À propos</a>
+    </div>
+    <a data-track="cta_mv_acheter_nav" class="btn solid" href="https://pay.femzlab.shop/metavision/buy?offer_id=166475">Acheter — 150&nbsp;€</a>
+  </div>
+</nav>
+
+<main id="top">
+
+  <!-- ======================= S1 : HÉROS MANIFESTE + BUY BOX ======================= -->
+  <section class="mani rv">
+    <span class="ptag"><i></i>Formation VFX · After Effects</span>
+    <h1 aria-label="MetaVision — la formation VFX que je cherchais il y a dix ans">
+      <span class="mword m1">Il y a dix ans,</span>
+      <span class="mword m2">je cherchais</span>
+      <span class="mword m3">cette formation.</span>
+    </h1>
+  </section>
+  <div class="buystrip">
+    <div class="buy-left rv">
+      <p class="mlname">MetaVision<span class="v1">Cours en ligne</span></p>
+      <p class="pitch"><b>Des bases d'After Effects à tes premiers clients.</b> Trois modules, des invités, le Fade Pack offert et un accompagnement sur Discord.</p>
+      <p class="ppay"><b>150&nbsp;€</b> · paiement unique — ou 2 × 75&nbsp;€</p>
+      <div class="hero-cta">
+        <a data-track="cta_mv_acheter_hero" class="btn-buy" href="https://pay.femzlab.shop/metavision/buy?offer_id=166475">Acheter MetaVision <span class="p">150&nbsp;€</span></a>
+        <a data-track="cta_mv_voir_programme" class="btn-ghost" href="#programme">Voir le programme</a>
+      </div>
+      <div class="hero-meta">
+        <span><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>Accès après achat</span>
+        <span><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>Fade Pack offert</span>
+        <span><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>Accompagnement sur Discord</span>
+      </div>
+    </div>
+    <figure class="hero-media rv" style="--d:.12s">
+      <video autoplay loop muted playsinline aria-label="La carte MetaVision — Formation VFX, en rotation"><source src="assets/mp4-02.mp4" type="video/mp4"></video>
+    </figure>
+  </div>
+
+  <!-- ======================= S2 : LE DÉFILÉ DES LEÇONS ======================= -->
+  <div class="defile rv" role="img" aria-label="Les leçons du programme, de la présentation des outils à la réalisation">
+    <div class="defile-track">
+      <div class="defile-set">
+        <b>Présentation de chaque outil jusqu'au rendu</b><i class="dot"></i><b>Roto et masque</b><i class="dot"></i><b>Chroma keying fond vert</b><i class="dot"></i><b>Transitions dans les yeux</b><i class="dot"></i><b>Tracking After Effects et Mocha</b><i class="dot"></i><b>Animations roto &amp; camera shake</b><i class="dot"></i><b>Plugins distortion et courbes</b><i class="dot"></i><b>Track mattes</b><i class="dot"></i><b>Où trouver des objets 3D</b><i class="dot"></i><b>Les bases de Element 3D</b><i class="dot"></i><b>Faire un texte 3D</b><i class="dot"></i><b>Marché français</b><i class="dot"></i><b>Marché américain</b><i class="dot"></i><b>Colorimétrie</b><i class="dot"></i><b>Réalisation</b><i class="dot"></i>
+      </div>
+      <div class="defile-set" aria-hidden="true">
+        <b>Présentation de chaque outil jusqu'au rendu</b><i class="dot"></i><b>Roto et masque</b><i class="dot"></i><b>Chroma keying fond vert</b><i class="dot"></i><b>Transitions dans les yeux</b><i class="dot"></i><b>Tracking After Effects et Mocha</b><i class="dot"></i><b>Animations roto &amp; camera shake</b><i class="dot"></i><b>Plugins distortion et courbes</b><i class="dot"></i><b>Track mattes</b><i class="dot"></i><b>Où trouver des objets 3D</b><i class="dot"></i><b>Les bases de Element 3D</b><i class="dot"></i><b>Faire un texte 3D</b><i class="dot"></i><b>Marché français</b><i class="dot"></i><b>Marché américain</b><i class="dot"></i><b>Colorimétrie</b><i class="dot"></i><b>Réalisation</b><i class="dot"></i>
+      </div>
+    </div>
+  </div>
+
+  <!-- ======================= S3 : CE QUE TU SAURAS FAIRE ======================= -->
+  <section class="band">
+  <div class="sec-head rv">
+    <span class="eyebrow">À la fin</span>
+    <h2>Ce que tu sauras faire</h2>
+    <p>Quatre axes, du logiciel au métier.</p>
+  </div>
+  <div class="gain-wrap">
+    <article class="gain rv" style="--d:.0s"><span class="glbl">After Effects</span><h3>Les bases essentielles</h3><p>Chaque outil du logiciel, jusqu'au rendu — roto, masques, fond vert, tracking avec After Effects et Mocha.</p></article>
+    <article class="gain rv" style="--d:.06s"><span class="glbl">Effets visuels</span><h3>Créer et animer des effets</h3><p>Transitions dans les yeux, camera shake, distorsions, track mattes : les techniques des pros, adaptées aux débutants.</p></article>
+    <article class="gain rv" style="--d:.12s"><span class="glbl">Textes et graphismes</span><h3>Des éléments dynamiques</h3><p>Intégrer des textes et des éléments graphiques animés — jusqu'au texte et aux objets en 3D.</p></article>
+    <article class="gain rv" style="--d:.18s"><span class="glbl">Le métier</span><h3>Trouver tes premiers clients</h3><p>Optimiser ton workflow, comprendre le marché français et américain, gagner de l'argent avec le VFX.</p></article>
+  </div>
+  </section>
+
+  <!-- ======================= S4 : L'APERÇU ======================= -->
+  <div class="sec-head rv" id="apercu">
+    <span class="eyebrow">L'aperçu</span>
+    <h2>Libère ton potentiel artistique</h2>
+  </div>
+  <div class="apercu">
+    <div class="apercu-txt rv">
+      <p>Il y a environ dix ans, je partageais le même rêve que toi. J'ai cherché des formations abordables pour apprendre les effets visuels — je n'en ai pas trouvé. Alors j'ai appris After Effects seul.</p>
+      <p>La satisfaction derrière ces effets visuels, c'est de transmettre, de partager : <b>des émotions, du rêve, de l'inspiration.</b></p>
+      <p>MetaVision, c'est cette formation-là : <b>trois chapitres, concis et précis</b>, avec mon savoir et mon savoir-faire. Pour libérer ton potentiel artistique.</p>
+      <span class="th-sign">Femz · créateur de MetaVision</span>
+    </div>
+    <figure class="apercu-fig rv" style="--d:.1s">
+      <div class="apercu-box">
+        <video id="mv-video" preload="metadata" playsinline poster="assets/jpg-23.jpg" aria-label="Vidéo de présentation de MetaVision"></video>
+        <button type="button" class="apercu-play" data-track="cta_mv_video_play" aria-label="Lire la présentation"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg></button>
+      </div>
+      <figcaption class="sig-cap">Vidéo de présentation · 1 min</figcaption>
+    </figure>
+  </div>
+
+  <!-- ======================= S5 : LE PROGRAMME ======================= -->
+  <section class="band" id="programme">
+  <div class="sec-head rv">
+    <span class="eyebrow">Le programme</span>
+    <h2>Trois modules, une séquence</h2>
+    <p>Une introduction, trois modules, une conclusion — chaque leçon est listée ci-dessous, avec ses invités. Vidéos à la demande, en français.</p>
+  </div>
+  <figure class="prog-strip rv"><img src="assets/png-22.png" alt="" width="1800" height="600" loading="lazy"><figcaption class="sig-cap">Au fil des leçons — les projets ouverts dans After Effects.</figcaption></figure>
+  <div class="prog">
+
+    <div class="prog-end rv">
+      <div class="prog-head"><span class="prog-tag">Intro</span><span class="cnt">1 vidéo</span></div>
+      <ol class="prog-list"><li><span class="ln" aria-hidden="true">—</span><span class="lt">Aperçu</span><span class="lsub">La vidéo d'introduction de la formation.</span></li></ol>
+    </div>
+
+    <div class="prog-mod rv">
+      <div class="prog-head">
+        <span class="prog-num">M1</span>
+        <h3>After Effects</h3>
+        <p class="sub">Transitions, masques, tracking et même 3D.</p>
+        <span class="cnt">8 leçons</span>
+      </div>
+      <ol class="prog-list">
+        <li><span class="ln">01</span><span class="lt">Présentation de chaque outil jusqu'au rendu</span></li>
+        <li><span class="ln">02</span><span class="lt">Roto et masque</span></li>
+        <li><span class="ln">03</span><span class="lt">Chroma keying fond vert</span></li>
+        <li><span class="ln">04</span><span class="lt">Transitions dans les yeux</span></li>
+        <li><span class="ln">05</span><span class="lt">Tracking After Effects et Mocha</span><span class="lsub">Mocha AE est fourni avec After Effects.</span></li>
+        <li><span class="ln">06</span><span class="lt">Animations roto &amp; camera shake</span><span class="feat">avec Nineteen</span></li>
+        <li><span class="ln">07</span><span class="lt">Plugins distortion et courbes</span><span class="feat">avec Bulbii</span></li>
+        <li><span class="ln">08</span><span class="lt">Track mattes</span></li>
+      </ol>
+    </div>
+
+    <div class="prog-mod rv">
+      <div class="prog-head">
+        <span class="prog-num">M2</span>
+        <h3>3D</h3>
+        <p class="sub">Les bases en 3D, les animations, importer des modèles 3D, le tracking.</p>
+        <span class="cnt">3 leçons</span>
+      </div>
+      <ol class="prog-list">
+        <li><span class="ln">01</span><span class="lt">Où trouver des objets 3D</span></li>
+        <li><span class="ln">02</span><span class="lt">Les bases de Element 3D</span></li>
+        <li><span class="ln">03</span><span class="lt">Faire un texte 3D</span></li>
+        <li class="prog-warn"><b>Element 3D n'est pas inclus.</b> Ce module s'appuie sur Element 3D (Video Copilot), un plugin payant vendu séparément.</li>
+      </ol>
+    </div>
+
+    <div class="prog-mod rv">
+      <div class="prog-head">
+        <span class="prog-num">M3</span>
+        <h3>Bonus — le métier</h3>
+        <p class="sub">Le milieu VFX, trouver des clients, gagner de l'argent.</p>
+        <span class="cnt">4 leçons</span>
+      </div>
+      <ol class="prog-list">
+        <li><span class="ln">01</span><span class="lt">Marché français</span></li>
+        <li><span class="ln">02</span><span class="lt">Marché américain</span><span class="feat">avec Bulbii et Nineteen</span></li>
+        <li><span class="ln">03</span><span class="lt">Colorimétrie</span><span class="feat">avec Wire</span></li>
+        <li><span class="ln">04</span><span class="lt">Réalisation</span><span class="feat">avec Hansley</span></li>
+      </ol>
+    </div>
+
+    <div class="prog-end rv">
+      <div class="prog-head"><span class="prog-tag">Conclusion</span></div>
+      <ol class="prog-list"><li><span class="ln" aria-hidden="true">—</span><span class="lt">Un apprentissage permanent</span></li></ol>
+    </div>
+
+  </div>
+  </section>
+
+  <!-- ======================= S6 : LES INVITÉS ======================= -->
+  <div class="sec-head rv">
+    <span class="eyebrow">Les invités</span>
+    <h2>Quatre intervenants</h2>
+    <p>Chacun intervient dans une ou deux leçons du programme.</p>
+  </div>
+  <div class="guest-wrap">
+    <article class="guest rv" style="--d:.0s"><span class="g-tile" aria-hidden="true">N</span><h3>Nineteen</h3><span class="glbl">Intervient dans</span><p>Animations roto &amp; camera shake — module 1</p><p>Marché américain — module 3</p></article>
+    <article class="guest rv" style="--d:.06s"><span class="g-tile" aria-hidden="true">B</span><h3>Bulbii</h3><span class="glbl">Intervient dans</span><p>Plugins distortion et courbes — module 1</p><p>Marché américain — module 3</p></article>
+    <article class="guest rv" style="--d:.12s"><span class="g-tile" aria-hidden="true">W</span><h3>Wire</h3><span class="glbl">Intervient dans</span><p>Colorimétrie — module 3</p></article>
+    <article class="guest rv" style="--d:.18s"><span class="g-tile" aria-hidden="true">H</span><h3>Hansley</h3><span class="glbl">Intervient dans</span><p>Réalisation — module 3</p></article>
+  </div>
+
+  <!-- ======================= S7 : CITATION CRÉATEUR ======================= -->
+  <figure class="quote-sec rv">
+    <span class="qmark" aria-hidden="true">«</span>
+    <blockquote><p>Je ne cherche pas le beau. Je cherche l'émotion.</p></blockquote>
+    <figcaption>Femz · Fémi Olu · fondateur de FemzLab</figcaption>
+  </figure>
+
+  <!-- ======================= S8 : DANS LA BOÎTE + CE QU'IL TE FAUT ======================= -->
+  <section class="band">
+  <div class="sec-head rv" id="acheter">
+    <span class="eyebrow">Tout compris</span>
+    <h2>Dans la boîte</h2>
+  </div>
+  <div class="buy-wrap">
+    <div class="buy-card rv">
+      <div class="price-line"><span class="price">150&nbsp;€</span><span class="once">paiement unique — ou 2 × 75&nbsp;€</span></div>
+      <ul>
+        <li><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg><span><b>La formation MetaVision</b> — introduction, trois modules, conclusion, en vidéos à la demande</span></li>
+        <li><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg><span><b>Le Fade Pack, offert</b> — plus de 10 track mattes modifiables pour tes transitions</span></li>
+        <li><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg><span><b>L'accompagnement sur Discord</b> — pour tes questions sur les leçons</span></li>
+        <li><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg><span><b>L'accès en ligne, juste après l'achat</b></span></li>
+      </ul>
+      <a data-track="cta_mv_acheter_bas" class="btn-buy" href="https://pay.femzlab.shop/metavision/buy?offer_id=166475">Acheter MetaVision <span class="p">150&nbsp;€</span></a>
+      <p class="buy-compat">Toute la formation est tournée sur After Effects. Le module 3D utilise Element 3D, un plugin payant non inclus. Une question avant d'acheter ? <a data-track="cta_mv_contact_compat" href="mailto:hello@imfemz.com" style="text-decoration:underline">Écris-moi</a>, on regarde ensemble.</p>
+    </div>
+    <div class="need-card rv" style="--d:.1s">
+      <h3>Ce qu'il te faut</h3>
+      <div class="need"><span class="need-badge ae" aria-hidden="true">Ae</span><div class="need-txt"><b>Adobe After Effects</b><span>Toute la formation se passe dedans. Les leçons sont tournées sur After Effects ; les outils vus existent dans les versions CC récentes.</span></div></div>
+      <div class="need"><span class="need-badge" aria-hidden="true">Mo</span><div class="need-txt"><b>Mocha AE</b><span>Utilisé dans la leçon de tracking. Il est fourni avec After Effects : rien à acheter.</span></div></div>
+      <div class="need"><span class="need-badge" aria-hidden="true">E3</span><div class="need-txt"><b>Element 3D <span class="need-tag">Non inclus</span></b><span>Plugin payant de Video Copilot, utilisé dans le module 3D. Il n'est pas inclus dans la formation.</span></div></div>
+      <p class="need-foot">Des techniques professionnelles adaptées aux débutants — en français.</p>
+    </div>
+  </div>
+  </section>
+
+  <!-- ======================= S9 : FAQ ======================= -->
+  <div class="sec-head rv">
+    <span class="eyebrow">Questions fréquentes</span>
+    <h2>Avant d'acheter</h2>
+  </div>
+  <div class="faq-wrap">
+    <details class="rv" name="faq"><summary>C'est pour qui ?</summary><p>Pour les débutants et les intermédiaires. Les techniques sont celles des professionnels, expliquées pour quelqu'un qui démarre sur After Effects.</p></details>
+    <details class="rv" name="faq" style="--d:.05s"><summary>Il me faut quel logiciel ?</summary><p>Adobe After Effects : toute la formation est tournée dessus. Pour le tracking, Mocha AE est fourni avec After Effects. Le module 3D, lui, s'appuie sur un plugin payant — voir la question suivante.</p></details>
+    <details class="rv" name="faq" style="--d:.1s"><summary>Element 3D est inclus ?</summary><p>Non. Le module 3D s'appuie sur Element 3D, un plugin de Video Copilot, payant et vendu séparément. Il n'est pas inclus dans la formation — je préfère te le dire avant que tu achètes.</p></details>
+    <details class="rv" name="faq" style="--d:.15s"><summary>Je peux payer en deux fois ?</summary><p>Oui : 150&nbsp;€ en une fois, ou 2 paiements mensuels de 75&nbsp;€. Le paiement passe par Podia, sur pay.femzlab.shop.</p></details>
+    <details class="rv" name="faq" style="--d:.2s"><summary>Comment j'accède à la formation ?</summary><p>Juste après l'achat, en ligne : les vidéos sont disponibles à la demande.</p></details>
+    <details class="rv" name="faq" style="--d:.25s"><summary>Et si ça ne me convient pas ?</summary><p>Écris-moi — on trouve une solution. <a data-track="cta_mv_cgv_faq" href="https://pay.femzlab.shop/terms" target="_blank" rel="noopener">Les conditions exactes sont dans les CGV.</a></p></details>
+    <details class="rv" name="faq" style="--d:.3s"><summary>Le Discord, ça sert à quoi ?</summary><p>À poser tes questions sur les leçons — la communauté et moi y répondons. <a data-track="cta_mv_discord_faq" href="https://discord.gg/xmwq2NMDTw" target="_blank" rel="noopener">Rejoindre le Discord FemzLab</a></p></details>
+  </div>
+
+  <!-- ======================= S10 : CTA FINAL ======================= -->
+  <section class="final rv">
+    <h2>Prêt à libérer ton potentiel ?</h2>
+    <a data-track="cta_mv_acheter_final" class="btn-buy" href="https://pay.femzlab.shop/metavision/buy?offer_id=166475">Acheter MetaVision — 150&nbsp;€ <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 5l7 7-7 7"/></svg></a>
+    <p class="final-sub">Paiement unique · ou 2 × 75&nbsp;€</p>
+    <div class="assure">
+      <span><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg>Vidéos à la demande</span>
+      <span><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="8" width="18" height="13" rx="2"/><path d="M12 8v13M3 12h18M12 8c-2-3-6-3-6 0h6zm0 0c2-3 6-3 6 0h-6z"/></svg>Fade Pack offert</span>
+      <span><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 14v-2a8 8 0 0 1 16 0v2"/><rect x="3" y="13" width="4" height="6" rx="1.5"/><rect x="17" y="13" width="4" height="6" rx="1.5"/></svg>Accompagnement sur Discord</span>
+      <span><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 5h16v11H8l-4 4V5z"/></svg>Leçons en français</span>
+    </div>
+  </section>
+
+  <!-- ======================= S11 : CROSS-SELL ======================= -->
+  <section class="band">
+  <div class="sec-head rv">
+    <span class="eyebrow">Et après</span>
+    <h2>Complète ton setup</h2>
+  </div>
+  <div class="more-wrap">
+    <div class="mrow rv">
+      <span class="mtile mv" aria-hidden="true">MV</span>
+      <span class="mname">MetaVision</span>
+      <span class="mdesc">La formation que tu viens de voir</span>
+      <span class="mprice">150&nbsp;€ ou 2×75&nbsp;€</span>
+      <span class="here">Tu es ici</span>
+    </div>
+    <div class="mrow rv" style="--d:.05s">
+      <span class="mtile ml" aria-hidden="true">ML</span>
+      <span class="mname">MotionLAB</span>
+      <span class="mdesc">10 animations de texte et 8 outils — After Effects et Premiere Pro</span>
+      <span class="mprice">39&nbsp;€</span>
+      <a data-track="cta_mv_cross_motionlab" class="go" href="/motionlab">Voir le plugin <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 5l7 7-7 7"/></svg></a>
+    </div>
+    <div class="mrow rv" style="--d:.1s">
+      <span class="mtile io" aria-hidden="true">iOS</span>
+      <span class="mname">Ultimate iOS Pack</span>
+      <span class="mdesc">Icônes PNG, templates After Effects, éléments UI</span>
+      <span class="mprice">29,95&nbsp;€</span>
+      <a data-track="cta_mv_cross_ios" class="go" href="https://pay.femzlab.shop/ultimate-ios-pack">Voir le pack <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 5l7 7-7 7"/></svg></a>
+    </div>
+    <div class="mrow rv" style="--d:.15s">
+      <span class="mtile gh" aria-hidden="true">GH</span>
+      <span class="mname">Ghost FX</span>
+      <span class="mdesc">Particules pour After Effects : 4 presets de transitions + 4 overlays</span>
+      <span class="mprice">9&nbsp;€</span>
+      <a data-track="cta_mv_cross_ghost" class="go" href="https://pay.femzlab.shop/ghost-fx-preset-after-effects">Voir le pack <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 5l7 7-7 7"/></svg></a>
+    </div>
+  </div>
+  </section>
+
+</main>
+
+<footer>
+  <div class="foot">
+    <a href="/" aria-label="FemzLab"><img src="assets/png-01.png" alt="FemzLab"></a>
+    <div class="foot-links">
+      <a data-track="cta_mv_nav_shop_2" href="/#shop">Boutique</a>
+      <a data-track="cta_mv_nav_assets_2" href="/#assets">Assets</a>
+      <a data-track="cta_mv_nav_profil_2" href="/#profil">À propos</a>
+    </div>
+    <div class="socials">
+      <a data-track="cta_mv_instagram_2" href="https://www.instagram.com/imfemz/" target="_blank" rel="noopener" aria-label="Instagram"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><path d="M17.5 6.5h.01"/></svg></a>
+      <a data-track="cta_mv_youtube" href="https://www.youtube.com/c/Femzprod" target="_blank" rel="noopener" aria-label="YouTube"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2.5" y="5.5" width="19" height="13" rx="4"/><path d="M10.5 9.5 15 12l-4.5 2.5v-5z"/></svg></a>
+      <a data-track="cta_mv_email" href="mailto:hello@imfemz.com" aria-label="Email"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="3"/><path d="m3 7 9 6 9-6"/></svg></a>
+    </div>
+  </div>
+  <div class="legal"><span>© 2026 FemzLab — hello@imfemz.com</span><span>MetaVision</span></div>
+</footer>
+
+<!-- Sticky bar mobile -->
+<div class="stickybar" aria-hidden="true">
+  <span class="sb-l">MetaVision — 150&nbsp;€</span>
+  <a data-track="cta_mv_acheter_sticky" class="sb-btn" href="https://pay.femzlab.shop/metavision/buy?offer_id=166475" tabindex="-1">Acheter</a>
+</div>
+
+<script>
+const REDUCED=matchMedia('(prefers-reduced-motion: reduce)').matches;
+const FINE=matchMedia('(pointer: fine)').matches;
+
+// dots
+(function(){const cv=document.getElementById('dots'),ctx=cv.getContext('2d');let W,H,DPR,pts=[],mx=-9e3,my=-9e3,raf;const SP=30,R=1.3,BU=67,RAD=400;
+function build(){DPR=Math.min(devicePixelRatio||1,2);W=innerWidth;H=innerHeight;cv.width=W*DPR;cv.height=H*DPR;cv.style.width=W+'px';cv.style.height=H+'px';ctx.setTransform(DPR,0,0,DPR,0,0);pts=[];for(let y=SP/2;y<H;y+=SP)for(let x=SP/2;x<W;x+=SP)pts.push({x,y});}
+function draw(){ctx.clearRect(0,0,W,H);for(const p of pts){const dx=p.x-mx,dy=p.y-my,d=Math.hypot(dx,dy);let r=R,a=.16,ox=0,oy=0;if(d<RAD){const f=1-d/RAD,pu=f*f*BU*.16;ox=(dx/(d||1))*pu;oy=(dy/(d||1))*pu;r=R+f*1.4;a=Math.min(.5,a+f*.3);}ctx.beginPath();ctx.arc(p.x+ox,p.y+oy,r,0,6.2832);ctx.fillStyle='rgba(96,96,88,'+a.toFixed(3)+')';ctx.fill();}raf=null;}
+function q(){if(!raf)raf=requestAnimationFrame(draw);}addEventListener('resize',()=>{build();q();});
+if(!REDUCED&&FINE){addEventListener('pointermove',e=>{mx=e.clientX;my=e.clientY;q();},{passive:true});addEventListener('pointerleave',()=>{mx=my=-9e3;q();});}
+build();draw();})();
+
+// playhead + dock condense + menu mobile
+(function(){const ph=document.getElementById('playhead'),dock=document.querySelector('.dock'),logo=document.querySelector('.fixed-logo');let t=false;
+addEventListener('scroll',()=>{if(t)return;t=true;requestAnimationFrame(()=>{const m=document.documentElement.scrollHeight-innerHeight;ph.style.transform='scaleX('+(m>0?scrollY/m:0)+')';const past=scrollY>50;if(dock)dock.classList.toggle('dock-scrolled',past);if(logo)logo.classList.toggle('hidden',past);t=false;});},{passive:true});
+const navToggle=document.querySelector('.nav-toggle'),navMenu=document.getElementById('nav-links-menu');
+if(navToggle&&navMenu){
+  const closeMenu=()=>{navMenu.classList.remove('open');navToggle.setAttribute('aria-expanded','false')};
+  navToggle.addEventListener('click',()=>{const open=navMenu.classList.toggle('open');navToggle.setAttribute('aria-expanded',open?'true':'false')});
+  navMenu.addEventListener('click',e=>{if(e.target.closest('a'))closeMenu()});
+  document.addEventListener('click',e=>{if(!dock.contains(e.target))closeMenu()});
+}
+})();
+
+// reveals rejoués à chaque scroll (motif du site) — hystérésis entrée >0.3 /
+// sortie <0.05 pour absorber le jitter du trackpad autour de la frontière.
+(function(){
+  const io=new IntersectionObserver(es=>{
+    es.forEach(e=>{
+      const r=e.intersectionRatio;
+      if(r>0.3)e.target.classList.add('in');
+      else if(r<0.05)e.target.classList.remove('in');
+    });
+  },{threshold:[0,.05,.1,.15,.2,.25,.3,.35]});
+  document.querySelectorAll('.rv').forEach(el=>io.observe(el));
+})();
+
+// Sticky bar mobile : s'arme quand la buystrip sort de l'écran, se masque
+// quand un autre CTA d'achat est visible (buy-wrap, final, footer).
+(function(){
+  const sb=document.querySelector('.stickybar');if(!sb)return;
+  const strip=document.querySelector('.buystrip');if(!strip)return;
+  const btn=sb.querySelector('.sb-btn');
+  const others=[document.querySelector('.buy-wrap'),document.querySelector('.final'),document.querySelector('footer')].filter(Boolean);
+  const mq=matchMedia('(max-width:720px)');
+  let stripOut=false;const vis=new Set();
+  function upd(){
+    const on=stripOut&&vis.size===0&&mq.matches;
+    sb.classList.toggle('on',on);
+    sb.setAttribute('aria-hidden',on?'false':'true');
+    if(btn)btn.tabIndex=on?0:-1;
+  }
+  new IntersectionObserver(es=>{es.forEach(e=>{stripOut=!e.isIntersecting;});upd();},{threshold:0}).observe(strip);
+  const io2=new IntersectionObserver(es=>{es.forEach(e=>{if(e.isIntersecting)vis.add(e.target);else vis.delete(e.target);});upd();},{threshold:0});
+  others.forEach(el=>io2.observe(el));
+  if(mq.addEventListener)mq.addEventListener('change',upd);
+})();
+
+// Vidéo de présentation : source injectée au clic (le chemin vit dans
+// #mv-src, tout en bas du body), bouton rétabli sur pause/ended.
+(function(){const v=document.getElementById('mv-video'),b=document.querySelector('.apercu-play'),s=document.getElementById('mv-src');if(!v||!b||!s)return;
+  b.addEventListener('click',()=>{if(!v.src){v.src=s.textContent.trim();}v.controls=true;b.hidden=true;v.play().catch(()=>{v.controls=true;});});
+  v.addEventListener('pause',()=>{b.hidden=false;});v.addEventListener('play',()=>{b.hidden=true;});
+  v.addEventListener('ended',()=>{b.hidden=false;v.controls=false;});})();
+// Boîte produit en reduced-motion : frame fixe
+(function(){if(!REDUCED)return;const v=document.querySelector('.hero-media video');if(!v)return;v.removeAttribute('autoplay');v.addEventListener('loadedmetadata',()=>{v.currentTime=1;v.pause();},{once:true});})();
+// Suivi des CTA vers le dataLayer — par délégation : actif dès le premier
+// clic, avant même que le document (vidéo en data-URI comprise) soit chargé.
+document.addEventListener('click',function(e){var el=e.target.closest&&e.target.closest('[data-track]');if(!el)return;
+  window.dataLayer=window.dataLayer||[];window.dataLayer.push({event:'cta_click',cta_name:el.getAttribute('data-track'),cta_text:el.innerText||el.value||''});});
+</script>
+
+<script>
+(function(){
+  const T={
+    "Acheter — 150 €":"Buy — €150",
+    "· paiement unique — ou 2 × 75 €":"· one-time payment — or 2 × €75",
+    "paiement unique — ou 2 × 75 €":"one-time payment — or 2 × €75",
+    "Acheter MetaVision — 150 €":"Buy MetaVision — €150",
+    "Paiement unique · ou 2 × 75 €":"One-time payment · or 2 × €75",
+    "MetaVision — 150 €":"MetaVision — €150",
+    "Oui : 150 € en une fois, ou 2 paiements mensuels de 75 €. Le paiement passe par Podia, sur pay.femzlab.shop.":"Yes: €150 in one go, or 2 monthly payments of €75. Payment goes through Podia, on pay.femzlab.shop.",
+    // nav / dock / sticky / footer
+    "Portfolio":"Portfolio","Boutique":"Shop","Assets":"Assets","À propos":"About",
+    "Acheter — 150 €":"Buy — €150","MetaVision — 150 €":"MetaVision — €150","Acheter":"Buy",
+    // S1
+    "Formation VFX · After Effects":"VFX course · After Effects",
+    "Il y a dix ans,":"Ten years ago,","je cherchais":"I was looking for","cette formation.":"this course.",
+    "Cours en ligne":"Online course",
+    "Des bases d'After Effects à tes premiers clients.":"From the After Effects basics to your first clients.",
+    "Trois modules, des invités, le Fade Pack offert et un accompagnement sur Discord.":"Three modules, guest artists, the Fade Pack included and support on Discord.",
+    "150 €":"€150","· paiement unique — ou 2 × 75 €":"· one-time payment — or 2 × €75",
+    "Acheter MetaVision":"Buy MetaVision","Voir le programme":"See the syllabus",
+    "Accès après achat":"Access right after purchase","Fade Pack offert":"Fade Pack included","Accompagnement sur Discord":"Support on Discord",
+    // S2 + S5 : titres de leçons (partagés)
+    "Présentation de chaque outil jusqu'au rendu":"Every tool, up to the render","Roto et masque":"Roto and masks",
+    "Chroma keying fond vert":"Green-screen chroma keying","Transitions dans les yeux":"Eye transitions",
+    "Tracking After Effects et Mocha":"After Effects and Mocha tracking","Animations roto & camera shake":"Roto animations & camera shake",
+    "Plugins distortion et courbes":"Distortion plugins and curves","Track mattes":"Track mattes",
+    "Où trouver des objets 3D":"Where to find 3D objects","Les bases de Element 3D":"Element 3D basics","Faire un texte 3D":"Making 3D text",
+    "Marché français":"The French market","Marché américain":"The US market","Colorimétrie":"Color grading","Réalisation":"Directing",
+    // S3
+    "À la fin":"By the end","Ce que tu sauras faire":"What you'll be able to do","Quatre axes, du logiciel au métier.":"Four tracks, from the software to the job.",
+    "After Effects":"After Effects","Les bases essentielles":"The essential basics",
+    "Chaque outil du logiciel, jusqu'au rendu — roto, masques, fond vert, tracking avec After Effects et Mocha.":"Every tool in the software, up to the render — roto, masks, green screen, tracking with After Effects and Mocha.",
+    "Effets visuels":"Visual effects","Créer et animer des effets":"Create and animate effects",
+    "Transitions dans les yeux, camera shake, distorsions, track mattes : les techniques des pros, adaptées aux débutants.":"Eye transitions, camera shake, distortions, track mattes: pro techniques, made for beginners.",
+    "Textes et graphismes":"Text and graphics","Des éléments dynamiques":"Dynamic elements",
+    "Intégrer des textes et des éléments graphiques animés — jusqu'au texte et aux objets en 3D.":"Integrate animated text and graphic elements — all the way to 3D text and objects.",
+    "Le métier":"The job","Trouver tes premiers clients":"Find your first clients",
+    "Optimiser ton workflow, comprendre le marché français et américain, gagner de l'argent avec le VFX.":"Optimize your workflow, understand the French and US markets, make money with VFX.",
+    // S4
+    "L'aperçu":"The preview","Libère ton potentiel artistique":"Unleash your artistic potential",
+    "Il y a environ dix ans, je partageais le même rêve que toi. J'ai cherché des formations abordables pour apprendre les effets visuels — je n'en ai pas trouvé. Alors j'ai appris After Effects seul.":"About ten years ago, I shared the same dream as you. I looked for affordable courses to learn visual effects — I found none. So I taught myself After Effects.",
+    "La satisfaction derrière ces effets visuels, c'est de transmettre, de partager :":"The satisfaction behind these visual effects is passing them on, sharing them:",
+    "des émotions, du rêve, de l'inspiration.":"emotions, dreams, inspiration.",
+    "MetaVision, c'est cette formation-là :":"MetaVision is that course:",
+    "trois chapitres, concis et précis":"three chapters, concise and precise",
+    ", avec mon savoir et mon savoir-faire. Pour libérer ton potentiel artistique.":", with my knowledge and my know-how. To unleash your artistic potential.",
+    "Femz · créateur de MetaVision":"Femz · creator of MetaVision",
+    "Vidéo de présentation · 1 min":"Presentation video · 1 min",
+    // S5
+    "Le programme":"The syllabus","Trois modules, une séquence":"Three modules, one sequence",
+    "Une introduction, trois modules, une conclusion — chaque leçon est listée ci-dessous, avec ses invités. Vidéos à la demande, en français.":"An introduction, three modules, a conclusion — every lesson is listed below, guests included. On-demand videos, in French.",
+    "Au fil des leçons — les projets ouverts dans After Effects.":"Along the lessons — the projects open in After Effects.",
+    "Intro":"Intro","1 vidéo":"1 video","Aperçu":"Overview","La vidéo d'introduction de la formation.":"The course's introduction video.",
+    "Transitions, masques, tracking et même 3D.":"Transitions, masks, tracking and even 3D.","8 leçons":"8 lessons",
+    "Mocha AE est fourni avec After Effects.":"Mocha AE ships with After Effects.",
+    "avec Nineteen":"with Nineteen","avec Bulbii":"with Bulbii","avec Bulbii et Nineteen":"with Bulbii and Nineteen","avec Wire":"with Wire","avec Hansley":"with Hansley",
+    "Les bases en 3D, les animations, importer des modèles 3D, le tracking.":"3D basics, animation, importing 3D models, tracking.","3 leçons":"3 lessons",
+    "Element 3D n'est pas inclus.":"Element 3D is not included.",
+    "Ce module s'appuie sur Element 3D (Video Copilot), un plugin payant vendu séparément.":"This module relies on Element 3D (Video Copilot), a paid plugin sold separately.",
+    "Bonus — le métier":"Bonus — the job","Le milieu VFX, trouver des clients, gagner de l'argent.":"The VFX industry, finding clients, making money.","4 leçons":"4 lessons",
+    "Conclusion":"Conclusion","Un apprentissage permanent":"Never stop learning",
+    // S6
+    "Les invités":"Guest artists","Quatre intervenants":"Four guests","Chacun intervient dans une ou deux leçons du programme.":"Each one appears in one or two lessons of the syllabus.",
+    "Intervient dans":"Appears in",
+    "Animations roto & camera shake — module 1":"Roto animations & camera shake — module 1","Marché américain — module 3":"The US market — module 3",
+    "Plugins distortion et courbes — module 1":"Distortion plugins and curves — module 1","Colorimétrie — module 3":"Color grading — module 3","Réalisation — module 3":"Directing — module 3",
+    // S7
+    "Je ne cherche pas le beau. Je cherche l'émotion.":"I'm not after pretty. I'm after emotion.",
+    "Femz · Fémi Olu · fondateur de FemzLab":"Femz · Fémi Olu · founder of FemzLab",
+    // S8
+    "Tout compris":"All included","Dans la boîte":"In the box","paiement unique — ou 2 × 75 €":"one-time payment — or 2 × €75",
+    "La formation MetaVision":"The MetaVision course","— introduction, trois modules, conclusion, en vidéos à la demande":"— introduction, three modules, conclusion, as on-demand videos",
+    "Le Fade Pack, offert":"The Fade Pack, included","— plus de 10 track mattes modifiables pour tes transitions":"— 10+ editable track mattes for your transitions",
+    "L'accompagnement sur Discord":"Support on Discord","— pour tes questions sur les leçons":"— for your questions about the lessons",
+    "L'accès en ligne, juste après l'achat":"Online access, right after purchase",
+    "Toute la formation est tournée sur After Effects. Le module 3D utilise Element 3D, un plugin payant non inclus. Une question avant d'acheter ?":"The whole course is recorded in After Effects. The 3D module uses Element 3D, a paid plugin that is not included. A question before buying?",
+    "Écris-moi":"Write me",", on regarde ensemble.":", we'll look at it together.",
+    "Ce qu'il te faut":"What you need",
+    "Toute la formation se passe dedans. Les leçons sont tournées sur After Effects ; les outils vus existent dans les versions CC récentes.":"The whole course happens inside it. Lessons are recorded in After Effects; the tools shown exist in recent CC versions.",
+    "Utilisé dans la leçon de tracking. Il est fourni avec After Effects : rien à acheter.":"Used in the tracking lesson. It ships with After Effects: nothing to buy.",
+    "Non inclus":"Not included",
+    "Plugin payant de Video Copilot, utilisé dans le module 3D. Il n'est pas inclus dans la formation.":"Paid plugin by Video Copilot, used in the 3D module. It is not included in the course.",
+    "Des techniques professionnelles adaptées aux débutants — en français.":"Professional techniques adapted for beginners — in French.",
+    // S9
+    "Questions fréquentes":"FAQ","Avant d'acheter":"Before you buy",
+    "C'est pour qui ?":"Who is it for?","Pour les débutants et les intermédiaires. Les techniques sont celles des professionnels, expliquées pour quelqu'un qui démarre sur After Effects.":"For beginners and intermediates. The techniques are the pros', explained for someone starting out in After Effects.",
+    "Il me faut quel logiciel ?":"Which software do I need?","Adobe After Effects : toute la formation est tournée dessus. Pour le tracking, Mocha AE est fourni avec After Effects. Le module 3D, lui, s'appuie sur un plugin payant — voir la question suivante.":"Adobe After Effects: the whole course is recorded in it. For tracking, Mocha AE ships with After Effects. The 3D module relies on a paid plugin — see the next question.",
+    "Element 3D est inclus ?":"Is Element 3D included?","Non. Le module 3D s'appuie sur Element 3D, un plugin de Video Copilot, payant et vendu séparément. Il n'est pas inclus dans la formation — je préfère te le dire avant que tu achètes.":"No. The 3D module relies on Element 3D, a paid Video Copilot plugin sold separately. It is not included in the course — I'd rather tell you before you buy.",
+    "Je peux payer en deux fois ?":"Can I pay in two installments?","Oui : 150 € en une fois, ou 2 paiements mensuels de 75 €. Le paiement passe par Podia, sur pay.femzlab.shop.":"Yes: €150 at once, or 2 monthly payments of €75. Payment goes through Podia, on pay.femzlab.shop.",
+    "Comment j'accède à la formation ?":"How do I access the course?","Juste après l'achat, en ligne : les vidéos sont disponibles à la demande.":"Right after purchase, online: the videos are available on demand.",
+    "Et si ça ne me convient pas ?":"What if it's not for me?","Écris-moi — on trouve une solution.":"Write me — we'll find a solution.","Les conditions exactes sont dans les CGV.":"The exact terms are in the terms of sale.",
+    "Le Discord, ça sert à quoi ?":"What is the Discord for?","À poser tes questions sur les leçons — la communauté et moi y répondons.":"To ask questions about the lessons — the community and I answer there.","Rejoindre le Discord FemzLab":"Join the FemzLab Discord",
+    // S10
+    "Prêt à libérer ton potentiel ?":"Ready to unleash your potential?","Acheter MetaVision — 150 €":"Buy MetaVision — €150",
+    "Paiement unique · ou 2 × 75 €":"One-time payment · or 2 × €75",
+    "Vidéos à la demande":"On-demand videos","Leçons en français":"Lessons in French",
+    // S11
+    "Et après":"What's next","Complète ton setup":"Complete your setup",
+    "La formation que tu viens de voir":"The course you've just seen","150 € ou 2×75 €":"€150 or 2×€75","Tu es ici":"You are here",
+    "10 animations de texte et 8 outils — After Effects et Premiere Pro":"10 text animations and 8 tools — After Effects and Premiere Pro","39 €":"€39","Voir le plugin":"See the plugin",
+    "Icônes PNG, templates After Effects, éléments UI":"PNG icons, After Effects templates, UI elements","29,95 €":"€29.95","Voir le pack":"View the pack",
+    "Particules pour After Effects : 4 presets de transitions + 4 overlays":"Particles for After Effects: 4 transition presets + 4 overlays","9 €":"€9"
+  };
+  const nodes=[]; const w=document.createTreeWalker(document.body,NodeFilter.SHOW_TEXT,null);
+  let n; while(n=w.nextNode()){ const k=(n.nodeValue||'').trim(); if(k&&T[k]!==undefined) nodes.push([n,n.nodeValue,k]); }
+  function set(lang){
+    nodes.forEach(([node,fr,k])=>{ node.nodeValue = lang==='en'? fr.replace(k,T[k]) : fr; });
+    document.documentElement.lang=lang; try{localStorage.setItem('femz_lang',lang)}catch(e){}
+    document.querySelectorAll('[data-langbtn]').forEach(b=>b.classList.toggle('on', b.dataset.langbtn===lang));
+  }
+  let saved=null; try{saved=localStorage.getItem('femz_lang')}catch(e){}
+  const initial = saved || ((navigator.language||navigator.userLanguage||'').toLowerCase().slice(0,2)==='en'?'en':'fr');
+  window.__setLang=set; set(initial);
+})();
+</script>
+
+<!-- Chemin de la vidéo de présentation — dernier élément du body : build.py
+     le remplace par une data-URI de plusieurs Mo, qui atterrit ainsi après le
+     rendu et l'exécution de tous les scripts. -->
+<script type="text/plain" id="mv-src">assets/mp4-17.mp4</script>
+</body></html>
