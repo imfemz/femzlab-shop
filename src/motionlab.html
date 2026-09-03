@@ -340,7 +340,7 @@ nav.dock::before{content:"";position:absolute;inset:-70%;z-index:-1;pointer-even
 /* ---------- S3 : GUIDES — vidéo (rendu de la comp « colo 3 ») + carte
    explicative avec mini-panel interactif (chips plateforme → calque guide
    posé sur une comp 9:16 ou 16:9, re-clic = retiré, comme dans le plugin) */
-.guides-wrap{max-width:1100px;margin:0 auto;padding:26px clamp(20px,5vw,48px) 0;
+.guides-wrap{max-width:1100px;margin:0 auto;padding:26px clamp(20px,5vw,48px) clamp(48px,7vh,80px);
   display:grid;grid-template-columns:1.3fr .9fr;gap:20px;align-items:stretch}
 .gcol{display:flex;flex-direction:column;gap:20px;min-width:0}
 .gv{position:relative;aspect-ratio:16/9;border-radius:var(--r-lg);overflow:hidden;
@@ -381,7 +381,7 @@ nav.dock::before{content:"";position:absolute;inset:-70%;z-index:-1;pointer-even
 /* ---------- S4 : PRESETS — preview interactive « à la Bart » : le panel à
    gauche (liste + réglages), la scène animée à droite. Le JS pilote tout
    (sélection, texte custom, split, vitesse, boucle). ---------- */
-.presets-wrap{max-width:1100px;margin:0 auto;padding:26px clamp(20px,5vw,48px) clamp(48px,7vh,80px)}
+.presets-wrap{max-width:1100px;margin:0 auto;padding:26px clamp(20px,5vw,48px) 0}
 /* cadre 16:9 (Femz) : le panneau garde ses réglages en tête, la liste des
    presets scrolle en dessous ; la scène remplit la hauteur */
 .demo{display:grid;grid-template-columns:300px 1fr;border-radius:20px;overflow:hidden;
