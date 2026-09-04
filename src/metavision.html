@@ -35,6 +35,8 @@ a{color:inherit;text-decoration:none}
 img,video{max-width:100%;display:block}
 button{font:inherit;cursor:pointer}
 a:focus-visible,button:focus-visible,summary:focus-visible{outline:2px solid var(--ink);outline-offset:3px;border-radius:4px}
+/* sur les surfaces sombres, contour de focus clair pour rester visible */
+.dock a:focus-visible,.dock button:focus-visible,.stickybar a:focus-visible,footer a:focus-visible{outline-color:#fff}
 
 #dots{position:fixed;inset:0;z-index:0;pointer-events:none}
 .vignette{position:fixed;inset:0;z-index:1;pointer-events:none;
@@ -129,10 +131,11 @@ nav.dock::before{content:"";position:absolute;inset:-70%;z-index:-1;pointer-even
 .band>*:last-child{padding-bottom:0}
 
 /* ---------- reveals (motif du site : rejoués à chaque scroll) ---------- */
-.rv{opacity:0;transform:translateY(22px);filter:blur(14px);will-change:opacity,transform,filter;
-  transition:opacity .7s cubic-bezier(.22,1,.36,1),transform .7s cubic-bezier(.22,1,.36,1),filter .7s cubic-bezier(.22,1,.36,1);
+/* reveal : fade-up seul (le blur au scroll sur ~37 éléments causait du jank) */
+.rv{opacity:0;transform:translateY(22px);
+  transition:opacity .7s cubic-bezier(.22,1,.36,1),transform .7s cubic-bezier(.22,1,.36,1);
   transition-delay:var(--d,0s)}
-.rv.in{opacity:1;transform:none;filter:none}
+.rv.in{opacity:1;transform:none}
 
 /* ---------- en-têtes de section ---------- */
 .eyebrow{font-size:12px;color:var(--muted);display:inline-flex;align-items:center;gap:12px;letter-spacing:.24em}
@@ -142,10 +145,10 @@ nav.dock::before{content:"";position:absolute;inset:-70%;z-index:-1;pointer-even
    (.h2-vis), le texte d'origine reste dans .h2-src pour l'i18n et les lecteurs */
 .sec-head h2{position:relative}
 .h2-src{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
-.h2-vis .w{display:inline-block;overflow:hidden;vertical-align:bottom;padding:0 .02em .1em;margin-bottom:-.1em}
-.h2-vis .w span{display:inline-block;transform:translateY(112%);
-  transition:transform .75s cubic-bezier(.22,1,.36,1) calc(var(--i,0)*.07s + .1s)}
-.sec-head.in .h2-vis .w span,.final.in .h2-vis .w span{transform:none}
+.h2-vis .w{display:inline-block;vertical-align:bottom;padding:0 .04em}
+.h2-vis .w span{display:inline-block;opacity:0;transform:translateY(46%);
+  transition:transform .7s var(--ease-bounce) calc(var(--i,0)*.055s + .05s),opacity .55s ease calc(var(--i,0)*.055s + .05s)}
+.sec-head.in .h2-vis .w span{opacity:1;transform:none}
 .sec-head h2{font-family:'Montserrat',sans-serif;font-weight:800;text-transform:uppercase;
   font-size:clamp(26px,4vw,42px);letter-spacing:-.015em;margin-top:12px;
   background-image:linear-gradient(110deg,var(--ink) 0%,var(--ink) 38%,#5EA2FF 46%,#fff 50%,#A78BFF 56%,var(--ink) 64%,var(--ink) 100%);
@@ -177,13 +180,14 @@ nav.dock::before{content:"";position:absolute;inset:-70%;z-index:-1;pointer-even
   text-shadow:0 2px 28px rgba(0,0,0,.5);
   display:flex;flex-direction:column;align-items:center}
 .mani .mword{display:block;position:relative}
-.mani .m2{color:#8CC0FF;
-  text-shadow:0 0 16px rgba(94,162,255,.55),0 0 52px rgba(94,162,255,.35)}
+/* accent héros : dégradé bleu→violet qui coule (.gflow en HTML) + relief
+   sombre pour tenir sur la photo ; le glow bleu vient du filter de .gflow */
+.mani .m2{text-shadow:0 2px 30px rgba(0,0,0,.4)}
 @keyframes a-blurin-h{from{filter:blur(14px);opacity:0;letter-spacing:.12em}
   to{filter:blur(0);opacity:1;letter-spacing:-.025em}}
-.mani.in .m1{animation:a-blurin-h 1s .05s cubic-bezier(.22,1,.36,1) both}
-.mani.in .m2{animation:a-drop 1.15s .5s linear both}
-.mani.in .m3{animation:a-pop .85s 1.2s cubic-bezier(.3,1.6,.5,1) both}
+.mani.in .m1{animation:a-fadeup .8s .05s var(--ease-bounce) both}
+.mani.in .m2{animation:a-fadeup .8s .2s var(--ease-bounce) both}
+.mani.in .m3{animation:a-fadeup .8s .35s var(--ease-bounce) both}
 .mani:not(.in) .mword{opacity:0}
 
 .buystrip{max-width:1100px;margin:clamp(44px,6vh,64px) auto 0;padding:0 clamp(20px,5vw,48px)}
@@ -191,10 +195,10 @@ nav.dock::before{content:"";position:absolute;inset:-70%;z-index:-1;pointer-even
    suit le curseur (style react.bits SpotlightCard / TiltedCard), desktop seulement. */
 .hero-glass{position:relative;display:grid;grid-template-columns:1.15fr .85fr;gap:clamp(20px,4vw,48px);align-items:center;
   padding:clamp(24px,3.4vw,40px);border-radius:28px;
-  background:rgba(255,255,255,.74);
-  -webkit-backdrop-filter:blur(26px) saturate(1.4);backdrop-filter:blur(26px) saturate(1.4);
-  border:1px solid rgba(255,255,255,.85);
-  box-shadow:0 30px 80px rgba(0,0,0,.35),inset 0 1px 0 rgba(255,255,255,.95);
+  background:linear-gradient(145deg,rgba(255,255,255,.60),rgba(244,247,252,.48));
+  -webkit-backdrop-filter:blur(22px) saturate(1.6);backdrop-filter:blur(22px) saturate(1.6);
+  border:1px solid rgba(255,255,255,.35);
+  box-shadow:0 40px 100px rgba(12,16,30,.45),0 0 46px rgba(94,162,255,.14),inset 0 1px 0 rgba(255,255,255,.8),inset 0 0 34px rgba(255,255,255,.22);
   transform:perspective(1200px) rotateX(var(--rx,0deg)) rotateY(var(--ry,0deg));
   transition:transform .4s cubic-bezier(.22,1,.36,1);will-change:transform}
 .hero-glass.rv{transition:opacity .7s cubic-bezier(.22,1,.36,1) var(--d,0s),filter .7s cubic-bezier(.22,1,.36,1) var(--d,0s),transform .4s cubic-bezier(.22,1,.36,1)}
@@ -267,6 +271,87 @@ nav.dock::before{content:"";position:absolute;inset:-70%;z-index:-1;pointer-even
   88%{transform:translateY(-4%) scaleY(1);animation-timing-function:cubic-bezier(.55,0,.8,.5)}
   100%{transform:translateY(0) scaleY(1)}}
 
+/* ==================================================================
+   PREMIUM v3 (2026-09-04) — texte dégradé qui coule, relief, glass edge
+   glow, cartes spotlight, tab-underline, toggle de paiement, animations
+   raffinées (bounce léger, plus enfantin). Réfs byq : gradient-text-flow,
+   spotlight-glow-cards, tab-underline, pricing-toggle.
+   ================================================================== */
+:root{
+  --ease-soft:cubic-bezier(.22,1,.36,1);
+  --ease-bounce:cubic-bezier(.34,1.18,.5,1);
+  --grad-flow:linear-gradient(100deg,#5EA2FF 0%,#7CB6FF 16%,#A78BFF 34%,#8FA8FF 50%,#7C4DFF 66%,#5EA2FF 85%,#5EA2FF 100%);
+  --grad-flow-d:linear-gradient(100deg,#2B4CA8 0%,#3554B8 16%,#5A2AA8 33%,#234FAE 50%,#4A2CA0 67%,#2B4CA8 85%,#2B4CA8 100%);
+}
+@keyframes gradFlow{to{background-position:-220% 50%}}
+.gflow,.gflow-d{-webkit-background-clip:text;background-clip:text;color:transparent;
+  -webkit-text-fill-color:transparent;background-size:220% 100%;
+  animation:gradFlow 6s linear infinite;filter:drop-shadow(0 1px 9px rgba(94,162,255,.26))}
+.gflow{background-image:var(--grad-flow)}
+.gflow-d{background-image:var(--grad-flow-d);animation-duration:6.8s;filter:drop-shadow(0 1px 7px rgba(94,162,255,.18))}
+
+/* fade-up + léger rebond — remplace a-drop/a-pop (jugés « enfantins ») */
+@keyframes a-fadeup{from{opacity:0;transform:translateY(30px)}to{opacity:1;transform:translateY(0)}}
+
+/* spotlight-glow cards (byq) : le halo suit déjà le curseur (.spot) ; ici le
+   lift + ring + glow au survol pour les cartes claires */
+.gain,.guest{transition:transform .3s var(--ease-soft),box-shadow .3s var(--ease-soft)}
+.gain:hover,.guest:hover{transform:translateY(-4px);
+  box-shadow:0 0 0 1px rgba(94,162,255,.45),0 0 24px 3px rgba(94,162,255,.20),0 26px 54px rgba(25,25,18,.16)}
+
+/* bord dégradé lumineux du glass héros (edge glow) */
+.hero-glass::after{content:"";position:absolute;inset:0;border-radius:inherit;padding:1px;pointer-events:none;z-index:3;
+  background:linear-gradient(135deg,rgba(94,162,255,.9),rgba(167,139,255,.55) 45%,rgba(94,217,255,.5) 70%,rgba(255,255,255,.22));
+  -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;
+  mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);mask-composite:exclude;
+  opacity:.72;transition:opacity .35s}
+.hero-glass:hover::after{opacity:1}
+
+/* ---- S5 : tabs modules (byq tab-underline) ---- */
+.prog-tabs{max-width:1100px;margin:26px auto 0}
+.ptab-strip{position:relative;display:flex;gap:2px;padding:0 clamp(20px,5vw,48px);
+  overflow-x:auto;scrollbar-width:none;-ms-overflow-style:none;border-bottom:1px solid var(--line);
+  -webkit-mask-image:linear-gradient(90deg,transparent 0,#000 18px,#000 calc(100% - 18px),transparent 100%);
+  mask-image:linear-gradient(90deg,transparent 0,#000 18px,#000 calc(100% - 18px),transparent 100%)}
+.ptab-strip::-webkit-scrollbar{display:none}
+.ptab{position:relative;flex:none;background:transparent;border:none;padding:15px 18px;
+  font-family:var(--lbl);font-weight:700;font-size:12.5px;letter-spacing:.06em;text-transform:uppercase;
+  color:color-mix(in srgb,var(--ink) 40%,transparent);white-space:nowrap;cursor:pointer;transition:color .2s}
+.ptab:hover{color:color-mix(in srgb,var(--ink) 68%,transparent)}
+.ptab.is-active{color:var(--ink)}
+.ptab:focus-visible{outline:2px solid var(--ink);outline-offset:-2px;border-radius:8px}
+.ptab-underline{position:absolute;bottom:-1px;left:0;height:2.5px;border-radius:3px;width:var(--uw,0);
+  transform:translateX(var(--ux,0));background-image:var(--grad-flow-d);background-size:200% 100%;
+  transition:transform .35s cubic-bezier(.16,1,.3,1),width .35s cubic-bezier(.16,1,.3,1);animation:gradFlow 6s linear infinite}
+.ppanels{max-width:1100px;margin:0 auto;padding:0 clamp(20px,5vw,48px)}
+.ppanel{padding-top:36px;animation:panelIn .3s ease both}
+.ppanel.is-hidden{display:none}
+@keyframes panelIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+.ppanel-grid{display:grid;grid-template-columns:280px 1fr;gap:clamp(24px,4vw,56px);align-items:start}
+.ppanel .prog-head{position:static}
+.prog-body{min-width:0}
+/* note Element 3D — callout doux, plus la boîte blanche agressive */
+.prog-note{display:flex;gap:12px;align-items:flex-start;margin-top:18px;padding:14px 16px;border-radius:14px;
+  background:rgba(94,162,255,.09);border:1px solid rgba(94,162,255,.22);font-size:13.5px;color:var(--muted);line-height:1.5}
+.prog-note svg{width:18px;height:18px;stroke:var(--accent-deep);flex:none;margin-top:1px}
+.prog-note b{color:var(--ink)}
+
+/* ---- S8 : toggle de paiement (byq pricing-toggle) ---- */
+.pay-toggle{display:flex;flex-direction:column;gap:18px}
+.pay-seg{position:relative;display:grid;grid-template-columns:1fr 1fr;gap:2px;padding:4px;
+  background:var(--paper);border:1px solid var(--line);border-radius:999px}
+.pay-slider{position:absolute;top:4px;height:calc(100% - 8px);left:var(--px,4px);width:var(--pw,0);border-radius:999px;
+  background:#fff;box-shadow:0 3px 10px rgba(25,25,18,.16);z-index:0;
+  transition:left .45s cubic-bezier(.16,1,.3,1),width .45s cubic-bezier(.16,1,.3,1)}
+.pay-opt{position:relative;z-index:1;background:transparent;border:none;padding:11px 8px;
+  font-family:var(--lbl);font-weight:700;font-size:12px;letter-spacing:.05em;text-transform:uppercase;
+  color:var(--dim);cursor:pointer;transition:color .25s}
+.pay-opt.is-active{color:var(--ink)}
+.pay-price{display:flex;align-items:baseline;gap:14px;flex-wrap:wrap}
+.pay-amount{font-family:'Montserrat',sans-serif;font-weight:800;font-size:clamp(40px,6vw,52px);letter-spacing:-.02em;line-height:1;
+  transition:opacity .14s ease,transform .14s ease}
+.pay-sub{font-size:12px;color:var(--dim);font-family:var(--lbl);font-weight:700;letter-spacing:.1em;text-transform:uppercase}
+
 /* ---------- S3 : CE QUE TU SAURAS FAIRE ---------- */
 .gain-wrap{max-width:1100px;margin:0 auto;padding:26px clamp(20px,5vw,48px) 0;display:grid;grid-template-columns:repeat(4,1fr);gap:20px}
 .gain{background:#fff;border-radius:var(--r-lg);box-shadow:var(--shadow);padding:28px}
@@ -284,10 +369,11 @@ nav.dock::before{content:"";position:absolute;inset:-70%;z-index:-1;pointer-even
 .th-sign{display:block;margin-top:18px;font-family:var(--lbl);font-weight:700;font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--dim)}
 .apercu-fig{margin:0;justify-self:end;width:100%;max-width:560px}
 .apercu-box{position:relative;aspect-ratio:16/9;border-radius:var(--r-lg);overflow:hidden;background:#101114;box-shadow:var(--shadow-lg)}
-.apercu-box video{width:100%;height:100%;object-fit:cover}
+.apercu-box video{width:100%;height:100%;object-fit:contain;background:#000}
 .apercu-play{position:absolute;inset:0;margin:auto;width:64px;height:64px;border-radius:50%;background:#fff;border:0;display:flex;align-items:center;justify-content:center;box-shadow:0 10px 30px rgba(0,0,0,.35);transition:transform .2s}
 .apercu-play:hover{transform:scale(1.06)}
 .apercu-play svg{width:22px;height:22px;fill:var(--ink);margin-left:3px}
+.apercu-play[hidden]{display:none}
 
 /* ---------- S5 : LE PROGRAMME — élément signature ---------- */
 /* la bannière Podia est un PNG TRANSPARENT (écrans AE en éventail + texte) :
@@ -343,7 +429,8 @@ nav.dock::before{content:"";position:absolute;inset:-70%;z-index:-1;pointer-even
 .buy-wrap{max-width:1100px;margin:0 auto;padding:26px clamp(20px,5vw,48px) 0;
   display:grid;grid-template-columns:1.05fr .95fr;gap:20px;align-items:stretch}
 .buy-card{background:#fff;border-radius:var(--r-lg);box-shadow:var(--shadow-lg);padding:34px;
-  display:flex;flex-direction:column;gap:18px}
+  display:flex;flex-direction:column;gap:18px;min-width:0}
+.need-card{min-width:0}
 .price-line{display:flex;align-items:baseline;gap:14px;flex-wrap:wrap}
 .price-line .price{font-family:'Montserrat',sans-serif;font-weight:800;font-size:52px;letter-spacing:-.02em}
 .price-line .once{font-size:12px;color:var(--dim);font-family:var(--lbl);font-weight:700;letter-spacing:.1em;text-transform:uppercase}
@@ -379,7 +466,7 @@ nav.dock::before{content:"";position:absolute;inset:-70%;z-index:-1;pointer-even
 .final{max-width:900px;margin:0 auto;padding:var(--secT) clamp(20px,5vw,48px) var(--secB);text-align:center}
 .final h2{font-family:'Montserrat',sans-serif;font-weight:800;text-transform:uppercase;
   font-size:clamp(30px,5.5vw,60px);letter-spacing:-.02em;line-height:1.08}
-.final.in h2{animation:a-rise .9s cubic-bezier(.28,1.45,.45,1) both}
+.final.in h2{animation:a-fadeup .85s var(--ease-bounce) both}
 .final:not(.in) h2{opacity:0}
 .final .btn-buy{margin-top:28px;font-size:16px;padding:18px 34px}
 .final .btn-buy svg{width:16px;height:16px;stroke:currentColor;flex:none}
@@ -463,6 +550,7 @@ footer{background:var(--charcoal);color:#EDEDE8;margin-top:20px;position:relativ
   .apercu{grid-template-columns:1fr}
   .apercu-fig{order:-1;justify-self:stretch;max-width:none}
   .prog-mod,.prog-end{grid-template-columns:1fr;gap:16px;padding:28px 0}
+  .ppanel-grid{grid-template-columns:1fr;gap:14px}
   .prog-head{position:static;display:grid;grid-template-columns:auto 1fr;column-gap:16px;align-items:baseline}
   .prog-num{font-size:56px;grid-row:1/4}
   .prog-head h3{margin-top:0}
@@ -477,6 +565,13 @@ footer{background:var(--charcoal);color:#EDEDE8;margin-top:20px;position:relativ
 @media (max-width:480px){
   .mani h1{font-size:34px}
   .guest-wrap{grid-template-columns:1fr}
+  /* CTA : autoriser le retour à la ligne pour ne pas déborder sous ~360px */
+  .buy-card,.need-card{padding:24px}
+  .hero-cta .btn-buy,.buy-card .btn-buy,.final .btn-buy{white-space:normal;text-align:center;padding:16px 18px}
+  .btn-buy .p{white-space:nowrap}
+  .pay-amount{font-size:38px}
+  .pay-opt{font-size:11px;letter-spacing:.02em;padding:11px 5px}
+  .mprice{white-space:normal}
 }
 
 @media (prefers-reduced-motion:reduce){
@@ -494,8 +589,12 @@ footer{background:var(--charcoal);color:#EDEDE8;margin-top:20px;position:relativ
   .stickybar{transition:none}
   .apercu-play{transition:none}
   .hero-media video{animation:none}
-  .hero-glass,.hero-glass.rv.in{transform:none}
+  .hero-glass,.hero-glass.rv.in,.hero-glass.rv:not(.in){transform:none}
   .spot::before{display:none}
+  .gflow,.gflow-d,.ptab-underline{animation:none;background-position:66% 50%}
+  .h2-vis .w span{opacity:1!important;transform:none!important;transition:none}
+  .ppanel{animation:none}
+  .ptab-underline,.pay-slider,.pay-amount{transition:none}
 }
 </style></head>
 <body>
@@ -534,7 +633,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     <span class="ptag"><i></i>Formation VFX · After Effects</span>
     <h1 aria-label="MetaVision — la formation VFX que je cherchais il y a dix ans">
       <span class="mword m1">Il y a dix ans,</span>
-      <span class="mword m2">je cherchais</span>
+      <span class="mword m2 gflow">je cherchais</span>
       <span class="mword m3">cette formation.</span>
     </h1>
   </div>
@@ -597,8 +696,8 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
   <div class="apercu">
     <div class="apercu-txt rv">
       <p>Il y a environ dix ans, je partageais le même rêve que toi. J'ai cherché des formations abordables pour apprendre les effets visuels — je n'en ai pas trouvé. Alors j'ai appris After Effects seul.</p>
-      <p>La satisfaction derrière ces effets visuels, c'est de transmettre, de partager : <b>des émotions, du rêve, de l'inspiration.</b></p>
-      <p>MetaVision, c'est cette formation-là : <b>trois chapitres, concis et précis</b>, avec mon savoir et mon savoir-faire. Pour libérer ton potentiel artistique.</p>
+      <p>La satisfaction derrière ces effets visuels, c'est de transmettre, de partager : <b class="gflow-d">des émotions, du rêve, de l'inspiration.</b></p>
+      <p>MetaVision, c'est cette formation-là : <b class="gflow-d">trois chapitres, concis et précis</b>, avec mon savoir et mon savoir-faire. Pour libérer ton potentiel artistique.</p>
       <span class="th-sign">Femz · créateur de MetaVision</span>
     </div>
     <figure class="apercu-fig rv" style="--d:.1s">
@@ -618,67 +717,74 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     <p>Une introduction, trois modules, une conclusion — chaque leçon est listée ci-dessous, avec ses invités. Vidéos à la demande, en français.</p>
   </div>
   <figure class="prog-strip rv"><div class="prog-blue"><img src="assets/webp-01.webp" alt="" width="1800" height="600" loading="lazy"></div><figcaption class="sig-cap">Au fil des leçons — les projets ouverts dans After Effects.</figcaption></figure>
-  <div class="prog">
-
-    <div class="prog-end rv">
-      <div class="prog-head"><span class="prog-tag">Intro</span><span class="cnt">1 vidéo</span></div>
-      <ol class="prog-list"><li><span class="ln" aria-hidden="true">—</span><span class="lt">Aperçu</span><span class="lsub">La vidéo d'introduction de la formation.</span></li></ol>
+  <div class="prog-tabs rv">
+    <div class="ptab-strip" role="tablist" aria-label="Modules de la formation">
+      <button type="button" class="ptab is-active" role="tab" aria-selected="true" id="ptab-0" aria-controls="ppanel-0" data-track="cta_mv_tab_intro">Intro</button>
+      <button type="button" class="ptab" role="tab" aria-selected="false" tabindex="-1" id="ptab-1" aria-controls="ppanel-1" data-track="cta_mv_tab_m1">Module 1</button>
+      <button type="button" class="ptab" role="tab" aria-selected="false" tabindex="-1" id="ptab-2" aria-controls="ppanel-2" data-track="cta_mv_tab_m2">Module 2</button>
+      <button type="button" class="ptab" role="tab" aria-selected="false" tabindex="-1" id="ptab-3" aria-controls="ppanel-3" data-track="cta_mv_tab_m3">Module 3</button>
+      <button type="button" class="ptab" role="tab" aria-selected="false" tabindex="-1" id="ptab-4" aria-controls="ppanel-4" data-track="cta_mv_tab_concl">Conclusion</button>
+      <span class="ptab-underline" aria-hidden="true"></span>
     </div>
+    <div class="ppanels">
 
-    <div class="prog-mod rv">
-      <div class="prog-head">
-        <span class="prog-num">M1</span>
-        <h3>After Effects</h3>
-        <p class="sub">Transitions, masques, tracking et même 3D.</p>
-        <span class="cnt">8 leçons</span>
+      <div class="ppanel" role="tabpanel" id="ppanel-0" aria-labelledby="ptab-0" tabindex="0">
+        <div class="ppanel-grid">
+          <div class="prog-head"><span class="prog-tag">Intro</span><span class="cnt">1 vidéo</span></div>
+          <div class="prog-body"><ol class="prog-list"><li><span class="ln" aria-hidden="true">—</span><span class="lt">Aperçu</span><span class="lsub">La vidéo d'introduction de la formation.</span></li></ol></div>
+        </div>
       </div>
-      <ol class="prog-list">
-        <li><span class="ln">01</span><span class="lt">Présentation de chaque outil jusqu'au rendu</span></li>
-        <li><span class="ln">02</span><span class="lt">Roto et masque</span></li>
-        <li><span class="ln">03</span><span class="lt">Chroma keying fond vert</span></li>
-        <li><span class="ln">04</span><span class="lt">Transitions dans les yeux</span></li>
-        <li><span class="ln">05</span><span class="lt">Tracking After Effects et Mocha</span><span class="lsub">Mocha AE est fourni avec After Effects.</span></li>
-        <li><span class="ln">06</span><span class="lt">Animations roto &amp; camera shake</span><span class="feat">avec Nineteen</span></li>
-        <li><span class="ln">07</span><span class="lt">Plugins distortion et courbes</span><span class="feat">avec Bulbii</span></li>
-        <li><span class="ln">08</span><span class="lt">Track mattes</span></li>
-      </ol>
-    </div>
 
-    <div class="prog-mod rv">
-      <div class="prog-head">
-        <span class="prog-num">M2</span>
-        <h3>3D</h3>
-        <p class="sub">Les bases en 3D, les animations, importer des modèles 3D, le tracking.</p>
-        <span class="cnt">3 leçons</span>
+      <div class="ppanel is-hidden" role="tabpanel" id="ppanel-1" aria-labelledby="ptab-1" tabindex="0">
+        <div class="ppanel-grid">
+          <div class="prog-head"><span class="prog-num">M1</span><h3>After Effects</h3><p class="sub">Transitions, masques, tracking et même 3D.</p><span class="cnt">8 leçons</span></div>
+          <div class="prog-body"><ol class="prog-list">
+            <li><span class="ln">01</span><span class="lt">Présentation de chaque outil jusqu'au rendu</span></li>
+            <li><span class="ln">02</span><span class="lt">Roto et masque</span></li>
+            <li><span class="ln">03</span><span class="lt">Chroma keying fond vert</span></li>
+            <li><span class="ln">04</span><span class="lt">Transitions dans les yeux</span></li>
+            <li><span class="ln">05</span><span class="lt">Tracking After Effects et Mocha</span><span class="lsub">Mocha AE est fourni avec After Effects.</span></li>
+            <li><span class="ln">06</span><span class="lt">Animations roto &amp; camera shake</span><span class="feat">avec Nineteen</span></li>
+            <li><span class="ln">07</span><span class="lt">Plugins distortion et courbes</span><span class="feat">avec Bulbii</span></li>
+            <li><span class="ln">08</span><span class="lt">Track mattes</span></li>
+          </ol></div>
+        </div>
       </div>
-      <ol class="prog-list">
-        <li><span class="ln">01</span><span class="lt">Où trouver des objets 3D</span></li>
-        <li><span class="ln">02</span><span class="lt">Les bases de Element 3D</span></li>
-        <li><span class="ln">03</span><span class="lt">Faire un texte 3D</span></li>
-        <li class="prog-warn"><b>Element 3D n'est pas inclus.</b> Ce module s'appuie sur Element 3D (Video Copilot), un plugin payant vendu séparément.</li>
-      </ol>
-    </div>
 
-    <div class="prog-mod rv">
-      <div class="prog-head">
-        <span class="prog-num">M3</span>
-        <h3>Bonus — le métier</h3>
-        <p class="sub">Le milieu VFX, trouver des clients, gagner de l'argent.</p>
-        <span class="cnt">4 leçons</span>
+      <div class="ppanel is-hidden" role="tabpanel" id="ppanel-2" aria-labelledby="ptab-2" tabindex="0">
+        <div class="ppanel-grid">
+          <div class="prog-head"><span class="prog-num">M2</span><h3>3D</h3><p class="sub">Les bases en 3D, les animations, importer des modèles 3D, le tracking.</p><span class="cnt">3 leçons</span></div>
+          <div class="prog-body">
+            <ol class="prog-list">
+              <li><span class="ln">01</span><span class="lt">Où trouver des objets 3D</span></li>
+              <li><span class="ln">02</span><span class="lt">Les bases de Element 3D</span></li>
+              <li><span class="ln">03</span><span class="lt">Faire un texte 3D</span></li>
+            </ol>
+            <div class="prog-note"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg><span><b>Element 3D n'est pas inclus.</b> Ce module s'appuie sur Element 3D (Video Copilot), un plugin payant vendu séparément.</span></div>
+          </div>
+        </div>
       </div>
-      <ol class="prog-list">
-        <li><span class="ln">01</span><span class="lt">Marché français</span></li>
-        <li><span class="ln">02</span><span class="lt">Marché américain</span><span class="feat">avec Bulbii et Nineteen</span></li>
-        <li><span class="ln">03</span><span class="lt">Colorimétrie</span><span class="feat">avec Wire</span></li>
-        <li><span class="ln">04</span><span class="lt">Réalisation</span><span class="feat">avec Hansley</span></li>
-      </ol>
-    </div>
 
-    <div class="prog-end rv">
-      <div class="prog-head"><span class="prog-tag">Conclusion</span></div>
-      <ol class="prog-list"><li><span class="ln" aria-hidden="true">—</span><span class="lt">Un apprentissage permanent</span></li></ol>
-    </div>
+      <div class="ppanel is-hidden" role="tabpanel" id="ppanel-3" aria-labelledby="ptab-3" tabindex="0">
+        <div class="ppanel-grid">
+          <div class="prog-head"><span class="prog-num">M3</span><h3>Bonus — le métier</h3><p class="sub">Le milieu VFX, trouver des clients, gagner de l'argent.</p><span class="cnt">4 leçons</span></div>
+          <div class="prog-body"><ol class="prog-list">
+            <li><span class="ln">01</span><span class="lt">Marché français</span></li>
+            <li><span class="ln">02</span><span class="lt">Marché américain</span><span class="feat">avec Bulbii et Nineteen</span></li>
+            <li><span class="ln">03</span><span class="lt">Colorimétrie</span><span class="feat">avec Wire</span></li>
+            <li><span class="ln">04</span><span class="lt">Réalisation</span><span class="feat">avec Hansley</span></li>
+          </ol></div>
+        </div>
+      </div>
 
+      <div class="ppanel is-hidden" role="tabpanel" id="ppanel-4" aria-labelledby="ptab-4" tabindex="0">
+        <div class="ppanel-grid">
+          <div class="prog-head"><span class="prog-tag">Conclusion</span></div>
+          <div class="prog-body"><ol class="prog-list"><li><span class="ln" aria-hidden="true">—</span><span class="lt">Un apprentissage permanent</span></li></ol></div>
+        </div>
+      </div>
+
+    </div>
   </div>
   </section>
 
@@ -710,7 +816,17 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
   </div>
   <div class="buy-wrap">
     <div class="buy-card rv">
-      <div class="price-line"><span class="price">150&nbsp;€</span><span class="once">paiement unique — ou 2 × 75&nbsp;€</span></div>
+      <div class="pay-toggle" id="pay-toggle">
+        <div class="pay-seg" role="radiogroup" aria-label="Mode de paiement">
+          <button type="button" class="pay-opt is-active" data-pay="once" role="radio" aria-checked="true" data-track="cta_mv_pay_once">Paiement unique</button>
+          <button type="button" class="pay-opt" data-pay="split" role="radio" aria-checked="false" tabindex="-1" data-track="cta_mv_pay_split">En 2 fois</button>
+          <span class="pay-slider" aria-hidden="true"></span>
+        </div>
+        <div class="pay-price">
+          <span class="pay-amount"><span class="gflow-d">150&nbsp;€</span></span>
+          <span class="pay-sub">paiement unique · accès immédiat</span>
+        </div>
+      </div>
       <ul>
         <li><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg><span><b>La formation MetaVision</b> — introduction, trois modules, conclusion, en vidéos à la demande</span></li>
         <li><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg><span><b>Le Fade Pack, offert</b> — plus de 10 track mattes modifiables pour tes transitions</span></li>
@@ -747,7 +863,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 
   <!-- ======================= S10 : CTA FINAL ======================= -->
   <section class="final rv">
-    <h2>Prêt à libérer ton potentiel ?</h2>
+    <h2><span class="gflow-d">Prêt à libérer ton potentiel ?</span></h2>
     <a data-track="cta_mv_acheter_final" class="btn-buy" href="https://pay.femzlab.shop/metavision/buy?offer_id=166475">Acheter MetaVision — 150&nbsp;€ <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 5l7 7-7 7"/></svg></a>
     <p class="final-sub">Paiement unique · ou 2 × 75&nbsp;€</p>
     <div class="assure">
@@ -933,10 +1049,80 @@ if(navToggle&&navMenu){
   });
 })();
 
+// Tabs modules (byq tab-underline) : underline coulissante, panneaux en fondu,
+// navigation clavier, recalcul aux fonts/resize/langue.
+(function(){
+  const strip=document.querySelector('.ptab-strip');if(!strip)return;
+  const tabs=[...strip.querySelectorAll('.ptab')];
+  const line=strip.querySelector('.ptab-underline');
+  const panels=[...document.querySelectorAll('.ppanel')];
+  let cur=Math.max(0,tabs.findIndex(t=>t.classList.contains('is-active')));
+  function move(){const t=tabs[cur];if(!t)return;line.style.setProperty('--ux',t.offsetLeft+'px');line.style.setProperty('--uw',t.offsetWidth+'px');}
+  function activate(i,focus){
+    cur=i;
+    tabs.forEach((t,j)=>{const on=i===j;t.classList.toggle('is-active',on);t.setAttribute('aria-selected',on?'true':'false');t.tabIndex=on?0:-1;});
+    panels.forEach((p,j)=>p.classList.toggle('is-hidden',i!==j));
+    move();
+    if(focus)tabs[i].focus({preventScroll:true});
+    tabs[i].scrollIntoView({inline:'nearest',block:'nearest'});
+  }
+  tabs.forEach((t,i)=>t.addEventListener('click',()=>activate(i)));
+  strip.addEventListener('keydown',e=>{const i=tabs.indexOf(document.activeElement);if(i<0)return;
+    let n=null;if(e.key==='ArrowRight'||e.key==='ArrowDown')n=(i+1)%tabs.length;
+    else if(e.key==='ArrowLeft'||e.key==='ArrowUp')n=(i-1+tabs.length)%tabs.length;
+    else if(e.key==='Home')n=0;else if(e.key==='End')n=tabs.length-1;else return;
+    e.preventDefault();activate(n,true);});
+  addEventListener('resize',move,{passive:true});
+  if(document.fonts&&document.fonts.ready)document.fonts.ready.then(move);
+  new MutationObserver(move).observe(document.documentElement,{attributes:true,attributeFilter:['lang']});
+  requestAnimationFrame(move);
+})();
+
+// Toggle de paiement (byq pricing-toggle) : pilule coulissante, prix + CTA à
+// jour, textes FR/EN suivant la langue. Les deux options mènent au même
+// checkout Podia (150 € au total dans les deux cas — pas de supplément).
+(function(){
+  const box=document.getElementById('pay-toggle');if(!box)return;
+  const opts=[...box.querySelectorAll('.pay-opt')];
+  const slider=box.querySelector('.pay-slider');
+  const amount=box.querySelector('.pay-amount');
+  const sub=box.querySelector('.pay-sub');
+  const ctaP=document.querySelector('.buy-card .btn-buy .p');
+  const L=()=>document.documentElement.lang==='en'?'en':'fr';
+  const D={fr:{once:{a:'150&nbsp;€',s:'paiement unique · accès immédiat'},split:{a:'2 × 75&nbsp;€',s:'deux mensualités · sans supplément'}},
+           en:{once:{a:'€150',s:'one-time · instant access'},split:{a:'2 × €75',s:'two monthly payments · no extra fee'}}};
+  const seg=box.querySelector('.pay-seg');
+  let mode='once';
+  function slide(){const on=box.querySelector('.pay-opt.is-active');if(!on)return;
+    slider.style.setProperty('--px',on.offsetLeft+'px');slider.style.setProperty('--pw',on.offsetWidth+'px');}
+  function set(m){mode=m;box.classList.toggle('is-split',m==='split');
+    opts.forEach(o=>{const on=o.dataset.pay===m;o.classList.toggle('is-active',on);o.setAttribute('aria-checked',on?'true':'false');o.tabIndex=on?0:-1;});
+    const d=D[L()][m];
+    const html='<span class="gflow-d">'+d.a+'</span>';
+    if(REDUCED){amount.innerHTML=html;} // pas de clignotement en reduced-motion
+    else{amount.style.opacity=0;amount.style.transform='translateY(6px)';
+      setTimeout(()=>{amount.innerHTML=html;amount.style.opacity=1;amount.style.transform='none';},130);}
+    sub.innerHTML=d.s;if(ctaP)ctaP.innerHTML=d.a;
+    slide();}
+  opts.forEach(o=>o.addEventListener('click',()=>set(o.dataset.pay)));
+  seg.addEventListener('keydown',e=>{if(['ArrowLeft','ArrowRight','ArrowUp','ArrowDown'].indexOf(e.key)<0)return;
+    e.preventDefault();set(mode==='once'?'split':'once');const a=box.querySelector('.pay-opt.is-active');if(a)a.focus();});
+  addEventListener('resize',slide,{passive:true});
+  if(document.fonts&&document.fonts.ready)document.fonts.ready.then(slide);
+  // ne re-set que si la langue change vraiment (évite le flash au chargement)
+  let lastLang=L();
+  new MutationObserver(()=>{const nl=L();if(nl===lastLang)return;lastLang=nl;set(mode);}).observe(document.documentElement,{attributes:true,attributeFilter:['lang']});
+  requestAnimationFrame(slide);
+})();
+
 // Vidéo de présentation : source injectée au clic (le chemin vit dans
 // #mv-src, tout en bas du body), bouton rétabli sur pause/ended.
-(function(){const v=document.getElementById('mv-video'),b=document.querySelector('.apercu-play'),s=document.getElementById('mv-src');if(!v||!b||!s)return;
-  b.addEventListener('click',()=>{if(!v.src){v.src=s.textContent.trim();}v.controls=true;b.hidden=true;v.play().catch(()=>{v.controls=true;});});
+/* #mv-src vit plus bas dans le DOM que ce script : on lit la source AU CLIC
+   (à l'init elle n'existe pas encore → l'ancien code retournait tôt et la
+   vidéo ne démarrait jamais). */
+(function(){const v=document.getElementById('mv-video'),b=document.querySelector('.apercu-play');if(!v||!b)return;
+  function play(){if(!v.src){var s=document.getElementById('mv-src');if(s)v.src=s.textContent.trim();}v.controls=true;b.hidden=true;v.play().catch(()=>{v.controls=true;});}
+  b.addEventListener('click',play);
   v.addEventListener('pause',()=>{b.hidden=false;});v.addEventListener('play',()=>{b.hidden=true;});
   v.addEventListener('ended',()=>{b.hidden=false;v.controls=false;});})();
 // Boîte produit en reduced-motion : frame fixe
@@ -1007,6 +1193,7 @@ document.addEventListener('click',function(e){var el=e.target.closest&&e.target.
     "Les bases en 3D, les animations, importer des modèles 3D, le tracking.":"3D basics, animation, importing 3D models, tracking.","3 leçons":"3 lessons",
     "Element 3D n'est pas inclus.":"Element 3D is not included.",
     "Ce module s'appuie sur Element 3D (Video Copilot), un plugin payant vendu séparément.":"This module relies on Element 3D (Video Copilot), a paid plugin sold separately.",
+    "Paiement unique":"One-time","En 2 fois":"In 2 payments",
     "Bonus — le métier":"Bonus — the job","Le milieu VFX, trouver des clients, gagner de l'argent.":"The VFX industry, finding clients, making money.","4 leçons":"4 lessons",
     "Conclusion":"Conclusion","Un apprentissage permanent":"Never stop learning",
     // S6
@@ -1051,12 +1238,17 @@ document.addEventListener('click',function(e){var el=e.target.closest&&e.target.
     "Icônes PNG, templates After Effects, éléments UI":"PNG icons, After Effects templates, UI elements","29,95 €":"€29.95","Voir le pack":"View the pack",
     "Particules pour After Effects : 4 presets de transitions + 4 overlays":"Particles for After Effects: 4 transition presets + 4 overlays","9 €":"€9"
   };
+  // normalise l'espace insécable : « 150 € » (U+00A0) matche sa clé « 150 € » (U+0020)
+  const norm=s=>s.replace(/ /g,' ');
+  const TN={}; for(const key in T) TN[norm(key)]=T[key];
   const nodes=[]; const w=document.createTreeWalker(document.body,NodeFilter.SHOW_TEXT,null);
-  let n; while(n=w.nextNode()){ const k=(n.nodeValue||'').trim(); if(k&&T[k]!==undefined) nodes.push([n,n.nodeValue,k]); }
+  let n; while(n=w.nextNode()){ const raw=n.nodeValue||''; const k=raw.trim(); const en=TN[norm(k)]; if(k&&en!==undefined) nodes.push([n,raw,k,en]); }
   function set(lang){
-    nodes.forEach(([node,fr,k])=>{ node.nodeValue = lang==='en'? fr.replace(k,T[k]) : fr; });
+    nodes.forEach(([node,fr,k,en])=>{ node.nodeValue = lang==='en'? fr.replace(k,en) : fr; });
     document.documentElement.lang=lang; try{localStorage.setItem('femz_lang',lang)}catch(e){}
-    document.querySelectorAll('[data-langbtn]').forEach(b=>b.classList.toggle('on', b.dataset.langbtn===lang));
+    document.querySelectorAll('[data-langbtn]').forEach(b=>{const on=b.dataset.langbtn===lang;b.classList.toggle('on',on);b.setAttribute('aria-pressed',on?'true':'false');});
+    const h1=document.querySelector('.mani h1');
+    if(h1)h1.setAttribute('aria-label',lang==='en'?'MetaVision — the VFX course I was looking for ten years ago':'MetaVision — la formation VFX que je cherchais il y a dix ans');
   }
   let saved=null; try{saved=localStorage.getItem('femz_lang')}catch(e){}
   const initial = saved || ((navigator.language||navigator.userLanguage||'').toLowerCase().slice(0,2)==='en'?'en':'fr');

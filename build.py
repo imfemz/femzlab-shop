@@ -34,6 +34,13 @@ MIME = {
     "woff2": "font/woff2",
 }
 
+# Assets trop lourds pour être inlinés en base64 : servis en fichier et
+# chargés à la demande (ex. la vidéo de présentation MetaVision ~5 Mo, qui
+# sinon partait à CHAQUE visite même sans clic sur play). Le chemin
+# `assets/<nom>` reste littéral dans le HTML ; le fichier est copié à côté de
+# la page qui le référence (voir la boucle des PAGES).
+SANS_INLINE = {"mp4-17.mp4"}
+
 REVIEWS = SRC / "reviews.json"
 DEBUT = "<!-- reviews:start -->"
 FIN = "<!-- reviews:end -->"
@@ -133,7 +140,8 @@ def main():
     # Du plus long au plus court : évite qu'un nom soit préfixe d'un autre
     # (assets/png-1.png ne doit pas manger assets/png-10.png).
     remplacements = sorted(
-        ((f"assets/{f.name}", data_uri(f)) for f in assets if f.is_file()),
+        ((f"assets/{f.name}", data_uri(f))
+         for f in assets if f.is_file() and f.name not in SANS_INLINE),
         key=lambda p: -len(p[0]),
     )
 
@@ -150,6 +158,16 @@ def main():
         destination.parent.mkdir(parents=True, exist_ok=True)
         destination.write_text(texte, encoding="utf-8")
         print(f"dist/{cible:22} {destination.stat().st_size / 1e6:>5.1f} Mo")
+
+        # Copie des assets lourds référencés en chemin (non inlinés), à côté
+        # de la page — le HTML les charge via l'URL relative `assets/<nom>`.
+        for nom in SANS_INLINE:
+            if f"assets/{nom}" in texte:
+                dst = destination.parent / "assets" / nom
+                dst.parent.mkdir(parents=True, exist_ok=True)
+                shutil.copyfile(SRC / "assets" / nom, dst)
+                print(f"  + {cible.rsplit('/',1)[0]}/assets/{nom} "
+                      f"({dst.stat().st_size / 1e6:.1f} Mo, fichier)")
 
     shutil.copyfile(SRC / "_redirects", DIST / "_redirects")
     print("dist/_redirects")
