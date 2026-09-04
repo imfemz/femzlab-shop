@@ -120,7 +120,13 @@ nav.dock::before{content:"";position:absolute;inset:-70%;z-index:-1;pointer-even
 }
 
 /* ---------- bandes de section : alternance points / blanc cassé ---------- */
-.band{background:#F6F6F2;padding-bottom:clamp(48px,7vh,80px)}
+/* RYTHME VERTICAL — une seule règle, toujours la même : chaque enveloppe de
+   section (bande OU wrapper, jamais les deux) finit par --secB ; chaque
+   en-tête commence par --secT. Écart entre deux sections = --secB + --secT,
+   partout. Ne jamais ajouter de padding bas « en plus » sur un wrapper. */
+:root{--secT:clamp(48px,8vh,92px);--secB:clamp(48px,7vh,80px)}
+.band{background:#F6F6F2;padding-bottom:var(--secB)}
+.band>*:last-child{padding-bottom:0}
 
 /* ---------- reveals (motif du site : rejoués à chaque scroll) ---------- */
 .rv{opacity:0;transform:translateY(22px);filter:blur(14px);will-change:opacity,transform,filter;
@@ -131,7 +137,15 @@ nav.dock::before{content:"";position:absolute;inset:-70%;z-index:-1;pointer-even
 /* ---------- en-têtes de section ---------- */
 .eyebrow{font-size:12px;color:var(--muted);display:inline-flex;align-items:center;gap:12px;letter-spacing:.24em}
 .eyebrow::before,.eyebrow::after{content:"";width:30px;height:1px;background:var(--line-strong)}
-.sec-head{max-width:1100px;margin:0 auto;padding:clamp(48px,8vh,92px) clamp(20px,5vw,48px) 0;text-align:center}
+.sec-head{max-width:1100px;margin:0 auto;padding:var(--secT) clamp(20px,5vw,48px) 0;text-align:center}
+/* SplitText (react.bits) : le h2 visible est recomposé mot par mot par le JS
+   (.h2-vis), le texte d'origine reste dans .h2-src pour l'i18n et les lecteurs */
+.sec-head h2{position:relative}
+.h2-src{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.h2-vis .w{display:inline-block;overflow:hidden;vertical-align:bottom;padding:0 .02em .1em;margin-bottom:-.1em}
+.h2-vis .w span{display:inline-block;transform:translateY(112%);
+  transition:transform .75s cubic-bezier(.22,1,.36,1) calc(var(--i,0)*.07s + .1s)}
+.sec-head.in .h2-vis .w span,.final.in .h2-vis .w span{transform:none}
 .sec-head h2{font-family:'Montserrat',sans-serif;font-weight:800;text-transform:uppercase;
   font-size:clamp(26px,4vw,42px);letter-spacing:-.015em;margin-top:12px;
   background-image:linear-gradient(110deg,var(--ink) 0%,var(--ink) 38%,#5EA2FF 46%,#fff 50%,#A78BFF 56%,var(--ink) 64%,var(--ink) 100%);
@@ -146,14 +160,25 @@ nav.dock::before{content:"";position:absolute;inset:-70%;z-index:-1;pointer-even
 .ptag i{width:7px;height:7px;border-radius:50%;background:var(--accent);display:inline-block;
   box-shadow:0 0 8px rgba(94,162,255,.9);font-style:normal}
 
-.mani{max-width:1100px;margin:0 auto;padding:clamp(120px,16vh,170px) clamp(20px,5vw,48px) 0;text-align:center}
-.mani .ptag{margin-bottom:18px}
-.mani h1{font-family:'Montserrat',sans-serif;font-weight:800;text-transform:uppercase;
-  letter-spacing:-.025em;font-size:clamp(40px,7.6vw,84px);line-height:.98;
+/* Le héros = la photo Podia « pub-site-2 » plein cadre (Femz + disques d'or),
+   voile sombre en haut pour le titre, fondu vers le papier en bas ; une SEULE
+   boîte glass (texte + carte produit) posée dessus. */
+.hero{position:relative;isolation:isolate;overflow:hidden;padding-bottom:clamp(40px,6vh,64px)}
+.hero-bg{position:absolute;inset:0;z-index:-1;background:#14161B}
+.hero-bg img{width:100%;height:100%;object-fit:cover;object-position:50% 40%;display:block}
+.hero-bg::after{content:"";position:absolute;inset:0;
+  background:linear-gradient(180deg,rgba(8,9,12,.66) 0%,rgba(8,9,12,.34) 34%,rgba(8,9,12,.22) 60%,rgba(8,9,12,.55) 84%,var(--paper) 100%)}
+.hero .ptag{color:#fff;border-color:rgba(255,255,255,.38);background:rgba(255,255,255,.12);
+  -webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px)}
+.mani{max-width:1100px;margin:0 auto;padding:clamp(136px,19vh,200px) clamp(20px,5vw,48px) 0;text-align:center}
+.mani .ptag{margin-bottom:28px}
+.mani h1{font-family:'Montserrat',sans-serif;font-weight:800;text-transform:uppercase;color:#fff;
+  letter-spacing:-.025em;font-size:clamp(34px,6.4vw,74px);line-height:1.06;
+  text-shadow:0 2px 28px rgba(0,0,0,.5);
   display:flex;flex-direction:column;align-items:center}
 .mani .mword{display:block;position:relative}
-.mani .m2{color:var(--accent-deep);
-  text-shadow:0 0 16px rgba(94,162,255,.45),0 0 52px rgba(94,162,255,.28)}
+.mani .m2{color:#8CC0FF;
+  text-shadow:0 0 16px rgba(94,162,255,.55),0 0 52px rgba(94,162,255,.35)}
 @keyframes a-blurin-h{from{filter:blur(14px);opacity:0;letter-spacing:.12em}
   to{filter:blur(0);opacity:1;letter-spacing:-.025em}}
 .mani.in .m1{animation:a-blurin-h 1s .05s cubic-bezier(.22,1,.36,1) both}
@@ -161,10 +186,29 @@ nav.dock::before{content:"";position:absolute;inset:-70%;z-index:-1;pointer-even
 .mani.in .m3{animation:a-pop .85s 1.2s cubic-bezier(.3,1.6,.5,1) both}
 .mani:not(.in) .mword{opacity:0}
 
-.buystrip{max-width:1100px;margin:26px auto 0;padding:0 clamp(20px,5vw,48px) 34px;
-  display:grid;grid-template-columns:1.15fr .85fr;gap:clamp(28px,5vw,64px);align-items:center}
-.buy-left{background:#fff;border-radius:var(--r-lg);box-shadow:var(--shadow);
-  padding:clamp(24px,3.4vw,40px)}
+.buystrip{max-width:1100px;margin:clamp(44px,6vh,64px) auto 0;padding:0 clamp(20px,5vw,48px)}
+/* boîte glass unique : description + produit. Tilt 3D léger + spotlight qui
+   suit le curseur (style react.bits SpotlightCard / TiltedCard), desktop seulement. */
+.hero-glass{position:relative;display:grid;grid-template-columns:1.15fr .85fr;gap:clamp(20px,4vw,48px);align-items:center;
+  padding:clamp(24px,3.4vw,40px);border-radius:28px;
+  background:rgba(255,255,255,.74);
+  -webkit-backdrop-filter:blur(26px) saturate(1.4);backdrop-filter:blur(26px) saturate(1.4);
+  border:1px solid rgba(255,255,255,.85);
+  box-shadow:0 30px 80px rgba(0,0,0,.35),inset 0 1px 0 rgba(255,255,255,.95);
+  transform:perspective(1200px) rotateX(var(--rx,0deg)) rotateY(var(--ry,0deg));
+  transition:transform .4s cubic-bezier(.22,1,.36,1);will-change:transform}
+.hero-glass.rv{transition:opacity .7s cubic-bezier(.22,1,.36,1) var(--d,0s),filter .7s cubic-bezier(.22,1,.36,1) var(--d,0s),transform .4s cubic-bezier(.22,1,.36,1)}
+.hero-glass.rv:not(.in){transform:perspective(1200px) translateY(22px)}
+.hero-glass.rv.in{transform:perspective(1200px) rotateX(var(--rx,0deg)) rotateY(var(--ry,0deg))}
+.spot{position:relative}
+.spot::before{content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;z-index:0;
+  background:radial-gradient(420px circle at var(--mx,50%) var(--my,50%),rgba(94,162,255,.20),transparent 62%);
+  opacity:0;transition:opacity .35s}
+.spot:hover::before{opacity:1}
+/* (pas de z-index sur .hero-media : un contexte d'empilement isolerait le
+   multiply de la vidéo et le blanc réapparaîtrait) */
+.spot>*:not(.hero-media){position:relative;z-index:1}
+.buy-left{min-width:0}
 .mlname{font-family:'Montserrat',sans-serif;font-weight:800;text-transform:uppercase;
   font-size:20px;letter-spacing:-.01em;margin-bottom:14px}
 .mlname .v1{font-size:11px;letter-spacing:.08em;color:var(--dim);
@@ -191,11 +235,15 @@ nav.dock::before{content:"";position:absolute;inset:-70%;z-index:-1;pointer-even
 
 /* la carte MetaVision en rotation (mp4-02) */
 .hero-media{margin:0;display:flex;justify-content:center;align-items:center}
-.hero-media video{width:min(340px,70vw);aspect-ratio:1;object-fit:cover;border-radius:24px;background:#fff;box-shadow:var(--shadow-lg)}
+/* la carte tourne sur fond transparent (vidéo alpha) et flotte lentement,
+   comme un objet posé sur le glass ; l'ombre est portée par le filtre */
+.hero-media video{width:min(280px,58vw);height:auto;aspect-ratio:324/468;object-fit:contain;background:transparent;
+  filter:drop-shadow(0 26px 30px rgba(0,0,0,.30));animation:floatY 6s ease-in-out infinite}
+@keyframes floatY{0%,100%{transform:translateY(0)}50%{transform:translateY(-9px)}}
 
 /* ---------- S2 : LE DÉFILÉ DES LEÇONS ---------- */
 .defile{border-top:1px solid var(--line);border-bottom:1px solid var(--line);
-  margin:clamp(44px,7vh,84px) 0 0;padding:13px 0;overflow:hidden;
+  margin:0;padding:13px 0;overflow:hidden;
   -webkit-mask-image:linear-gradient(90deg,transparent,#000 6%,#000 94%,transparent);
   mask-image:linear-gradient(90deg,transparent,#000 6%,#000 94%,transparent)}
 .defile-track{display:flex;width:max-content;animation:defileX 36s linear infinite;will-change:transform}
@@ -229,7 +277,7 @@ nav.dock::before{content:"";position:absolute;inset:-70%;z-index:-1;pointer-even
 /* ---------- S4 : L'APERÇU — manifeste + vidéo de présentation ---------- */
 .sig-cap{margin-top:12px;font-size:12px;color:var(--dim);text-align:center;
   font-family:var(--lbl);font-weight:700;letter-spacing:.1em;text-transform:uppercase}
-.apercu{max-width:1100px;margin:0 auto;padding:26px clamp(20px,5vw,48px) 0;display:grid;grid-template-columns:1fr 1.1fr;gap:clamp(28px,5vw,64px);align-items:center}
+.apercu{max-width:1100px;margin:0 auto;padding:26px clamp(20px,5vw,48px) var(--secB);display:grid;grid-template-columns:1fr 1.1fr;gap:clamp(28px,5vw,64px);align-items:center}
 .apercu-txt p{font-size:16px;line-height:1.65;color:var(--muted)}
 .apercu-txt p+p{margin-top:14px}
 .apercu-txt b{color:var(--ink)}
@@ -242,9 +290,20 @@ nav.dock::before{content:"";position:absolute;inset:-70%;z-index:-1;pointer-even
 .apercu-play svg{width:22px;height:22px;fill:var(--ink);margin-left:3px}
 
 /* ---------- S5 : LE PROGRAMME — élément signature ---------- */
+/* la bannière Podia est un PNG TRANSPARENT (écrans AE en éventail + texte) :
+   on la pose, comme sur Podia, sur un dégradé bleu quadrillé — reconstruit
+   en CSS, pas d'image de fond. Jamais aplatie, jamais désaturée. */
 .prog-strip{max-width:1100px;margin:26px auto 0;padding:0 clamp(20px,5vw,48px)}
-.prog-strip img{width:100%;aspect-ratio:1800/210;object-fit:cover;object-position:50% 42.3%;border-radius:var(--r-lg);
-  background:linear-gradient(180deg,var(--ml-top),var(--ml-bottom));filter:saturate(.35) brightness(.9);box-shadow:var(--shadow)}
+.prog-blue{position:relative;overflow:hidden;border-radius:var(--r-lg);padding:clamp(14px,2.6vw,34px) clamp(8px,1.6vw,22px);
+  background:
+    linear-gradient(rgba(255,255,255,.07) 1px,transparent 1px) 0 0/44px 44px,
+    linear-gradient(90deg,rgba(255,255,255,.07) 1px,transparent 1px) 0 0/44px 44px,
+    radial-gradient(70% 90% at 50% -10%,#4FB6F0 0,#1F5FC4 42%,#2A2F9C 100%);
+  box-shadow:var(--shadow-lg)}
+.prog-blue::after{content:"";position:absolute;inset:0;pointer-events:none;
+  background:radial-gradient(60% 60% at 50% 100%,rgba(0,0,0,.25),transparent 70%)}
+.prog-blue img{position:relative;z-index:1;width:100%;height:auto;display:block;aspect-ratio:3/1;
+  filter:drop-shadow(0 18px 30px rgba(0,0,0,.35))}
 .prog{max-width:1100px;margin:0 auto;padding:18px clamp(20px,5vw,48px) 0}
 .prog-mod,.prog-end{display:grid;grid-template-columns:280px 1fr;gap:clamp(24px,4vw,56px);padding:40px 0;border-top:1px solid var(--line-strong)}
 .prog-end{padding:26px 0}
@@ -266,7 +325,7 @@ nav.dock::before{content:"";position:absolute;inset:-70%;z-index:-1;pointer-even
 .prog-warn b{color:var(--ink)}
 
 /* ---------- S6 : LES INVITÉS ---------- */
-.guest-wrap{max-width:1100px;margin:0 auto;padding:26px clamp(20px,5vw,48px) 0;display:grid;grid-template-columns:repeat(4,1fr);gap:20px}
+.guest-wrap{max-width:1100px;margin:0 auto;padding:26px clamp(20px,5vw,48px) var(--secB);display:grid;grid-template-columns:repeat(4,1fr);gap:20px}
 .guest{background:#fff;border-radius:var(--r-lg);box-shadow:var(--shadow);padding:24px}
 .g-tile{width:40px;height:40px;border-radius:10px;background:#1B1A2E;color:#B9B6FF;display:flex;align-items:center;justify-content:center;font-family:'Montserrat',sans-serif;font-weight:800;font-size:15px;margin-bottom:14px}
 .guest h3{font-family:'Montserrat',sans-serif;font-weight:800;font-size:18px;text-transform:uppercase;letter-spacing:-.01em}
@@ -274,14 +333,14 @@ nav.dock::before{content:"";position:absolute;inset:-70%;z-index:-1;pointer-even
 .guest p{font-size:14px;color:var(--muted);margin-top:6px;line-height:1.45}
 
 /* ---------- S7 : CITATION CRÉATEUR ---------- */
-.quote-sec{max-width:760px;margin:0 auto;padding:clamp(56px,9vh,100px) clamp(20px,5vw,48px);text-align:center}
+.quote-sec{max-width:760px;margin:0 auto;padding:var(--secT) clamp(20px,5vw,48px) var(--secB);text-align:center}
 .qmark{display:block;font-family:'Montserrat',sans-serif;font-weight:800;font-size:64px;line-height:.7;color:var(--accent)}
 .quote-sec blockquote p{font-style:italic;font-size:clamp(19px,2.6vw,26px);line-height:1.5;color:var(--ink);margin-top:12px}
 .quote-sec figcaption{margin-top:18px;font-family:var(--lbl);font-weight:700;font-size:11px;
   letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
 
 /* ---------- S8 : DANS LA BOÎTE + CE QU'IL TE FAUT ---------- */
-.buy-wrap{max-width:1100px;margin:0 auto;padding:26px clamp(20px,5vw,48px) 10px;
+.buy-wrap{max-width:1100px;margin:0 auto;padding:26px clamp(20px,5vw,48px) 0;
   display:grid;grid-template-columns:1.05fr .95fr;gap:20px;align-items:stretch}
 .buy-card{background:#fff;border-radius:var(--r-lg);box-shadow:var(--shadow-lg);padding:34px;
   display:flex;flex-direction:column;gap:18px}
@@ -305,7 +364,7 @@ nav.dock::before{content:"";position:absolute;inset:-70%;z-index:-1;pointer-even
 .need-foot{margin-top:14px;font-size:13px;color:var(--ml-dim)}
 
 /* ---------- S9 : FAQ ---------- */
-.faq-wrap{max-width:720px;margin:0 auto;padding:26px clamp(20px,5vw,48px) 20px;display:flex;flex-direction:column;gap:12px}
+.faq-wrap{max-width:720px;margin:0 auto;padding:26px clamp(20px,5vw,48px) var(--secB);display:flex;flex-direction:column;gap:12px}
 .faq-wrap details{background:#fff;border-radius:14px;box-shadow:var(--shadow);padding:0;overflow:hidden}
 .faq-wrap summary{list-style:none;cursor:pointer;padding:19px 24px;font-weight:700;font-size:15px;
   display:flex;justify-content:space-between;align-items:center;gap:14px}
@@ -317,7 +376,7 @@ nav.dock::before{content:"";position:absolute;inset:-70%;z-index:-1;pointer-even
 .faq-wrap details p a{text-decoration:underline}
 
 /* ---------- S10 : CTA FINAL ---------- */
-.final{max-width:900px;margin:0 auto;padding:clamp(56px,9vh,100px) clamp(20px,5vw,48px);text-align:center}
+.final{max-width:900px;margin:0 auto;padding:var(--secT) clamp(20px,5vw,48px) var(--secB);text-align:center}
 .final h2{font-family:'Montserrat',sans-serif;font-weight:800;text-transform:uppercase;
   font-size:clamp(30px,5.5vw,60px);letter-spacing:-.02em;line-height:1.08}
 .final.in h2{animation:a-rise .9s cubic-bezier(.28,1.45,.45,1) both}
@@ -332,7 +391,7 @@ nav.dock::before{content:"";position:absolute;inset:-70%;z-index:-1;pointer-even
 .assure svg{width:16px;height:16px;stroke:var(--accent);flex:none}
 
 /* ---------- S11 : CROSS-SELL ---------- */
-.more-wrap{max-width:820px;margin:0 auto;padding:26px clamp(20px,5vw,48px) 10px}
+.more-wrap{max-width:820px;margin:0 auto;padding:26px clamp(20px,5vw,48px) 0}
 .mrow{display:grid;grid-template-columns:44px minmax(110px,auto) 1fr auto auto;gap:18px;
   align-items:center;padding:20px 4px;border-top:1px solid var(--line)}
 .mtile{width:44px;height:44px;border-radius:11px;display:flex;align-items:center;justify-content:center;
@@ -393,11 +452,13 @@ footer{background:var(--charcoal);color:#EDEDE8;margin-top:20px;position:relativ
 
 /* ---------- responsive ---------- */
 @media (max-width:860px){
-  .mani{padding-top:120px}
-  .buystrip{grid-template-columns:1fr;text-align:center;gap:28px}
+  .mani{padding-top:130px}
+  .hero-bg img{object-position:42% 30%}
+  .hero-glass{grid-template-columns:1fr;text-align:center;gap:18px;padding:22px 20px 26px;border-radius:22px;transform:none!important}
+  .hero-media{order:-1}
   .pitch{margin-left:auto;margin-right:auto}
   .hero-cta,.hero-meta{justify-content:center}
-  .hero-media video{width:200px;border-radius:18px}
+  .hero-media video{width:170px}
   .gain-wrap{grid-template-columns:1fr 1fr}
   .apercu{grid-template-columns:1fr}
   .apercu-fig{order:-1;justify-self:stretch;max-width:none}
@@ -411,10 +472,10 @@ footer{background:var(--charcoal);color:#EDEDE8;margin-top:20px;position:relativ
   .guest-wrap{grid-template-columns:1fr 1fr}
   .buy-wrap{grid-template-columns:1fr}
 }
-@media (max-width:700px){.prog-strip{display:none}}
+@media (max-width:700px){.prog-blue{border-radius:14px}}
 @media (max-width:600px){.gain-wrap{grid-template-columns:1fr}}
 @media (max-width:480px){
-  .mani h1{font-size:36px}
+  .mani h1{font-size:34px}
   .guest-wrap{grid-template-columns:1fr}
 }
 
@@ -432,6 +493,9 @@ footer{background:var(--charcoal);color:#EDEDE8;margin-top:20px;position:relativ
   .final h2{opacity:1!important}
   .stickybar{transition:none}
   .apercu-play{transition:none}
+  .hero-media video{animation:none}
+  .hero-glass,.hero-glass.rv.in{transform:none}
+  .spot::before{display:none}
 }
 </style></head>
 <body>
@@ -464,16 +528,19 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 <main id="top">
 
   <!-- ======================= S1 : HÉROS MANIFESTE + BUY BOX ======================= -->
-  <section class="mani rv">
+  <section class="hero">
+  <div class="hero-bg" aria-hidden="true"><img src="assets/jpg-29.jpg" alt="" width="1920" height="960" fetchpriority="high"></div>
+  <div class="mani rv">
     <span class="ptag"><i></i>Formation VFX · After Effects</span>
     <h1 aria-label="MetaVision — la formation VFX que je cherchais il y a dix ans">
       <span class="mword m1">Il y a dix ans,</span>
       <span class="mword m2">je cherchais</span>
       <span class="mword m3">cette formation.</span>
     </h1>
-  </section>
+  </div>
   <div class="buystrip">
-    <div class="buy-left rv">
+    <div class="hero-glass rv" id="hero-glass" style="--d:.15s">
+    <div class="buy-left">
       <p class="mlname">MetaVision<span class="v1">Cours en ligne</span></p>
       <p class="pitch"><b>Des bases d'After Effects à tes premiers clients.</b> Trois modules, des invités, le Fade Pack offert et un accompagnement sur Discord.</p>
       <p class="ppay"><b>150&nbsp;€</b> · paiement unique — ou 2 × 75&nbsp;€</p>
@@ -487,10 +554,13 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
         <span><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>Accompagnement sur Discord</span>
       </div>
     </div>
-    <figure class="hero-media rv" style="--d:.12s">
-      <video autoplay loop muted playsinline aria-label="La carte MetaVision — Formation VFX, en rotation"><source src="assets/mp4-02.mp4" type="video/mp4"></video>
+    <figure class="hero-media">
+      <!-- carte détourée (fond blanc keyé) : HEVC alpha pour Safari/iOS, WebM VP9 alpha ailleurs — la source est choisie par le JS -->
+      <video id="box-video" autoplay loop muted playsinline poster="assets/png-27.png" width="324" height="468" aria-label="La carte MetaVision — Formation VFX, en rotation"></video>
     </figure>
+    </div>
   </div>
+  </section>
 
   <!-- ======================= S2 : LE DÉFILÉ DES LEÇONS ======================= -->
   <div class="defile rv" role="img" aria-label="Les leçons du programme, de la présentation des outils à la réalisation">
@@ -547,7 +617,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     <h2>Trois modules, une séquence</h2>
     <p>Une introduction, trois modules, une conclusion — chaque leçon est listée ci-dessous, avec ses invités. Vidéos à la demande, en français.</p>
   </div>
-  <figure class="prog-strip rv"><img src="assets/png-22.png" alt="" width="1800" height="600" loading="lazy"><figcaption class="sig-cap">Au fil des leçons — les projets ouverts dans After Effects.</figcaption></figure>
+  <figure class="prog-strip rv"><div class="prog-blue"><img src="assets/webp-01.webp" alt="" width="1800" height="600" loading="lazy"></div><figcaption class="sig-cap">Au fil des leçons — les projets ouverts dans After Effects.</figcaption></figure>
   <div class="prog">
 
     <div class="prog-end rv">
@@ -807,6 +877,60 @@ if(navToggle&&navMenu){
   const io2=new IntersectionObserver(es=>{es.forEach(e=>{if(e.isIntersecting)vis.add(e.target);else vis.delete(e.target);});upd();},{threshold:0});
   others.forEach(el=>io2.observe(el));
   if(mq.addEventListener)mq.addEventListener('change',upd);
+})();
+
+// Animations « react.bits » — SplitText sur les h2, SpotlightCard + tilt sur
+// la boîte glass, spotlight sur les cartes, boutons magnétiques. Tout est
+// coupé en reduced-motion ; tilt/magnet/spotlight seulement au pointeur fin.
+(function(){
+  // SplitText : mots en cascade. Le texte d'origine reste dans .h2-src (même
+  // nœud → l'i18n continue de le mettre à jour) ; .h2-vis est rebâti à
+  // chaque changement de <html lang>.
+  const hs=[...document.querySelectorAll('.sec-head h2')];
+  function build(h){
+    let src=h.querySelector('.h2-src');
+    if(!src){src=document.createElement('span');src.className='h2-src';while(h.firstChild)src.appendChild(h.firstChild);h.appendChild(src);}
+    const old=h.querySelector('.h2-vis');if(old)old.remove();
+    const vis=document.createElement('span');vis.className='h2-vis';vis.setAttribute('aria-hidden','true');
+    src.textContent.trim().split(/\s+/).forEach((w,i)=>{
+      const o=document.createElement('span');o.className='w';
+      const n=document.createElement('span');n.textContent=w;n.style.setProperty('--i',i);
+      o.appendChild(n);vis.appendChild(o);vis.appendChild(document.createTextNode(' '));});
+    h.appendChild(vis);
+  }
+  if(!REDUCED){
+    hs.forEach(build);
+    new MutationObserver(()=>hs.forEach(build)).observe(document.documentElement,{attributes:true,attributeFilter:['lang']});
+  }
+  // Carte produit : HEVC alpha (hvc1) pour Safari/iOS, WebM VP9 alpha ailleurs.
+  // Chrome sait lire le hvc1 sur Mac mais sans alpha → on choisit par navigateur.
+  (function(){const v=document.getElementById('box-video');if(!v)return;
+    const safari=/^((?!chrome|android|crios|fxios).)*safari/i.test(navigator.userAgent);
+    v.src=safari?'assets/mov-01.mov':'assets/webm-02.webm';})();
+  // Spotlight : halo qui suit le curseur sur les cartes
+  document.querySelectorAll('.hero-glass,.gain,.guest,.buy-card').forEach(e=>e.classList.add('spot'));
+  if(REDUCED||!FINE)return;
+  document.addEventListener('pointermove',e=>{
+    const c=e.target.closest&&e.target.closest('.spot');if(!c)return;
+    const r=c.getBoundingClientRect();
+    c.style.setProperty('--mx',(e.clientX-r.left)+'px');c.style.setProperty('--my',(e.clientY-r.top)+'px');
+  },{passive:true});
+  // Tilt 3D léger sur la boîte glass
+  const g=document.getElementById('hero-glass');
+  if(g){
+    g.addEventListener('pointermove',e=>{const r=g.getBoundingClientRect();
+      const x=(e.clientX-r.left)/r.width-.5,y=(e.clientY-r.top)/r.height-.5;
+      g.style.setProperty('--ry',(x*5).toFixed(2)+'deg');g.style.setProperty('--rx',(-y*5).toFixed(2)+'deg');},{passive:true});
+    g.addEventListener('pointerleave',()=>{g.style.setProperty('--rx','0deg');g.style.setProperty('--ry','0deg');});
+  }
+  // Boutons magnétiques : l'étiquette glisse doucement vers le curseur
+  document.querySelectorAll('.btn-buy').forEach(b=>{
+    b.style.transition='transform .25s cubic-bezier(.22,1,.36,1),box-shadow .25s';
+    b.addEventListener('pointermove',e=>{const r=b.getBoundingClientRect();
+      const x=e.clientX-(r.left+r.width/2),y=e.clientY-(r.top+r.height/2);
+      b.style.transform='translate('+(x*.22).toFixed(1)+'px,'+(y*.3).toFixed(1)+'px)';},{passive:true});
+    b.addEventListener('pointerleave',()=>{b.style.transform='';});
+  });
 })();
 
 // Vidéo de présentation : source injectée au clic (le chemin vit dans
