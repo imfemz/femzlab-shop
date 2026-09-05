@@ -178,10 +178,16 @@ nav.dock::before{content:"";position:absolute;inset:-70%;z-index:-1;pointer-even
   text-shadow:0 0 16px rgba(94,162,255,.45),0 0 52px rgba(94,162,255,.28)}
 @keyframes a-blurin-h{from{filter:blur(14px);opacity:0;letter-spacing:.12em}
   to{filter:blur(0);opacity:1;letter-spacing:-.025em}}
-.mani.in .m1{animation:a-blurin-h 1s .05s cubic-bezier(.22,1,.36,1) both}
-.mani.in .m2{animation:a-drop 1.15s .5s linear both}
-.mani.in .m3{animation:a-pop .85s 1.2s cubic-bezier(.3,1.6,.5,1) both}
+/* héros en LETTERS (Femz) : Blur In lettre par lettre (m1), Rise Bounce
+   lettre par lettre (m2). Les .ml sont créées par JS depuis le texte. */
+.mword .ml{display:inline-block;white-space:pre}
 .mani:not(.in) .mword{opacity:0}
+.mani:not(.in) .mword .ml{opacity:0}
+@keyframes a-blurletter{from{filter:blur(12px);opacity:0;transform:translateY(6px)}to{filter:blur(0);opacity:1;transform:translateY(0)}}
+@keyframes a-riseletter{0%{transform:translateY(1.05em);opacity:0}55%{opacity:1}100%{transform:translateY(0);opacity:1}}
+.mani.in .mword{opacity:1}
+.mani.in .m1 .ml{animation:a-blurletter .6s calc(var(--li,0)*.04s + .05s) cubic-bezier(.22,1,.36,1) both}
+.mani.in .m2 .ml{animation:a-riseletter .72s calc(var(--li,0)*.038s + .4s) cubic-bezier(.34,1.32,.5,1) both}
 /* GREFFE B — chips nom-de-preset, style .psplit en version claire */
 .mchip{position:absolute;top:2px;right:0;transform:translate(calc(100% + 16px),0);
   font-family:var(--lbl);font-weight:700;font-size:9px;letter-spacing:.12em;
@@ -938,7 +944,7 @@ footer{background:var(--charcoal);color:#EDEDE8;margin-top:20px;position:relativ
   .fixed-logo .mark,nav.dock::before{animation:none}
   .hpanel,.hero-panel:hover .hpanel{transform:none;transition:none}
   .hpanel::after,.hp-logo .lg,.hp-postit{animation:none}
-  .mani.in .m1,.mani.in .m2,.mani.in .m3{animation:none}
+  .mani.in .m1 .ml,.mani.in .m2 .ml,.mani .mword .ml{animation:none;opacity:1!important}
   .mani .mword{opacity:1!important}
   .mchip{display:none}
   .defile{-webkit-mask-image:none;mask-image:none}
@@ -949,6 +955,44 @@ footer{background:var(--charcoal);color:#EDEDE8;margin-top:20px;position:relativ
   .final h2{opacity:1!important}
   .stickybar{transition:none}
 }
+
+/* ==================================================================
+   DA BOX v5 (2026-09-05) — glassmorphisme SOMBRE sur les cartes claires,
+   inspiré de la DA NéoVision (fond rgba sombre + blur 18 + arête claire +
+   bordure fine + texte clair + accent bleu). Bloc d'override en fin de <style>.
+   ================================================================== */
+:root{--gl-txt:#EDEFF2;--gl-muted:#9BA1AB;--gl-dim:#7E848D;--gl-line:rgba(237,239,242,.10)}
+.buy-left,.fstep,.gcard,.app-card,.buy-card,.faq-wrap details{
+  background:rgba(18,20,26,.72);
+  -webkit-backdrop-filter:blur(18px) saturate(150%);backdrop-filter:blur(18px) saturate(150%);
+  border:1px solid var(--gl-line);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.07),0 14px 40px rgba(0,0,0,.34);
+  color:var(--gl-txt)}
+/* titres / gras → clair */
+.buy-left .mlname,.fstep h3,.gcard h3,.app-card h3,.app-card li b,.buy-card li b,.buy-card .price,.pitch b,.ppay b,.faq-wrap summary{color:var(--gl-txt)}
+/* corps → gris froid clair */
+.pitch,.ppay,.fstep p,.gcard p,.gcard-note,.app-card .sub,.app-card ul,.buy-card ul,.buy-compat,.faq-wrap details p,.hero-meta{color:var(--gl-muted)}
+.faq-wrap summary::after{color:var(--gl-muted)}
+/* accents */
+.fstep .fn{color:var(--accent)}
+.buy-card .li-updates b{color:#8CC0FF;text-shadow:0 0 14px rgba(94,162,255,.5)}
+.mlname .v1{color:var(--gl-dim);border-color:var(--gl-line)}
+/* badges Ae/Pr : garder, ils ont leur fond */
+/* boutons : CTA bleu lumineux (style NéoVision) sur les cartes sombres */
+.buy-left .btn-buy,.buy-card .btn-buy{background:var(--accent);color:#08101c;
+  box-shadow:0 0 16px rgba(94,162,245,.35)}
+.buy-left .btn-buy:hover,.buy-card .btn-buy:hover{box-shadow:0 0 24px rgba(94,162,245,.5),0 10px 30px rgba(0,0,0,.4);transform:translateY(-2px)}
+.buy-left .btn-buy .p,.buy-card .btn-buy .p{background:rgba(255,255,255,.22);color:#08101c}
+.btn-ghost{border-color:rgba(237,239,242,.22);color:var(--gl-muted)}
+.btn-ghost:hover{color:var(--gl-txt);border-color:rgba(237,239,242,.5)}
+/* le mock Essential Graphics (panel Premiere clair, voulu par Femz) reste clair */
+.app-card .eg-mock{color:var(--ink)}
+/* survol « Magic Bento » léger */
+.fstep,.gcard,.app-card{transition:transform .3s var(--ease-soft,cubic-bezier(.22,1,.36,1)),box-shadow .3s,border-color .2s}
+.fstep:hover,.gcard:hover,.app-card:hover{transform:translateY(-4px);border-color:rgba(94,162,245,.4);
+  box-shadow:0 0 0 1px rgba(94,162,245,.35),0 0 22px rgba(94,162,245,.16),0 20px 46px rgba(0,0,0,.42)}
+/* la carte guides mini-panel (déjà charcoal) : bordure alignée */
+.faq-wrap summary{color:var(--gl-txt)}
 </style></head>
 <body>
 <!-- Google Tag Manager (noscript) -->
@@ -984,7 +1028,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     <span class="ptag"><i></i>Plugin · After Effects + Premiere Pro</span>
     <h1 aria-label="MotionLAB — ton contenu, niveau studio">
       <span class="mword m1">Ton contenu,<span class="mchip" aria-hidden="true">Blur In</span></span>
-      <span class="mword m2">niveau studio.<span class="mchip" aria-hidden="true">Drop Bounce</span></span>
+      <span class="mword m2">niveau studio.<span class="mchip" aria-hidden="true">Rise Bounce</span></span>
     </h1>
   </section>
   <div class="buystrip">
@@ -3749,6 +3793,20 @@ window.MLSplit=function(container,text,cls){
 </script>
 <script>
 const REDUCED=matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+// Héros en LETTERS : découpe le 1er nœud texte de chaque .mword en spans .ml
+// (avant le reveal) pour animer Blur In / Rise Bounce lettre par lettre.
+(function(){
+  document.querySelectorAll('.mani .mword').forEach(w=>{
+    const tn=w.firstChild; if(!tn||tn.nodeType!==3)return;
+    const frag=document.createDocumentFragment();
+    Array.from(tn.nodeValue).forEach((ch,i)=>{
+      const s=document.createElement('span');s.className='ml';s.textContent=ch;s.style.setProperty('--li',i);
+      frag.appendChild(s);
+    });
+    w.replaceChild(frag,tn);
+  });
+})();
 const FINE=matchMedia('(pointer: fine)').matches;
 
 // dots
