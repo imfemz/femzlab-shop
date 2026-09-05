@@ -3757,17 +3757,28 @@ window.MLSplit=function(container,text,cls){
 <script>
 const REDUCED=matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-// Héros en LETTERS : découpe le 1er nœud texte de chaque .mword en spans .ml
-// (avant le reveal) pour animer Blur In / Rise Bounce lettre par lettre.
+// Héros en LETTERS : découpe le mot de chaque .mword en spans .ml (avant le
+// reveal) pour animer Blur In / Rise Bounce lettre par lettre. Exposée sur
+// window car le changement de langue (script i18n plus bas) doit pouvoir
+// redécouper avec le mot traduit — sinon la traduction ne trouve plus de
+// nœud texte à remplacer (déjà éclaté en lettres) et le slogan reste en FR.
+function ML_splitMword(w,text){
+  w.querySelectorAll(':scope > .ml').forEach(s=>s.remove());
+  const chip=w.querySelector(':scope > .mchip');
+  const frag=document.createDocumentFragment();
+  Array.from(text).forEach((ch,i)=>{
+    const s=document.createElement('span');s.className='ml';s.textContent=ch;s.style.setProperty('--li',i);
+    frag.appendChild(s);
+  });
+  w.insertBefore(frag,chip||null);
+}
+window.__splitMword=ML_splitMword;
 (function(){
   document.querySelectorAll('.mani .mword').forEach(w=>{
     const tn=w.firstChild; if(!tn||tn.nodeType!==3)return;
-    const frag=document.createDocumentFragment();
-    Array.from(tn.nodeValue).forEach((ch,i)=>{
-      const s=document.createElement('span');s.className='ml';s.textContent=ch;s.style.setProperty('--li',i);
-      frag.appendChild(s);
-    });
-    w.replaceChild(frag,tn);
+    w.dataset.fr=tn.nodeValue;
+    tn.remove();
+    ML_splitMword(w,w.dataset.fr);
   });
 })();
 const FINE=matchMedia('(pointer: fine)').matches;
@@ -4242,6 +4253,18 @@ function mlDemo(rootSel,itemSel,period,play){
   let n; while(n=w.nextNode()){ const k=(n.nodeValue||'').trim(); if(k&&T[k]!==undefined) nodes.push([n,n.nodeValue,k]); }
   function set(lang){
     nodes.forEach(([node,fr,k])=>{ node.nodeValue = lang==='en'? fr.replace(k,T[k]) : fr; });
+    // Slogan du héros : ses lettres sont déjà éclatées en spans (animation),
+    // le TreeWalker ci-dessus ne peut donc plus les traduire — on redécoupe
+    // avec le mot voulu à la place (voir ML_splitMword, script précédent).
+    document.querySelectorAll('.mani .mword[data-fr]').forEach(w=>{
+      const fr=w.dataset.fr; const text = lang==='en' ? (T[fr]||fr) : fr;
+      if(window.__splitMword) window.__splitMword(w,text);
+    });
+    const h1=document.querySelector('.mani h1[aria-label]');
+    if(h1){
+      if(!h1.dataset.frLabel) h1.dataset.frLabel=h1.getAttribute('aria-label');
+      h1.setAttribute('aria-label', lang==='en' ? 'MotionLAB — your content, studio-grade.' : h1.dataset.frLabel);
+    }
     document.documentElement.lang=lang; try{localStorage.setItem('femz_lang',lang)}catch(e){}
     document.querySelectorAll('[data-langbtn]').forEach(b=>b.classList.toggle('on', b.dataset.langbtn===lang));
   }
