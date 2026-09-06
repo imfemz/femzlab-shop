@@ -11,9 +11,10 @@ import { needsConsent, saveConsent } from '../lib/api';
 export default function ConsentModal() {
   const [show, setShow] = useState(false);
   const [on, setOn] = useState(false); // pilote l'animation d'entrée
-  const [visible, setVisible] = useState(true);
-  const [dms, setDms] = useState(true);
+  const [visible, setVisible] = useState(false);
+  const [dms, setDms] = useState(false);
   const [busy, setBusy] = useState(false);
+  const [err, setErr] = useState('');
 
   useEffect(() => {
     if (!needsConsent()) return;
@@ -26,10 +27,13 @@ export default function ConsentModal() {
 
   async function confirm() {
     setBusy(true);
+    setErr('');
     try {
       await saveConsent(visible, dms);
     } catch {
-      /* offline : le choix est appliqué localement quand même */
+      setBusy(false);
+      setErr('Réglage non enregistré — réessaie.');
+      return;
     }
     setOn(false);
     setTimeout(() => setShow(false), 320);
@@ -68,6 +72,7 @@ export default function ConsentModal() {
         <button className="btn btn-acc consent-cta" onClick={confirm} disabled={busy}>
           {busy ? '…' : 'Continuer'}
         </button>
+        {err && <p className="login-err" role="alert">{err}</p>}
         <p className="consent-note">Aucune adresse e-mail n'est jamais affichée.</p>
       </div>
     </>

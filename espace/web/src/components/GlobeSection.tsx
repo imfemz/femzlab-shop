@@ -18,7 +18,6 @@ import {
   type Creator,
 } from '../lib/creators';
 import { NVDM } from '../lib/dm';
-import { profileStore, type ProfileData } from '../lib/profile';
 import { prefersReducedMotion } from '../lib/motion';
 import { CloseX, FounderStar, Pin, SendPlane } from './Icons';
 
@@ -44,16 +43,6 @@ type GlobeState = {
   edge: { x: number; y: number } | null;
 };
 
-function normCity(s: string): string {
-  return s
-    .toLowerCase()
-    .split(',')[0]
-    .normalize('NFD')
-    .replace(/[\u0300-\u036f]/g, '')
-    .replace(/-/g, ' ')
-    .trim();
-}
-
 /**
  * Le Globe — signature absolue de la section Communauté :
  * Terre vectorielle Natural Earth 110m rendue par d3-geo (orthographique,
@@ -77,7 +66,6 @@ export default function GlobeSection() {
   const [query, setQuery] = useState('');
   const [results, setResults] = useState<{ c: Creator; j: number }[]>([]);
   const [chatText, setChatText] = useState('');
-  const [, setProfileBump] = useState(0);
 
   /* le chat de la carte se re-rend quand le store DM change */
   useSyncExternalStore(NVDM.subscribe, NVDM.version);
@@ -224,34 +212,6 @@ export default function GlobeSection() {
   useEffect(() => {
     actions.current = { clusterClick, closePop, enterFS, exitFS };
   });
-
-  /* ── profil « Mon espace » → carte Femz du globe (géocodage + vol) ── */
-  function applyProfile(d: ProfileData) {
-    const c = CREATORS[0];
-    if (d.city) {
-      c.city = d.city;
-      const g = citiesRef.current?.[normCity(d.city)];
-      if (g && (Math.abs(g[0] - c.lat) > 0.01 || Math.abs(g[1] - c.lon) > 0.01)) {
-        c.lat = g[0];
-        c.lon = g[1];
-        flyToCoords(c.lon, c.lat, Math.max(st.current.targetZoom, 2.4), null);
-      }
-    }
-    if (d.av) c.av = d.av;
-    if (d.socials && (d.socials.ig || d.socials.tt || d.socials.yt)) c.socials = d.socials;
-    if (d.reels && d.reels.length) c.reels = d.reels;
-    setProfileBump((b) => b + 1);
-  }
-  const applyRef = useRef(applyProfile);
-  useEffect(() => {
-    applyRef.current = applyProfile;
-  });
-  useEffect(() => {
-    if (!ready) return;
-    const saved = profileStore.load();
-    if (saved) applyRef.current(saved);
-    return profileStore.subscribe((d) => applyRef.current(d));
-  }, [ready]);
 
   /* ── positionnement de la carte ancrée (flip aux bords) ── */
   function placePop(ax: number, ay: number) {

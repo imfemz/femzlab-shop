@@ -18,7 +18,7 @@ export type Creator = {
   f: string[];
   founder?: boolean;
   socials?: { ig?: string; tt?: string; yt?: string };
-  reels?: { url: string; thumb: string }[];
+  reels?: { url: string; thumb: string | null }[];
   av?: string;
   /** id du user côté backend (mode API) — sert d'identifiant de conversation DM */
   uid?: number;
@@ -56,7 +56,7 @@ type ApiCreator = {
   lon?: number;
   badges: string[];
   socials?: { ig?: string; tt?: string; yt?: string };
-  reels?: { url: string; thumb: string }[];
+  reels?: { url: string; thumb: string | null }[];
   founder: boolean;
   avatar?: string;
   dms_open?: boolean;
