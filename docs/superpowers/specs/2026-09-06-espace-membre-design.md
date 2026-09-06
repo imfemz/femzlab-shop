@@ -171,6 +171,7 @@ Index : `dms(from_user)`, `dms(to_user)`, `purchases(email)`,
 | Méthode & route | Auth | Rôle |
 |---|---|---|
 | `GET /espace/api/me` | session | identité courante + consentement + badges ; 401 sinon (utilisée par l'entrée nav de toutes les pages) |
+| `GET /espace/api/stats` | aucune | `{ membres: N }` — le seul chiffre montré à l'écran de connexion |
 | `GET /espace/api/creators` | session | points du globe : nommés si `visible`, sinon `{anon, lat, lon}` pays ; **jamais d'email** |
 | `GET/PUT /espace/api/profile` | session | profil ; ville géocodée serveur (base embarquée) |
 | `POST /espace/api/media/avatar`, `POST /espace/api/media/reel/:n` | session | upload R2 |
