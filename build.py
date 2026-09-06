@@ -83,15 +83,32 @@ def trie_avis(liste):
 
 
 def carte(avis, dup=False):
-    """Une carte d'avis. `dup` marque la copie qui sert à boucler le défilement."""
+    """Une carte d'avis. `dup` marque la copie qui sert à boucler le défilement.
+
+    `instagram` (le pseudo, sans @) est facultatif : quand il est présent,
+    l'avatar devient sa vraie photo de profil (fichier `avatar` dans
+    src/assets/, téléchargé une fois et hébergé chez nous — jamais un lien
+    direct vers le CDN Instagram, ses URLs sont signées et expirent) et son
+    @pseudo s'affiche sous le nom, cliquable vers son profil. Sans ces deux
+    champs, on retombe sur l'initiale colorée — un avis n'a pas toujours
+    d'Instagram derrière.
+    """
     cache = ' aria-hidden="true"' if dup else ""
-    initiale = echappe(avis["pseudo"][:1].upper())
+    handle = avis.get("instagram")
+    fichier = avis.get("avatar")
+    if handle and fichier:
+        av = f'<img class="av" src="assets/{echappe(fichier)}" alt="" loading="lazy">'
+        lien = (f'<a class="rv-handle" href="https://www.instagram.com/{echappe(handle)}/" '
+                f'target="_blank" rel="noopener">@{echappe(handle)}</a>')
+    else:
+        av = f'<span class="av" aria-hidden="true">{echappe(avis["pseudo"][:1].upper())}</span>'
+        lien = ""
     return (
         f'<figure class="mqcard"{cache}>'
         f'<blockquote>{echappe(avis["texte"])}</blockquote>'
         f'<figcaption class="who">'
-        f'<span class="av" aria-hidden="true">{initiale}</span>'
-        f'<span class="who-txt"><b>{echappe(avis["pseudo"])}</b>'
+        f'{av}'
+        f'<span class="who-txt"><b>{echappe(avis["pseudo"])}</b>{lien}'
         f'<span>{echappe(avis["produit"])}</span>'
         f'<span class="rv-date">{echappe(date_fr(avis["date"]))}</span></span>'
         f'</figcaption></figure>'
