@@ -93,7 +93,9 @@ def carte(avis):
     @pseudo empilés). Sans ces deux champs, repli sur l'initiale et le pseudo
     saisi — un avis n'a pas toujours d'Instagram derrière.
     """
-    handle = avis.get("instagram")
+    # `instagram` ou `tiktok` : le pseudo sans @ ; la carte affiche @pseudo dans
+    # les deux cas, seule la source de la photo diffère.
+    handle = avis.get("instagram") or avis.get("tiktok")
     fichier = avis.get("avatar")
     if handle and fichier:
         av = f'<img class="av" src="assets/{echappe(fichier)}" alt="" loading="lazy">'

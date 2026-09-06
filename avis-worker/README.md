@@ -1,0 +1,75 @@
+# femzlab.shop/api/avis — le formulaire d'avis arrive par email
+
+Le formulaire `femzlab.shop/avis` poste ici. Le Worker valide, filtre les
+robots, puis envoie l'avis **par email à hello@imfemz.com** avec l'entrée
+`reviews.json` prête à coller. Répondre au mail répond au client (Reply-To).
+
+Remplace la Pages Function `functions/api/avis.js` (webhook Discord jamais
+configuré → le formulaire répondait 500 à chaque envoi réel).
+
+## Pré-requis côté dashboard Cloudflare (une fois, par Femz)
+
+L'envoi utilise Email Service, natif Cloudflare. Vers une adresse de
+destination **vérifiée** du compte, c'est gratuit sur tous les plans et hors
+quota. Deux conditions :
+
+1. **Activer Email Routing sur femzlab.shop** — dashboard → *Compute* →
+   *Email Service* → *Email Routing* → choisir `femzlab.shop` → *Get started*.
+   Cloudflare pose lui-même les enregistrements DNS (MX, SPF). Le domaine
+   n'avait aucun MX : rien à casser, aucune boîte mail n'y existe.
+2. **Vérifier l'adresse de destination** — même écran → *Destination
+   Addresses* → ajouter `hello@imfemz.com` → cliquer le lien du mail de
+   vérification reçu sur cette boîte.
+
+Tant que ce n'est pas fait, l'envoi échoue avec, côté Cloudflare, `could not
+find account config of sending domain` (constaté le 2026-09-06 : le déploiement
+de la liaison passe, c'est l'envoi qui refuse) et le formulaire affiche
+« Envoi impossible ». Aucun redéploiement n'est nécessaire après l'activation.
+
+## Diagnostic
+
+    npx wrangler deploy --var DEBUG:1     # réponses enrichies d'un _debug
+    …tests…
+    npx wrangler deploy                   # retire le diagnostic
+
+En mode DEBUG, chaque réponse porte le nœud Cloudflare, l'IP, le verdict du
+limiteur et, sur un 502, le message d'erreur exact de l'envoi. `wrangler tail`
+n'a rien remonté lors du premier diagnostic ; ce mode est plus fiable.
+
+## Déployer
+
+    cd femzlab-shop-front/avis-worker
+    npx wrangler deploy
+
+## Tester
+
+    curl -s -X POST https://www.femzlab.shop/api/avis \
+      -H 'content-type: application/json' \
+      -d '{"produit":"MetaVision - Formation VFX","email":"test@example.com","pseudo":"Test",
+           "texte":"Un avis de test assez long pour passer la validation serveur, quarante caractères.",
+           "note":5,"social":"@georgesarmando","consent":true,"site":""}'
+
+Réponse `{"ok":true}` = un mail est parti. Un champ invalide renvoie
+`{"erreurs":{champ:"message"}}` (400) ; au-delà de 3 envois par minute et par
+IP, 429.
+
+## Ce que contient le mail
+
+Produit (nom canonique + intitulé du formulaire s'il diffère), note, pseudo,
+email d'achat à vérifier dans Podia, Instagram/TikTok fourni et le @pseudo
+extrait, le texte, la liste des étapes, et l'entrée JSON à coller dans
+`src/reviews.json` (avec `instagram`/`tiktok` + `avatar` pré-remplis quand un
+profil est donné — la photo se télécharge une fois dans `src/assets/`, jamais
+de lien direct vers le CDN : leurs URLs expirent).
+
+## Garde-fous
+
+Origine limitée à femzlab.shop, champ piège invisible (`site`), corps limité à
+8 Ko, validation serveur de chaque champ. La liaison `ratelimits` (3/min/IP)
+est posée mais **ne compte pas dessus** : Cloudflare la décrit comme
+« permissive, eventually consistent, not an accounting system », par nœud et
+déconseillée sur des IP — en test, 9 envois en 4 s depuis le même nœud n'ont
+jamais été refusés. Si du spam arrive dans la boîte, la vraie réponse est
+Turnstile (clés à créer dans le dashboard, vérification déjà prévisible côté
+Worker). Aucune donnée n'est stockée côté Cloudflare : la boîte mail est
+l'archive des soumissions.

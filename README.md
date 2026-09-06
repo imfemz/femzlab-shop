@@ -42,7 +42,9 @@ l'embarquer.
 
 ## Publier un avis client
 
-1. Une notification arrive sur Discord quand quelqu'un remplit `/avis`.
+1. Un email arrive sur hello@imfemz.com quand quelqu'un remplit `/avis`
+   (Worker `avis-worker/`, voir son README pour les pré-requis Email Service).
+   Il contient l'entrée `reviews.json` prête à coller.
 2. Vérifier l'email dans Podia (recherche en haut de la liste des factures)
    pour confirmer l'achat.
 3. Ajouter une entrée dans `src/reviews.json` — **pseudo uniquement, jamais

@@ -1,0 +1,37 @@
+name = "femzlab-avis"
+main = "src/index.js"
+compatibility_date = "2026-09-01"
+
+# Reçoit les soumissions de femzlab.shop/avis et les envoie par email à Femz.
+# Monté sur une route du domaine (comme le service de licences MotionLAB) :
+# un Worker sur route passe avant Pages, donc l'ancienne Pages Function
+# functions/api/avis.js (webhook Discord jamais configuré) est retirée.
+[[routes]]
+pattern = "femzlab.shop/api/avis*"
+zone_name = "femzlab.shop"
+
+[[routes]]
+pattern = "www.femzlab.shop/api/avis*"
+zone_name = "femzlab.shop"
+
+# Envoi d'email natif Cloudflare (Email Service). Vers une adresse de
+# destination VÉRIFIÉE du compte, c'est gratuit sur tous les plans et ne
+# consomme aucun quota ; l'expéditeur doit appartenir à un domaine sur lequel
+# Email Routing est activé (femzlab.shop — aucun MX avant, rien à casser).
+# Pré-requis côté dashboard, voir README.md.
+[[send_email]]
+name = "EMAIL"
+destination_address = "hello@imfemz.com"
+
+# Anti-abus : 3 envois par minute et par IP — au mieux. Cloudflare décrit ce
+# limiteur comme permissif, par nœud et à consistance différée ; en test, 9
+# envois en 4 s n'ont jamais été refusés. Le champ piège et la validation
+# font le vrai travail ; Turnstile si du spam arrive un jour.
+[[ratelimits]]
+name = "AVIS_LIMIT"
+namespace_id = "2001"
+simple = { limit = 3, period = 60 }
+
+[vars]
+DESTINATION = "hello@imfemz.com"
+EXPEDITEUR = "avis@femzlab.shop"
