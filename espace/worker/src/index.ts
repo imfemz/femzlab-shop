@@ -5,6 +5,7 @@ import { PROVIDERS, authorizeUrl, exchange, type Provider } from './lib/oauth';
 import { findOrCreateFromIdentity, ConflitIdentite, profileOf, updateProfile, setConsent, creatorsList, stats, mediaUrl, parseJson } from './lib/users';
 import { currentUser, setSession, clearSession, requireAuth } from './lib/session';
 import { readImage, storeUserImage, deleteKey } from './lib/media';
+import { peer, listConvs, thread, sendDm, markRead, block, unblock } from './lib/dms';
 
 const app = new Hono<{ Bindings: Env; Variables: Vars }>();
 const OAUTH_COOKIE = 'fz_oauth';
@@ -117,5 +118,22 @@ app.get('/espace/media/*', async (c) => {
   const bytes = await obj.arrayBuffer();
   return new Response(bytes, { headers: { 'content-type': obj.httpMetadata?.contentType || 'application/octet-stream', 'cache-control': 'public, max-age=31536000, immutable', etag: obj.httpEtag } });
 });
+
+async function withPeer(c: any) {
+  const p = await peer(c.env, Number(c.req.param('peer')));
+  return p ? { p } : { err: c.json({ error: 'membre introuvable' }, 404) };
+}
+app.get('/espace/api/dms', requireAuth, async (c) => c.json(await listConvs(c.env, c.get('user').id)));
+app.get('/espace/api/dms/:peer', requireAuth, async (c) => { const { p, err } = await withPeer(c); if (err) return err; return c.json(await thread(c.env, c.get('user').id, p)); });
+app.post('/espace/api/dms/:peer', requireAuth, async (c) => {
+  const { p, err } = await withPeer(c); if (err) return err;
+  const body: any = await c.req.json().catch(() => ({}));
+  const r = await sendDm(c.env, c.get('user').id, p, body.text);
+  if ('error' in r) return c.json({ error: r.error }, r.status);
+  return c.json({ ok: true, msg: r.msg });
+});
+app.post('/espace/api/dms/:peer/read', requireAuth, async (c) => { const { p, err } = await withPeer(c); if (err) return err; return c.json({ ok: true, read: await markRead(c.env, c.get('user').id, p.id) }); });
+app.post('/espace/api/blocks/:peer', requireAuth, async (c) => { const { p, err } = await withPeer(c); if (err) return err; await block(c.env, c.get('user').id, p.id); return c.json({ ok: true }); });
+app.delete('/espace/api/blocks/:peer', requireAuth, async (c) => { const { p, err } = await withPeer(c); if (err) return err; await unblock(c.env, c.get('user').id, p.id); return c.json({ ok: true }); });
 
 export default app;
