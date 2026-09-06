@@ -699,6 +699,17 @@ footer{background:var(--charcoal);color:#EDEDE8;margin-top:0;position:relative;z
   .assets-grid{grid-template-columns:1fr;max-width:400px;margin:0 auto}
   .hero-meta{gap:18px}
 }
+/* Shop mobile : les cartes 2-col sont trop étroites pour la taille de contenu
+   mini du panel MotionLAB (onglets + logo). À 62% de largeur il débordait du
+   cadre (logo rogné en haut, onglet FAVORITES coupé). On lui rend sa largeur
+   naturelle et on le met à l'échelle pour qu'il tienne net dans le média. */
+@media (max-width:600px){
+  .pcard .media.ml{perspective:720px}
+  .mlbox{width:230px;transform:rotateX(6deg) rotateY(-11deg) scale(.58);transform-origin:center}
+}
+@media (max-width:430px){
+  .mlbox{transform:rotateX(6deg) rotateY(-11deg) scale(.5)}
+}
 @media (prefers-reduced-motion:reduce){
   .shine{animation:none;background:none;color:#fff}
   .marquee-track{animation-duration:90s}

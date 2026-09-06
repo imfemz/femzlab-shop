@@ -3882,7 +3882,11 @@ function mlDemo(rootSel,itemSel,period,play){
     stage.innerHTML='';
     const P={speed:1,split:'letters',stagger:0.05};
     if(id==='count-up')P.countTo=128;
-    preset.web(stage,NAMES[id],P);
+    const dur=preset.web(stage,NAMES[id],P);
+    clearTimeout(stage.__mlSettle);       // filet iOS : garantit le texte visible au repos
+    stage.__mlSettle=setTimeout(function(){
+      stage.querySelectorAll('.pv-text,.pv-letter').forEach(function(el){el.style.opacity='1';el.style.filter='none';el.style.transform='none';});
+    },(typeof dur==='number'?dur:1200)+160);
   },2600);
 })();
 
@@ -3910,7 +3914,18 @@ function mlDemo(rootSel,itemSel,period,play){
     }
     const P={speed:speed,split:(canSplit&&mode==='letters')?'letters':'word'};
     if(id==='count-up'){const n=parseInt(txt,10);P.countTo=(isFinite(n)&&n>0)?n:128;}
-    preset.web(stage,txt,P);
+    const dur=preset.web(stage,txt,P);
+    // Filet iOS Safari : plusieurs presets animent l'opacité/le flou via la Web
+    // Animations API avec fill:'forwards' ; sur iPhone ce fill ne « colle » pas
+    // toujours et le texte reste invisible (« les autres textes n'apparaissent
+    // jamais »). On force l'état de repos visible une fois l'animation censée
+    // finie — no-op si elle a bien joué (c'est déjà son état final).
+    clearTimeout(stage.__mlSettle);
+    stage.__mlSettle=setTimeout(function(){
+      stage.querySelectorAll('.pv-text,.pv-letter').forEach(function(el){
+        el.style.opacity='1';el.style.filter='none';el.style.transform='none';
+      });
+    },(typeof dur==='number'?dur:1200)+160);
   }
   const demo=mlDemo('#demo-presets','.dp-item',3400,play);
   let deb=null;
