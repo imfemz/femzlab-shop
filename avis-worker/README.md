@@ -7,24 +7,25 @@ robots, puis envoie l'avis **par email à hello@imfemz.com** avec l'entrée
 Remplace la Pages Function `functions/api/avis.js` (webhook Discord jamais
 configuré → le formulaire répondait 500 à chaque envoi réel).
 
-## Pré-requis côté dashboard Cloudflare (une fois, par Femz)
+## Pré-requis Email Service (état au 2026-09-06)
 
 L'envoi utilise Email Service, natif Cloudflare. Vers une adresse de
 destination **vérifiée** du compte, c'est gratuit sur tous les plans et hors
 quota. Deux conditions :
 
-1. **Activer Email Routing sur femzlab.shop** — dashboard → *Compute* →
-   *Email Service* → *Email Routing* → choisir `femzlab.shop` → *Get started*.
-   Cloudflare pose lui-même les enregistrements DNS (MX, SPF). Le domaine
-   n'avait aucun MX : rien à casser, aucune boîte mail n'y existe.
-2. **Vérifier l'adresse de destination** — même écran → *Destination
-   Addresses* → ajouter `hello@imfemz.com` → cliquer le lien du mail de
-   vérification reçu sur cette boîte.
+1. **Email Routing actif sur femzlab.shop** — FAIT le 2026-09-06 par l'API
+   (le jeton OAuth de wrangler porte `email_routing (write)`) : MX
+   `route1-3.mx.cloudflare.net`, SPF et DKIM posés par Cloudflare. Le domaine
+   n'avait aucun MX : rien de cassé, aucune boîte mail n'y existait.
+2. **`hello@imfemz.com` vérifiée comme adresse de destination** — l'adresse a
+   été ajoutée par l'API le même jour, Cloudflare a envoyé son mail de
+   vérification sur cette boîte : **il reste à cliquer le lien** (Femz).
 
-Tant que ce n'est pas fait, l'envoi échoue avec, côté Cloudflare, `could not
-find account config of sending domain` (constaté le 2026-09-06 : le déploiement
-de la liaison passe, c'est l'envoi qui refuse) et le formulaire affiche
-« Envoi impossible ». Aucun redéploiement n'est nécessaire après l'activation.
+Tant que l'adresse n'est pas vérifiée, l'envoi échoue avec `destination
+address is not a verified address` et le formulaire affiche « Envoi
+impossible ». Aucun redéploiement n'est nécessaire après le clic. (Avant
+l'activation du routage, l'erreur était `could not find account config of
+sending domain`.)
 
 ## Diagnostic
 
