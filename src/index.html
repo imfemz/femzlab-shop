@@ -452,27 +452,22 @@ section{max-width:1120px;margin:0 auto;padding:clamp(60px,9vh,104px) clamp(20px,
    Safari iOS plafonne le nombre de couches de verre par page. Blanc plein. */
 .mqcard{background:#fff;border-radius:var(--r-lg);box-shadow:var(--shadow);
   padding:22px 24px;width:clamp(258px,25vw,340px);flex:none;margin:0;
-  display:flex;flex-direction:column;gap:14px}
-.mqcard blockquote{margin:0;font-size:14.5px;line-height:1.55;color:#3A3A35;
-  white-space:pre-line;
-  quotes:"\00ab\00a0" "\00a0\00bb"}
-.mqcard blockquote::before{content:open-quote}
-.mqcard blockquote::after{content:close-quote}
-.mqcard .who{display:flex;align-items:center;gap:11px;
-  border-top:1px solid var(--line);padding-top:14px}
-.mqcard .av{width:34px;height:34px;border-radius:50%;background:var(--charcoal);
+  display:block}
+/* Avatar + nom en tête de carte, sur une ligne — calqué sur la carte de
+   retour client de Bart (editingshift.com) : pas de séparateur, pas de
+   guillemets, une seule ligne d'identité (nom OU @pseudo, jamais les deux). */
+.mqcard .who{display:flex;align-items:center;gap:12px}
+.mqcard .av{width:38px;height:38px;border-radius:50%;background:var(--charcoal);
   color:#fff;display:flex;align-items:center;justify-content:center;flex:none;
-  font-family:'Montserrat',sans-serif;font-weight:800;font-size:13px;
+  font-family:'Montserrat',sans-serif;font-weight:800;font-size:14px;
   object-fit:cover}
-.mqcard .who-txt b{display:block;font-size:13.5px;line-height:1.2}
-.mqcard .rv-handle{display:block;font-size:12px;color:var(--dim);
-  text-decoration:none;line-height:1.3}
-.mqcard .rv-handle:hover{color:var(--ink);text-decoration:underline}
-.mqcard .who-txt>span{font-family:var(--lbl);font-weight:700;font-size:9px;
-  letter-spacing:.16em;color:var(--dim);text-transform:uppercase}
-/* Date de l'avis (art. D.111-17) : même registre discret que le produit,
-   simplement séparée par un point médian. */
-.mqcard .who-txt .rv-date::before{content:"\00a0\00b7\00a0"}
+.mqcard .who b{font-size:14.5px;font-weight:700;color:var(--ink)}
+.mqcard blockquote{margin:14px 0 0;font-size:14.5px;line-height:1.55;color:#3A3A35;
+  white-space:pre-line}
+/* Produit + date : mention discrète en pied de carte (obligation art.
+   D.111-17 pour la date), jamais dans la ligne d'identité. */
+.mqcard .rv-meta{margin:12px 0 0;font-size:10.5px;color:var(--dim)}
+.mqcard .rv-meta .rv-date::before{content:"\00a0\00b7\00a0"}
 .reviews-note{margin-top:18px;font-size:10px;color:var(--dim);text-align:center;
   letter-spacing:.14em;line-height:1.7}
 

@@ -85,12 +85,15 @@ def trie_avis(liste):
 def carte(avis, dup=False):
     """Une carte d'avis. `dup` marque la copie qui sert à boucler le défilement.
 
-    `instagram` (le pseudo, sans @) est facultatif : quand il est présent,
-    l'avatar devient sa vraie photo de profil (fichier `avatar` dans
+    Structure calquée sur la carte de retour client d'editingshift.com (Bart) :
+    avatar + nom EN HAUT sur une ligne, texte brut en dessous, sans guillemets
+    ni séparateur. `instagram` (le pseudo, sans @) est facultatif : présent, il
+    remplace l'avatar par sa vraie photo de profil (fichier `avatar` dans
     src/assets/, téléchargé une fois et hébergé chez nous — jamais un lien
-    direct vers le CDN Instagram, ses URLs sont signées et expirent) et son
-    @pseudo s'affiche sous le nom, cliquable vers son profil. Sans ces deux
-    champs, on retombe sur l'initiale colorée — un avis n'a pas toujours
+    direct vers le CDN Instagram, ses URLs sont signées et expirent) et le nom
+    affiché devient son @pseudo, exactement comme chez Bart (une seule ligne
+    d'identité, jamais nom ET @pseudo empilés). Sans ces deux champs, repli sur
+    l'initiale colorée et le pseudo saisi — un avis n'a pas toujours
     d'Instagram derrière.
     """
     cache = ' aria-hidden="true"' if dup else ""
@@ -98,20 +101,17 @@ def carte(avis, dup=False):
     fichier = avis.get("avatar")
     if handle and fichier:
         av = f'<img class="av" src="assets/{echappe(fichier)}" alt="" loading="lazy">'
-        lien = (f'<a class="rv-handle" href="https://www.instagram.com/{echappe(handle)}/" '
-                f'target="_blank" rel="noopener">@{echappe(handle)}</a>')
+        nom = f'@{echappe(handle)}'
     else:
         av = f'<span class="av" aria-hidden="true">{echappe(avis["pseudo"][:1].upper())}</span>'
-        lien = ""
+        nom = echappe(avis["pseudo"])
     return (
         f'<figure class="mqcard"{cache}>'
+        f'<figcaption class="who">{av}<b>{nom}</b></figcaption>'
         f'<blockquote>{echappe(avis["texte"])}</blockquote>'
-        f'<figcaption class="who">'
-        f'{av}'
-        f'<span class="who-txt"><b>{echappe(avis["pseudo"])}</b>{lien}'
-        f'<span>{echappe(avis["produit"])}</span>'
-        f'<span class="rv-date">{echappe(date_fr(avis["date"]))}</span></span>'
-        f'</figcaption></figure>'
+        f'<p class="rv-meta">{echappe(avis["produit"])}'
+        f'<span class="rv-date">{echappe(date_fr(avis["date"]))}</span></p>'
+        f'</figure>'
     )
 
 
