@@ -17,15 +17,16 @@ quota. Deux conditions :
    (le jeton OAuth de wrangler porte `email_routing (write)`) : MX
    `route1-3.mx.cloudflare.net`, SPF et DKIM posés par Cloudflare. Le domaine
    n'avait aucun MX : rien de cassé, aucune boîte mail n'y existait.
-2. **`hello@imfemz.com` vérifiée comme adresse de destination** — l'adresse a
-   été ajoutée par l'API le même jour, Cloudflare a envoyé son mail de
-   vérification sur cette boîte : **il reste à cliquer le lien** (Femz).
+2. **`hello@imfemz.com` vérifiée comme adresse de destination** — ajoutée par
+   l'API, vérifiée par Femz (clic sur le mail Cloudflare) le 2026-09-06.
 
-Tant que l'adresse n'est pas vérifiée, l'envoi échoue avec `destination
-address is not a verified address` et le formulaire affiche « Envoi
-impossible ». Aucun redéploiement n'est nécessaire après le clic. (Avant
-l'activation du routage, l'erreur était `could not find account config of
-sending domain`.)
+Chaîne vérifiée de bout en bout le 2026-09-06 : POST valide → `{"ok":true}`
+→ mail reçu dans la boîte (« Avis client — MetaVision — TEST à ignorer — 5/5 »,
+expéditeur avis@femzlab.shop). Si l'adresse de destination est un jour
+supprimée ou changée, l'envoi échoue avec `destination address is not a
+verified address` ; si Email Routing est désactivé sur femzlab.shop, avec
+`could not find account config of sending domain`. Aucun redéploiement n'est
+nécessaire pour corriger l'un ou l'autre côté dashboard.
 
 ## Diagnostic
 
