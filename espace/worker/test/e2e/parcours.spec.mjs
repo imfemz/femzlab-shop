@@ -1,0 +1,31 @@
+// test/e2e/parcours.spec.mjs — node test/e2e/parcours.spec.mjs
+import { chromium } from 'playwright';
+const B = 'http://localhost:8788';
+const ok = (c, m) => { if (!c) { console.error('ÉCHEC :', m); process.exit(1); } console.log('ok  ', m); };
+const br = await chromium.launch(); const pg = await br.newPage({ viewport: { width: 1280, height: 800 } });
+
+await pg.goto(`${B}/espace/`);
+ok(await pg.locator('text=Continuer avec Google').count() === 1, 'écran de connexion');
+await pg.goto(`${B}/espace/auth/dev-login?email=fraps81@gmail.com`);
+await pg.waitForURL(`${B}/espace/`);
+await pg.waitForSelector('.consent', { timeout: 10000 });
+ok(await pg.locator('.consent').count() === 1, 'modale de consentement au 1er login');
+ok(await pg.locator('.consent .tg.on').count() === 0, 'les deux toggles OFF par défaut');
+await pg.locator('.consent-row').first().click(); await pg.locator('.consent-cta').click();
+await pg.waitForSelector('.consent', { state: 'detached' });
+await pg.locator('.me-btn').click();
+await pg.fill('input[placeholder="Paris"]', 'Cannes');
+await pg.locator('.pf-save.btn-acc').click();
+await pg.waitForTimeout(1200);
+const creators = await (await pg.request.get(`${B}/espace/api/creators`)).json();
+const femz = creators.find((c) => c.display_name === 'fraps81');
+ok(femz && Math.abs(femz.lat - 43.55) < 0.1, 'profil enregistré, ville géocodée, visible sur le globe');
+ok(!JSON.stringify(creators).includes('@'), 'aucun email dans /creators');
+await pg.locator('.me-btn').click();
+await pg.setInputFiles('.pf-av input[type=file]', { name: 'a.png', mimeType: 'image/png', buffer: Buffer.from('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNkYPhfDwAChwGA60e6kgAAAABJRU5ErkJggg==', 'base64') });
+await pg.waitForTimeout(800);
+const me = await (await pg.request.get(`${B}/espace/api/me`)).json();
+ok(/^\/espace\/media\/avatars\//.test(me.avatar || ''), 'avatar stocké dans R2');
+await pg.reload(); await pg.waitForSelector('.me-av');
+ok((await pg.locator('.me-av').getAttribute('style') || '').includes('/espace/media/avatars/'), 'avatar persistant après rechargement');
+await br.close(); console.log('PARCOURS OK');
