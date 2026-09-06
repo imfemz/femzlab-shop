@@ -276,6 +276,69 @@ section{max-width:1120px;margin:0 auto;padding:clamp(60px,9vh,104px) clamp(20px,
   transition-delay:var(--d,0s)}
 .rv.in{opacity:1;transform:none;filter:blur(0)}
 
+/* ---------- section RÉSEAUX : bandeau sombre « reach » (façon keanuvisuals, DA Femz) ---------- */
+.reach{position:relative;width:100vw;max-width:none;margin-left:calc(50% - 50vw);
+  padding:clamp(60px,9vh,104px) clamp(20px,5vw,48px);
+  background:radial-gradient(130% 100% at 50% -12%,#181a20 0%,#0d0e12 52%,#08090b 100%);
+  color:#fff;overflow:hidden;isolation:isolate}
+.reach::before{content:"";position:absolute;inset:0;z-index:0;pointer-events:none;
+  background:
+    radial-gradient(42% 55% at 50% 0%,rgba(94,162,255,.16),transparent 70%),
+    radial-gradient(34% 42% at 84% 16%,rgba(167,139,255,.12),transparent 72%),
+    radial-gradient(rgba(255,255,255,.05) 1px,transparent 1.1px);
+  background-size:auto,auto,22px 22px}
+.reach-inner{position:relative;z-index:1;max-width:900px;margin:0 auto}
+.reach-cred{display:flex;align-items:center;justify-content:center;gap:clamp(14px,2vw,20px);
+  margin-bottom:clamp(34px,5vh,52px);text-align:left}
+.reach-ava{width:clamp(72px,10vw,92px);aspect-ratio:1;border-radius:50%;object-fit:cover;flex:none;
+  border:2px solid rgba(255,255,255,.14);
+  box-shadow:0 0 0 4px rgba(94,162,255,.16),0 14px 40px rgba(0,0,0,.55)}
+.reach-id{display:flex;flex-direction:column;gap:5px}
+.reach-eyebrow{font-family:var(--lbl);font-weight:700;text-transform:uppercase;letter-spacing:.2em;
+  font-size:11px;color:rgba(255,255,255,.5)}
+.reach-name{display:flex;align-items:center;gap:9px;
+  font-family:'Montserrat',sans-serif;font-weight:800;text-transform:uppercase;letter-spacing:-.01em;
+  font-size:clamp(24px,4vw,38px);line-height:1}
+.reach-badge{width:.72em;height:.72em;flex:none;display:block}
+.reach-tiles{display:grid;grid-template-columns:repeat(3,1fr);gap:clamp(11px,1.6vw,18px)}
+.rtile{position:relative;display:flex;flex-direction:column;min-height:clamp(120px,15vw,152px);
+  border-radius:16px;overflow:hidden;padding:clamp(16px,2.4vw,24px);
+  background:linear-gradient(180deg,#20232a,#14161b);
+  border:1px solid rgba(255,255,255,.07);color:#fff;text-decoration:none;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.05),0 18px 40px rgba(0,0,0,.4);
+  transition:transform .5s cubic-bezier(.22,1,.36,1),box-shadow .5s,border-color .5s}
+.rtile:hover{transform:translateY(-4px);border-color:rgba(255,255,255,.15);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.08),0 26px 56px rgba(0,0,0,.5)}
+.rtile .ricon{position:absolute;top:clamp(14px,2vw,20px);right:clamp(14px,2vw,20px);
+  width:clamp(26px,3.4vw,34px);height:clamp(26px,3.4vw,34px)}
+.rtile .ricon svg{width:100%;height:100%;display:block}
+.rmeta{margin-top:auto}
+.rnum{font-family:'Montserrat',sans-serif;font-weight:800;font-variant-numeric:tabular-nums;
+  font-size:clamp(28px,4.6vw,46px);line-height:1;letter-spacing:-.01em}
+.rnum .ksuf{color:#5EA2FF}
+.rlabel{margin-top:7px;font-size:13px;color:rgba(255,255,255,.55);font-style:italic}
+.rhandle{margin-top:2px;font-family:var(--lbl);font-weight:700;font-size:10px;letter-spacing:.05em;
+  color:rgba(255,255,255,.34)}
+.reach-agg{display:flex;align-items:baseline;justify-content:center;gap:12px;flex-wrap:wrap;
+  margin-top:clamp(30px,5vh,46px);text-align:center}
+.reach-agg .rag-lbl{font-family:var(--lbl);font-weight:700;text-transform:uppercase;letter-spacing:.2em;
+  font-size:10.5px;color:rgba(255,255,255,.42)}
+.reach-agg .rag-num{font-family:'Montserrat',sans-serif;font-weight:800;font-size:clamp(19px,3vw,26px);
+  font-variant-numeric:tabular-nums}
+.reach-agg .rag-num .ksuf{color:#5EA2FF}
+@media (max-width:560px){
+  .reach-cred{flex-direction:column;text-align:center;gap:14px}
+  .reach-id{align-items:center}
+  .rtile{padding:14px 12px;min-height:112px}
+  .rnum{font-size:clamp(23px,7.4vw,30px)}
+  .rtile .ricon{width:23px;height:23px;top:12px;right:12px}
+  .rlabel{font-size:12px}
+  .rhandle{display:none}
+}
+@media (prefers-reduced-motion:reduce){
+  .rtile{transition:none}
+}
+
 /* ---------- cartes GLASS (DA NéoVision, version claire) ---------- */
 .card{
   position:relative;
@@ -628,6 +691,7 @@ footer{background:var(--charcoal);color:#EDEDE8;margin-top:30px;position:relativ
   <button class="nav-toggle" aria-label="Menu" aria-expanded="false" aria-controls="nav-links-menu"><span></span><span></span></button>
   <div class="nav-links">
     <div class="nav-links-menu" id="nav-links-menu">
+      <a href="#shop">Shop</a>
       <a data-track="cta_shop_nav_portfolio" href="/portfolio">Portfolio</a>
       <a href="#assets">Assets</a>
       <a href="#profil">À propos</a>
@@ -918,6 +982,54 @@ footer{background:var(--charcoal);color:#EDEDE8;margin-top:30px;position:relativ
     </div>
   </section>
 
+  <!-- ============ réseaux — reach multi-plateformes (façon keanuvisuals) ============ -->
+  <section id="reseaux" class="reach" aria-label="Mes réseaux">
+    <div class="reach-inner">
+      <div class="reach-cred rv">
+        <img class="reach-ava" src="assets/jpg-30.jpg" alt="Femz — Fémi Olu" loading="lazy" width="92" height="92">
+        <div class="reach-id">
+          <span class="reach-eyebrow">Créateur de contenu</span>
+          <span class="reach-name">Femz<svg class="reach-badge" viewBox="0 0 24 24" aria-label="Vérifié" role="img"><path fill="#5EA2FF" d="M12 1l2.4 1.8 3 .1 1 2.8 2.4 1.8-.9 2.9.9 2.9-2.4 1.8-1 2.8-3 .1L12 23l-2.4-1.8-3-.1-1-2.8L3.2 16.5l.9-2.9-.9-2.9 2.4-1.8 1-2.8 3-.1z"/><path fill="#fff" d="M10.6 15.2l-2.9-2.9 1.3-1.3 1.6 1.6 3.9-3.9 1.3 1.3z"/></svg></span>
+        </div>
+      </div>
+
+      <div class="reach-tiles">
+        <a class="rtile rv" style="--d:0s" data-track="cta_shop_reach_instagram" href="https://www.instagram.com/imfemz/" target="_blank" rel="noopener" aria-label="Instagram @imfemz — 59K abonnés">
+          <span class="ricon"><svg viewBox="0 0 24 24" role="img" aria-hidden="true"><defs><linearGradient id="igGrad" x1="0" y1="1" x2="1" y2="0"><stop offset="0" stop-color="#E1306C"/><stop offset=".5" stop-color="#C13584"/><stop offset="1" stop-color="#5B51D8"/></linearGradient></defs><path fill="url(#igGrad)" d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg></span>
+          <div class="rmeta">
+            <div class="rnum"><span class="rval" data-count="59">59</span><span class="ksuf">K</span></div>
+            <div class="rlabel">abonnés</div>
+            <div class="rhandle">@imfemz</div>
+          </div>
+        </a>
+
+        <a class="rtile rv" style="--d:.08s" data-track="cta_shop_reach_tiktok" href="https://www.tiktok.com/@imfemzz" target="_blank" rel="noopener" aria-label="TikTok @imfemzz — 59K abonnés">
+          <span class="ricon"><svg viewBox="0 0 24 24" role="img" aria-hidden="true" style="filter:drop-shadow(0 0 3px rgba(37,244,238,.5))"><path fill="#fff" d="M12.525.02c1.31-.02 2.61-.01 3.91-.02.08 1.53.63 3.09 1.75 4.17 1.12 1.11 2.7 1.62 4.24 1.79v4.03c-1.44-.05-2.89-.35-4.2-.97-.57-.26-1.1-.59-1.62-.93-.01 2.92.01 5.84-.02 8.75-.08 1.4-.54 2.79-1.35 3.94-1.31 1.92-3.58 3.17-5.91 3.21-1.43.08-2.86-.31-4.08-1.03-2.02-1.19-3.44-3.37-3.65-5.71-.02-.5-.03-1-.01-1.49.18-1.9 1.12-3.72 2.58-4.96 1.66-1.44 3.98-2.13 6.15-1.72.02 1.48-.04 2.96-.04 4.44-.99-.32-2.15-.23-3.02.37-.63.41-1.11 1.04-1.36 1.75-.21.51-.15 1.07-.14 1.61.24 1.64 1.82 3.02 3.5 2.87 1.12-.01 2.19-.66 2.77-1.61.19-.33.4-.67.41-1.06.1-1.79.06-3.57.07-5.36.01-4.03-.01-8.05.02-12.07z"/></svg></span>
+          <div class="rmeta">
+            <div class="rnum"><span class="rval" data-count="59">59</span><span class="ksuf">K</span></div>
+            <div class="rlabel">abonnés</div>
+            <div class="rhandle">@imfemzz</div>
+          </div>
+        </a>
+
+        <a class="rtile rv" style="--d:.16s" data-track="cta_shop_reach_youtube" href="https://www.youtube.com/c/Femzprod" target="_blank" rel="noopener" aria-label="YouTube Femzprod — 8K abonnés">
+          <span class="ricon"><svg viewBox="0 0 24 24" role="img" aria-hidden="true"><path fill="#FF0033" d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg></span>
+          <div class="rmeta">
+            <div class="rnum"><span class="rval" data-count="8">8</span><span class="ksuf">K</span></div>
+            <div class="rlabel">abonnés</div>
+            <div class="rhandle">Femzprod</div>
+          </div>
+        </a>
+      </div>
+
+      <div class="reach-agg rv" style="--d:.24s">
+        <span class="rag-lbl">Sur toutes les plateformes</span>
+        <span class="rag-num"><span class="rval" data-count="125">125</span><span class="ksuf">K</span></span>
+        <span class="rag-lbl">abonnés cumulés</span>
+      </div>
+    </div>
+  </section>
+
 </main>
 
 <footer>
@@ -1114,6 +1226,26 @@ const io=new IntersectionObserver(es=>{
 },{threshold:.12,rootMargin:'0px 0px -40px 0px'});
 document.querySelectorAll('.rv').forEach(el=>io.observe(el));
 
+// ---------- compteurs animés de la section réseaux ----------
+(function(){
+  var vals=document.querySelectorAll('.reach .rval[data-count]');
+  if(!vals.length) return;
+  if(typeof REDUCED!=='undefined' && REDUCED) return;   // valeurs finales déjà dans le HTML
+  function run(el){
+    var to=+el.dataset.count||0, dur=1100, t0=null;
+    function step(t){ if(!t0)t0=t; var p=Math.min((t-t0)/dur,1);
+      var e=1-Math.pow(1-p,3);
+      el.textContent=String(Math.round(to*e));
+      if(p<1) requestAnimationFrame(step); else el.textContent=String(to);
+    }
+    el.textContent='0'; requestAnimationFrame(step);
+  }
+  var co=new IntersectionObserver(function(es){es.forEach(function(e){
+    if(e.isIntersecting){ run(e.target); co.unobserve(e.target); }
+  });},{threshold:.6});
+  vals.forEach(function(el){co.observe(el);});
+})();
+
 // ---------- mobile : descriptions des packs ouvertes au scroll (pop back en sortie) ----------
 if(matchMedia('(hover:none)').matches){
   const po=new IntersectionObserver(es=>{
@@ -1177,7 +1309,7 @@ if(FINE && !REDUCED){
 
 <script>
 (function(){
-  const T={"À propos": "About", "Se connecter": "Sign in", "Rejoindre": "Join", "Promo à durée limitée — code": "Limited-time offer — code", "tes edits.": "your edits.", "Packs After Effects, banques SFX et la formation": "After Effects packs, SFX libraries and the", "— les mêmes assets que sur nos plus gros projets, prêts à glisser-déposer dans ta timeline.": "— the same assets we use on our biggest projects, ready to drag and drop into your timeline.", "Explorer le shop": "Explore the shop", "Découvrir MetaVision": "Discover MetaVision", "Produits": "Products", "Leçons MetaVision": "MetaVision lessons", "Support Discord": "Discord support", "Les packs": "The packs", "Nouveau": "New", "Plugin · AE + Premiere": "Plugin · AE + Premiere", "10 animations de texte, 8 outils et les guides de cadrage des plateformes — le même panel dans After Effects et Premiere Pro.":"10 text animations, 8 tools and the platform framing guides — the same panel in After Effects and Premiere Pro.", "Découvrir le plugin": "Discover the plugin", "Presets, templates et SFX pensés pour After Effects — testés en prod avant d'arriver ici.": "Presets, templates and SFX built for After Effects — battle-tested in production before they land here.", "Le pack tout-en-un pour un rendu clean et moderne : icônes PNG, templates After Effects, éléments UI.": "The all-in-one pack for a clean, modern look: PNG icons, After Effects templates, UI elements.", "Voir le pack": "View the pack", "Presets · 8 fichiers": "Presets · 8 files", "Particules pour After Effects : 4 presets de transitions + 4 overlays GhostFX.": "Particles for After Effects: 4 transition presets + 4 GhostFX overlays.", "Gratuit": "Free", "Plus de 10 track mattes modifiables pour tes transitions — le point d'entrée idéal.": "10+ editable track mattes for your transitions — the perfect starting point.", "Télécharger": "Download", "SFX · 70+ sons": "SFX · 70+ sounds", "Bruitages percutants — énergie, impacts, transitions — et ambiances immersives haute qualité.": "Punchy sound effects — energy, impacts, transitions — plus immersive high-quality ambiences.", "Le pack parfait pour dynamiser tes edits : cinématique, digital, rapide, ambient et plus.": "The perfect pack to energize your edits: cinematic, digital, fast, ambient and more.", "Cours · 18 leçons": "Course · 18 lessons", "La formation VFX complète — d'After Effects niveau zéro jusqu'à tes premiers clients.": "The complete VFX course — from zero in After Effects to your first clients.", "Voir la formation": "View the course", "Assets gratuits": "Free assets", "À télécharger": "Downloads", "Clique sur un asset pour le télécharger — gratuit, direct, sans compte.": "Click an asset to download it — free, instant, no account.", "Pourquoi nos packs": "Why our packs", "Level up tes edits": "Level up your edits", "Utilisé sur nos plus gros projets": "Used on our biggest projects", "Rejoins la ligue des professionnels qui font confiance à nos produits pour leurs projets les plus significatifs. Ta créativité mérite le meilleur.": "Join the league of professionals who trust our products for their most meaningful projects. Your creativity deserves the best.", "Polyvalence redéfinie": "Versatility redefined", "Créateur de contenu, cinéaste ou passionné : nos packs s'adaptent à ton style. Élève tes projets grâce à la simplicité du glisser-déposer.": "Content creator, filmmaker or enthusiast: our packs adapt to your style. Elevate your projects with simple drag-and-drop.", "Accompagnement Discord — dispo 7j/7": "Discord support — available 7 days a week", "Une question sur un preset, un template qui coince ? La communauté et Femz répondent tous les jours.": "A question about a preset, a template acting up? The community and Femz reply every day.", "Une approche moderne": "A modern approach", "du storytelling visuel.": "to visual storytelling.", "Monteur · Créateur · Fondateur de FemzLab": "Editor · Creator · Founder of FemzLab", "J'ai pris une caméra il y a des années — et je n'ai jamais lâché.": "I picked up a camera years ago — and never put it down.", "Des clips de musique certifiés or et platine aux campagnes des plus grandes marques, chaque projet m'a appris la même chose : une image ne vaut que par l'histoire qu'elle raconte.": "From gold- and platinum-certified music videos to campaigns for the biggest brands, every project taught me the same thing: an image is only worth the story it tells.", "Je ne cherche pas le beau. Je cherche l'émotion.": "I'm not after pretty. I'm after emotion.", "Un plan qui arrête le pouce, une transition qu'on rejoue, un son qu'on ressent avant même de le comprendre. Le détail n'est pas de la décoration — c'est ce qui fait qu'une vidéo reste en tête.": "A shot that stops the thumb, a transition you replay, a sound you feel before you understand it. Detail isn't decoration — it's what makes a video stick.", "FemzLab, c'est te passer mes outils.": "FemzLab is me handing you my tools.", "Les presets, packs SFX et templates qui tournent sur mes plus gros projets, je les mets entre tes mains — pour que tu passes moins de temps à galérer, et plus de temps à créer ce qui te ressemble.": "The presets, SFX packs and templates I run on my biggest projects, I put them in your hands — so you spend less time struggling and more time creating what feels like you.", "Ma boîte à outils": "My toolbox", "Conditions générales de vente": "Terms of sale", "Politique de confidentialité": "Privacy policy"};
+  const T={"À propos": "About", "Se connecter": "Sign in", "Rejoindre": "Join", "Promo à durée limitée — code": "Limited-time offer — code", "tes edits.": "your edits.", "Packs After Effects, banques SFX et la formation": "After Effects packs, SFX libraries and the", "— les mêmes assets que sur nos plus gros projets, prêts à glisser-déposer dans ta timeline.": "— the same assets we use on our biggest projects, ready to drag and drop into your timeline.", "Explorer le shop": "Explore the shop", "Découvrir MetaVision": "Discover MetaVision", "Produits": "Products", "Leçons MetaVision": "MetaVision lessons", "Support Discord": "Discord support", "Les packs": "The packs", "Nouveau": "New", "Plugin · AE + Premiere": "Plugin · AE + Premiere", "10 animations de texte, 8 outils et les guides de cadrage des plateformes — le même panel dans After Effects et Premiere Pro.":"10 text animations, 8 tools and the platform framing guides — the same panel in After Effects and Premiere Pro.", "Découvrir le plugin": "Discover the plugin", "Presets, templates et SFX pensés pour After Effects — testés en prod avant d'arriver ici.": "Presets, templates and SFX built for After Effects — battle-tested in production before they land here.", "Le pack tout-en-un pour un rendu clean et moderne : icônes PNG, templates After Effects, éléments UI.": "The all-in-one pack for a clean, modern look: PNG icons, After Effects templates, UI elements.", "Voir le pack": "View the pack", "Presets · 8 fichiers": "Presets · 8 files", "Particules pour After Effects : 4 presets de transitions + 4 overlays GhostFX.": "Particles for After Effects: 4 transition presets + 4 GhostFX overlays.", "Gratuit": "Free", "Plus de 10 track mattes modifiables pour tes transitions — le point d'entrée idéal.": "10+ editable track mattes for your transitions — the perfect starting point.", "Télécharger": "Download", "SFX · 70+ sons": "SFX · 70+ sounds", "Bruitages percutants — énergie, impacts, transitions — et ambiances immersives haute qualité.": "Punchy sound effects — energy, impacts, transitions — plus immersive high-quality ambiences.", "Le pack parfait pour dynamiser tes edits : cinématique, digital, rapide, ambient et plus.": "The perfect pack to energize your edits: cinematic, digital, fast, ambient and more.", "Cours · 18 leçons": "Course · 18 lessons", "La formation VFX complète — d'After Effects niveau zéro jusqu'à tes premiers clients.": "The complete VFX course — from zero in After Effects to your first clients.", "Voir la formation": "View the course", "Assets gratuits": "Free assets", "À télécharger": "Downloads", "Clique sur un asset pour le télécharger — gratuit, direct, sans compte.": "Click an asset to download it — free, instant, no account.", "Pourquoi nos packs": "Why our packs", "Level up tes edits": "Level up your edits", "Utilisé sur nos plus gros projets": "Used on our biggest projects", "Rejoins la ligue des professionnels qui font confiance à nos produits pour leurs projets les plus significatifs. Ta créativité mérite le meilleur.": "Join the league of professionals who trust our products for their most meaningful projects. Your creativity deserves the best.", "Polyvalence redéfinie": "Versatility redefined", "Créateur de contenu, cinéaste ou passionné : nos packs s'adaptent à ton style. Élève tes projets grâce à la simplicité du glisser-déposer.": "Content creator, filmmaker or enthusiast: our packs adapt to your style. Elevate your projects with simple drag-and-drop.", "Accompagnement Discord — dispo 7j/7": "Discord support — available 7 days a week", "Une question sur un preset, un template qui coince ? La communauté et Femz répondent tous les jours.": "A question about a preset, a template acting up? The community and Femz reply every day.", "Une approche moderne": "A modern approach", "du storytelling visuel.": "to visual storytelling.", "Monteur · Créateur · Fondateur de FemzLab": "Editor · Creator · Founder of FemzLab", "J'ai pris une caméra il y a des années — et je n'ai jamais lâché.": "I picked up a camera years ago — and never put it down.", "Des clips de musique certifiés or et platine aux campagnes des plus grandes marques, chaque projet m'a appris la même chose : une image ne vaut que par l'histoire qu'elle raconte.": "From gold- and platinum-certified music videos to campaigns for the biggest brands, every project taught me the same thing: an image is only worth the story it tells.", "Je ne cherche pas le beau. Je cherche l'émotion.": "I'm not after pretty. I'm after emotion.", "Un plan qui arrête le pouce, une transition qu'on rejoue, un son qu'on ressent avant même de le comprendre. Le détail n'est pas de la décoration — c'est ce qui fait qu'une vidéo reste en tête.": "A shot that stops the thumb, a transition you replay, a sound you feel before you understand it. Detail isn't decoration — it's what makes a video stick.", "FemzLab, c'est te passer mes outils.": "FemzLab is me handing you my tools.", "Les presets, packs SFX et templates qui tournent sur mes plus gros projets, je les mets entre tes mains — pour que tu passes moins de temps à galérer, et plus de temps à créer ce qui te ressemble.": "The presets, SFX packs and templates I run on my biggest projects, I put them in your hands — so you spend less time struggling and more time creating what feels like you.", "Ma boîte à outils": "My toolbox", "Créateur de contenu": "Content creator", "abonnés": "followers", "Sur toutes les plateformes": "Across all platforms", "abonnés cumulés": "total followers", "Conditions générales de vente": "Terms of sale", "Politique de confidentialité": "Privacy policy"};
   const nodes=[]; const w=document.createTreeWalker(document.body,NodeFilter.SHOW_TEXT,null);
   let n; while(n=w.nextNode()){ const k=(n.nodeValue||'').trim(); if(k&&T[k]!==undefined) nodes.push([n,n.nodeValue,k]); }
   function set(lang){
