@@ -1,6 +1,6 @@
 import { env } from 'cloudflare:test';
 import { describe, it, expect } from 'vitest';
-import app from '../src/index';
+import { app } from '../src/index';
 import { mkUser, cookieFor } from './helpers';
 
 const post = async (u: number, path: string, body: object = {}) =>
@@ -40,5 +40,16 @@ describe('DM', () => {
     const a = await mkUser({ dms_open: 1 }), b = await mkUser({ dms_open: 1 });
     for (let i = 0; i < 30; i++) expect((await post(a, `/espace/api/dms/${b}`, { text: `m${i}` })).status).toBe(200);
     expect((await post(a, `/espace/api/dms/${b}`, { text: 'trop' })).status).toBe(429);
+  });
+  it('la purge ne touche pas les autres kinds', async () => {
+    const a = await mkUser({ dms_open: 1 }), b = await mkUser({ dms_open: 1 });
+    const old = Date.now() - 3 * 600000;
+    await env.DB.prepare("INSERT INTO rate_events (user_id, kind, at) VALUES (?, 'autre', ?)").bind(1, old).run();
+    await env.DB.prepare("INSERT INTO rate_events (user_id, kind, at) VALUES (?, 'dm', ?)").bind(a, old).run();
+    expect((await post(a, `/espace/api/dms/${b}`, { text: 'salut' })).status).toBe(200);
+    const autre = await env.DB.prepare("SELECT * FROM rate_events WHERE user_id = 1 AND kind = 'autre'").first();
+    expect(autre).not.toBeNull();
+    const vieuxDm = await env.DB.prepare("SELECT * FROM rate_events WHERE kind = 'dm' AND at < ?").bind(Date.now() - 20 * 60 * 1000).first();
+    expect(vieuxDm).toBeNull();
   });
 });

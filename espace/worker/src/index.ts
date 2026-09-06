@@ -6,8 +6,28 @@ import { findOrCreateFromIdentity, ConflitIdentite, profileOf, updateProfile, se
 import { currentUser, setSession, clearSession, requireAuth } from './lib/session';
 import { readImage, storeUserImage, deleteKey } from './lib/media';
 import { peer, listConvs, thread, sendDm, markRead, block, unblock } from './lib/dms';
+import { backupToR2 } from './lib/backup';
 
 const app = new Hono<{ Bindings: Env; Variables: Vars }>();
+
+// Apex → www (un seul origin pour les cookies et l'OAuth) ; /espace → /espace/.
+// En local (localhost/127.0.0.1) on garde le protocole d'origine (http), sinon on force https.
+app.use('/espace*', async (c, next) => {
+  const u = new URL(c.req.url);
+  const isLocal = u.hostname === 'localhost' || u.hostname === '127.0.0.1';
+  if (u.hostname === 'femzlab.shop') {
+    u.hostname = 'www.femzlab.shop';
+    u.protocol = isLocal ? u.protocol : 'https:';
+    return c.redirect(u.toString(), 301);
+  }
+  if (u.pathname === '/espace') {
+    u.pathname = '/espace/';
+    u.protocol = isLocal ? u.protocol : 'https:';
+    return c.redirect(u.toString(), 301);
+  }
+  await next();
+});
+
 const OAUTH_COOKIE = 'fz_oauth';
 
 function redirectUri(c: any, p: Provider) { return `${c.env.APP_URL.replace(/\/$/, '')}/auth/${p}/callback`; }
@@ -136,4 +156,17 @@ app.post('/espace/api/dms/:peer/read', requireAuth, async (c) => { const { p, er
 app.post('/espace/api/blocks/:peer', requireAuth, async (c) => { const { p, err } = await withPeer(c); if (err) return err; await block(c.env, c.get('user').id, p.id); return c.json({ ok: true }); });
 app.delete('/espace/api/blocks/:peer', requireAuth, async (c) => { const { p, err } = await withPeer(c); if (err) return err; await unblock(c.env, c.get('user').id, p.id); return c.json({ ok: true }); });
 
-export default app;
+app.all('/espace/api/*', (c) => c.json({ error: 'route inconnue' }, 404));
+
+// L'app React : les fichiers sont à la racine de web/dist, l'URL publique sous /espace/.
+app.all('/espace/*', (c) => {
+  const u = new URL(c.req.url);
+  u.pathname = u.pathname.replace(/^\/espace/, '') || '/';
+  return c.env.ASSETS.fetch(new Request(u.toString(), c.req.raw));
+});
+
+export { app };
+export default {
+  fetch: app.fetch,
+  scheduled: async (_e: ScheduledEvent, env: Env, ctx: ExecutionContext) => { ctx.waitUntil(backupToR2(env)); },
+};

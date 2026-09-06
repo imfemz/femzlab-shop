@@ -1,7 +1,7 @@
 // test/oauth.test.ts
 import { env, fetchMock } from 'cloudflare:test';
 import { beforeAll, afterEach, describe, it, expect } from 'vitest';
-import app from '../src/index';
+import { app } from '../src/index';
 import { cookieFor } from './helpers';
 
 beforeAll(() => { fetchMock.activate(); fetchMock.disableNetConnect(); });

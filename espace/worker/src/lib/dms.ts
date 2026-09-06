@@ -58,7 +58,7 @@ export async function sendDm(env: Env, me: number, other: any, raw: any): Promis
   if ((n?.n || 0) >= DM_LIMIT) return { error: 'trop de messages d’affilée — réessaie dans quelques minutes', status: 429 };
   await env.DB.batch([
     env.DB.prepare("INSERT INTO rate_events (user_id, kind, at) VALUES (?, 'dm', ?)").bind(me, Date.now()),
-    env.DB.prepare("DELETE FROM rate_events WHERE at < ?").bind(since - DM_WINDOW_MS),
+    env.DB.prepare("DELETE FROM rate_events WHERE kind = 'dm' AND at < ?").bind(since - DM_WINDOW_MS),
   ]);
   const r = await env.DB.prepare('INSERT INTO dms (from_user, to_user, text) VALUES (?, ?, ?)').bind(me, other.id, text).run();
   const row = await env.DB.prepare('SELECT * FROM dms WHERE id = ?').bind(r.meta.last_row_id).first<any>();

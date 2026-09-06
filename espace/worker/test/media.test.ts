@@ -1,7 +1,7 @@
 // test/media.test.ts
 import { env, fetchMock } from 'cloudflare:test';
 import { beforeAll, afterEach, describe, it, expect } from 'vitest';
-import app from '../src/index';
+import { app } from '../src/index';
 import { mkUser, cookieFor } from './helpers';
 
 const PNG = new Uint8Array([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a, 1, 2, 3]);
