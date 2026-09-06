@@ -107,10 +107,15 @@ def carte(avis):
     else:
         av = f'<span class="av" aria-hidden="true">{echappe(avis["pseudo"][:1].upper())}</span>'
         nom = echappe(avis["pseudo"])
+    # `texte_en` facultatif : la carte porte la traduction en attribut `data-en`
+    # et bascule seule quand le site passe en anglais (moteur JS_AVIS_I18N, qui
+    # observe `html[lang]`). Sans traduction, l'avis reste dans sa langue d'origine.
+    en = avis.get("texte_en")
+    bq_en = f' data-en="{echappe(en)}"' if en else ""
     return (
         f'<figure class="mqcard">'
         f'<figcaption class="who">{av}<b>{nom}</b></figcaption>'
-        f'<blockquote>{echappe(avis["texte"])}</blockquote>'
+        f'<blockquote{bq_en}>{echappe(avis["texte"])}</blockquote>'
         f'</figure>'
     )
 
@@ -225,6 +230,25 @@ JS_AVIS = """
 """
 
 
+# Traduction des avis : chaque carte porte le texte FR (contenu) et, si dispo,
+# le texte EN (`data-en`). On bascule en observant `html[lang]` (mis à jour par
+# le sélecteur de langue de la page) — self-contained, aucune entrée à ajouter
+# au dictionnaire i18n de chaque page, et les clones du défilement sont couverts.
+JS_AVIS_I18N = """
+(function(){
+  function apply(){
+    var en=document.documentElement.lang==='en';
+    document.querySelectorAll('.mqcard blockquote[data-en]').forEach(function(q){
+      if(q.dataset.fr===undefined) q.dataset.fr=q.textContent;
+      q.textContent = en ? q.getAttribute('data-en') : q.dataset.fr;
+    });
+  }
+  apply();
+  try{new MutationObserver(apply).observe(document.documentElement,{attributes:true,attributeFilter:['lang']});}catch(e){}
+})();
+"""
+
+
 def bloc_avis(donnees, produit=None):
     """Le contenu généré : style, défilement, mention de collecte, moteur."""
     liste = trie_avis(donnees["avis"])
@@ -244,6 +268,7 @@ def bloc_avis(donnees, produit=None):
         f'<div class="mqtrack"><div class="mqgroup">{cartes}</div></div></div>'
         f'</div>'
         f'<script>{JS_AVIS}</script>'
+        f'<script>{JS_AVIS_I18N}</script>'
     )
 
 

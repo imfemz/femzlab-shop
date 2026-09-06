@@ -6,6 +6,7 @@
       "pseudo": "Hyrax",
       "produit": "MotionLAB",
       "texte": "Cette extension me fait gagner un gain de temps énorme, c'est un atout majeur qui me permet de consacrer ce temps à d'autres tâches !",
+      "texte_en": "This extension saves me a huge amount of time — a major asset that lets me put that time toward other tasks!",
       "note": 5,
       "date": "2026-09-06",
       "avatar": "avatar-hyrax.jpg"
@@ -15,6 +16,7 @@
       "pseudo": "Georges A.",
       "produit": "MetaVision",
       "texte": "Super formation !",
+      "texte_en": "Great course!",
       "note": null,
       "date": "2026-07-28",
       "instagram": "georgesarmando",
