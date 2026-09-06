@@ -43,8 +43,10 @@ SANS_INLINE = {"mp4-17.mp4"}
 
 REVIEWS = SRC / "reviews.json"
 # Marqueurs d'injection. `produit="…"` sur le marqueur d'ouverture limite le
-# bloc aux avis de ce produit — c'est ce qu'utilise une page produit ; sans
-# attribut (accueil), tous les avis passent.
+# bloc aux avis de ce produit — c'est ce qu'utilise chaque page produit
+# (MetaVision aujourd'hui, les suivantes sur le même modèle) ; sans attribut,
+# tous les avis passent. L'accueil n'affiche plus d'avis (décision Femz,
+# 2026-09-06) : les retours vivent sur la page du produit concerné.
 MARQUEUR = re.compile(
     r'(<!-- reviews:start(?: produit="([^"]*)")? -->)(.*?)(<!-- reviews:end -->)', re.S)
 
@@ -54,16 +56,10 @@ MARQUEUR = re.compile(
 # seul reste donc posé, centré ; à partir de deux, ça défile.
 SEUIL_MARQUEE = 2
 
-# Texte de conformité (art. L.111-7-2 et D.111-17 du code de la consommation) :
-# origine des avis, absence de tri sur la note, critère de classement retenu
-# (chronologique — voir trie_avis). Ne jamais y réinjecter de date : la date de
-# mise à jour vit dans son propre élément (voir bloc_avis) pour que cette clé
-# de traduction reste stable d'une publication à l'autre, indépendamment des
-# mises à jour de reviews.json.
-MENTION = ("Avis de clients ayant acheté le produit, recueillis par formulaire "
-           "ou transmis directement. Publiés sans sélection sur la note, "
-           "classés du plus récent au plus ancien. Aucune contrepartie n'est "
-           "fournie en échange d'un avis.")
+# Plus de mention de collecte sous les avis (décision Femz, 2026-09-06). La
+# phrase « publiés sans sélection sur la note, classés du plus récent au plus
+# ancien » (art. L.111-7-2 / D.111-17) ne vit plus que sur la page /avis ; le
+# tri chronologique, lui, reste appliqué (trie_avis).
 
 
 def echappe(texte):
@@ -153,10 +149,6 @@ CSS_AVIS = """
 /* Un seul avis : posé, centré, sans masque ni défilement. */
 .mq-static .mq{-webkit-mask-image:none;mask-image:none}
 .mq-static .mqtrack{width:auto;justify-content:center}
-.reviews-note{margin:18px auto 0;max-width:1120px;padding:0 clamp(20px,5vw,48px);
-  font-family:'Inter',system-ui,sans-serif;font-weight:700;font-size:10px;letter-spacing:.14em;
-  line-height:1.7;text-transform:uppercase;text-align:center;
-  color:var(--mq-note,#8D8D84)} /* --mq-note : une page à thème sombre y met son gris clair */
 @media (prefers-reduced-motion:reduce){
   .mq{-webkit-mask-image:none;mask-image:none}
   .mqtrack{transform:none!important;width:auto;flex-wrap:wrap;justify-content:center}
@@ -239,19 +231,11 @@ def bloc_avis(donnees, produit=None):
                 'if(x)x.hidden=true})(document.currentScript)</script>')
     statique = "" if len(liste) >= SEUIL_MARQUEE else " mq-static"
     cartes = "".join(carte(a) for a in liste)
-    maj = echappe(donnees.get("mise_a_jour", ""))
-    # La date de mise à jour est un élément séparé de la phrase traduite, et
-    # le libellé « Mise à jour » un nœud de texte séparé de la date elle-même :
-    # ni l'un ni l'autre ne change quand l'autre change, donc rien ne casse la
-    # traduction anglaise au fil des mises à jour de reviews.json.
     return (
         f'<style>{CSS_AVIS}</style>'
         f'<div class="mqwrap{statique}">'
         f'<div class="mq" data-speed="70" data-hover-speed="20">'
         f'<div class="mqtrack"><div class="mqgroup">{cartes}</div></div></div>'
-        f'<p class="reviews-note rv">{MENTION} '
-        f'<span class="reviews-updated">Mise à jour'
-        f'<span class="reviews-updated-val">&nbsp;: {maj}.</span></span></p>'
         f'</div>'
         f'<script>{JS_AVIS}</script>'
     )

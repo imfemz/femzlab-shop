@@ -46,13 +46,28 @@ l'embarquer.
 2. Vérifier l'email dans Podia (recherche en haut de la liste des factures)
    pour confirmer l'achat.
 3. Ajouter une entrée dans `src/reviews.json` — **pseudo uniquement, jamais
-   l'email** : le dépôt est public.
-4. Mettre à jour le champ `mise_a_jour`, et la clé correspondante dans le
-   dictionnaire i18n de `src/index.html` (la phrase de mention contient la date).
-5. `python3 build.py` puis déployer.
+   l'email** : le dépôt est public. Champs : `pseudo`, `produit` (doit
+   correspondre exactement au `produit="…"` du marqueur de la page), `texte`,
+   `date` (ISO, sert au tri), et facultatifs `instagram` (pseudo sans @) +
+   `avatar` (fichier dans `src/assets/`, ex. `avatar-<pseudo>.jpg`) : présents
+   tous les deux, la carte affiche sa vraie photo et `@pseudo` à la place du
+   nom. La photo se télécharge une fois et s'héberge ici — jamais de lien
+   direct vers le CDN Instagram (URLs signées, elles expirent).
+4. `python3 build.py` puis déployer.
 
-En dessous de 6 avis, le rendu bascule automatiquement en grille statique :
-un marquee qui boucle sur 3 cartes se répète de façon visible.
+Les avis s'affichent sur la page du produit concerné (plus sur l'accueil
+depuis le 2026-09-06), via le marqueur
+`<!-- reviews:start produit="MetaVision" --><!-- reviews:end -->` posé dans
+une `section.band#avis` avec son `.sec-head`. Pour une prochaine page produit :
+même section, même marqueur avec son `produit`, les deux clés i18n de
+l'en-tête, et `#avis .mqwrap{padding-top:26px}` pour l'écart en-tête→contenu.
+Sans avis pour ce produit, la section se masque seule. Le style et le moteur
+de défilement (repris d'editingshift.com) sont injectés par `build.py` avec le
+bloc : une seule source, rien à copier d'une page à l'autre.
+
+Un seul avis reste posé, centré ; à partir de deux, ça défile. La carte ne
+porte ni produit, ni date, ni mention de collecte (décision du 2026-09-06) —
+la phrase « publiés sans sélection sur la note » ne vit plus que sur `/avis`.
 
 **Ne jamais purger, archiver-puis-nettoyer ou supprimer ce salon Discord.**
 C'est la seule trace de ce qui a été soumis, en face de ce qui a été publié

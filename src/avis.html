@@ -221,7 +221,7 @@ footer{background:var(--charcoal);color:#EDEDE8;margin-top:20px;position:relativ
       <h2>Raconte ce que le pack t'a apporté</h2>
     </div>
 
-    <p class="avis-intro rv">Deux minutes suffisent. Ton avis apparaîtra sur la page d'accueil avec ton prénom ou ton pseudo — jamais ton email, qui sert uniquement à vérifier ton achat.</p>
+    <p class="avis-intro rv">Deux minutes suffisent. Ton avis apparaîtra sur la page du produit avec ton prénom ou ton pseudo — jamais ton email, qui sert uniquement à vérifier ton achat.</p>
 
     <form class="avis-form card rv" id="avis-form" method="post" action="/api/avis">
       <label class="f">
@@ -304,7 +304,7 @@ footer{background:var(--charcoal);color:#EDEDE8;margin-top:20px;position:relativ
 
     <div class="avis-ok card" id="avis-ok" hidden>
       <h3>Merci — c'est bien arrivé.</h3>
-      <p>Je vérifie ton achat et je publie ton avis sur la page d'accueil.</p>
+      <p>Je vérifie ton achat et je publie ton avis sur la page du produit.</p>
       <a class="btn solid" href="/">Retour à la boutique</a>
     </div>
 
@@ -425,7 +425,7 @@ if(navToggle&&navMenu){
 
 <script>
 (function(){
-  const T={"Ton retour":"Your feedback","Raconte ce que le pack t'a apporté":"Tell us what the pack did for you","Deux minutes suffisent. Ton avis apparaîtra sur la page d'accueil avec ton prénom ou ton pseudo — jamais ton email, qui sert uniquement à vérifier ton achat.":"Two minutes is all it takes. Your review will appear on the homepage with your first name or handle — never your email, which is only used to verify your purchase.","Le produit":"The product","Choisis…":"Choose…","L'email de ton achat":"Your purchase email","celui utilisé au moment du paiement":"the one used at checkout","Jamais publié. Sert à vérifier l'achat.":"Never published. Used to verify the purchase.","Ton prénom ou ton pseudo":"Your first name or handle","c'est ce qui s'affichera":"this is what will be displayed","Ton avis":"Your review","Ce que tu en as fait, ce que ça t'a fait gagner…":"What you made with it, what it saved you…","/400 — 40 minimum":"/400 — 40 minimum","Une note ?":"A rating?","facultatif":"optional","Sans note":"No rating","J'autorise FemzLab à publier cet avis et mon prénom ou pseudo sur femzlab.shop.":"I allow FemzLab to publish this review and my first name or handle on femzlab.shop.","Envoyer mon avis":"Send my review","Merci — c'est bien arrivé.":"Thanks — it came through.","Je vérifie ton achat et je publie ton avis sur la page d'accueil.":"I'll verify your purchase and publish your review on the homepage.","Retour à la boutique":"Back to the shop","Les avis sont publiés sans sélection sur la note. Ton email n'est ni publié ni conservé ailleurs que dans la notification qui m'est envoyée.":"Reviews are published without filtering on rating. Your email is neither published nor stored anywhere other than the notification sent to me.","Boutique":"Shop","À propos":"About"};
+  const T={"Ton retour":"Your feedback","Raconte ce que le pack t'a apporté":"Tell us what the pack did for you","Deux minutes suffisent. Ton avis apparaîtra sur la page du produit avec ton prénom ou ton pseudo — jamais ton email, qui sert uniquement à vérifier ton achat.":"Two minutes is all it takes. Your review will appear on the product page with your first name or handle — never your email, which is only used to verify your purchase.","Le produit":"The product","Choisis…":"Choose…","L'email de ton achat":"Your purchase email","celui utilisé au moment du paiement":"the one used at checkout","Jamais publié. Sert à vérifier l'achat.":"Never published. Used to verify the purchase.","Ton prénom ou ton pseudo":"Your first name or handle","c'est ce qui s'affichera":"this is what will be displayed","Ton avis":"Your review","Ce que tu en as fait, ce que ça t'a fait gagner…":"What you made with it, what it saved you…","/400 — 40 minimum":"/400 — 40 minimum","Une note ?":"A rating?","facultatif":"optional","Sans note":"No rating","J'autorise FemzLab à publier cet avis et mon prénom ou pseudo sur femzlab.shop.":"I allow FemzLab to publish this review and my first name or handle on femzlab.shop.","Envoyer mon avis":"Send my review","Merci — c'est bien arrivé.":"Thanks — it came through.","Je vérifie ton achat et je publie ton avis sur la page du produit.":"I'll verify your purchase and publish your review on the product page.","Retour à la boutique":"Back to the shop","Les avis sont publiés sans sélection sur la note. Ton email n'est ni publié ni conservé ailleurs que dans la notification qui m'est envoyée.":"Reviews are published without filtering on rating. Your email is neither published nor stored anywhere other than the notification sent to me.","Boutique":"Shop","À propos":"About"};
   const nodes=[]; const w=document.createTreeWalker(document.body,NodeFilter.SHOW_TEXT,null);
   let n; while(n=w.nextNode()){ const k=(n.nodeValue||'').trim(); if(k&&T[k]!==undefined) nodes.push([n,n.nodeValue,k]); }
   function set(lang){
