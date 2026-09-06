@@ -1,6 +1,15 @@
 {
-  "mise_a_jour": "2026-08-16",
+  "mise_a_jour": "2026-09-06",
   "avis": [
+    {
+      "id": "2026-09-06-01",
+      "pseudo": "Hyrax",
+      "produit": "MotionLAB",
+      "texte": "Cette extension me fait gagner un gain de temps énorme, c'est un atout majeur qui me permet de consacrer ce temps à d'autres tâches !",
+      "note": 5,
+      "date": "2026-09-06",
+      "avatar": "avatar-hyrax.jpg"
+    },
     {
       "id": "2026-08-16-01",
       "pseudo": "Georges A.",

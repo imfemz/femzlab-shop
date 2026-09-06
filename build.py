@@ -97,9 +97,13 @@ def carte(avis):
     # les deux cas, seule la source de la photo diffère.
     handle = avis.get("instagram") or avis.get("tiktok")
     fichier = avis.get("avatar")
-    if handle and fichier:
+    if fichier:
+        # Photo fournie : on l'affiche (téléchargée une fois, hébergée chez nous —
+        # jamais un lien direct vers un CDN dont les URLs signées expirent). Le nom
+        # devient @pseudo s'il y a un handle social, sinon le pseudo saisi tel quel
+        # (une photo de profil sans lien reste une photo — décision Femz 2026-09-06).
         av = f'<img class="av" src="assets/{echappe(fichier)}" alt="" loading="lazy">'
-        nom = f'@{echappe(handle)}'
+        nom = f'@{echappe(handle)}' if handle else echappe(avis["pseudo"])
     else:
         av = f'<span class="av" aria-hidden="true">{echappe(avis["pseudo"][:1].upper())}</span>'
         nom = echappe(avis["pseudo"])
