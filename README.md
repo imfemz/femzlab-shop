@@ -91,3 +91,29 @@ fichier de cette taille.
 - Le patch `#mobile-fixes` en bas de `src/index.html` corrige deux bugs iOS :
   le dock fixe qui recouvrait la promo, et les cartes en verre qui perdent leur
   flou quand Safari plafonne le nombre de couches `backdrop-filter`.
+
+## Espace membre
+
+**[femzlab.shop/espace](https://www.femzlab.shop/espace)** : profil, DM entre
+membres et globe des créateurs. Un Worker Cloudflare (Hono + D1 + R2 +
+Workers Static Assets) routé sur `/espace*`, au même titre que les Workers
+des licences et des avis — le reste du site (statique, servi par Pages)
+n'est pas touché.
+
+```
+espace/
+├── worker/   Worker Cloudflare : API (Hono), auth OAuth Google/Discord, D1, R2
+└── web/      front React, construit dans web/dist/ (ignoré par git)
+```
+
+Depuis `espace/worker` :
+```bash
+npm test          # 33 tests vitest (Worker)
+npm run dev        # pile locale (wrangler dev --local, voir test/e2e/README.md)
+npm run deploy     # build du front + wrangler deploy
+```
+
+Spec : `docs/superpowers/specs/2026-09-06-espace-membre-design.md`. Plan de
+ce socle : `docs/superpowers/plans/2026-09-06-espace-membre-socle.md`.
+Procédure de mise en production (secrets, migration, premier membre,
+sauvegardes) : `espace/worker/DEPLOY.md`.
