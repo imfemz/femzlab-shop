@@ -6,6 +6,10 @@ export const parseJson = (s: any, fb: any) => { if (!s) return fb; try { return 
 export const cleanStr = (v: any, max: number) => (typeof v === 'string' ? v.trim().slice(0, max) : '');
 export const ownerEmails = (env: Env) => String(env.OWNER_EMAILS || '').split(',').map((e) => e.trim().toLowerCase()).filter(Boolean);
 
+export class ConflitIdentite extends Error {
+  constructor(public code: 'identite_deja_liee' | 'email_deja_utilise') { super(code); }
+}
+
 async function byId(env: Env, id: number) {
   return env.DB.prepare('SELECT * FROM users WHERE id = ?').bind(id).first<User>();
 }
@@ -20,19 +24,26 @@ async function byId(env: Env, id: number) {
 export async function findOrCreateFromIdentity(env: Env, p: OAuthProfile, attachTo?: number): Promise<{ user: User; created: boolean }> {
   const db = env.DB;
   const known = await db.prepare('SELECT user_id FROM identities WHERE provider = ? AND provider_id = ?').bind(p.provider, p.providerId).first<{ user_id: number }>();
+  if (known && attachTo != null && known.user_id !== attachTo) {
+    throw new ConflitIdentite('identite_deja_liee');
+  }
   if (known) {
     await db.prepare('UPDATE identities SET email = ?, display_name = ?, avatar_url = ? WHERE provider = ? AND provider_id = ?')
       .bind(p.email, p.name, p.avatarUrl, p.provider, p.providerId).run();
     return { user: (await byId(env, known.user_id))!, created: false };
   }
   let userId = attachTo ?? null;
-  if (userId == null) {
+  if (userId != null) {
+    const byEmail = await db.prepare('SELECT user_id FROM user_emails WHERE email = ?').bind(p.email).first<{ user_id: number }>();
+    if (byEmail && byEmail.user_id !== userId) throw new ConflitIdentite('email_deja_utilise');
+  } else {
     const byEmail = await db.prepare('SELECT user_id FROM user_emails WHERE email = ?').bind(p.email).first<{ user_id: number }>();
     if (byEmail) userId = byEmail.user_id;
   }
   let created = false;
   if (userId == null) {
-    const founder = ownerEmails(env).includes(p.email) ? 1 : 0;
+    const existingFounder = await db.prepare('SELECT 1 FROM users WHERE founder = 1 LIMIT 1').first();
+    const founder = !existingFounder && ownerEmails(env).includes(p.email) ? 1 : 0;
     const dn = cleanStr(p.name, 60) || p.email.split('@')[0];
     const r = await db.prepare('INSERT INTO users (display_name, name, founder) VALUES (?, ?, ?)').bind(dn, p.name || null, founder).run();
     userId = r.meta.last_row_id as number;

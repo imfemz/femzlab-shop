@@ -2,7 +2,7 @@ import { Hono } from 'hono';
 import { getCookie, setCookie, deleteCookie } from 'hono/cookie';
 import type { Env, Vars } from './env';
 import { PROVIDERS, authorizeUrl, exchange, type Provider } from './lib/oauth';
-import { findOrCreateFromIdentity } from './lib/users';
+import { findOrCreateFromIdentity, ConflitIdentite } from './lib/users';
 import { currentUser, setSession, clearSession } from './lib/session';
 
 const app = new Hono<{ Bindings: Env; Variables: Vars }>();
@@ -31,7 +31,12 @@ app.get('/espace/auth/:provider/callback', async (c) => {
   catch (e) { console.error('oauth', p, e); return c.redirect('/espace/?erreur=oauth', 302); }
   if (!profile.email || !profile.emailVerified) return c.redirect('/espace/?erreur=email_non_verifie', 302);
   const me = await currentUser(c);
-  const { user } = await findOrCreateFromIdentity(c.env, profile, me?.id);
+  let user;
+  try { ({ user } = await findOrCreateFromIdentity(c.env, profile, me?.id)); }
+  catch (e) {
+    if (e instanceof ConflitIdentite) return c.redirect(`/espace/?erreur=${e.code}`, 302);
+    throw e;
+  }
   await setSession(c, user.id);
   return c.redirect('/espace/', 302);
 });

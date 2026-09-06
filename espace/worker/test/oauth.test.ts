@@ -82,4 +82,48 @@ describe('OAuth', () => {
     const prodEnv = { ...env, ENV: 'production' };
     expect((await app.request('/espace/auth/dev-login?email=a@b.co', {}, prodEnv)).status).toBe(404);
   });
+  it('attache refusée : identité déjà liée à un autre membre', async () => {
+    mockDiscord({ id: 'd1', username: 'b', global_name: 'B', email: 'b@example.com', verified: true, avatar: null });
+    await callback('discord', 's1', stateCookie('s1'));
+    const b = await env.DB.prepare("SELECT id FROM users WHERE display_name = 'B'").first<any>();
+    mockGoogle({ sub: 'ga', email: 'a@example.com', email_verified: true, name: 'A', picture: null });
+    await callback('google', 's2', stateCookie('s2'));
+    const a = await env.DB.prepare("SELECT id FROM users WHERE display_name = 'A'").first<any>();
+    mockDiscord({ id: 'd1', username: 'b', global_name: 'B', email: 'b@example.com', verified: true, avatar: null });
+    const r = await callback('discord', 's3', `${stateCookie('s3')}; ${await cookieFor(a.id)}`);
+    expect(r.status).toBe(302);
+    expect(r.headers.get('location')).toBe('/espace/?erreur=identite_deja_liee');
+    expect(r.headers.get('set-cookie') || '').not.toContain('fz_session=');
+    const ids = await env.DB.prepare('SELECT COUNT(*) AS n FROM identities').first<any>();
+    expect(ids.n).toBe(2);
+    const owner = await env.DB.prepare("SELECT user_id FROM identities WHERE provider = 'discord' AND provider_id = 'd1'").first<any>();
+    expect(owner.user_id).toBe(b.id);
+  });
+  it('attache refusée : email déjà rattaché à un tiers', async () => {
+    mockGoogle({ sub: 'gc', email: 'c@example.com', email_verified: true, name: 'C', picture: null });
+    await callback('google', 's1', stateCookie('s1'));
+    const c = await env.DB.prepare("SELECT id FROM users WHERE display_name = 'C'").first<any>();
+    mockGoogle({ sub: 'ga2', email: 'a2@example.com', email_verified: true, name: 'A2', picture: null });
+    await callback('google', 's2', stateCookie('s2'));
+    const a = await env.DB.prepare("SELECT id FROM users WHERE display_name = 'A2'").first<any>();
+    mockDiscord({ id: 'dz', username: 'z', global_name: 'Z', email: 'c@example.com', verified: true, avatar: null });
+    const r = await callback('discord', 's3', `${stateCookie('s3')}; ${await cookieFor(a.id)}`);
+    expect(r.status).toBe(302);
+    expect(r.headers.get('location')).toBe('/espace/?erreur=email_deja_utilise');
+    expect(r.headers.get('set-cookie') || '').not.toContain('fz_session=');
+    const idsForA = await env.DB.prepare('SELECT COUNT(*) AS n FROM identities WHERE user_id = ?').bind(a.id).first<any>();
+    expect(idsForA.n).toBe(1);
+    const email = await env.DB.prepare("SELECT user_id FROM user_emails WHERE email = 'c@example.com'").first<any>();
+    expect(email.user_id).toBe(c.id);
+  });
+  it('un seul fondateur', async () => {
+    mockGoogle({ sub: 'gf1', email: 'fraps81@gmail.com', email_verified: true, name: 'Femz', picture: null });
+    await callback('google', 's1', stateCookie('s1'));
+    mockDiscord({ id: 'df2', username: 'hello', global_name: 'Hello', email: 'hello@imfemz.com', verified: true, avatar: null });
+    await callback('discord', 's2', stateCookie('s2'));
+    const n = await env.DB.prepare('SELECT COUNT(*) AS n FROM users WHERE founder = 1').first<any>();
+    expect(n.n).toBe(1);
+    const hello = await env.DB.prepare("SELECT founder FROM users WHERE display_name = 'Hello'").first<any>();
+    expect(hello.founder).toBe(0);
+  });
 });
