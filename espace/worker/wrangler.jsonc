@@ -1,0 +1,29 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "femzlab-espace",
+  "main": "src/index.ts",
+  "compatibility_date": "2026-03-10",
+  "compatibility_flags": ["nodejs_compat"],
+  "observability": { "enabled": true },
+  "routes": [
+    { "pattern": "femzlab.shop/espace*", "zone_name": "femzlab.shop" },
+    { "pattern": "www.femzlab.shop/espace*", "zone_name": "femzlab.shop" }
+  ],
+  "d1_databases": [
+    { "binding": "DB", "database_name": "femzlab-espace-db", "database_id": "3b8d4b6f-1f99-495d-a35b-2ef97cadae11", "migrations_dir": "migrations" }
+  ],
+  "r2_buckets": [{ "binding": "MEDIA", "bucket_name": "femzlab-espace-media" }],
+  "assets": {
+    "directory": "../web/dist",
+    "binding": "ASSETS",
+    "not_found_handling": "single-page-application",
+    "run_worker_first": true
+  },
+  "triggers": { "crons": ["0 3 * * *"] },
+  "vars": {
+    "APP_URL": "https://www.femzlab.shop/espace",
+    "ENV": "production",
+    "OWNER_EMAILS": "fraps81@gmail.com,hello@imfemz.com",
+    "COOKIE_DOMAIN": "femzlab.shop"
+  }
+}
