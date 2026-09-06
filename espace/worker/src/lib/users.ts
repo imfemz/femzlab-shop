@@ -2,6 +2,7 @@ import type { Env, User } from '../env';
 import type { OAuthProfile } from './oauth';
 import { welcomeFor } from './welcome';
 import { geocode } from './geocode';
+import { sniffImage, storeUserImage, MAX_BYTES } from './media';
 
 export const parseJson = (s: any, fb: any) => { if (!s) return fb; try { return JSON.parse(s); } catch { return fb; } };
 export const cleanStr = (v: any, max: number) => (typeof v === 'string' ? v.trim().slice(0, max) : '');
@@ -56,8 +57,28 @@ export async function findOrCreateFromIdentity(env: Env, p: OAuthProfile, attach
   if (created) {
     const f = await db.prepare('SELECT id, country FROM users WHERE founder = 1 AND id != ? ORDER BY id LIMIT 1').bind(userId).first<{ id: number }>();
     if (f) await db.prepare('INSERT INTO dms (from_user, to_user, text) VALUES (?, ?, ?)').bind(f.id, userId, welcomeFor(null as any)).run();
+    if (p.avatarUrl) await copyProviderAvatar(env, userId, p.avatarUrl);
   }
   return { user: (await byId(env, userId))!, created };
+}
+
+/**
+ * Best-effort : copie la photo du fournisseur (avatarUrl) dans R2 comme avatar initial.
+ * Toute erreur (réseau, type, taille) est ignorée — loggée seulement — et ne bloque jamais la création du compte.
+ */
+async function copyProviderAvatar(env: Env, userId: number, avatarUrl: string) {
+  try {
+    const r = await fetch(avatarUrl);
+    if (!r.ok) throw new Error(`réponse ${r.status}`);
+    const bytes = new Uint8Array(await r.arrayBuffer());
+    if (bytes.length > MAX_BYTES) throw new Error('trop lourd');
+    const kind = sniffImage(bytes);
+    if (!kind) throw new Error('type non reconnu');
+    const key = await storeUserImage(env, userId, 'avatars', bytes, kind);
+    await env.DB.prepare('UPDATE users SET avatar_key = ? WHERE id = ?').bind(key, userId).run();
+  } catch (e) {
+    console.warn('avatar fournisseur ignoré', userId, avatarUrl, e);
+  }
 }
 
 export const mediaUrl = (key: string | null) => (key ? `/espace/media/${key}` : null);

@@ -2,8 +2,9 @@ import { Hono } from 'hono';
 import { getCookie, setCookie, deleteCookie } from 'hono/cookie';
 import type { Env, Vars } from './env';
 import { PROVIDERS, authorizeUrl, exchange, type Provider } from './lib/oauth';
-import { findOrCreateFromIdentity, ConflitIdentite, profileOf, updateProfile, setConsent, creatorsList, stats, mediaUrl } from './lib/users';
+import { findOrCreateFromIdentity, ConflitIdentite, profileOf, updateProfile, setConsent, creatorsList, stats, mediaUrl, parseJson } from './lib/users';
 import { currentUser, setSession, clearSession, requireAuth } from './lib/session';
+import { readImage, storeUserImage, deleteKey } from './lib/media';
 
 const app = new Hono<{ Bindings: Env; Variables: Vars }>();
 const OAUTH_COOKIE = 'fz_oauth';
@@ -76,5 +77,42 @@ app.put('/espace/api/consent', requireAuth, async (c) => {
   return c.json({ ok: true, visible: !!b.visible, dms_open: !!b.dms_open });
 });
 app.get('/espace/api/creators', requireAuth, async (c) => c.json(await creatorsList(c.env)));
+
+app.post('/espace/api/media/avatar', requireAuth, async (c) => {
+  const img = await readImage(c.req.raw);
+  if ('status' in img) return c.json({ error: img.status === 413 ? 'image trop lourde (2 Mo max)' : 'format accepté : PNG, JPEG, WebP' }, img.status);
+  const u = c.get('user');
+  const key = await storeUserImage(c.env, u.id, 'avatars', img.bytes, img.kind);
+  await c.env.DB.prepare('UPDATE users SET avatar_key = ? WHERE id = ?').bind(key, u.id).run();
+  if (u.avatar_key && u.avatar_key !== key) await deleteKey(c.env, u.avatar_key);
+  return c.json({ url: mediaUrl(key) });
+});
+
+app.post('/espace/api/media/reel/:n', requireAuth, async (c) => {
+  const n = Number(c.req.param('n'));
+  if (!Number.isInteger(n) || n < 0 || n > 2) return c.json({ error: 'index de reel 0 à 2' }, 400);
+  const img = await readImage(c.req.raw);
+  if ('status' in img) return c.json({ error: img.status === 413 ? 'image trop lourde (2 Mo max)' : 'format accepté : PNG, JPEG, WebP' }, img.status);
+  const u = c.get('user');
+  const reels: any[] = parseJson(u.reels, []);
+  while (reels.length <= n) reels.push({ url: '', thumb_key: null });
+  const key = await storeUserImage(c.env, u.id, 'reels', img.bytes, img.kind, n);
+  const old = reels[n].thumb_key; reels[n].thumb_key = key;
+  await c.env.DB.prepare('UPDATE users SET reels = ? WHERE id = ?').bind(JSON.stringify(reels), u.id).run();
+  if (old && old !== key) await deleteKey(c.env, old);
+  return c.json({ url: mediaUrl(key) });
+});
+
+app.get('/espace/media/*', async (c) => {
+  const key = c.req.path.replace(/^\/espace\/media\//, '');
+  const obj = await c.env.MEDIA.get(key);
+  if (!obj) return c.text('introuvable', 404);
+  // On lit entièrement le corps ici (plutôt que de streamer obj.body) : sous le pool
+  // vitest-pool-workers, un flux R2 non consommé par l'appelant fait échouer le
+  // stockage isolé en fin de fichier de test (cf. « Consume response bodies » dans
+  // les known issues Cloudflare). Le tamponnage vide le flux côté Worker dans tous les cas.
+  const bytes = await obj.arrayBuffer();
+  return new Response(bytes, { headers: { 'content-type': obj.httpMetadata?.contentType || 'application/octet-stream', 'cache-control': 'public, max-age=31536000, immutable', etag: obj.httpEtag } });
+});
 
 export default app;
