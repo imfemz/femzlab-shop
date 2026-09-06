@@ -82,6 +82,14 @@ describe('OAuth', () => {
     const prodEnv = { ...env, ENV: 'production' };
     expect((await app.request('/espace/auth/dev-login?email=a@b.co', {}, prodEnv)).status).toBe(404);
   });
+  it('dev-login hors production connecte et pose la session', async () => {
+    const r = await app.request('/espace/auth/dev-login?email=leo@example.com', {}, env);
+    expect(r.status).toBe(302);
+    expect(r.headers.get('location')).toBe('/espace/');
+    expect(r.headers.get('set-cookie')).toContain('fz_session=');
+    const n = await env.DB.prepare('SELECT COUNT(*) AS n FROM users').first<any>();
+    expect(n.n).toBe(1);
+  });
   it('attache refusée : identité déjà liée à un autre membre', async () => {
     mockDiscord({ id: 'd1', username: 'b', global_name: 'B', email: 'b@example.com', verified: true, avatar: null });
     await callback('discord', 's1', stateCookie('s1'));

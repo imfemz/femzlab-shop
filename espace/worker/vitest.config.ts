@@ -1,10 +1,16 @@
 import path from 'node:path';
+import { configDefaults } from 'vitest/config';
 import { defineWorkersConfig, readD1Migrations } from '@cloudflare/vitest-pool-workers/config';
 
 export default defineWorkersConfig(async () => {
   const migrations = await readD1Migrations(path.join(__dirname, 'migrations'));
   return {
     test: {
+      // test/e2e/*.spec.mjs est un script Playwright autonome (exécuté avec `node`,
+      // pas par vitest) : il matche le glob de test par défaut (*.spec.*) mais
+      // `import { chromium } from 'playwright'` plante dans le pool Workers
+      // (process.exit appelé en portée globale, non supporté par workerd).
+      exclude: [...configDefaults.exclude, 'test/e2e/**'],
       setupFiles: ['./test/apply-migrations.ts'],
       poolOptions: {
         workers: {

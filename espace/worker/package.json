@@ -3,7 +3,7 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "wrangler dev --local --port 8788",
+    "dev": "wrangler dev --local --port 8788 --local-upstream localhost:8788",
     "test": "vitest run",
     "test:watch": "vitest",
     "migrate:local": "wrangler d1 migrations apply femzlab-espace-db --local",

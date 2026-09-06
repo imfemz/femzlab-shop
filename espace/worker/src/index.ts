@@ -33,6 +33,18 @@ const OAUTH_COOKIE = 'fz_oauth';
 function redirectUri(c: any, p: Provider) { return `${c.env.APP_URL.replace(/\/$/, '')}/auth/${p}/callback`; }
 const hex = (b: Uint8Array) => [...b].map((x) => x.toString(16).padStart(2, '0')).join('');
 
+// Connexion de dev sans OAuth (Playwright local). Jamais en production.
+// Déclarée avant /espace/auth/:provider : sinon ce dernier capture "dev-login"
+// comme valeur de :provider et répond 404 avant même d'atteindre cette route.
+app.get('/espace/auth/dev-login', async (c) => {
+  if (c.env.ENV === 'production') return c.text('indisponible', 404);
+  const email = String(c.req.query('email') || '').trim().toLowerCase();
+  if (!email) return c.text('email requis', 400);
+  const { user } = await findOrCreateFromIdentity(c.env, { provider: 'google', providerId: 'dev:' + email, email, emailVerified: true, name: email.split('@')[0], avatarUrl: null });
+  await setSession(c, user.id);
+  return c.redirect('/espace/', 302);
+});
+
 app.get('/espace/auth/:provider', (c) => {
   const p = c.req.param('provider') as Provider;
   if (!PROVIDERS.includes(p)) return c.text('fournisseur inconnu', 404);
@@ -64,16 +76,6 @@ app.get('/espace/auth/:provider/callback', async (c) => {
 });
 
 app.post('/espace/auth/logout', (c) => { clearSession(c); return c.json({ ok: true }); });
-
-// Connexion de dev sans OAuth (Playwright local). Jamais en production.
-app.get('/espace/auth/dev-login', async (c) => {
-  if (c.env.ENV === 'production') return c.text('indisponible', 404);
-  const email = String(c.req.query('email') || '').trim().toLowerCase();
-  if (!email) return c.text('email requis', 400);
-  const { user } = await findOrCreateFromIdentity(c.env, { provider: 'google', providerId: 'dev:' + email, email, emailVerified: true, name: email.split('@')[0], avatarUrl: null });
-  await setSession(c, user.id);
-  return c.redirect('/espace/', 302);
-});
 
 app.get('/espace/api/stats', async (c) => c.json(await stats(c.env)));
 

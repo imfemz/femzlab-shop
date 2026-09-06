@@ -14,6 +14,27 @@ npm run migrate:local
 npm run dev &            # http://localhost:8788 (ENV=development via .dev.vars)
 ```
 
+`npm run dev` lance `wrangler dev --local --port 8788 --local-upstream localhost:8788`.
+Le drapeau `--local-upstream` est nécessaire : `wrangler.jsonc` déclare des
+`routes` pour le déploiement (zone `femzlab.shop`), et sans ce drapeau,
+`wrangler dev` simule ce hostname de zone même en local — la requête vue par
+le Worker a alors un `url.hostname` de `femzlab.shop` plutôt que `localhost`,
+ce qui déclenche systématiquement le middleware apex→www de `src/index.ts` et
+renvoie un `301` vers `https://www.femzlab.shop/...` au lieu de servir la
+page en local.
+
+Pour rejouer le parcours depuis zéro (le script suppose un 1er login, donc la
+modale de consentement doit s'afficher — si `fraps81@gmail.com` existe déjà
+dans la base locale d'un essai précédent, cette modale n'apparaît plus) :
+arrêtez le serveur `wrangler dev` s'il tourne, repartez d'une base vide, puis
+relancez la pile locale.
+
+```bash
+rm -rf .wrangler/state
+npm run migrate:local
+npm run dev &
+```
+
 Puis, dans `espace/worker` :
 
 ```bash
