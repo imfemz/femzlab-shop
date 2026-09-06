@@ -12,3 +12,7 @@ dist/
 
 # artefacts de la suite de tests Python
 __pycache__/
+
+# worktrees git locaux et espace de travail des sous-agents (outillage local, jamais versionné)
+.worktrees/
+.superpowers/
