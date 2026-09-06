@@ -293,6 +293,17 @@ footer{background:var(--charcoal);color:#EDEDE8;margin-top:20px;position:relativ
         <em class="f-err" id="av-social-err" data-err="social" role="alert"></em>
       </label>
 
+      <!-- Partie privée : lue par Femz seul, jamais publiée, absente de
+           l'entrée reviews.json générée par le Worker. -->
+      <label class="f">
+        <span class="f-lbl" id="av-prive-lbl">Un truc à améliorer ? <span class="f-opt">facultatif — pour Femz uniquement, jamais publié</span></span>
+        <textarea name="prive" id="av-prive" maxlength="600" rows="3"
+                  aria-labelledby="av-prive-lbl" aria-describedby="av-prive-hint av-prive-err"
+                  placeholder="Dis-moi tout, sans filtre"></textarea>
+        <em class="f-hint" id="av-prive-hint">Une fonctionnalité qui manque, un point qui t'a gêné : ça reste entre nous.</em>
+        <em class="f-err" id="av-prive-err" data-err="prive" role="alert"></em>
+      </label>
+
       <label class="f f-check">
         <input type="checkbox" name="consent" id="av-consent" required
                aria-labelledby="av-consent-lbl" aria-describedby="av-consent-err">
@@ -406,6 +417,7 @@ if(navToggle&&navMenu){
       texte:   d.get('texte') || '',
       note:    d.get('note') ? Number(d.get('note')) : null,
       social:  d.get('social') || '',
+      prive:   d.get('prive') || '',
       consent: d.get('consent') === 'on',
       site:    d.get('site') || ''
     };
@@ -435,7 +447,7 @@ if(navToggle&&navMenu){
 
 <script>
 (function(){
-  const T={"Ton retour":"Your feedback","Raconte ce que le pack t'a apporté":"Tell us what the pack did for you","Deux minutes suffisent. Ton avis apparaîtra sur la page du produit avec ton prénom ou ton pseudo — jamais ton email, qui sert uniquement à vérifier ton achat.":"Two minutes is all it takes. Your review will appear on the product page with your first name or handle — never your email, which is only used to verify your purchase.","Le produit":"The product","Choisis…":"Choose…","L'email de ton achat":"Your purchase email","celui utilisé au moment du paiement":"the one used at checkout","Jamais publié. Sert à vérifier l'achat.":"Never published. Used to verify the purchase.","Ton prénom ou ton pseudo":"Your first name or handle","c'est ce qui s'affichera":"this is what will be displayed","Ton avis":"Your review","Ce que tu en as fait, ce que ça t'a fait gagner…":"What you made with it, what it saved you…","/400 — 40 minimum":"/400 — 40 minimum","Une note ?":"A rating?","facultatif":"optional","Sans note":"No rating","J'autorise FemzLab à publier cet avis et mon prénom ou pseudo sur femzlab.shop.":"I allow FemzLab to publish this review and my first name or handle on femzlab.shop.","Envoyer mon avis":"Send my review","Merci — c'est bien arrivé.":"Thanks — it came through.","Je vérifie ton achat et je publie ton avis sur la page du produit.":"I'll verify your purchase and publish your review on the product page.","Retour à la boutique":"Back to the shop","Ton Instagram ou TikTok":"Your Instagram or TikTok","Pour afficher ta photo de profil à côté de ton avis.":"So your profile picture can appear next to your review.","Les avis sont publiés sans sélection sur la note. Ton email n'est ni publié ni conservé ailleurs que dans la notification qui m'est envoyée.":"Reviews are published without filtering on rating. Your email is neither published nor stored anywhere other than the notification sent to me.","Boutique":"Shop","À propos":"About"};
+  const T={"Ton retour":"Your feedback","Raconte ce que le pack t'a apporté":"Tell us what the pack did for you","Deux minutes suffisent. Ton avis apparaîtra sur la page du produit avec ton prénom ou ton pseudo — jamais ton email, qui sert uniquement à vérifier ton achat.":"Two minutes is all it takes. Your review will appear on the product page with your first name or handle — never your email, which is only used to verify your purchase.","Le produit":"The product","Choisis…":"Choose…","L'email de ton achat":"Your purchase email","celui utilisé au moment du paiement":"the one used at checkout","Jamais publié. Sert à vérifier l'achat.":"Never published. Used to verify the purchase.","Ton prénom ou ton pseudo":"Your first name or handle","c'est ce qui s'affichera":"this is what will be displayed","Ton avis":"Your review","Ce que tu en as fait, ce que ça t'a fait gagner…":"What you made with it, what it saved you…","/400 — 40 minimum":"/400 — 40 minimum","Une note ?":"A rating?","facultatif":"optional","Sans note":"No rating","J'autorise FemzLab à publier cet avis et mon prénom ou pseudo sur femzlab.shop.":"I allow FemzLab to publish this review and my first name or handle on femzlab.shop.","Envoyer mon avis":"Send my review","Merci — c'est bien arrivé.":"Thanks — it came through.","Je vérifie ton achat et je publie ton avis sur la page du produit.":"I'll verify your purchase and publish your review on the product page.","Retour à la boutique":"Back to the shop","Ton Instagram ou TikTok":"Your Instagram or TikTok","Pour afficher ta photo de profil à côté de ton avis.":"So your profile picture can appear next to your review.","Un truc à améliorer ?":"Anything to improve?","facultatif — pour Femz uniquement, jamais publié":"optional — for Femz only, never published","Une fonctionnalité qui manque, un point qui t'a gêné : ça reste entre nous.":"A missing feature, something that bugged you: it stays between us.","Les avis sont publiés sans sélection sur la note. Ton email n'est ni publié ni conservé ailleurs que dans la notification qui m'est envoyée.":"Reviews are published without filtering on rating. Your email is neither published nor stored anywhere other than the notification sent to me.","Boutique":"Shop","À propos":"About"};
   const nodes=[]; const w=document.createTreeWalker(document.body,NodeFilter.SHOW_TEXT,null);
   let n; while(n=w.nextNode()){ const k=(n.nodeValue||'').trim(); if(k&&T[k]!==undefined) nodes.push([n,n.nodeValue,k]); }
   function set(lang){
@@ -449,7 +461,8 @@ if(navToggle&&navMenu){
   const PH={"celui utilisé au moment du paiement":"the one used at checkout",
             "c'est ce qui s'affichera":"this is what will be displayed",
             "Ce que tu en as fait, ce que ça t'a fait gagner…":"What you made with it, what it saved you…",
-            "@pseudo ou lien du profil":"@handle or profile link"};
+            "@pseudo ou lien du profil":"@handle or profile link",
+            "Dis-moi tout, sans filtre":"Tell me everything, no filter"};
   const champs=[...document.querySelectorAll('[placeholder]')].map(el=>[el,el.placeholder]);
   const setPH=(lang)=>champs.forEach(([el,fr])=>{el.placeholder = lang==='en' ? (PH[fr]||fr) : fr;});
   window.__setLang=set; set(initial);

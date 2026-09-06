@@ -59,10 +59,12 @@ IP, 429.
 
 Produit (nom canonique + intitulé du formulaire s'il diffère), note, pseudo,
 email d'achat à vérifier dans Podia, Instagram/TikTok fourni et le @pseudo
-extrait, le texte, la liste des étapes, et l'entrée JSON à coller dans
-`src/reviews.json` (avec `instagram`/`tiktok` + `avatar` pré-remplis quand un
-profil est donné — la photo se télécharge une fois dans `src/assets/`, jamais
-de lien direct vers le CDN : leurs URLs expirent).
+extrait, le texte public, **la partie privée** (« Un truc à améliorer ? »,
+champ `prive`, 600 caractères max — encadré jaune, lue par Femz seul, jamais
+publiée et absente de l'entrée JSON), la liste des étapes, et l'entrée JSON
+à coller dans `src/reviews.json` (avec `instagram`/`tiktok` + `avatar`
+pré-remplis quand un profil est donné — la photo se télécharge une fois dans
+`src/assets/`, jamais de lien direct vers le CDN : leurs URLs expirent).
 
 ## Garde-fous
 

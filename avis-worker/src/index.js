@@ -33,6 +33,9 @@ const PRODUITS = {
 
 const TEXTE_MIN = 40;
 const TEXTE_MAX = 400;
+// Partie privée (« un truc à améliorer ? ») : lue par Femz seul, jamais
+// publiée — elle va dans le mail, jamais dans l'entrée reviews.json.
+const PRIVE_MAX = 600;
 const CORPS_MAX = 8 * 1024; // octets — le formulaire complet fait < 2 Ko
 
 // Un POST en text/plain est une requête CORS « simple » sans préflight : sans
@@ -101,6 +104,9 @@ function valide(c) {
 
   try { social(c.social); } catch (msg) { e.social = msg; }
 
+  const prive = texte(c.prive);
+  if (prive.length > PRIVE_MAX) e.prive = `${PRIVE_MAX} caractères maximum (${prive.length} pour l'instant).`;
+
   if (c.consent !== true) e.consent = "Il faut accepter la publication pour envoyer l'avis.";
 
   return e;
@@ -139,6 +145,7 @@ function courriel(c, res, date) {
     ["Reçu le", date],
   ];
   const avis = texte(c.texte);
+  const prive = texte(c.prive);
   const snippet = entreeJson(c, res, date);
   const aFaire = [
     "1. Vérifier l'email dans Podia (liste des factures).",
@@ -151,7 +158,9 @@ function courriel(c, res, date) {
   const text =
     `Nouvel avis client\n\n` +
     lignes.map(([k, v]) => `${k} : ${v}`).join("\n") +
-    `\n\nAvis :\n${avis}\n\nÀ faire :\n${aFaire.join("\n")}\n\nEntrée reviews.json :\n${snippet}\n`;
+    `\n\nAvis (public) :\n${avis}\n\n` +
+    `Pour toi seulement — jamais publié :\n${prive || "—"}\n\n` +
+    `À faire :\n${aFaire.join("\n")}\n\nEntrée reviews.json :\n${snippet}\n`;
 
   const htmlCorps =
     `<div style="font:15px/1.5 -apple-system,Segoe UI,Inter,sans-serif;color:#111;max-width:640px">` +
@@ -160,7 +169,10 @@ function courriel(c, res, date) {
     lignes.map(([k, v]) =>
       `<tr><td style="padding:4px 14px 4px 0;color:#666;white-space:nowrap;vertical-align:top">${html(k)}</td><td style="padding:4px 0">${html(v)}</td></tr>`).join("") +
     `</table>` +
-    `<blockquote style="margin:18px 0;padding:14px 18px;background:#f3f3f1;border-radius:12px;font-size:16px;white-space:pre-wrap">${html(avis)}</blockquote>` +
+    `<p style="margin:18px 0 6px;color:#666;font-size:13px">Avis (public)</p>` +
+    `<blockquote style="margin:0 0 18px;padding:14px 18px;background:#f3f3f1;border-radius:12px;font-size:16px;white-space:pre-wrap">${html(avis)}</blockquote>` +
+    `<p style="margin:0 0 6px;color:#666;font-size:13px">Pour toi seulement — jamais publié</p>` +
+    `<div style="margin:0 0 18px;padding:14px 18px;background:#fff6dc;border:1px solid #f1dfa6;border-radius:12px;font-size:15px;white-space:pre-wrap">${prive ? html(prive) : "<span style=\"color:#8a7a4a\">— rien d'indiqué</span>"}</div>` +
     `<p style="margin:0 0 6px;color:#666;font-size:13px">À faire</p><ol style="margin:0 0 18px;padding-left:20px;font-size:14px">` +
     aFaire.map((l) => `<li>${html(l.replace(/^\d\.\s/, ""))}</li>`).join("") + `</ol>` +
     `<p style="margin:0 0 6px;color:#666;font-size:13px">Entrée reviews.json</p>` +
