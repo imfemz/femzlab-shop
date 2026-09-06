@@ -52,9 +52,13 @@ export default function ProfilePanel({ onClose }: { onClose: () => void }) {
     } catch (e: any) { setErr('Enregistrement refusé : ' + e.message); }
   }
   const toggle = (which: 'visible' | 'dms') => () => {
+    const prevV = visible, prevD = dmsOpen;
     const v = which === 'visible' ? !visible : visible, d = which === 'dms' ? !dmsOpen : dmsOpen;
     setVisible(v); setDmsOpen(d);
-    saveConsent(v, d).catch(() => setErr('Réglage de confidentialité non enregistré — réessaie.'));
+    saveConsent(v, d).catch(() => {
+      setVisible(prevV); setDmsOpen(prevD);
+      setErr('Réglage de confidentialité non enregistré — réessaie.');
+    });
   };
 
   return (
