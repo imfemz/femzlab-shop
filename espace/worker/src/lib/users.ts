@@ -68,8 +68,10 @@ export async function findOrCreateFromIdentity(env: Env, p: OAuthProfile, attach
  */
 async function copyProviderAvatar(env: Env, userId: number, avatarUrl: string) {
   try {
-    const r = await fetch(avatarUrl);
+    const r = await fetch(avatarUrl, { signal: AbortSignal.timeout(5000) });
     if (!r.ok) throw new Error(`réponse ${r.status}`);
+    const len = Number(r.headers.get('content-length') || 0);
+    if (len > MAX_BYTES) throw new Error('trop lourd (content-length)');
     const bytes = new Uint8Array(await r.arrayBuffer());
     if (bytes.length > MAX_BYTES) throw new Error('trop lourd');
     const kind = sniffImage(bytes);

@@ -105,6 +105,9 @@ app.post('/espace/api/media/reel/:n', requireAuth, async (c) => {
 
 app.get('/espace/media/*', async (c) => {
   const key = c.req.path.replace(/^\/espace\/media\//, '');
+  // Le bucket MEDIA accueillera d'autres préfixes (ex. backups/ en tâche 7) qui ne doivent
+  // jamais être servables publiquement par cette route sans authentification.
+  if (!/^(avatars|reels)\//.test(key)) return c.text('introuvable', 404);
   const obj = await c.env.MEDIA.get(key);
   if (!obj) return c.text('introuvable', 404);
   // On lit entièrement le corps ici (plutôt que de streamer obj.body) : sous le pool

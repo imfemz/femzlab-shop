@@ -35,6 +35,14 @@ describe('media', () => {
     const p: any = await (await app.request('/espace/api/profile', { headers: { Cookie: await cookieFor(u) } }, env)).json();
     expect(p.reels[0]).toEqual({ url: 'https://instagram.com/reel/a', thumb: r.url });
   });
+  it('la route média ne sert que les avatars et les vignettes', async () => {
+    await env.MEDIA.put('backups/2026-09-06.json', '{"users":[]}');
+    expect((await app.request('/espace/media/backups/2026-09-06.json', {}, env)).status).toBe(404);
+    await env.MEDIA.put('avatars/1/abc.png', PNG, { httpMetadata: { contentType: 'image/png' } });
+    const r = await app.request('/espace/media/avatars/1/abc.png', {}, env);
+    expect(r.status).toBe(200);
+    expect(r.headers.get('content-type')).toBe('image/png');
+  });
 });
 
 describe('avatar du fournisseur copié à l’inscription', () => {
@@ -72,5 +80,17 @@ describe('avatar du fournisseur copié à l’inscription', () => {
     const u2 = await env.DB.prepare("SELECT id, avatar_key FROM users WHERE display_name = 'Avatar2'").first<any>();
     expect(u2).toBeTruthy();
     expect(u2.avatar_key).toBeNull();
+  });
+
+  it('un avatar fournisseur trop lourd est ignoré sans bloquer l’inscription', async () => {
+    mockGoogle({ sub: 'g3', email: 'avatarbig@example.com', email_verified: true, name: 'AvatarBig', picture: 'https://lh3.googleusercontent.com/a/big' });
+    const big = new Uint8Array(2 * 1024 * 1024 + 1);
+    big.set(PNG, 0);
+    fetchMock.get('https://lh3.googleusercontent.com').intercept({ path: '/a/big' }).reply(200, Buffer.from(big), { headers: { 'content-type': 'image/png' } });
+    const r = await callback('google', 's3', stateCookie('s3'));
+    expect(r.status).toBe(302);
+    const u = await env.DB.prepare("SELECT id, avatar_key FROM users WHERE display_name = 'AvatarBig'").first<any>();
+    expect(u).toBeTruthy();
+    expect(u.avatar_key).toBeNull();
   });
 });
