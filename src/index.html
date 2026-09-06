@@ -290,7 +290,8 @@ section{max-width:1120px;margin:0 auto;padding:clamp(60px,9vh,104px) clamp(20px,
 .reach-inner{position:relative;z-index:1;max-width:900px;margin:0 auto}
 .reach-cred{display:flex;align-items:center;justify-content:center;gap:clamp(14px,2vw,20px);
   margin-bottom:clamp(34px,5vh,52px);text-align:left}
-.reach-ava{width:clamp(72px,10vw,92px);aspect-ratio:1;border-radius:50%;object-fit:cover;flex:none;
+.reach-ava{width:clamp(78px,10vw,96px);height:clamp(78px,10vw,96px);border-radius:50%;
+  object-fit:cover;object-position:center 22%;flex:none;
   border:2px solid rgba(255,255,255,.14);
   box-shadow:0 0 0 4px rgba(94,162,255,.16),0 14px 40px rgba(0,0,0,.55)}
 .reach-id{display:flex;flex-direction:column;gap:5px}
@@ -305,10 +306,15 @@ section{max-width:1120px;margin:0 auto;padding:clamp(60px,9vh,104px) clamp(20px,
   border-radius:16px;overflow:hidden;padding:clamp(16px,2.4vw,24px);
   background:linear-gradient(180deg,#20232a,#14161b);
   border:1px solid rgba(255,255,255,.07);color:#fff;text-decoration:none;
+  -webkit-tap-highlight-color:transparent;
   box-shadow:inset 0 1px 0 rgba(255,255,255,.05),0 18px 40px rgba(0,0,0,.4);
   transition:transform .5s cubic-bezier(.22,1,.36,1),box-shadow .5s,border-color .5s}
-.rtile:hover{transform:translateY(-4px);border-color:rgba(255,255,255,.15);
-  box-shadow:inset 0 1px 0 rgba(255,255,255,.08),0 26px 56px rgba(0,0,0,.5)}
+@media (hover:hover){
+  .rtile:hover{transform:translateY(-4px);border-color:rgba(255,255,255,.15);
+    box-shadow:inset 0 1px 0 rgba(255,255,255,.08),0 26px 56px rgba(0,0,0,.5)}
+}
+.rtile:focus-visible{outline:2px solid #5EA2FF;outline-offset:3px;border-radius:16px}
+.rtile:active{transform:scale(.985)}
 .rtile .ricon{position:absolute;top:clamp(14px,2vw,20px);right:clamp(14px,2vw,20px);
   width:clamp(26px,3.4vw,34px);height:clamp(26px,3.4vw,34px)}
 .rtile .ricon svg{width:100%;height:100%;display:block}
@@ -989,7 +995,7 @@ footer{background:var(--charcoal);color:#EDEDE8;margin-top:30px;position:relativ
         <img class="reach-ava" src="assets/jpg-30.jpg" alt="Femz — Fémi Olu" loading="lazy" width="92" height="92">
         <div class="reach-id">
           <span class="reach-eyebrow">Créateur de contenu</span>
-          <span class="reach-name">Femz<svg class="reach-badge" viewBox="0 0 24 24" aria-label="Vérifié" role="img"><path fill="#5EA2FF" d="M12 1l2.4 1.8 3 .1 1 2.8 2.4 1.8-.9 2.9.9 2.9-2.4 1.8-1 2.8-3 .1L12 23l-2.4-1.8-3-.1-1-2.8L3.2 16.5l.9-2.9-.9-2.9 2.4-1.8 1-2.8 3-.1z"/><path fill="#fff" d="M10.6 15.2l-2.9-2.9 1.3-1.3 1.6 1.6 3.9-3.9 1.3 1.3z"/></svg></span>
+          <span class="reach-name">Femz<svg class="reach-badge" viewBox="0 0 24 24" aria-label="Compte vérifié" role="img"><path fill="#5EA2FF" d="M12 1.6l2.05 1.34 2.44-.18 1.03 2.22 2.22 1.03-.18 2.44L20.9 12l-1.34 2.05.18 2.44-2.22 1.03-1.03 2.22-2.44-.18L12 20.9l-2.05-1.34-2.44.18-1.03-2.22-2.22-1.03.18-2.44L3.1 12l1.34-2.05-.18-2.44 2.22-1.03L7.51 2.76l2.44.18z"/><path fill="#fff" d="M10.55 15.55L7.3 12.3l1.5-1.5 1.75 1.75 4.65-4.65 1.5 1.5z"/></svg></span>
         </div>
       </div>
 
