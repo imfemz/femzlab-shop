@@ -10,9 +10,9 @@ et modifiable — c'est src/ qui fait foi.
 """
 
 import base64
-import datetime
 import json
 import pathlib
+import re
 import shutil
 import sys
 
@@ -42,12 +42,17 @@ MIME = {
 SANS_INLINE = {"mp4-17.mp4"}
 
 REVIEWS = SRC / "reviews.json"
-DEBUT = "<!-- reviews:start -->"
-FIN = "<!-- reviews:end -->"
+# Marqueurs d'injection. `produit="…"` sur le marqueur d'ouverture limite le
+# bloc aux avis de ce produit — c'est ce qu'utilise une page produit ; sans
+# attribut (accueil), tous les avis passent.
+MARQUEUR = re.compile(
+    r'(<!-- reviews:start(?: produit="([^"]*)")? -->)(.*?)(<!-- reviews:end -->)', re.S)
 
-# En dessous de ce nombre d'avis, le marquee se répète de façon visible :
-# on bascule sur la grille statique jusqu'à ce qu'il y ait de quoi défiler.
-SEUIL_MARQUEE = 6
+# En dessous de ce nombre d'avis, pas de défilement. Le moteur repris de Bart
+# rend « 1 card = still seamless » en la clonant sur toute la largeur — soit
+# la même carte répétée quatre fois, ce qui crie « on n'a qu'un avis ». Un avis
+# seul reste donc posé, centré ; à partir de deux, ça défile.
+SEUIL_MARQUEE = 2
 
 # Texte de conformité (art. L.111-7-2 et D.111-17 du code de la consommation) :
 # origine des avis, absence de tri sur la note, critère de classement retenu
@@ -67,11 +72,6 @@ def echappe(texte):
             .replace(">", "&gt;").replace('"', "&quot;"))
 
 
-def date_fr(iso):
-    """Convertit une date ISO (AAAA-MM-JJ) en JJ/MM/AAAA, lisible pour un visiteur FR."""
-    return datetime.date.fromisoformat(iso).strftime("%d/%m/%Y")
-
-
 def trie_avis(liste):
     """Trie les avis du plus récent au plus ancien (champ `date`, ISO AAAA-MM-JJ).
 
@@ -82,21 +82,21 @@ def trie_avis(liste):
     return sorted(liste, key=lambda a: a["date"], reverse=True)
 
 
-def carte(avis, dup=False):
-    """Une carte d'avis. `dup` marque la copie qui sert à boucler le défilement.
+def carte(avis):
+    """Une carte d'avis — copie de la carte de retour client d'editingshift.com
+    (Bart), relevée sur son DOM : avatar + nom sur une ligne, texte brut en
+    dessous. Rien d'autre : ni produit, ni date, ni guillemets, ni séparateur
+    (décision Femz du 2026-09-06 ; l'information de collecte et de classement
+    reste dans la mention sous le défilement).
 
-    Structure calquée sur la carte de retour client d'editingshift.com (Bart) :
-    avatar + nom EN HAUT sur une ligne, texte brut en dessous, sans guillemets
-    ni séparateur. `instagram` (le pseudo, sans @) est facultatif : présent, il
-    remplace l'avatar par sa vraie photo de profil (fichier `avatar` dans
-    src/assets/, téléchargé une fois et hébergé chez nous — jamais un lien
-    direct vers le CDN Instagram, ses URLs sont signées et expirent) et le nom
-    affiché devient son @pseudo, exactement comme chez Bart (une seule ligne
-    d'identité, jamais nom ET @pseudo empilés). Sans ces deux champs, repli sur
-    l'initiale colorée et le pseudo saisi — un avis n'a pas toujours
-    d'Instagram derrière.
+    `instagram` (le pseudo, sans @) est facultatif : présent, il remplace
+    l'avatar par sa vraie photo de profil (fichier `avatar` dans src/assets/,
+    téléchargé une fois et hébergé chez nous — jamais un lien direct vers le
+    CDN Instagram, ses URLs sont signées et expirent) et le nom affiché devient
+    son @pseudo, comme chez Bart (une seule ligne d'identité, jamais nom ET
+    @pseudo empilés). Sans ces deux champs, repli sur l'initiale et le pseudo
+    saisi — un avis n'a pas toujours d'Instagram derrière.
     """
-    cache = ' aria-hidden="true"' if dup else ""
     handle = avis.get("instagram")
     fichier = avis.get("avatar")
     if handle and fichier:
@@ -106,39 +106,161 @@ def carte(avis, dup=False):
         av = f'<span class="av" aria-hidden="true">{echappe(avis["pseudo"][:1].upper())}</span>'
         nom = echappe(avis["pseudo"])
     return (
-        f'<figure class="mqcard"{cache}>'
+        f'<figure class="mqcard">'
         f'<figcaption class="who">{av}<b>{nom}</b></figcaption>'
         f'<blockquote>{echappe(avis["texte"])}</blockquote>'
-        f'<p class="rv-meta">{echappe(avis["produit"])}'
-        f'<span class="rv-date">{echappe(date_fr(avis["date"]))}</span></p>'
         f'</figure>'
     )
 
 
-def bloc_avis(donnees):
-    """Le contenu généré : conteneur, piste dupliquée, mention de collecte."""
+# Style et moteur du défilement, injectés avec le bloc pour que chaque page
+# qui affiche des avis ait EXACTEMENT le même composant — une seule source.
+# Valeurs relevées sur le DOM d'editingshift.com le 2026-09-06 (carte 420px,
+# padding 24, rayon 28, fond #e9e9e9 bordé de blanc, ombre 0 12 53 / 15 %,
+# avatar 48, nom 18/600 #2f2f2f, texte 22/400 #212121, écart 52 ; survol :
+# scale 1.04 + fond #c8e9ff en 350 ms ; masque 20 %/80 % ; sous 750 px :
+# carte 320, padding 20, avatar 42, nom 16, texte 18, écart 16). Bart masque
+# toute la section sous 750 px — ici on garde ses tailles mobiles à la place.
+CSS_AVIS = """
+.mqwrap{--mq-w:420px;--mq-pad:24px;--mq-gap:52px;--mq-av:48px;--mq-name:18px;--mq-text:22px}
+@media (max-width:749px){.mqwrap{--mq-w:320px;--mq-pad:20px;--mq-gap:16px;--mq-av:42px;--mq-name:16px;--mq-text:18px}}
+/* Le padding vertical donne de la place à l'ombre et au scale du survol sous
+   l'overflow:hidden ; la marge négative l'annule dans le flux pour ne pas
+   toucher à la respiration des sections. */
+.mq{position:relative;overflow:hidden;padding:56px 0;margin:-56px 0;
+  -webkit-mask-image:linear-gradient(to right,transparent 0%,#000 20%,#000 80%,transparent 100%);
+          mask-image:linear-gradient(to right,transparent 0%,#000 20%,#000 80%,transparent 100%)}
+.mqtrack{display:flex;align-items:flex-start;width:max-content;gap:var(--mq-gap);
+  transform:translate3d(0,0,0);will-change:transform}
+.mqgroup{display:flex;align-items:flex-start;flex-shrink:0;gap:var(--mq-gap)}
+.mqcard{position:relative;flex:0 0 auto;margin:0;box-sizing:border-box;
+  width:min(var(--mq-w),calc(100vw - 48px));padding:var(--mq-pad);
+  border:1px solid #fff;border-radius:28px;background:#e9e9e9;
+  box-shadow:0 12px 53px rgba(0,0,0,.15);
+  transform:scale(1);transform-origin:center center;cursor:default;will-change:transform;
+  transition:transform .35s cubic-bezier(.22,1,.36,1),background-color .35s ease,
+    border-color .35s ease,box-shadow .35s ease}
+.mqcard:hover{transform:scale(1.04);background:#c8e9ff;border-color:#d4f6ff}
+.mqcard .who{display:flex;align-items:center;gap:12px;min-width:0}
+.mqcard .av{width:var(--mq-av);height:var(--mq-av);flex:0 0 var(--mq-av);border-radius:50%;
+  object-fit:cover;object-position:center center;
+  background:#161616;color:#fff;display:flex;align-items:center;justify-content:center;
+  font-family:'Montserrat',sans-serif;font-weight:800;font-size:calc(var(--mq-av)*.38)}
+.mqcard .who b{min-width:0;color:#2f2f2f;font-size:var(--mq-name);font-weight:600;
+  line-height:1.15;overflow-wrap:anywhere}
+.mqcard blockquote{margin:14px 0 0;color:#212121;font-size:var(--mq-text);font-weight:400;
+  line-height:1.4;overflow-wrap:anywhere;white-space:pre-line}
+/* Un seul avis : posé, centré, sans masque ni défilement. */
+.mq-static .mq{-webkit-mask-image:none;mask-image:none}
+.mq-static .mqtrack{width:auto;justify-content:center}
+.reviews-note{margin:18px auto 0;max-width:1120px;padding:0 clamp(20px,5vw,48px);
+  font-family:'Inter',system-ui,sans-serif;font-weight:700;font-size:10px;letter-spacing:.14em;
+  line-height:1.7;text-transform:uppercase;text-align:center;
+  color:var(--mq-note,#8D8D84)} /* --mq-note : une page à thème sombre y met son gris clair */
+@media (prefers-reduced-motion:reduce){
+  .mq{-webkit-mask-image:none;mask-image:none}
+  .mqtrack{transform:none!important;width:auto;flex-wrap:wrap;justify-content:center}
+}
+"""
+
+# Moteur repris du script inline de Bart (rAF, vitesse en px/s, clones
+# construits pour couvrir la largeur, saut invisible d'un groupe à l'autre,
+# décélération exponentielle au survol). Adapté : idempotent (un seul init
+# par bloc), sans les hooks de l'éditeur Shopify, et `data-hover-speed="0"`
+# est lu comme 0 — chez Bart `Number("0") || 20` retombe sur 20, ce qui fait
+# que son site RALENTIT à 20 % au survol au lieu de s'arrêter ; c'est ce
+# comportement observé qu'on reproduit, avec la valeur écrite explicitement.
+JS_AVIS = """
+(function(){
+  var reduced=matchMedia('(prefers-reduced-motion: reduce)').matches;
+  document.querySelectorAll('.mq:not([data-ready])').forEach(function(vp){
+    vp.setAttribute('data-ready','1');
+    var track=vp.querySelector('.mqtrack'),orig=vp.querySelector('.mqgroup');
+    if(!track||!orig||reduced||vp.closest('.mq-static'))return;
+    var base=Math.max(0,Number(vp.getAttribute('data-speed'))||60);
+    var hv=vp.getAttribute('data-hover-speed');
+    var hoverMul=Math.max(0,Math.min(100,(hv===null||hv==='')?20:Number(hv)))/100;
+    var cur=base,target=base,pos=0,prev=performance.now(),reset=0,timer=null,hovered=null;
+    function build(){
+      track.querySelectorAll('.mqgroup[aria-hidden]').forEach(function(c){c.remove()});
+      var gap=parseFloat(getComputedStyle(track).columnGap)||0;
+      var w=orig.getBoundingClientRect().width;
+      if(w<=0){reset=0;return}
+      reset=w+gap;
+      var n=Math.max(2,Math.ceil(vp.getBoundingClientRect().width/reset)+2);
+      for(var i=0;i<n;i++){
+        var c=orig.cloneNode(true);c.setAttribute('aria-hidden','true');
+        c.querySelectorAll('img').forEach(function(im){im.alt=''});
+        track.appendChild(c);
+      }
+      pos=pos%reset;
+    }
+    track.addEventListener('pointerover',function(e){
+      var card=e.target.closest('.mqcard');if(!card||!track.contains(card))return;
+      if(e.relatedTarget&&card.contains(e.relatedTarget))return;
+      hovered=card;target=base*hoverMul;
+    });
+    track.addEventListener('pointerout',function(e){
+      var card=e.target.closest('.mqcard');if(!card||!track.contains(card))return;
+      if(e.relatedTarget&&card.contains(e.relatedTarget))return;
+      if(hovered===card){hovered=null;target=base}
+    });
+    function animate(t){
+      if(!document.documentElement.contains(vp))return;
+      var delta=Math.min((t-prev)/1000,.05);prev=t;
+      var k=1-Math.pow(.0005,delta);
+      cur+=(target-cur)*k;
+      pos+=cur*delta;
+      if(reset>0&&pos>=reset)pos-=reset;
+      track.style.transform='translate3d('+(-pos)+'px,0,0)';
+      requestAnimationFrame(animate);
+    }
+    function schedule(){clearTimeout(timer);timer=setTimeout(build,100)}
+    addEventListener('resize',schedule);
+    orig.querySelectorAll('img').forEach(function(im){
+      if(!im.complete)im.addEventListener('load',schedule,{once:true});
+    });
+    if('ResizeObserver' in window){var ro=new ResizeObserver(schedule);ro.observe(orig);ro.observe(vp)}
+    build();requestAnimationFrame(animate);
+  });
+})();
+"""
+
+
+def bloc_avis(donnees, produit=None):
+    """Le contenu généré : style, défilement, mention de collecte, moteur."""
     liste = trie_avis(donnees["avis"])
-    piste = "".join(carte(a) for a in liste)
-    copie = "".join(carte(a, dup=True) for a in liste)
+    if produit:
+        liste = [a for a in liste if a.get("produit") == produit]
+    if not liste:
+        # Page produit sans avis : on masque la section qui nous contient
+        # plutôt que de laisser un titre au-dessus du vide.
+        return ('<script>(function(s){var x=s&&s.closest("section");'
+                'if(x)x.hidden=true})(document.currentScript)</script>')
     statique = "" if len(liste) >= SEUIL_MARQUEE else " mq-static"
+    cartes = "".join(carte(a) for a in liste)
     maj = echappe(donnees.get("mise_a_jour", ""))
     # La date de mise à jour est un élément séparé de la phrase traduite, et
     # le libellé « Mise à jour » un nœud de texte séparé de la date elle-même :
     # ni l'un ni l'autre ne change quand l'autre change, donc rien ne casse la
     # traduction anglaise au fil des mises à jour de reviews.json.
     return (
-        f'<div class="mq{statique}"><div class="mqtrack">{piste}{copie}</div></div>'
+        f'<style>{CSS_AVIS}</style>'
+        f'<div class="mqwrap{statique}">'
+        f'<div class="mq" data-speed="70" data-hover-speed="20">'
+        f'<div class="mqtrack"><div class="mqgroup">{cartes}</div></div></div>'
         f'<p class="reviews-note rv">{MENTION} '
         f'<span class="reviews-updated">Mise à jour'
         f'<span class="reviews-updated-val">&nbsp;: {maj}.</span></span></p>'
+        f'</div>'
+        f'<script>{JS_AVIS}</script>'
     )
 
 
 def injecte_avis(texte, donnees):
     """Remplace ce qui se trouve entre les marqueurs. Les marqueurs restent."""
-    debut = texte.index(DEBUT) + len(DEBUT)
-    fin = texte.index(FIN)
-    return texte[:debut] + bloc_avis(donnees) + texte[fin:]
+    return MARQUEUR.sub(
+        lambda m: m.group(1) + bloc_avis(donnees, m.group(2)) + m.group(4), texte)
 
 
 def data_uri(fichier):
@@ -166,7 +288,7 @@ def main():
 
     for source, cible in PAGES:
         texte = (SRC / source).read_text(encoding="utf-8")
-        if DEBUT in texte:
+        if MARQUEUR.search(texte):
             texte = injecte_avis(texte, donnees)
         for chemin, uri in remplacements:
             texte = texte.replace(chemin, uri)

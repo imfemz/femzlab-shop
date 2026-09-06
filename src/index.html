@@ -439,48 +439,15 @@ section{max-width:1120px;margin:0 auto;padding:clamp(60px,9vh,104px) clamp(20px,
 }
 .why .wide .ic svg{width:20px;height:20px;stroke:#fff}
 
-/* ---------- retours clients : marquee ---------- */
-.mq{overflow:hidden;position:relative;padding:6px 0;
-  -webkit-mask-image:linear-gradient(90deg,transparent,#000 6%,#000 94%,transparent);
-          mask-image:linear-gradient(90deg,transparent,#000 6%,#000 94%,transparent)}
-.mqtrack{display:flex;align-items:center;gap:20px;width:max-content;
-  animation:mqscroll 64s linear infinite}
-.mq:hover .mqtrack,.mq:focus-within .mqtrack{animation-play-state:paused}
-@keyframes mqscroll{to{transform:translateX(calc(-50% - 10px))}}
-
-/* Pas de backdrop-filter ici : le marquee duplique une vingtaine de cartes et
-   Safari iOS plafonne le nombre de couches de verre par page. Blanc plein. */
-.mqcard{background:#fff;border-radius:var(--r-lg);box-shadow:var(--shadow);
-  padding:22px 24px;width:clamp(258px,25vw,340px);flex:none;margin:0;
-  display:block}
-/* Avatar + nom en tête de carte, sur une ligne — calqué sur la carte de
-   retour client de Bart (editingshift.com) : pas de séparateur, pas de
-   guillemets, une seule ligne d'identité (nom OU @pseudo, jamais les deux). */
-.mqcard .who{display:flex;align-items:center;gap:12px}
-.mqcard .av{width:38px;height:38px;border-radius:50%;background:var(--charcoal);
-  color:#fff;display:flex;align-items:center;justify-content:center;flex:none;
-  font-family:'Montserrat',sans-serif;font-weight:800;font-size:14px;
-  object-fit:cover}
-.mqcard .who b{font-size:14.5px;font-weight:700;color:var(--ink)}
-.mqcard blockquote{margin:14px 0 0;font-size:14.5px;line-height:1.55;color:#3A3A35;
-  white-space:pre-line}
-/* Produit + date : mention discrète en pied de carte (obligation art.
-   D.111-17 pour la date), jamais dans la ligne d'identité. */
-.mqcard .rv-meta{margin:12px 0 0;font-size:10.5px;color:var(--dim)}
-.mqcard .rv-meta .rv-date::before{content:"\00a0\00b7\00a0"}
-.reviews-note{margin-top:18px;font-size:10px;color:var(--dim);text-align:center;
-  letter-spacing:.14em;line-height:1.7}
-
-/* Repli en grille : sous le seuil d'avis (classe posée par build.py),
-   ou si le visiteur a demandé moins d'animations. */
-.mq-static{-webkit-mask-image:none;mask-image:none}
-.mq-static .mqtrack{animation:none;width:auto;flex-wrap:wrap;justify-content:center}
-.mq-static .mqcard[aria-hidden="true"]{display:none}
-@media (prefers-reduced-motion:reduce){
-  .mq{-webkit-mask-image:none;mask-image:none}
-  .mqtrack{animation:none;width:auto;flex-wrap:wrap;justify-content:center}
-  .mqcard[aria-hidden="true"]{display:none}
-}
+/* ---------- retours clients ----------
+   Le composant (cartes, défilement, mention) est injecté par build.py avec
+   son propre style : une seule source pour toutes les pages qui affichent
+   des avis. Ici, seulement le cadre : section pleine largeur sur fond blanc,
+   comme chez Bart (editingshift.com), au lieu de la colonne 1120px. */
+#avis{max-width:none;background:#fff;
+  padding:clamp(60px,9vh,104px) 0 calc(clamp(60px,9vh,104px) + 30px);
+  margin-bottom:-30px} /* absorbe le margin-top du footer : pas de liseré papier entre le blanc et le noir */
+#avis .sec-head{max-width:1120px;margin:0 auto 40px;padding:0 clamp(20px,5vw,48px)}
 
 /* ---------- footer ---------- */
 footer{background:var(--charcoal);color:#EDEDE8;margin-top:30px;position:relative;z-index:60}

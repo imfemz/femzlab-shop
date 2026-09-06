@@ -452,6 +452,10 @@ nav.dock::before{content:"";position:absolute;inset:-70%;z-index:-1;pointer-even
 
 /* ---------- S9 : FAQ ---------- */
 .faq-wrap{max-width:720px;margin:0 auto;padding:26px clamp(20px,5vw,48px) var(--secB);display:flex;flex-direction:column;gap:12px}
+/* Retours clients : même 26px entre l'en-tête et le contenu que les autres
+   sections (le composant lui-même est injecté par build.py, voir S9 bis). */
+#avis .mqwrap{padding-top:26px}
+#avis{--mq-note:var(--on-dim)} /* mention de collecte lisible sur le thème sombre */
 .faq-wrap details{background:#fff;border-radius:14px;box-shadow:var(--shadow);padding:0;overflow:hidden}
 .faq-wrap summary{list-style:none;cursor:pointer;padding:19px 24px;font-weight:700;font-size:15px;
   display:flex;justify-content:space-between;align-items:center;gap:14px}
@@ -1060,6 +1064,19 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     <details class="rv" name="faq" style="--d:.3s"><summary>Le Discord, ça sert à quoi ?</summary><p>À poser tes questions sur les leçons — la communauté et moi y répondons. <a data-track="cta_mv_discord_faq" href="https://discord.gg/xmwq2NMDTw" target="_blank" rel="noopener">Rejoindre le Discord FemzLab</a></p></details>
   </div>
 
+  <!-- ======================= S9 bis : RETOURS CLIENTS ======================= -->
+  <!-- Entre la FAQ et le CTA final : objections levées, preuve sociale, puis
+       achat. `.band` pour garder le rythme des sections (fond transparent en
+       thème sombre). Le composant est injecté par build.py, limité aux avis
+       MetaVision ; sans avis, la section se masque seule. -->
+  <section class="band" id="avis">
+  <div class="sec-head rv">
+    <span class="eyebrow">Retours clients</span>
+    <h2>Ils l'ont suivie</h2>
+  </div>
+  <!-- reviews:start produit="MetaVision" --><!-- reviews:end -->
+  </section>
+
   <!-- ======================= S10 : CTA FINAL ======================= -->
   <section class="final rv">
     <h2><span class="gflow">Prêt à libérer ton potentiel ?</span></h2>
@@ -1356,6 +1373,9 @@ document.addEventListener('click',function(e){var el=e.target.closest&&e.target.
     "Oui : 150 € en une fois, ou 2 paiements mensuels de 75 €. Le paiement passe par Podia, sur pay.femzlab.shop.":"Yes: €150 in one go, or 2 monthly payments of €75. Payment goes through Podia, on pay.femzlab.shop.",
     // nav / dock / sticky / footer
     "Portfolio":"Portfolio","Boutique":"Shop","Assets":"Assets","À propos":"About",
+    "Retours clients":"Reviews","Ils l'ont suivie":"They took the course",
+    "Avis de clients ayant acheté le produit, recueillis par formulaire ou transmis directement. Publiés sans sélection sur la note, classés du plus récent au plus ancien. Aucune contrepartie n'est fournie en échange d'un avis.":"Reviews from customers who purchased the product, collected through the form or submitted directly. Published without filtering on rating, ranked from most recent to oldest. No compensation is provided in exchange for a review.",
+    "Mise à jour":"Updated",
     "Acheter — 150 €":"Buy — €150","MetaVision — 150 €":"MetaVision — €150","Acheter":"Buy",
     // S1
     "Formation VFX · After Effects":"VFX course · After Effects",
