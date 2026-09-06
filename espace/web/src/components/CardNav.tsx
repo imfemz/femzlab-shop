@@ -226,8 +226,8 @@ const CardNav = forwardRef<CardNavHandle, Props>(function CardNav({ onOpenConv }
                   e.currentTarget.play().catch(() => {});
                 }}
               >
-                <source src="/FemzLab-logo-safari.mov" type='video/mp4; codecs="hvc1"' />
-                <source src="/FemzLab-logo.webm" type="video/webm" />
+                <source src="/espace/FemzLab-logo-safari.mov" type='video/mp4; codecs="hvc1"' />
+                <source src="/espace/FemzLab-logo.webm" type="video/webm" />
               </video>
             </a>
             <div className="cnav-logo">

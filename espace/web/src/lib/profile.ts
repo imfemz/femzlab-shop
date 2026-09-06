@@ -1,27 +1,21 @@
 /**
- * Store du profil élève.
- * Mode API (session active) : hydraté par initProfileFromApi() avant le premier
- * rendu ; save() réplique en PUT /api/profile (la ville y est géocodée serveur).
- * Mode démo (sans backend) : localStorage, comme la maquette.
+ * Store du profil membre.
+ * Aucun repli local : hydraté par initProfileFromApi() avant le premier
+ * rendu (GET /espace/api/profile) ; save() réplique en PUT /espace/api/profile
+ * (la ville y est géocodée serveur, qui renvoie le profil à jour).
  * Le panneau « Mon espace » écrit, le Globe s'abonne pour synchroniser
  * la carte Femz (ville géocodée → le point bouge, avatar, réseaux, reels).
  */
-import { apiJson } from './api';
+import { API, apiJson } from './api';
 
-export type ProfileReel = { url: string; thumb: string };
+export type ProfileReel = { url: string; thumb: string | null };
 export type ProfileData = {
+  display_name: string;
   city: string;
   av: string | null;
   socials: { ig: string; tt: string; yt: string };
   reels: ProfileReel[];
 };
-
-const KEY = 'nv_profile';
-
-let remote = false;
-let cache: ProfileData | null = null;
-
-const subs = new Set<(d: ProfileData) => void>();
 
 type ApiProfile = {
   display_name: string | null;
@@ -33,42 +27,56 @@ type ApiProfile = {
   reels: ProfileReel[];
 };
 
-/** Hydrate le store depuis GET /api/profile. */
+let cache: ProfileData | null = null;
+
+const subs = new Set<(d: ProfileData) => void>();
+
+const fromApi = (p: ApiProfile): ProfileData => ({
+  display_name: p.display_name || '',
+  city: p.city || '',
+  av: p.avatar,
+  socials: { ig: p.socials?.ig || '', tt: p.socials?.tt || '', yt: p.socials?.yt || '' },
+  reels: p.reels || [],
+});
+
+/** Hydrate le store depuis GET /espace/api/profile. */
 export async function initProfileFromApi(): Promise<void> {
-  const p = await apiJson<ApiProfile>('/api/profile');
-  cache = {
-    city: p.city || '',
-    av: p.avatar,
-    socials: { ig: p.socials?.ig || '', tt: p.socials?.tt || '', yt: p.socials?.yt || '' },
-    reels: p.reels || [],
-  };
-  remote = true;
+  cache = fromApi(await apiJson<ApiProfile>(`${API}/profile`));
 }
 
 export const profileStore = {
   load(): ProfileData | null {
-    if (remote) return cache;
-    try {
-      return JSON.parse(localStorage.getItem(KEY) || 'null');
-    } catch {
-      return null;
+    return cache;
+  },
+  /** Enregistre côté serveur ; résout avec le profil renvoyé (ville géocodée). Lève si le serveur refuse. */
+  async save(d: Pick<ProfileData, 'display_name' | 'city' | 'socials' | 'reels'>): Promise<ProfileData> {
+    const p = await apiJson<ApiProfile>(`${API}/profile`, {
+      method: 'PUT',
+      body: JSON.stringify({
+        display_name: d.display_name,
+        city: d.city,
+        socials: d.socials,
+        reels: d.reels.map((r) => ({ url: r.url })),
+      }),
+    });
+    cache = fromApi(p);
+    subs.forEach((f) => f(cache!));
+    return cache;
+  },
+  setAvatar(url: string | null) {
+    if (cache) {
+      cache = { ...cache, av: url };
+      subs.forEach((f) => f(cache!));
     }
   },
-  save(d: ProfileData) {
-    if (remote) {
-      cache = d;
-      apiJson('/api/profile', {
-        method: 'PUT',
-        body: JSON.stringify({ city: d.city, avatar: d.av, socials: d.socials, reels: d.reels }),
-      }).catch((e) => console.warn('Profil non enregistré côté serveur :', e));
-    } else {
-      try {
-        localStorage.setItem(KEY, JSON.stringify(d));
-      } catch {
-        /* stockage indisponible : la synchro fonctionne quand même */
-      }
+  setReelThumb(i: number, url: string) {
+    if (cache) {
+      const reels = [...cache.reels];
+      while (reels.length <= i) reels.push({ url: '', thumb: null });
+      reels[i] = { ...reels[i], thumb: url };
+      cache = { ...cache, reels };
+      subs.forEach((f) => f(cache!));
     }
-    subs.forEach((f) => f(d));
   },
   subscribe(f: (d: ProfileData) => void): () => void {
     subs.add(f);

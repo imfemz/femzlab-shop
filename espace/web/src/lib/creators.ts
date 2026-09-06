@@ -1,13 +1,12 @@
 /**
  * Les créateurs du globe.
- * Mode API (session active) : la liste vient de GET /api/creators —
+ * Aucun repli local : la liste vient de GET /espace/api/creators —
  * initCreatorsFromApi() remplace le contenu du tableau AVANT le premier rendu.
- * Mode démo (sans backend) : tableau EXACT de la maquette v30 ci-dessous.
  * Prénom + initiale, jamais d'email. Ville déclarative.
  * Le tableau est un singleton mutable : le profil « Mon espace »
  * met à jour l'entrée Femz (index 0, toujours le fondateur) via le Globe.
  */
-import { apiJson } from './api';
+import { API, apiJson } from './api';
 
 export type Creator = {
   n: string;
@@ -41,49 +40,11 @@ export type AnonPoint = {
   sy?: number;
 };
 
-/** Les membres non consentants du globe (mode API). Vide en mode démo. */
+/** Les membres non consentants du globe (points pays anonymisés). */
 export const ANON: AnonPoint[] = [];
 
-export const CREATORS: Creator[] = [
-  { n: 'Femz', h: '@imfemz', city: 'Paris, France', lat: 48.85, lon: 2.35, stats: 'Fondateur · FemzLab', f: ['NéoVision · Studio', 'MetaVision'], founder: true },
-  { n: 'Contact', h: '', city: 'France', lat: 47.44, lon: -1.59, stats: 'Client MetaVision', f: ['MetaVision'], socials: {} },
-  { n: 'Adamrec', h: '', city: 'France', lat: 45.25, lon: 0.07, stats: 'Client MetaVision', f: ['MetaVision'], socials: {} },
-  { n: 'Whosleoh', h: '', city: 'France', lat: 48.02, lon: 3.88, stats: 'Client MetaVision', f: ['MetaVision'], socials: {} },
-  { n: 'Liaans', h: '', city: 'France', lat: 48.95, lon: -1.07, stats: 'Client MetaVision', f: ['MetaVision'], socials: {} },
-  { n: 'Hvmza', h: '', city: 'France', lat: 46.13, lon: -1.55, stats: 'Client MetaVision', f: ['MetaVision'], socials: {} },
-  { n: 'Cameronmaussin', h: '', city: 'Belgique', lat: 50.21, lon: 4.61, stats: 'Client MetaVision', f: ['MetaVision'], socials: {} },
-  { n: 'Hanoa P.', h: '', city: 'France', lat: 43.76, lon: -0.13, stats: 'Client MetaVision', f: ['MetaVision'], socials: {} },
-  { n: 'Emeric G.', h: '', city: 'France', lat: 47.5, lon: 2.78, stats: 'Client MetaVision', f: ['MetaVision'], socials: {} },
-  { n: 'Landsecfilms', h: '', city: 'France', lat: 44.92, lon: 3.15, stats: 'Client MetaVision', f: ['MetaVision'], socials: {} },
-  { n: 'Exilie', h: '', city: 'France', lat: 48.46, lon: -1.75, stats: 'Client MetaVision', f: ['MetaVision'], socials: {} },
-  { n: 'Christopher L.', h: '', city: 'France', lat: 48.43, lon: 4.06, stats: 'Client MetaVision', f: ['MetaVision'], socials: {} },
-  { n: 'Razmo', h: '', city: 'France', lat: 45.64, lon: -0.49, stats: 'Client MetaVision', f: ['MetaVision'], socials: {} },
-  { n: 'Michael R.', h: '', city: 'France', lat: 49.34, lon: 1.03, stats: 'Client MetaVision', f: ['MetaVision'], socials: {} },
-  { n: 'Elian R.', h: '', city: 'France', lat: 44.16, lon: -0.99, stats: 'Client MetaVision', f: ['MetaVision'], socials: {} },
-  { n: 'Hugo B.', h: '', city: 'France', lat: 48.68, lon: 3.27, stats: 'Client MetaVision', f: ['MetaVision'], socials: {} },
-  { n: 'Belvisi A.', h: '', city: 'Belgique', lat: 51.03, lon: 5.05, stats: 'Client MetaVision', f: ['MetaVision'], socials: {} },
-  { n: 'Sinan Z.', h: '', city: 'France', lat: 46.82, lon: 6.37, stats: 'Client MetaVision', f: ['MetaVision'], socials: {} },
-  { n: 'Hassim M.', h: '', city: 'France', lat: 45.87, lon: 2.84, stats: 'Client MetaVision', f: ['MetaVision'], socials: {} },
-  { n: 'Amine F.', h: '', city: 'France', lat: 48.58, lon: 3.4, stats: 'Client MetaVision', f: ['MetaVision'], socials: {} },
-  { n: 'Mourad K.', h: '', city: 'France', lat: 48.77, lon: 3.05, stats: 'Client MetaVision', f: ['MetaVision'], socials: {} },
-  { n: 'Paul S.', h: '', city: 'France', lat: 47.83, lon: -1.42, stats: 'Client MetaVision', f: ['MetaVision'], socials: {} },
-  { n: 'Tommy L.', h: '', city: 'France', lat: 44.97, lon: 0.63, stats: 'Client MetaVision', f: ['MetaVision'], socials: {} },
-  { n: 'Omar E.', h: '', city: 'France', lat: 44.08, lon: 0.16, stats: 'Client MetaVision', f: ['MetaVision'], socials: {} },
-  { n: 'Kevin A.', h: '', city: 'France', lat: 44.21, lon: 0.53, stats: 'Client MetaVision', f: ['MetaVision'], socials: {} },
-  { n: 'Pierre B.', h: '', city: 'Belgique', lat: 50.79, lon: 4.34, stats: 'Client MetaVision', f: ['MetaVision'], socials: {} },
-  { n: 'Nassim B.', h: '', city: 'Suisse', lat: 46.69, lon: 7.35, stats: 'Client MetaVision', f: ['MetaVision'], socials: {} },
-  { n: 'Theo A.', h: '', city: 'France', lat: 45.2, lon: 6.07, stats: 'Client MetaVision', f: ['MetaVision'], socials: {} },
-  { n: 'Adrien L.', h: '', city: 'France', lat: 47.49, lon: 3.32, stats: 'Client MetaVision', f: ['MetaVision'], socials: {} },
-  { n: 'Mickael L.', h: '', city: 'France', lat: 44.63, lon: 4.32, stats: 'Client MetaVision', f: ['MetaVision'], socials: {} },
-  { n: 'Nicolas D.', h: '', city: 'France', lat: 44.58, lon: 1.39, stats: 'Client MetaVision', f: ['MetaVision'], socials: {} },
-  { n: 'Anis D.', h: '', city: 'France', lat: 49.54, lon: 3.58, stats: 'Client MetaVision', f: ['MetaVision'], socials: {} },
-  { n: 'Georges A.', h: '', city: 'France', lat: 46.94, lon: 3.95, stats: 'Client MetaVision', f: ['MetaVision'], socials: {} },
-  { n: 'Khalifa M.', h: '', city: 'France', lat: 48.66, lon: 4.72, stats: 'Client MetaVision', f: ['MetaVision'], socials: {} },
-  { n: 'Siliareski', h: '', city: 'France', lat: 44.97, lon: -1.53, stats: 'Client MetaVision', f: ['MetaVision'], socials: {} },
-  { n: 'Mayline', h: '', city: 'France', lat: 45.49, lon: 0.45, stats: 'Client MetaVision', f: ['MetaVision'], socials: {} },
-  { n: 'Rhkprod', h: '', city: 'France', lat: 44.87, lon: 6.12, stats: 'Client MetaVision', f: ['MetaVision'], socials: {} },
-  { n: 'Sam S.', h: '', city: 'Allemagne', lat: 52.51, lon: 9.16, stats: 'Client MetaVision', f: ['MetaVision'], socials: {} },
-];
+/** Les créateurs consentants du globe. Hydraté par initCreatorsFromApi(). */
+export const CREATORS: Creator[] = [];
 
 /* ── Mode API ── */
 
@@ -93,7 +54,7 @@ type ApiCreator = {
   city: string;
   lat?: number;
   lon?: number;
-  formations: string[];
+  badges: string[];
   socials?: { ig?: string; tt?: string; yt?: string };
   reels?: { url: string; thumb: string }[];
   founder: boolean;
@@ -103,11 +64,10 @@ type ApiCreator = {
 
 type ApiAnon = { anon: true; lat: number; lon: number };
 
-/* Compteur du globe : total backend (nommés + anonymes) ; 49 en mode démo
-   (le libellé historique de la maquette, inchangé sans session). */
+/* Compteur du globe : total backend (nommés + anonymes). */
 let remoteTotal: number | null = null;
 export function creatorsTotal(): number {
-  return remoteTotal ?? 49;
+  return remoteTotal ?? 0;
 }
 
 /* mini-store : le Globe se re-rend quand la liste change (ex. après consentement) */
@@ -121,14 +81,6 @@ export function subscribeCreators(f: () => void): () => void {
   return () => subs.delete(f);
 }
 
-/** "metavision" → "MetaVision", "neovision:createur" → "NéoVision · Créateur". */
-function badge(f: string): string {
-  if (f === 'metavision') return 'MetaVision';
-  const m = /^neovision:(.+)$/.exec(f);
-  if (m) return 'NéoVision · ' + m[1].charAt(0).toUpperCase() + m[1].slice(1);
-  return f;
-}
-
 /**
  * Remplace le contenu de CREATORS (consentants nommés) et d'ANON (points pays
  * anonymisés) par la liste du backend (fondateur en premier, garanti par l'API).
@@ -137,7 +89,7 @@ function badge(f: string): string {
  * référence ces tableaux.
  */
 export async function initCreatorsFromApi(): Promise<void> {
-  const list = await apiJson<(ApiCreator | ApiAnon)[]>('/api/creators');
+  const list = await apiJson<(ApiCreator | ApiAnon)[]>(`${API}/creators`);
   const mapped: Creator[] = [];
   const anons: AnonPoint[] = [];
   for (const u of list) {
@@ -152,12 +104,8 @@ export async function initCreatorsFromApi(): Promise<void> {
       city: u.city,
       lat: u.lat,
       lon: u.lon,
-      stats: u.founder
-        ? 'Fondateur · FemzLab'
-        : u.formations.some((f) => f.startsWith('neovision'))
-          ? 'Élève NéoVision'
-          : 'Client MetaVision',
-      f: u.formations.map(badge),
+      stats: u.founder ? 'Fondateur · FemzLab' : u.badges.length ? u.badges.join(' · ') : 'Membre FemzLab',
+      f: u.badges,
       founder: u.founder || undefined,
       socials: u.socials || {},
       reels: u.reels && u.reels.length ? u.reels : undefined,

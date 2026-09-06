@@ -114,8 +114,8 @@ export default function GlobeSection() {
   useEffect(() => {
     let dead = false;
     Promise.all([
-      fetch('/land110.geojson').then((r) => r.json()),
-      fetch('/cities.json').then((r) => r.json()),
+      fetch('/espace/land110.geojson').then((r) => r.json()),
+      fetch('/espace/cities.json').then((r) => r.json()),
     ]).then(([land, cities]) => {
       if (dead) return;
       landRef.current = land;

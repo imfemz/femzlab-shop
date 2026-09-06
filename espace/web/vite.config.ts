@@ -2,13 +2,14 @@ import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 import tailwindcss from '@tailwindcss/vite';
 
-// Proxy /api et /auth (magic links, dev-login) vers le backend Express (server/, port 4600).
 export default defineConfig({
+  base: '/espace/',
   plugins: [react(), tailwindcss()],
   server: {
     proxy: {
-      '/api': 'http://localhost:4600',
-      '/auth': 'http://localhost:4600',
+      '/espace/api': 'http://localhost:8788',
+      '/espace/auth': 'http://localhost:8788',
+      '/espace/media': 'http://localhost:8788',
     },
   },
 });

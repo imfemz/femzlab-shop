@@ -6,7 +6,7 @@
    ════════════════════════════════════════════════════════════════════ */
 @font-face {
   font-family: 'Instrument Sans';
-  src: url('/fonts/InstrumentSans.woff2') format('woff2');
+  src: url('/espace/fonts/InstrumentSans.woff2') format('woff2');
   font-weight: 100 900;
   font-display: block;
 }
