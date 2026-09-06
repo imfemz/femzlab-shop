@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { profileStore, type ProfileReel } from '../lib/profile';
-import { API, getMe, saveConsent, setMeAvatar, logout } from '../lib/api';
+import { API, getMe, initSession, saveConsent, setMeAvatar, logout } from '../lib/api';
 import { initCreatorsFromApi } from '../lib/creators';
 import { Pencil } from './Icons';
 
@@ -33,6 +33,7 @@ export default function ProfilePanel({ onClose }: { onClose: () => void }) {
   const [dmsOpen, setDmsOpen] = useState(!!me?.dms_open);
   const [label, setLabel] = useState('Enregistrer');
   const [err, setErr] = useState('');
+  const [pending, setPending] = useState(false);
   useEffect(() => profileStore.subscribe((d) => setAv(d.av)), []);
 
   async function pickAvatar(f: File) {
@@ -51,14 +52,21 @@ export default function ProfilePanel({ onClose }: { onClose: () => void }) {
       setLabel('Enregistré'); setTimeout(() => { setLabel('Enregistrer'); onClose(); }, 900);
     } catch (e: any) { setErr('Enregistrement refusé : ' + e.message); }
   }
-  const toggle = (which: 'visible' | 'dms') => () => {
-    const prevV = visible, prevD = dmsOpen;
+  const toggle = (which: 'visible' | 'dms') => async () => {
+    if (pending) return;
+    setPending(true);
     const v = which === 'visible' ? !visible : visible, d = which === 'dms' ? !dmsOpen : dmsOpen;
     setVisible(v); setDmsOpen(d);
-    saveConsent(v, d).catch(() => {
-      setVisible(prevV); setDmsOpen(prevD);
+    try {
+      await saveConsent(v, d);
+    } catch {
+      await initSession().catch(() => {});
+      const m = getMe();
+      setVisible(!!m?.visible); setDmsOpen(!!m?.dms_open);
       setErr('Réglage de confidentialité non enregistré — réessaie.');
-    });
+    } finally {
+      setPending(false);
+    }
   };
 
   return (
@@ -93,8 +101,8 @@ export default function ProfilePanel({ onClose }: { onClose: () => void }) {
       </div>
       <div className="pf-privacy">
         <span className="pf-sub">Confidentialité</span>
-        <button className="pf-tgrow" type="button" onClick={toggle('visible')}><span>Apparaître sur le globe</span><span className={'tg' + (visible ? ' on' : '')} aria-hidden="true"><i /></span></button>
-        <button className="pf-tgrow" type="button" onClick={toggle('dms')}><span>Recevoir des messages</span><span className={'tg' + (dmsOpen ? ' on' : '')} aria-hidden="true"><i /></span></button>
+        <button className="pf-tgrow" type="button" aria-busy={pending} onClick={() => void toggle('visible')()}><span>Apparaître sur le globe</span><span className={'tg' + (visible ? ' on' : '')} aria-hidden="true"><i /></span></button>
+        <button className="pf-tgrow" type="button" aria-busy={pending} onClick={() => void toggle('dms')()}><span>Recevoir des messages</span><span className={'tg' + (dmsOpen ? ' on' : '')} aria-hidden="true"><i /></span></button>
         <p className="pf-sub" style={{ marginTop: 10 }}>Connexions : {(me?.providers || []).join(' · ') || '—'}
           {!me?.providers.includes('google') && <> · <a href="/espace/auth/google">ajouter Google</a></>}
           {!me?.providers.includes('discord') && <> · <a href="/espace/auth/discord">ajouter Discord</a></>}
