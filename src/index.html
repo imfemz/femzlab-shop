@@ -493,20 +493,51 @@ section{max-width:1120px;margin:0 auto;padding:clamp(60px,9vh,104px) clamp(20px,
 .pcard .go:hover{gap:13px}
 .pcard .go svg{width:13px;height:13px}
 
-/* ---------- pourquoi ---------- */
-.why{display:grid;grid-template-columns:repeat(2,1fr);gap:20px}
-.why .card{padding:0}
-.why .visual{border-bottom:1px solid var(--line);background:var(--charcoal)}
-.why .visual img{width:100%;aspect-ratio:16/9.6;object-fit:cover;opacity:.96}
-.why .txt{padding:26px 28px 30px}
-.why h4{font-family:'Montserrat',sans-serif;font-weight:800;text-transform:uppercase;font-size:17px;margin-bottom:9px;letter-spacing:.01em}
-.why p{color:var(--muted);font-size:14px}
-.why .wide{grid-column:1/-1;display:grid;grid-template-columns:auto 1fr;align-items:center;gap:26px;padding:26px 28px}
-.why .wide .ic{
-  width:46px;height:46px;border-radius:14px;display:flex;align-items:center;justify-content:center;
-  background:var(--charcoal);flex:none;box-shadow:0 10px 24px rgba(0,0,0,.22);
+/* ---------- pourquoi : bandeau SOMBRE + fond silhouette (section only) ---------- */
+.whyx{position:relative;width:100vw;max-width:none;margin-left:calc(50% - 50vw);
+  padding:clamp(60px,9vh,104px) clamp(20px,5vw,48px);
+  background:#0a0b0f;color:#fff;overflow:hidden;isolation:isolate}
+.whyx::before{content:"";position:absolute;inset:0;z-index:0;pointer-events:none;
+  background:#0a0b0f url(assets/jpg-31.jpg) center right/cover no-repeat}
+.whyx::after{content:"";position:absolute;inset:0;z-index:0;pointer-events:none;
+  background:linear-gradient(92deg,rgba(8,9,13,.94) 0%,rgba(8,9,13,.8) 42%,rgba(8,9,13,.5) 78%,rgba(8,9,13,.35) 100%),
+             linear-gradient(180deg,rgba(8,9,13,.55),transparent 30%,rgba(8,9,13,.55))}
+.whyx-inner{position:relative;z-index:1;max-width:860px;margin:0 auto}
+.whyx .eyebrow{color:rgba(255,255,255,.55)}
+.whyx .eyebrow::before{background:rgba(255,255,255,.55)}
+.whyx .sec-head h2{background-image:none;-webkit-text-fill-color:#fff;color:#fff}
+.whyx .sec-head:hover h2{-webkit-text-fill-color:#fff;animation:none}
+.whyx-grid{display:flex;flex-direction:column;gap:16px}
+.wq-card{position:relative;border-radius:18px;overflow:hidden;
+  background:rgba(18,20,26,.55);
+  -webkit-backdrop-filter:blur(18px) saturate(150%);backdrop-filter:blur(18px) saturate(150%);
+  border:1px solid rgba(237,239,242,.10);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.07),0 22px 54px rgba(0,0,0,.5)}
+.wq-video{position:relative;aspect-ratio:16/9;background:#0b0c10;overflow:hidden}
+.wq-video video{width:100%;height:100%;object-fit:cover;display:block}
+.wq-txt{padding:22px clamp(20px,3vw,30px) 26px}
+.wq-txt h4{font-family:'Montserrat',sans-serif;font-weight:800;text-transform:uppercase;
+  font-size:clamp(16px,2.4vw,19px);letter-spacing:.01em;margin-bottom:9px;color:#fff}
+.wq-txt p{color:rgba(255,255,255,.72);font-size:14.5px;max-width:60ch}
+.wq-disc{display:grid;grid-template-columns:auto 1fr;align-items:center;gap:clamp(16px,2.4vw,22px);
+  padding:20px clamp(20px,3vw,26px);border-radius:16px;color:#fff;text-decoration:none;
+  background:rgba(18,20,26,.5);border:1px solid rgba(237,239,242,.10);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.06),0 16px 40px rgba(0,0,0,.42);
+  -webkit-tap-highlight-color:transparent;transition:transform .4s cubic-bezier(.22,1,.36,1),border-color .4s,box-shadow .4s}
+@media (hover:hover){.wq-disc:hover{transform:translateY(-3px);border-color:rgba(255,255,255,.16);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.09),0 24px 54px rgba(0,0,0,.5)}}
+.wq-disc:focus-visible{outline:2px solid #5EA2FF;outline-offset:3px}
+.wq-disc-ic{width:46px;height:46px;flex:none;border-radius:13px;display:grid;place-items:center;
+  background:#5865F2;box-shadow:0 10px 26px rgba(88,101,242,.45)}
+.wq-disc-ic svg{width:24px;height:24px;fill:#fff}
+.wq-disc h4{font-family:'Montserrat',sans-serif;font-weight:800;text-transform:uppercase;
+  font-size:15px;letter-spacing:.01em;margin-bottom:4px;color:#fff}
+.wq-disc p{color:rgba(255,255,255,.68);font-size:13.5px}
+@media (max-width:560px){
+  .wq-txt h4{font-size:16px}
+  .wq-disc{gap:14px;padding:16px 16px}
+  .wq-disc-ic{width:40px;height:40px}
 }
-.why .wide .ic svg{width:20px;height:20px;stroke:#fff}
 
 /* ---------- footer ---------- */
 footer{background:var(--charcoal);color:#EDEDE8;margin-top:30px;position:relative;z-index:60}
@@ -908,35 +939,31 @@ footer{background:var(--charcoal);color:#EDEDE8;margin-top:30px;position:relativ
     </div>
   </section>
 
-  <section id="pourquoi">
-    <div class="sec-head rv">
-      <span class="eyebrow">Pourquoi nos packs</span>
-      <h2>Level up tes edits</h2>
-    </div>
-    <div class="why">
-      <div class="card glow-card rv" style="--d:.0s">
-        <span class="sheen" aria-hidden="true"></span>
-        <div class="visual"><img src="assets/jpg-01.jpg" alt="Le studio FemzLab" loading="lazy"></div>
-        <div class="txt">
-          <h4>Utilisé sur nos plus gros projets</h4>
-          <p>Rejoins la ligue des professionnels qui font confiance à nos produits pour leurs projets les plus significatifs. Ta créativité mérite le meilleur.</p>
-        </div>
+  <section id="pourquoi" class="whyx">
+    <div class="whyx-inner">
+      <div class="sec-head rv">
+        <span class="eyebrow">Pourquoi nos packs</span>
+        <h2>Level up tes edits</h2>
       </div>
-      <div class="card glow-card rv" style="--d:.1s">
-        <span class="sheen" aria-hidden="true"></span>
-        <div class="visual"><img src="assets/jpg-02.jpg" alt="Glisser-déposer dans la timeline" loading="lazy"></div>
-        <div class="txt">
-          <h4>Polyvalence redéfinie</h4>
-          <p>Créateur de contenu, cinéaste ou passionné : nos packs s'adaptent à ton style. Élève tes projets grâce à la simplicité du glisser-déposer.</p>
+      <div class="whyx-grid">
+        <div class="wq-card rv" style="--d:0s">
+          <div class="wq-video">
+            <video autoplay loop muted playsinline poster="assets/png-33.png" aria-label="Aperçu MotionLAB — animation de titre">
+              <source src="assets/mp4-24.mp4" type="video/mp4">
+            </video>
+          </div>
+          <div class="wq-txt">
+            <h4>Utilisé sur nos plus gros projets</h4>
+            <p>Rejoins la ligue des professionnels qui font confiance à nos produits pour leurs projets les plus significatifs. Ta créativité mérite le meilleur.</p>
+          </div>
         </div>
-      </div>
-      <div class="card glow-card wide rv" style="--d:.18s">
-        <span class="sheen" aria-hidden="true"></span>
-        <a data-track="cta_shop_discord" class="ic" href="https://discord.gg/xmwq2NMDTw" target="_blank" rel="noopener" aria-label="Rejoindre le Discord FemzLab"><svg viewBox="0 0 24 24" fill="#fff" width="20" height="20"><path d="M20.317 4.3698a19.7913 19.7913 0 00-4.8851-1.5152.0741.0741 0 00-.0785.0371c-.211.3753-.4447.8648-.6083 1.2495-1.8447-.2762-3.68-.2762-5.4868 0-.1636-.3933-.4058-.8742-.6177-1.2495a.077.077 0 00-.0785-.037 19.7363 19.7363 0 00-4.8852 1.515.0699.0699 0 00-.0321.0277C.5334 9.0458-.319 13.5799.0992 18.0578a.0824.0824 0 00.0312.0561c2.0528 1.5076 4.0413 2.4228 5.9929 3.0294a.0777.0777 0 00.0842-.0276c.4616-.6304.8731-1.2952 1.226-1.9942a.076.076 0 00-.0416-.1057c-.6528-.2476-1.2743-.5495-1.8722-.8923a.077.077 0 01-.0076-.1277c.1258-.0943.2517-.1923.3718-.2914a.0743.0743 0 01.0776-.0105c3.9278 1.7933 8.18 1.7933 12.0614 0a.0739.0739 0 01.0785.0095c.1202.099.246.1981.3728.2924a.077.077 0 01-.0066.1276 12.2986 12.2986 0 01-1.873.8914.0766.0766 0 00-.0407.1067c.3604.698.7719 1.3628 1.225 1.9932a.076.076 0 00.0842.0286c1.961-.6067 3.9495-1.5219 6.0023-3.0294a.077.077 0 00.0313-.0552c.5004-5.177-.8382-9.6739-3.5485-13.6604a.061.061 0 00-.0312-.0286zM8.02 15.3312c-1.1825 0-2.1569-1.0857-2.1569-2.419 0-1.3332.9555-2.4189 2.157-2.4189 1.2108 0 2.1757 1.0952 2.1568 2.419 0 1.3332-.9555 2.4189-2.1569 2.4189zm7.9748 0c-1.1825 0-2.1569-1.0857-2.1569-2.419 0-1.3332.9554-2.4189 2.1569-2.4189 1.2108 0 2.1757 1.0952 2.1568 2.419 0 1.3332-.946 2.4189-2.1568 2.4189Z"/></svg></a>
-        <div>
-          <h4>Accompagnement Discord — dispo 7j/7</h4>
-          <p>Une question sur un preset, un template qui coince ? La communauté et Femz répondent tous les jours.</p>
-        </div>
+        <a class="wq-disc rv" style="--d:.1s" data-track="cta_shop_discord" href="https://discord.gg/xmwq2NMDTw" target="_blank" rel="noopener" aria-label="Rejoindre le Discord FemzLab">
+          <span class="wq-disc-ic"><svg viewBox="0 0 24 24" fill="#fff" width="24" height="24" aria-hidden="true"><path d="M20.317 4.3698a19.7913 19.7913 0 00-4.8851-1.5152.0741.0741 0 00-.0785.0371c-.211.3753-.4447.8648-.6083 1.2495-1.8447-.2762-3.68-.2762-5.4868 0-.1636-.3933-.4058-.8742-.6177-1.2495a.077.077 0 00-.0785-.037 19.7363 19.7363 0 00-4.8852 1.515.0699.0699 0 00-.0321.0277C.5334 9.0458-.319 13.5799.0992 18.0578a.0824.0824 0 00.0312.0561c2.0528 1.5076 4.0413 2.4228 5.9929 3.0294a.0777.0777 0 00.0842-.0276c.4616-.6304.8731-1.2952 1.226-1.9942a.076.076 0 00-.0416-.1057c-.6528-.2476-1.2743-.5495-1.8722-.8923a.077.077 0 01-.0076-.1277c.1258-.0943.2517-.1923.3718-.2914a.0743.0743 0 01.0776-.0105c3.9278 1.7933 8.18 1.7933 12.0614 0a.0739.0739 0 01.0785.0095c.1202.099.246.1981.3728.2924a.077.077 0 01-.0066.1276 12.2986 12.2986 0 01-1.873.8914.0766.0766 0 00-.0407.1067c.3604.698.7719 1.3628 1.225 1.9932a.076.076 0 00.0842.0286c1.961-.6067 3.9495-1.5219 6.0023-3.0294a.077.077 0 00.0313-.0552c.5004-5.177-.8382-9.6739-3.5485-13.6604a.061.061 0 00-.0312-.0286zM8.02 15.3312c-1.1825 0-2.1569-1.0857-2.1569-2.419 0-1.3332.9555-2.4189 2.157-2.4189 1.2108 0 2.1757 1.0952 2.1568 2.419 0 1.3332-.9555 2.4189-2.1569 2.4189zm7.9748 0c-1.1825 0-2.1569-1.0857-2.1569-2.419 0-1.3332.9554-2.4189 2.1569-2.4189 1.2108 0 2.1757 1.0952 2.1568 2.419 0 1.3332-.946 2.4189-2.1568 2.4189Z"/></svg></span>
+          <div>
+            <h4>Accompagnement Discord — dispo 7j/7</h4>
+            <p>Une question sur un preset, un template qui coince ? La communauté et Femz répondent tous les jours.</p>
+          </div>
+        </a>
       </div>
     </div>
   </section>
