@@ -11,7 +11,7 @@ import { peer, listConvs, thread, sendDm, markRead, block, unblock } from './lib
 import { backupToR2 } from './lib/backup';
 import { langFrom } from './lib/welcome';
 import { recordPurchase, attachPurchases, purchasesFor } from './lib/purchases';
-import { createLinkRequest } from './lib/link-requests';
+import { createLinkRequest, decideLinkRequest } from './lib/link-requests';
 import { productFromSlug } from './lib/products';
 
 const app = new Hono<{ Bindings: Env; Variables: Vars }>();
@@ -235,6 +235,26 @@ app.post('/espace/hooks/checkout', async (c) => {
     console.warn('hook checkout ignoré', (e as Error).message);
   }
   return c.json({ ok: true });
+});
+
+function pageDecision(titre: string, corps: string) {
+  return `<!doctype html><html lang="fr"><meta charset="utf-8"><title>${titre}</title>
+<body style="font:16px system-ui;background:#0B0C0F;color:#E7E9EE;display:flex;align-items:center;justify-content:center;min-height:100vh;margin:0">
+<div style="text-align:center;max-width:480px;padding:24px"><h1 style="font-size:20px">${titre}</h1><p>${corps}</p></div></body></html>`;
+}
+
+// Cliqués depuis le client mail de Femz (lien envoyé par createLinkRequest) :
+// pas de session, l'autorisation vient de la possession du jeton. Placée hors
+// /espace/api/* (le CSRF ne s'applique pas — jamais soumise par un formulaire).
+app.get('/espace/admin/link/:token/:decision{approve|deny}', async (c) => {
+  const decision = c.req.param('decision') === 'approve' ? 'approved' : 'denied';
+  const r = await decideLinkRequest(c.env, c.req.param('token'), decision);
+  if ('error' in r) {
+    const messages: Record<string, string> = { introuvable: 'Lien introuvable ou déjà utilisé.', deja_traite: 'Cette demande a déjà été traitée.', expire: 'Ce lien a expiré (30 jours).' };
+    return c.html(pageDecision('Lien introuvable', messages[r.error] || 'Une erreur est survenue.'));
+  }
+  return c.html(pageDecision(decision === 'approved' ? 'Liaison approuvée' : 'Demande refusée',
+    decision === 'approved' ? `${r.email} est désormais rattachée au membre #${r.userId}, ses achats connus sont rattachés.` : `${r.email} n'a pas été rattachée.`));
 });
 
 app.all('/espace/api/*', (c) => c.json({ error: 'route inconnue' }, 404));
