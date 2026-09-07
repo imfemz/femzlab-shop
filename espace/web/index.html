@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#0B0C0F" />
+    <title>FemzLab — Mon espace</title>
+    <!-- Favicon inline (data URI) : point accent bleu sur fond ink -->
+    <link
+      rel="icon"
+      href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%230B0C0F'/%3E%3Ccircle cx='32' cy='32' r='13' fill='%235EA2FF'/%3E%3C/svg%3E"
+    />
+    <!-- UNE seule police, variable 100-900 (piège Google Fonts : jamais deux @font-face) -->
+    <link
+      rel="preload"
+      href="/espace/fonts/InstrumentSans.woff2"
+      as="font"
+      type="font/woff2"
+      crossorigin
+    />
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+    <script src="/espace/i18n.js"></script>
+  </body>
+</html>

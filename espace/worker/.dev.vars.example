@@ -1,0 +1,7 @@
+ENV=development
+JWT_SECRET=dev-secret-change-me
+APP_URL=http://localhost:8788/espace
+GOOGLE_CLIENT_ID=
+GOOGLE_CLIENT_SECRET=
+DISCORD_CLIENT_ID=
+DISCORD_CLIENT_SECRET=
