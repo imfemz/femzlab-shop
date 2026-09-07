@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { needsConsent, saveConsent } from '../lib/api';
+import { initCreatorsFromApi } from '../lib/creators';
 
 /**
  * Modale de consentement au premier login (RGPD, opt-in).
@@ -35,6 +36,8 @@ export default function ConsentModal() {
       setErr('Réglage non enregistré — réessaie.');
       return;
     }
+    /* le membre qui vient de se rendre visible apparaît sur le globe sans rechargement */
+    void initCreatorsFromApi().catch(() => {});
     setOn(false);
     setTimeout(() => setShow(false), 320);
   }

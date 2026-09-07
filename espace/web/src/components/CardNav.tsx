@@ -71,7 +71,8 @@ const CardNav = forwardRef<CardNavHandle, Props>(function CardNav({ onOpenConv }
             <div className="cnav-logo">MON <em>ESPACE</em></div>
           </div>
           <div className="cnav-right">
-            <button className={'msg-btn' + (unread ? ' unread' : '')} aria-expanded={panel === 'msgs'} aria-controls="cnavMsgs" aria-label="Messages" onClick={() => toggle('msgs')}>
+            {/* id="msgBtn" : cible de l'animation « génie » de fermeture de DmModal */}
+            <button id="msgBtn" className={'msg-btn' + (unread ? ' unread' : '')} aria-expanded={panel === 'msgs'} aria-controls="cnavMsgs" aria-label="Messages" onClick={() => toggle('msgs')}>
               <MessageBubble /><span className="msg-dot" />
             </button>
             <button className="me-btn" aria-expanded={panel === 'profile'} aria-controls="cnavProfile" onClick={() => toggle('profile')}>

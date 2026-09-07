@@ -66,6 +66,7 @@ export default function GlobeSection() {
   const [query, setQuery] = useState('');
   const [results, setResults] = useState<{ c: Creator; j: number }[]>([]);
   const [chatText, setChatText] = useState('');
+  const [chatErr, setChatErr] = useState('');
 
   /* le chat de la carte se re-rend quand le store DM change */
   useSyncExternalStore(NVDM.subscribe, NVDM.version);
@@ -746,11 +747,15 @@ export default function GlobeSection() {
   }, []);
 
   /* ── envoi chat ── */
+  /* Envoi optimiste : si le serveur refuse (DM fermés, blocage, 429), le store
+     retire le message et relance l'erreur — sans ce catch, elle disparaissait
+     sans un mot et la promesse restait rejetée. */
   function sendChat() {
     if (!pop || pop.kind !== 'chat') return;
     const v = chatText.trim();
     if (!v) return;
-    NVDM.send(chatId(CREATORS[pop.idx]), v);
+    setChatErr('');
+    void NVDM.send(chatId(CREATORS[pop.idx]), v).catch((e) => setChatErr(e?.message || 'Message non envoyé'));
     setChatText('');
   }
 
@@ -809,7 +814,7 @@ export default function GlobeSection() {
               placeholder={`Écris à ${c.n}…`}
               aria-label="Message"
               value={chatText}
-              onChange={(e) => setChatText(e.target.value)}
+              onChange={(e) => { setChatText(e.target.value); if (chatErr) setChatErr(''); }}
               onKeyDown={(e) => {
                 if (e.key === 'Enter') sendChat();
               }}
@@ -818,6 +823,7 @@ export default function GlobeSection() {
               <SendPlane />
             </button>
           </div>
+          {chatErr && <p className="login-err dm-err" role="alert">{chatErr}</p>}
         </>
       );
     }
@@ -863,7 +869,8 @@ export default function GlobeSection() {
             {c.reels.map((r, i) => (
               <a
                 key={i}
-                href={r.url || '#'}
+                /* pas de lien si l'URL n'est pas http(s) : href n'exécute jamais un javascript: */
+                href={/^https?:\/\//i.test(r.url) ? r.url : undefined}
                 target="_blank"
                 rel="noopener noreferrer"
                 title="Voir le reel"

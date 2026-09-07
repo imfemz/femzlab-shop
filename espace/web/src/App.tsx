@@ -10,11 +10,15 @@ import Login from './components/Login';
 import ErrorScreen from './components/ErrorScreen';
 import { useGlobalEffects } from './hooks/useGlobalEffects';
 import { sessionState } from './lib/api';
+import { erreurUrl, texteErreur } from './lib/erreurs';
 
 /** Espace membre FemzLab : Connexion | Erreur | Espace (nav, globe, DM, consentement). */
 export default function App() {
   const navRef = useRef<CardNavHandle>(null);
   const [conv, setConv] = useState<string | null>(null);
+  /* ?erreur= en état connecté = échec d'attache d'un 2e fournisseur : sans ce
+     bandeau, l'utilisateur revient sur son espace sans la moindre explication. */
+  const [erreur, setErreur] = useState(erreurUrl);
   useGlobalEffects();
   const st = sessionState();
   return (
@@ -26,6 +30,14 @@ export default function App() {
       {st === 'auth' && (
         <>
           <CardNav ref={navRef} onOpenConv={setConv} />
+          {erreur && (
+            <div className="app-err">
+              <p className="login-err" role="alert">
+                <span>{texteErreur(erreur)}</span>
+                <button type="button" className="app-err-x" onClick={() => setErreur(null)}>Fermer</button>
+              </p>
+            </div>
+          )}
           <GlobeSection />
           <div className="wrap" style={{ paddingTop: 0 }}>
             <footer><span>FemzLab — l’espace des créateurs</span><span>Support · Discord · femzlab.shop</span></footer>

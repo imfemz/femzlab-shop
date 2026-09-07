@@ -2103,6 +2103,13 @@ footer {
   border-color: var(--acc-deep);
 }
 
+/* Refus d'envoi renvoyé par le serveur (DM fermés, blocage, limite) */
+.dm-err {
+  margin: 0 14px 12px;
+  flex-shrink: 0;
+  font-size: 12.5px;
+}
+
 /* ── Glassmorphisme : les cartes laissent transparaître l'aurora ── */
 .ep-card,
 .acc-item,
@@ -2316,3 +2323,10 @@ footer {
 .login-count{font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
 .login-note{font-size:12px;color:var(--muted);max-width:420px}
 .login-err{color:#ff8a8a;background:rgba(255,80,80,.08);border:1px solid rgba(255,80,80,.25);border-radius:var(--r-sm);padding:10px 14px;font-size:14px}
+
+/* Bandeau d'erreur en état connecté (échec d'attache d'un 2e fournisseur) :
+   sous la nav flottante, au-dessus du globe. */
+.app-err{position:relative;z-index:2;width:min(94%,1020px);margin:104px auto 0}
+.app-err .login-err{display:flex;align-items:center;justify-content:space-between;gap:14px;text-align:left;margin:0}
+.app-err-x{flex:none;background:none;border:1px solid rgba(255,80,80,.35);color:inherit;border-radius:var(--r-sm);padding:5px 12px;font:inherit;font-size:12.5px;cursor:pointer}
+.app-err-x:hover{background:rgba(255,80,80,.14)}

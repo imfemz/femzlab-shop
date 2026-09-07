@@ -1,6 +1,5 @@
 import { useEffect, useRef, useState, useSyncExternalStore } from 'react';
 import { NVDM } from '../lib/dm';
-import { profileStore } from '../lib/profile';
 import { BackArrow, CloseX, SendPlane } from './Icons';
 
 type Props = {
@@ -26,10 +25,12 @@ export default function DmModal({ convId, onClosed, onBackToList }: Props) {
 
   const [on, setOn] = useState(false);
   const [text, setText] = useState('');
+  const [err, setErr] = useState('');
 
   useSyncExternalStore(NVDM.subscribe, NVDM.version);
   const conv = convId ? NVDM.get(convId) : undefined;
-  const av = profileStore.load()?.av || null;
+  /* l'avatar affiché est celui du correspondant (fourni par l'API), pas le mien */
+  const av = conv?.avatar || null;
 
   /* ouverture : marquer lu, apparaître, focus */
   useEffect(() => {
@@ -96,10 +97,14 @@ export default function DmModal({ convId, onClosed, onBackToList }: Props) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [convId]);
 
+  /* Envoi optimiste : si le serveur refuse (DM fermés, blocage, 429), le store
+     retire le message et relance l'erreur — sans ce catch, elle disparaissait
+     sans un mot et la promesse restait rejetée. */
   function send() {
     const v = text.trim();
     if (!v || !convId) return;
-    NVDM.send(convId, v);
+    setErr('');
+    void NVDM.send(convId, v).catch((e) => setErr(e?.message || 'Message non envoyé'));
     setText('');
   }
 
@@ -123,7 +128,7 @@ export default function DmModal({ convId, onClosed, onBackToList }: Props) {
               <button className="dm-back" aria-label="Retour aux messages" onClick={closeToList}>
                 <BackArrow />
               </button>
-              {conv.founder && av ? (
+              {av ? (
                 <span className="dm-av" style={{ backgroundImage: `url(${av})` }} />
               ) : (
                 <span className="dm-av">{conv.name.slice(0, 2).toUpperCase()}</span>
@@ -148,7 +153,7 @@ export default function DmModal({ convId, onClosed, onBackToList }: Props) {
                 placeholder={`Écris à ${conv.name}…`}
                 aria-label="Message"
                 value={text}
-                onChange={(e) => setText(e.target.value)}
+                onChange={(e) => { setText(e.target.value); if (err) setErr(''); }}
                 onKeyDown={(e) => {
                   if (e.key === 'Enter') send();
                 }}
@@ -157,6 +162,7 @@ export default function DmModal({ convId, onClosed, onBackToList }: Props) {
                 <SendPlane />
               </button>
             </div>
+            {err && <p className="login-err dm-err" role="alert">{err}</p>}
           </>
         )}
       </div>
