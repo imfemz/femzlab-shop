@@ -7,8 +7,8 @@ describe('import admin des achats', () => {
   it('403 si non fondateur, 401 sans session', async () => {
     const membre = await mkUser();
     const body = JSON.stringify({ product: 'MetaVision', rows: [{ email: 'x@y.co', purchased_at: '2026-01-01' }] });
-    expect((await app.request('/espace/api/admin/purchases/import', { method: 'POST', body }, env)).status).toBe(401);
-    expect((await app.request('/espace/api/admin/purchases/import', { method: 'POST', headers: { Cookie: await cookieFor(membre) }, body }, env)).status).toBe(403);
+    expect((await app.request('/espace/api/admin/purchases/import', { method: 'POST', headers: { 'content-type': 'application/json' }, body }, env)).status).toBe(401);
+    expect((await app.request('/espace/api/admin/purchases/import', { method: 'POST', headers: { Cookie: await cookieFor(membre), 'content-type': 'application/json' }, body }, env)).status).toBe(403);
   });
 
   it('importe, rattache ce qui correspond déjà, idempotent au second passage, rejette les lignes invalides', async () => {
