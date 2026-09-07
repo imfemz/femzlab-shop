@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { profileStore, type ProfileReel } from '../lib/profile';
 import { API, getMe, initSession, saveConsent, setMeAvatar, logout } from '../lib/api';
 import { initCreatorsFromApi } from '../lib/creators';
+import { getPurchases, getLinkStatus, submitLinkRequest, type Purchase } from '../lib/purchases';
 import { Pencil } from './Icons';
 
 /** Réduit une image côté navigateur (max 512 px, WebP) avant envoi — pas de traitement serveur. */
@@ -34,7 +35,12 @@ export default function ProfilePanel({ onClose }: { onClose: () => void }) {
   const [label, setLabel] = useState('Enregistrer');
   const [err, setErr] = useState('');
   const [pending, setPending] = useState(false);
+  const [produits, setProduits] = useState<Purchase[]>([]);
+  const [lienStatut, setLienStatut] = useState<'pending' | 'aucune' | null>(null);
+  const [lienEmail, setLienEmail] = useState('');
+  const [lienMsg, setLienMsg] = useState('');
   useEffect(() => profileStore.subscribe((d) => setAv(d.av)), []);
+  useEffect(() => { getPurchases().then(setProduits).catch(() => {}); getLinkStatus().then(setLienStatut).catch(() => {}); }, []);
 
   async function pickAvatar(f: File) {
     try { const url = await upload(`${API}/media/avatar`, await shrink(f)); setAv(url); profileStore.setAvatar(url); setMeAvatar(url); }
@@ -68,6 +74,11 @@ export default function ProfilePanel({ onClose }: { onClose: () => void }) {
       setPending(false);
     }
   };
+  async function envoyerLiaison() {
+    setLienMsg('');
+    try { await submitLinkRequest(lienEmail); setLienStatut('pending'); setLienEmail(''); }
+    catch (e: any) { setLienMsg(e.message); }
+  }
 
   return (
     <>
@@ -99,6 +110,13 @@ export default function ProfilePanel({ onClose }: { onClose: () => void }) {
           </div>
         ))}
       </div>
+      <div className="pf-products">
+        <span className="pf-sub">Mes produits</span>
+        {produits.length === 0 && <p className="pf-sub" style={{ opacity: .7 }}>Aucun produit rattaché pour l'instant.</p>}
+        {produits.map((p) => (
+          <a key={p.product} className="pf-badge" href="https://www.femzlab.shop" target="_blank" rel="noopener">{p.product}</a>
+        ))}
+      </div>
       <div className="pf-privacy">
         <span className="pf-sub">Confidentialité</span>
         <button className="pf-tgrow" type="button" aria-busy={pending} onClick={() => void toggle('visible')()}><span>Apparaître sur le globe</span><span className={'tg' + (visible ? ' on' : '')} aria-hidden="true"><i /></span></button>
@@ -107,6 +125,15 @@ export default function ProfilePanel({ onClose }: { onClose: () => void }) {
           {!me?.providers.includes('google') && <> · <a href="/espace/auth/google">ajouter Google</a></>}
           {!me?.providers.includes('discord') && <> · <a href="/espace/auth/discord">ajouter Discord</a></>}
         </p>
+        {lienStatut === 'pending' ? (
+          <p className="pf-sub" style={{ marginTop: 10 }}>Demande de liaison envoyée — en attente de validation par Femz.</p>
+        ) : (
+          <div className="pf-link-row" style={{ marginTop: 10 }}>
+            <input type="email" placeholder="Email utilisé pour l'achat" value={lienEmail} onChange={(e) => setLienEmail(e.target.value)} />
+            <button className="btn" type="button" onClick={() => void envoyerLiaison()}>Relier une autre adresse</button>
+          </div>
+        )}
+        {lienMsg && <p className="login-err" role="alert">{lienMsg}</p>}
       </div>
       {err && <p className="login-err" role="alert">{err}</p>}
       <button className="btn btn-acc pf-save" onClick={() => void save()}>{label}</button>

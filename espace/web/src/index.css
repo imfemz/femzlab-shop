@@ -2330,3 +2330,8 @@ footer {
 .app-err .login-err{display:flex;align-items:center;justify-content:space-between;gap:14px;text-align:left;margin:0}
 .app-err-x{flex:none;background:none;border:1px solid rgba(255,80,80,.35);color:inherit;border-radius:var(--r-sm);padding:5px 12px;font:inherit;font-size:12.5px;cursor:pointer}
 .app-err-x:hover{background:rgba(255,80,80,.14)}
+
+.pf-products{display:flex;flex-direction:column;gap:8px;margin-top:14px}
+.pf-badge{display:inline-block;align-self:flex-start;padding:5px 12px;border-radius:999px;background:rgba(94,162,255,.14);color:#5EA2FF;font-size:12.5px;font-weight:600;text-decoration:none}
+.pf-link-row{display:flex;gap:8px;flex-wrap:wrap}
+.pf-link-row input{flex:1;min-width:180px}

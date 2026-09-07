@@ -66,6 +66,11 @@
     "ajouter Google": "add Google",
     "ajouter Discord": "add Discord",
     "Se déconnecter": "Log out",
+    "Mes produits": "My products",
+    "Aucun produit rattaché pour l'instant.": "No product linked yet.",
+    "Email utilisé pour l'achat": "Email used for the purchase",
+    "Relier une autre adresse": "Link another address",
+    "Demande de liaison envoyée — en attente de validation par Femz.": "Link request sent — waiting for Femz to review it.",
 
     // Nav / messages
     "MON": "MY",
