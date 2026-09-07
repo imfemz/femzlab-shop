@@ -2,13 +2,15 @@
 
 Worker `femzlab-espace` (Hono + D1 + R2 + Workers Static Assets), routé sur
 `femzlab.shop/espace*` et `www.femzlab.shop/espace*` comme les autres Workers
-du site (`avis-worker`, le Worker des licences). État au 2026-09-07 : la
-migration D1 a été appliquée en distant, le bundle a été validé en
-`--dry-run`, **rien n'a été publié**. Quatre pré-requis bloquent encore le
-premier vrai déploiement — ils ne peuvent être levés que par Femz depuis les
-consoles Cloudflare / Google / Discord.
+du site (`avis-worker`, le Worker des licences). État au 2026-09-07 : **le
+Worker est déployé en production** (`npm run deploy`), et les migrations D1
+`0001_socle.sql` (socle) et `0002_achats.sql` (achats) sont appliquées sur la
+base distante `femzlab-espace-db`. Les pré-requis de la section (a) ont donc
+été levés par Femz avant ce premier déploiement — la section reste ci-dessous
+comme référence (et pour la règle de zone apex → www, à confirmer avant le
+Plan 3).
 
-## a) Pré-requis Femz (bloquants, à faire avant `npm run deploy`)
+## a) Pré-requis Femz (levés avant le premier `npm run deploy` — gardés pour référence)
 
 **Redirection apex → www sur tout le site** — Cloudflare → Rules → Redirect
 Rules : `femzlab.shop/*` → `https://www.femzlab.shop/$1` en 301. Le cookie de
@@ -19,8 +21,10 @@ verra la session que si **tout le site** vit sur `www` — une page servie sur
 l'apex n'enverra jamais le cookie. Le Worker redirige déjà `femzlab.shop/espace*`,
 mais lui seul : la règle de zone couvre le reste du site.
 
-**R2** — le bucket `femzlab-espace-media` n'existe pas, le compte n'a pas R2
-activé (`wrangler r2 bucket create` échoue avec `10042 NotEntitled`) :
+**R2** — le compte n'avait pas R2 activé (`wrangler r2 bucket create` échouait
+avec `10042 NotEntitled`) ; le bucket `femzlab-espace-media` a depuis été créé,
+sans quoi le déploiement échouerait (binding R2 déclaré dans `wrangler.jsonc`).
+À refaire seulement sur un nouveau compte :
 
 1. Dashboard Cloudflare → R2 → « Commencer » (activer l'offre gratuite).
 2. `npx wrangler r2 bucket create femzlab-espace-media`
@@ -114,7 +118,8 @@ Plans 2 et 3.
   ```
 - **Sauvegardes nocturnes** — cron `0 3 * * *` (03:00 UTC) déclenche
   `backupToR2` (`src/lib/backup.ts`) : dump JSON des tables `users`,
-  `identities`, `user_emails`, `dms`, `blocks` dans le bucket R2, clé
+  `identities`, `user_emails`, `dms`, `blocks`, `purchases`,
+  `link_requests` dans le bucket R2, clé
   `backups/AAAA-MM-JJ.json`, rétention 90 jours (purge automatique des clés
   plus anciennes à chaque exécution). Ces objets ne sont **jamais** servis
   par `GET /espace/media/*` — cette route n'accepte que les préfixes
@@ -150,7 +155,7 @@ Plans 2 et 3.
   versionné, sans valeur réelle) ; en production, uniquement via
   `wrangler secret put`.
 
-## Achats (Plan 2)
+## h) Achats (Plan 2)
 
 Migration et déploiement faits le 2026-09-07 ; le snippet et l'import restent
 à faire par Femz.
@@ -177,7 +182,7 @@ et `link_requests` bien présentes.
 
 **Déploiement** — `npm run deploy` (front reconstruit puis `wrangler
 deploy`, comme au Plan 1). Vérifié avec les commandes de la section (d)
-ci-dessus, plus deux vérifications propres à ce plan :
+ci-dessus, plus trois vérifications propres à ce plan :
 
 ```bash
 curl -s -o /dev/null -w "%{http_code}\n" -X POST https://www.femzlab.shop/espace/hooks/checkout --data '{}'   # 200
@@ -185,18 +190,52 @@ curl -s -o /dev/null -w "%{http_code}\n" https://www.femzlab.shop/espace/admin/l
 curl -s -o /dev/null -w "%{http_code}\n" https://www.femzlab.shop/espace/api/purchases                       # 401
 ```
 
+Les liens « Approuver » / « Refuser » reçus par email ouvrent une **page de
+confirmation** : le GET ne décide rien (les passerelles de sécurité des clients
+mail préchargent les liens), la décision n'est appliquée qu'après le clic sur le
+bouton de cette page (POST). Femz a donc toujours **deux** gestes à faire.
+
 **Reste à faire par Femz — pré-requis avant que les achats remontent
 réellement :**
 
-1. **Coller le nouveau snippet sur CHAQUE produit** — dans Podia, pour
-   `motionlab`, `metavision`, `fade-pack`, `ghost-fx-preset-after-effects`,
-   `sfx-whoosh-pack`, `ultimate-ios-pack`, `vortex-pack` : Settings →
-   Analytics → « Conversion tracking code » → coller le contenu de
-   `espace/worker/podia-snippet.html`. Retirer l'ancien snippet
-   MotionLAB-only (`MotionLAB/license-worker/podia-snippet.html`) de la page
-   MotionLAB s'il y est encore, pour ne pas poster deux fois (sans risque de
-   doublon métier — `UNIQUE(email,product,purchased_at)` et le service de
-   licences restent indépendants — mais deux requêtes réseau pour rien).
+1. **Coller le nouveau snippet dans le champ « Conversion tracking code »** —
+   Podia → Settings → Analytics → « Conversion tracking code » → coller le
+   contenu de `espace/worker/podia-snippet.html`.
+
+   - Ce champ est *a priori* **unique et partagé par tout le site** (c'est
+     déjà le cas de l'ancien snippet MotionLAB, qui filtre lui-même sur
+     `location.pathname`) : **un seul collage, une seule fois**. À confirmer
+     par Femz dans son dashboard Podia — s'il existe bien un champ *par
+     produit*, alors coller sur chacun des produits vendus (`motionlab`,
+     `metavision`, `fade-pack`, `ghost-fx-preset-after-effects`,
+     `sfx-whoosh-pack`, `ultimate-ios-pack`, `vortex-pack`). Le snippet
+     déduit le produit du chemin de la page de remerciement
+     (`productFromSlug`), il est donc sans effet sur les pages des autres
+     produits.
+   - ⚠️ **Ne JAMAIS retirer l'ancien snippet MotionLAB**
+     (`MotionLAB/license-worker/podia-snippet.html`). Il n'a rien à voir avec
+     celui-ci : il poste vers `https://www.femzlab.shop/api/license/hook/checkout`
+     (Worker de licences, KV) et c'est **lui seul qui délivre la licence du
+     plugin MotionLAB** à l'achat. Le nouveau snippet, lui, ne fait
+     qu'enregistrer un badge dans l'espace membre. Les deux sont indépendants
+     et doivent coexister : coller le nouveau **à la suite** de l'ancien, dans
+     le même champ (deux balises `<script>` l'une après l'autre). Supprimer
+     l'ancien = plus aucune licence MotionLAB délivrée.
+
+   **Vérification après collage** — faire un achat de test sur un produit
+   (coupon à 100 % si Podia le permet), puis :
+
+   ```bash
+   npx wrangler d1 execute femzlab-espace-db --remote \
+     --command "SELECT email, product, source, external_ref FROM purchases ORDER BY id DESC LIMIT 3"
+   ```
+
+   La ligne attendue doit apparaître avec le bon `product` (nom canonique) et
+   `source = 'checkout'`. Répéter au moins pour `motionlab` **et** un second
+   produit (ex. `metavision`) : c'est la seule façon de confirmer que
+   `productFromSlug` déduit bien les deux slugs, et — pour `motionlab` — que
+   la licence du plugin est toujours délivrée en parallèle (l'ancien snippet
+   tourne encore).
 2. **Importer les acheteurs existants** — exporter depuis Podia (par
    produit) : Students/Customers → Export CSV. Pour chaque export : garder
    les colonnes email + date d'achat, les mettre au format
