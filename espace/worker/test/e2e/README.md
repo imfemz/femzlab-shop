@@ -10,9 +10,16 @@ Prérequis : la pile locale tourne sur `http://localhost:8788` (worker
 
 ```bash
 cd espace/worker
+cp .dev.vars.example .dev.vars   # ENV=development, secret de dev ; jamais versionné
 npm run migrate:local
 npm run dev &            # http://localhost:8788 (ENV=development via .dev.vars)
 ```
+
+`.dev.vars` est ignoré par git ; `.dev.vars.example` en est le modèle versionné
+(sans aucun secret réel). Les deux identifiants OAuth y sont vides : le parcours
+local passe par `dev-login`, qui n'a besoin d'aucun fournisseur. `ENV` doit
+valoir `development` ou `test`, sinon `dev-login` répond 404 (liste blanche) et
+les cookies sont posés en `Secure`, donc perdus en http local.
 
 `npm run dev` lance `wrangler dev --local --port 8788 --local-upstream localhost:8788`.
 Le drapeau `--local-upstream` est nécessaire : `wrangler.jsonc` déclare des
@@ -30,7 +37,7 @@ arrêtez le serveur `wrangler dev` s'il tourne, repartez d'une base vide, puis
 relancez la pile locale.
 
 ```bash
-rm -rf .wrangler/state
+rm -rf .wrangler/state   # `.dev.vars` est conservé
 npm run migrate:local
 npm run dev &
 ```
@@ -38,8 +45,7 @@ npm run dev &
 Puis, dans `espace/worker` :
 
 ```bash
-npm i -D playwright
-npx playwright install chromium
+npx playwright install chromium   # playwright est déjà en devDependency
 node test/e2e/parcours.spec.mjs
 ```
 

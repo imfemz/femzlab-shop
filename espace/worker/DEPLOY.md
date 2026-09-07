@@ -10,6 +10,15 @@ consoles Cloudflare / Google / Discord.
 
 ## a) Pré-requis Femz (bloquants, à faire avant `npm run deploy`)
 
+**Redirection apex → www sur tout le site** — Cloudflare → Rules → Redirect
+Rules : `femzlab.shop/*` → `https://www.femzlab.shop/$1` en 301. Le cookie de
+session est désormais *host-only* (posé sur `www.femzlab.shop` seul, plus de
+`Domain=femzlab.shop` qui l'envoyait aussi à `pay.femzlab.shop`, le CNAME
+Podia). Conséquence : l'entrée « Mon espace » des pages du site (Plan 3) ne
+verra la session que si **tout le site** vit sur `www` — une page servie sur
+l'apex n'enverra jamais le cookie. Le Worker redirige déjà `femzlab.shop/espace*`,
+mais lui seul : la règle de zone couvre le reste du site.
+
 **R2** — le bucket `femzlab-espace-media` n'existe pas, le compte n'a pas R2
 activé (`wrangler r2 bucket create` échoue avec `10042 NotEntitled`) :
 
@@ -122,11 +131,16 @@ Plans 2 et 3.
   (`npm --prefix ../web run build`) ou au minimum créer
   `../web/dist/index.html`** avant de lancer `npm test` dans
   `espace/worker`, sinon le chargement de la config échoue.
-- Développement local : `npm run dev` (= `wrangler dev --local --port 8788
-  --local-upstream localhost:8788`) — voir `test/e2e/README.md` pour le
-  détail du drapeau `--local-upstream` (nécessaire à cause des `routes` de
-  zone déclarées dans `wrangler.jsonc`) et pour le parcours Playwright local.
+- Développement local : `cp .dev.vars.example .dev.vars` puis `npm run dev`
+  (= `wrangler dev --local --port 8788 --local-upstream localhost:8788`) —
+  voir `test/e2e/README.md` pour le détail du drapeau `--local-upstream`
+  (nécessaire à cause des `routes` de zone déclarées dans `wrangler.jsonc`) et
+  pour le parcours Playwright local.
+- `ENV` est une **liste blanche** : seules les valeurs `development` et `test`
+  ouvrent la route `dev-login` et posent les cookies sans `Secure`. Une
+  variable absente ou inconnue est traitée comme la production.
 - Le dépôt est **public** : jamais un identifiant OAuth ni un secret dans un
-  fichier versionné. En local, ils vivent uniquement dans `.dev.vars`
-  (ignoré par `espace/worker/.gitignore`) ; en production, uniquement via
+  fichier versionné. En local, ils vivent uniquement dans `.dev.vars` (ignoré
+  par `espace/worker/.gitignore` ; `.dev.vars.example` en est le modèle
+  versionné, sans valeur réelle) ; en production, uniquement via
   `wrangler secret put`.
