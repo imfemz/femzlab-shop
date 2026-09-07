@@ -31,4 +31,14 @@ describe('import admin des achats', () => {
     const r2: any = await (await app.request('/espace/api/admin/purchases/import', { method: 'POST', headers: { Cookie: await cookieFor(fondateur), 'content-type': 'application/json' }, body }, env)).json();
     expect(r2.inserted).toBe(0); // même (email, produit, date) déjà présent
   });
+
+  it('refuse un produit non canonique (mauvaise casse) sans traiter la moindre ligne', async () => {
+    const fondateur = await mkUser({ founder: 1 });
+    const body = JSON.stringify({ product: 'Metavision', rows: [{ email: 'x@y.co', purchased_at: '2026-01-01' }] });
+    const res = await app.request('/espace/api/admin/purchases/import', { method: 'POST', headers: { Cookie: await cookieFor(fondateur), 'content-type': 'application/json' }, body }, env);
+    expect(res.status).toBe(400);
+    expect(await res.json()).toEqual({ error: 'produit inconnu' });
+    const n = await env.DB.prepare('SELECT COUNT(*) AS n FROM purchases').first<any>();
+    expect(n.n).toBe(0);
+  });
 });

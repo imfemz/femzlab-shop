@@ -26,16 +26,29 @@ describe('demandes de liaison', () => {
     expect(r2).toEqual({ error: 'demande_en_attente' });
   });
 
-  it('refuse d\'office un email déjà lié à un autre membre, et prévient Femz', async () => {
+  it('refuse d\'office un email déjà lié à un autre membre, sans le dire au demandeur, et prévient Femz', async () => {
     const proprio = await mkUser({ display_name: 'P' });
     await env.DB.prepare("INSERT INTO user_emails (email, user_id, verified_by) VALUES ('pris@x.co', ?, 'oauth')").bind(proprio).run();
     const demandeur = await mkUser({ display_name: 'D' });
     const fake = fakeEmail();
     const r = await createLinkRequest({ ...env, EMAIL: fake as any }, demandeur, 'pris@x.co');
-    expect(r).toEqual({ error: 'deja_utilisee' });
+    expect(r).toEqual({ ok: true }); // même réponse qu'un succès : pas d'oracle d'énumération
     expect(fake.send).toHaveBeenCalledTimes(1); // email de conflit à Femz
+    const n = await env.DB.prepare("SELECT COUNT(*) AS n FROM link_requests WHERE user_id = ? AND status = 'denied'").bind(demandeur).first<any>();
+    expect(n.n).toBe(1); // trace d'audit : demande vue et refusée d'office
+  });
+
+  it('un second conflit identique dans la même journée n\'envoie pas de second email', async () => {
+    const proprio = await mkUser({ display_name: 'P2' });
+    await env.DB.prepare("INSERT INTO user_emails (email, user_id, verified_by) VALUES ('pris2@x.co', ?, 'oauth')").bind(proprio).run();
+    const demandeur = await mkUser({ display_name: 'D2' });
+    const fake = fakeEmail();
+    const e = { ...env, EMAIL: fake as any };
+    expect(await createLinkRequest(e, demandeur, 'pris2@x.co')).toEqual({ ok: true });
+    expect(await createLinkRequest(e, demandeur, 'pris2@x.co')).toEqual({ ok: true });
+    expect(fake.send).toHaveBeenCalledTimes(1);
     const n = await env.DB.prepare('SELECT COUNT(*) AS n FROM link_requests WHERE user_id = ?').bind(demandeur).first<any>();
-    expect(n.n).toBe(0);
+    expect(n.n).toBe(1);
   });
 
   it('approuver rattache l\'email et les achats en attente ; refuser ne rattache rien ; un jeton ne sert qu\'une fois', async () => {
@@ -60,6 +73,24 @@ describe('demandes de liaison', () => {
 
     const d2 = await decideLinkRequest(env, token, 'denied');
     expect(d2).toEqual({ error: 'deja_traite' });
+  });
+
+  it('approuver échoue si l\'email a été rattaché à un autre membre entre-temps', async () => {
+    const a = await mkUser({ display_name: 'A2' });
+    const fake = fakeEmail();
+    await createLinkRequest({ ...env, EMAIL: fake as any }, a, 'x@e.co');
+    const html: string = fake.send.mock.calls[0][0].html;
+    const token = html.match(/\/espace\/admin\/link\/([a-f0-9]+)\//)![1];
+
+    // Entre la demande et le clic de Femz, B se connecte avec cette adresse.
+    const b = await mkUser({ display_name: 'B2' });
+    await env.DB.prepare("INSERT INTO user_emails (email, user_id, verified_by) VALUES ('x@e.co', ?, 'oauth')").bind(b).run();
+
+    expect(await decideLinkRequest(env, token, 'approved')).toEqual({ error: 'deja_utilisee' });
+    const req = await env.DB.prepare('SELECT status FROM link_requests WHERE user_id = ?').bind(a).first<any>();
+    expect(req.status).toBe('denied');
+    const owner = await env.DB.prepare("SELECT user_id FROM user_emails WHERE email = 'x@e.co'").first<any>();
+    expect(owner.user_id).toBe(b);
   });
 
   it('un jeton inconnu ou invalide est refusé', async () => {

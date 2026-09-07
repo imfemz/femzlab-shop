@@ -2,6 +2,7 @@ import { env } from 'cloudflare:test';
 import { describe, it, expect } from 'vitest';
 import { app } from '../src/index';
 import { mkUser, cookieFor } from './helpers';
+import { createLinkRequest, decideLinkRequest } from '../src/lib/link-requests';
 
 describe('/api/purchases et /api/link-requests', () => {
   it('/api/purchases : 401 sans session, liste triée avec session', async () => {
@@ -22,5 +23,15 @@ describe('/api/purchases et /api/link-requests', () => {
     const etat: any = await (await app.request('/espace/api/link-requests', { headers: { Cookie: await cookieFor(u) } }, env)).json();
     expect(etat).toEqual({ status: 'pending' });
     expect((await withAuth('deux@mail.co')).status).toBe(409);
+  });
+
+  it('/api/link-requests : après un refus, GET renvoie denied', async () => {
+    const u = await mkUser();
+    const fake = { send: async (m: any) => { (globalThis as any).__lastHtml = m.html; } };
+    await createLinkRequest({ ...env, EMAIL: fake as any }, u, 'refus@mail.co');
+    const token = (globalThis as any).__lastHtml.match(/\/espace\/admin\/link\/([a-f0-9]+)\//)[1];
+    expect(await decideLinkRequest(env, token, 'denied')).toMatchObject({ ok: true });
+    const etat: any = await (await app.request('/espace/api/link-requests', { headers: { Cookie: await cookieFor(u) } }, env)).json();
+    expect(etat).toEqual({ status: 'denied' });
   });
 });

@@ -1,5 +1,5 @@
 import type { Env } from '../env';
-const TABLES = ['users', 'identities', 'user_emails', 'dms', 'blocks'];
+const TABLES = ['users', 'identities', 'user_emails', 'dms', 'blocks', 'purchases', 'link_requests'];
 const RETENTION_DAYS = 90;
 
 export async function backupToR2(env: Env, now = new Date()) {

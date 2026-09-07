@@ -11,8 +11,8 @@ import { peer, listConvs, thread, sendDm, markRead, block, unblock } from './lib
 import { backupToR2 } from './lib/backup';
 import { langFrom } from './lib/welcome';
 import { recordPurchase, attachPurchases, purchasesFor } from './lib/purchases';
-import { createLinkRequest, decideLinkRequest, escapeHtml } from './lib/link-requests';
-import { productFromSlug } from './lib/products';
+import { createLinkRequest, decideLinkRequest, escapeHtml, peekLinkRequest } from './lib/link-requests';
+import { productFromSlug, isCanonicalProduct } from './lib/products';
 
 const app = new Hono<{ Bindings: Env; Variables: Vars }>();
 
@@ -215,20 +215,28 @@ app.post('/espace/api/link-requests', requireAuth, async (c) => {
   return c.json({ ok: true });
 });
 
+// Le membre doit voir qu'une demande a été refusée (spec §4.3), sinon il
+// revoit juste le formulaire vide sans savoir ce qui s'est passé.
 app.get('/espace/api/link-requests', requireAuth, async (c) => {
-  const row = await c.env.DB.prepare("SELECT id FROM link_requests WHERE user_id = ? AND status = 'pending'").bind(c.get('user').id).first();
-  return c.json({ status: row ? 'pending' : 'aucune' });
+  const pending = await c.env.DB.prepare("SELECT 1 FROM link_requests WHERE user_id = ? AND status = 'pending'").bind(c.get('user').id).first();
+  if (pending) return c.json({ status: 'pending' });
+  const denied = await c.env.DB.prepare("SELECT 1 FROM link_requests WHERE user_id = ? AND status = 'denied' ORDER BY id DESC LIMIT 1").bind(c.get('user').id).first();
+  return c.json({ status: denied ? 'denied' : 'aucune' });
 });
 
 app.post('/espace/api/admin/purchases/import', requireAuth, requireFounder, async (c) => {
   const b: any = await c.req.json().catch(() => ({}));
   const product = String(b.product || '');
+  // Le produit doit être un nom canonique : une coquille de casse
+  // (« Metavision ») créerait un badge parallèle, visible sur le globe, sans
+  // aucune erreur. Validé une fois, avant de traiter la moindre ligne.
+  if (!isCanonicalProduct(product)) return c.json({ error: 'produit inconnu' }, 400);
   const rows: any[] = Array.isArray(b.rows) ? b.rows : [];
   let inserted = 0, attached = 0, rejetees = 0;
   for (const row of rows) {
     const email = String(row?.email || '').trim().toLowerCase();
     const purchasedAt = String(row?.purchased_at || '').trim();
-    if (!product || !/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email) || !purchasedAt) { rejetees++; continue; }
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email) || !purchasedAt) { rejetees++; continue; }
     const { inserted: ok } = await recordPurchase(c.env, { email, product, source: 'import', purchasedAt });
     if (ok) inserted++;
     const owner = await c.env.DB.prepare('SELECT user_id FROM user_emails WHERE email = ?').bind(email).first<{ user_id: number }>();
@@ -245,9 +253,17 @@ app.post('/espace/hooks/checkout', async (c) => {
     const email = String(body.email || '').trim().toLowerCase();
     const product = productFromSlug(String(body.page || ''));
     if (!email || !product) return c.json({ ok: true });
-    await recordPurchase(c.env, { email, product, source: 'checkout', purchasedAt: new Date().toISOString(), externalRef: body.podia_id ? String(body.podia_id) : undefined });
-    const owner = await c.env.DB.prepare('SELECT user_id FROM user_emails WHERE email = ?').bind(email).first<{ user_id: number }>();
-    if (owner) await attachPurchases(c.env, owner.user_id);
+    // Idempotence : `purchasedAt` est horodaté à la milliseconde, donc la
+    // contrainte UNIQUE(email, product, purchased_at) ne rattrape jamais un
+    // rejeu (rechargement de la page de remerciement, double événement de
+    // conversion Podia). On vérifie donc le couple (email, produit) — quelle
+    // que soit la date — avant d'écrire quoi que ce soit.
+    const alreadyExists = await c.env.DB.prepare('SELECT 1 FROM purchases WHERE email = ? AND product = ?').bind(email, product).first();
+    if (!alreadyExists) {
+      await recordPurchase(c.env, { email, product, source: 'checkout', purchasedAt: new Date().toISOString(), externalRef: body.podia_id ? String(body.podia_id) : undefined });
+      const owner = await c.env.DB.prepare('SELECT user_id FROM user_emails WHERE email = ?').bind(email).first<{ user_id: number }>();
+      if (owner) await attachPurchases(c.env, owner.user_id);
+    }
   } catch (e) {
     console.warn('hook checkout ignoré', (e as Error).message);
   }
@@ -261,19 +277,40 @@ function pageDecision(titre: string, corps: string) {
 }
 
 // Cliqués depuis le client mail de Femz (lien envoyé par createLinkRequest) :
-// pas de session, l'autorisation vient de la possession du jeton. Placée hors
-// /espace/api/* (le CSRF ne s'applique pas — jamais soumise par un formulaire).
+// pas de session, l'autorisation vient de la possession du jeton. Placées hors
+// /espace/api/* (le CSRF ne s'applique pas — le formulaire de confirmation est
+// servi par le Worker lui-même, sans session ni cookie).
 // Un segment :decision hors {approve|deny} ne produit pas un vrai 404 Hono :
 // il tombe dans le catch-all SPA `/espace/*` plus bas, qui répond 200 avec
 // l'app React (cf. test/serve.test.ts) — la contrainte sert seulement à
 // écarter la route ici, pas à garantir un statut d'erreur au client.
+// Le GET ne décide RIEN : les passerelles de sécurité des clients mail (Gmail,
+// Outlook Safe Links, antivirus) préchargent les liens des emails pour les
+// scanner, ce qui déclencherait sinon une fusion de comptes sans clic réel.
+const MESSAGES_LIEN: Record<string, { titre: string; corps: string }> = {
+  introuvable: { titre: 'Lien introuvable', corps: 'Lien introuvable ou déjà utilisé.' },
+  deja_traite: { titre: 'Déjà traité', corps: 'Cette demande a déjà été traitée.' },
+  expire: { titre: 'Lien expiré', corps: 'Ce lien a expiré (30 jours).' },
+  deja_utilisee: { titre: 'Déjà rattachée ailleurs', corps: 'Impossible d’approuver — cette adresse a été rattachée à un autre membre entre-temps.' },
+};
+
+// GET : lecture seule, ne décide jamais rien (sûr même préchargé par un scanner de liens email).
 app.get('/espace/admin/link/:token/:decision{approve|deny}', async (c) => {
+  const { token, decision } = c.req.param();
+  const peek = await peekLinkRequest(c.env, token);
+  if (!peek) return c.html(pageDecision(MESSAGES_LIEN.introuvable.titre, MESSAGES_LIEN.introuvable.corps));
+  if (peek.status !== 'pending') return c.html(pageDecision(MESSAGES_LIEN.deja_traite.titre, MESSAGES_LIEN.deja_traite.corps));
+  const libelle = decision === 'approve' ? 'approuver la liaison' : 'refuser la liaison';
+  return c.html(pageDecision('Confirmer', `<form method="POST" action="/espace/admin/link/${token}/${decision}"><button class="btn" type="submit" style="font:inherit;padding:10px 20px;border-radius:8px;background:#5EA2FF;color:#0B0C0F;border:none;cursor:pointer">Confirmer : ${libelle}</button></form>`));
+});
+
+// POST : exécute réellement la décision (déclenché par le bouton de la page ci-dessus).
+app.post('/espace/admin/link/:token/:decision{approve|deny}', async (c) => {
   const decision = c.req.param('decision') === 'approve' ? 'approved' : 'denied';
   const r = await decideLinkRequest(c.env, c.req.param('token'), decision);
   if ('error' in r) {
-    const titres: Record<string, string> = { introuvable: 'Lien introuvable', deja_traite: 'Déjà traité', expire: 'Lien expiré' };
-    const messages: Record<string, string> = { introuvable: 'Lien introuvable ou déjà utilisé.', deja_traite: 'Cette demande a déjà été traitée.', expire: 'Ce lien a expiré (30 jours).' };
-    return c.html(pageDecision(titres[r.error] || 'Lien introuvable', messages[r.error] || 'Une erreur est survenue.'));
+    const m = MESSAGES_LIEN[r.error] || { titre: 'Erreur', corps: 'Une erreur est survenue.' };
+    return c.html(pageDecision(m.titre, m.corps));
   }
   const email = escapeHtml(r.email);
   return c.html(pageDecision(decision === 'approved' ? 'Liaison approuvée' : 'Demande refusée',

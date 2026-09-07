@@ -11,7 +11,7 @@ describe('sauvegarde nocturne', () => {
     expect(r.key).toBe('backups/2026-09-06.json'); expect(r.deleted).toBe(1);
     const dump = JSON.parse(await (await env.MEDIA.get(r.key))!.text());
     expect(dump.users.some((u: any) => u.display_name === 'Sauvé')).toBe(true);
-    expect(Object.keys(dump).sort()).toEqual(['blocks', 'dms', 'identities', 'user_emails', 'users']);
+    expect(Object.keys(dump).sort()).toEqual(['blocks', 'dms', 'identities', 'link_requests', 'purchases', 'user_emails', 'users']);
     expect(await env.MEDIA.get('backups/2026-01-01.json')).toBeNull();
   });
 });

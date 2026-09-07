@@ -45,3 +45,9 @@ export function productFromSlug(pagePath: string): string | null {
 export function productFromPodiaName(name: string): string | null {
   return BY_PODIA_NAME[String(name || '').trim()] || null;
 }
+
+const CANONICAL = new Set([...Object.values(BY_SLUG), ...Object.values(BY_PODIA_NAME)]);
+/** Vrai si `name` est un nom de produit canonique connu (utilisé pour valider l'import admin). */
+export function isCanonicalProduct(name: string): boolean {
+  return CANONICAL.has(name);
+}

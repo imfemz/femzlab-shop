@@ -21,6 +21,14 @@ describe('hook de checkout', () => {
     expect(row.user_id).toBe(u);
   });
 
+  it('rejouer le même événement (même email, même produit) n\'insère rien de plus', async () => {
+    const ev = { email: 'rejeu@e.co', podia_id: 'pd_9', page: '/metavision/thanks' };
+    expect((await post(ev)).status).toBe(200);
+    expect((await post(ev)).status).toBe(200);
+    const n = await env.DB.prepare("SELECT COUNT(*) AS n FROM purchases WHERE email = 'rejeu@e.co' AND product = 'MetaVision'").first<any>();
+    expect(n.n).toBe(1);
+  });
+
   it('ignore silencieusement un corps invalide, un produit inconnu, ou un corps trop lourd — jamais d\'erreur visible', async () => {
     // Storage D1 isolé par test (isolatedStorage, défaut de @cloudflare/vitest-pool-workers) :
     // contrairement aux deux `it` précédents, ce test part d'une table `purchases` vide. On

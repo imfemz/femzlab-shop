@@ -9,6 +9,9 @@ import { readFileSync } from 'node:fs';
 
 const [, , fichier, produit] = process.argv;
 if (!fichier || !produit) { console.error('Usage: node scripts/import-purchases.mjs <fichier.csv> "<Produit canonique>"'); process.exit(1); }
+// Sans le cookie de session, la requête part quand même et revient en 401 :
+// on s'arrête ici avec un message clair plutôt que de laisser deviner.
+if (!process.env.FZ_SESSION) { console.error('Variable FZ_SESSION manquante — voir DEPLOY.md'); process.exit(1); }
 
 const lignes = readFileSync(fichier, 'utf8').trim().split('\n').slice(1); // ignore l'en-tête
 const rows = lignes.map((l) => { const [email, purchased_at] = l.split(',').map((s) => s.trim()); return { email, purchased_at }; }).filter((r) => r.email);
