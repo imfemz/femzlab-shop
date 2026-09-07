@@ -29,6 +29,14 @@ describe('OAuth', () => {
     expect(loc.searchParams.get('scope')).toBe('openid email profile');
     expect(r.headers.get('set-cookie')).toContain('fz_oauth=');
   });
+  it('en production le cookie d’état OAuth est préfixé __Host- avec Path=/', async () => {
+    const prodEnv = { ...env, ENV: 'production' };
+    const r = await app.request('/espace/auth/google', {}, prodEnv);
+    const set = r.headers.get('set-cookie') || '';
+    expect(set.startsWith('__Host-fz_oauth=')).toBe(true);
+    expect(set).toContain('Path=/');
+    expect(set).toContain('Secure');
+  });
   it('refuse un state qui ne correspond pas', async () => {
     expect((await callback('google', 'bad', stateCookie('good'))).status).toBe(400);
   });
@@ -67,6 +75,19 @@ describe('OAuth', () => {
     expect(sans.lang).toBe('fr');
     const dm2 = await env.DB.prepare('SELECT text FROM dms WHERE to_user = ?').bind(sans.id).first<any>();
     expect(dm2.text).toContain("Bienvenue dans l'espace FemzLab");
+  });
+  it('langFrom refuse une langue inconnue ou un en-tête abusif, français par défaut', async () => {
+    mockGoogle({ sub: 'g1', email: 'fraps81@gmail.com', email_verified: true, name: 'Femz', picture: null });
+    await callback('google', 's1', stateCookie('s1'));
+    mockDiscord({ id: 'd7', username: 'leo', global_name: 'Léo', email: 'leo@example.com', verified: true, avatar: null });
+    await callback('discord', 's2', stateCookie('s2'), { 'Accept-Language': 'zz-ZZ' });
+    const leo = await env.DB.prepare("SELECT lang FROM users WHERE display_name = 'Léo'").first<any>();
+    expect(leo.lang).toBe('fr');
+
+    mockGoogle({ sub: 'g5', email: 'sans@example.com', email_verified: true, name: 'Sans', picture: null });
+    await callback('google', 's3', stateCookie('s3'), { 'Accept-Language': 'a'.repeat(500) });
+    const sans = await env.DB.prepare("SELECT lang FROM users WHERE display_name = 'Sans'").first<any>();
+    expect(sans.lang).toBe('fr');
   });
   it('même email via un autre fournisseur → même compte ; email non vérifié → refus', async () => {
     mockGoogle({ sub: 'g2', email: 'anna@example.com', email_verified: true, name: 'Anna', picture: null });

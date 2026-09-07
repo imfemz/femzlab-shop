@@ -24,15 +24,27 @@ describe('session', () => {
     const del = (await app.request('/logout', {}, env)).headers.get('set-cookie') || '';
     expect(del).toContain('Max-Age=0');
   });
-  it('en production le cookie est host-only et Secure (jamais Domain=)', async () => {
+  it('en production le cookie est host-only, Secure, et préfixé __Host- (jamais Domain=)', async () => {
     const uid = await mkUser();
     const prodEnv = { ...env, ENV: 'production' };
     const set = (await app.request(`/login/${uid}`, {}, prodEnv)).headers.get('set-cookie') || '';
+    expect(set.startsWith('__Host-fz_session=')).toBe(true);
     expect(set).toContain('Secure');
     expect(set).toContain('Path=/');
     expect(set).toContain('HttpOnly');
     expect(set).toContain('SameSite=Lax');
     expect(set).not.toContain('Domain=');
+    const del = (await app.request('/logout', {}, prodEnv)).headers.get('set-cookie') || '';
+    expect(del.startsWith('__Host-fz_session=')).toBe(true);
+    expect(del).toContain('Max-Age=0');
+  });
+  it('en production /me accepte __Host-fz_session mais refuse fz_session', async () => {
+    const uid = await mkUser();
+    const prodEnv = { ...env, ENV: 'production' };
+    const ok = await app.request('/me', { headers: { Cookie: await cookieFor(uid, prodEnv) } }, prodEnv);
+    expect(await ok.json()).toEqual({ id: uid });
+    const refuse = await app.request('/me', { headers: { Cookie: await cookieFor(uid, env) } }, prodEnv);
+    expect(refuse.status).toBe(401);
   });
   it('refuse un utilisateur révoqué ou supprimé', async () => {
     const r = await mkUser({ revoked: 1 });

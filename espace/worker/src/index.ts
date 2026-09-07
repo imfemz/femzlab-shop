@@ -31,8 +31,23 @@ app.use('/espace*', async (c, next) => {
   await next();
 });
 
-// Origines de confiance pour les requêtes mutantes (prod + dev local).
-const ORIGINS = ['https://www.femzlab.shop', 'http://localhost:8788', 'http://localhost:5173'];
+// En-têtes de sécurité. Pas de CSP dans cette vague : elle demande une
+// vérification navigateur (globe canvas, vidéos, polices) faite à part — d'où
+// l'absence volontaire de `contentSecurityPolicy` ici (secureHeaders n'en pose
+// aucune par défaut ; la clé n'accepte pas `false` dans le typage Hono).
+// Enregistré avant csrf : un 403 CSRF (ou toute erreur) doit porter ces
+// en-têtes, pas en sortir nu (secureHeaders/no-store enveloppent tout ce qui
+// est enregistré après eux, y compris les réponses courtes de csrf).
+app.use('/espace/*', secureHeaders({ xFrameOptions: 'DENY', referrerPolicy: 'strict-origin-when-cross-origin' }));
+
+// Aucune réponse d'API ne doit être mise en cache (profil, DM, liste des membres).
+app.use('/espace/api/*', async (c, next) => { await next(); c.header('Cache-Control', 'no-store'); });
+
+// Origines de confiance pour les requêtes mutantes. En production, seul le
+// front lui-même ; les ports de dev local ne sont de confiance qu'en dev/test
+// (sinon un déploiement prod ferait encore confiance à localhost:8788/5173).
+const ORIGINS = (env: Env) =>
+  isDevLike(env) ? ['https://www.femzlab.shop', 'http://localhost:8788', 'http://localhost:5173'] : ['https://www.femzlab.shop'];
 
 // CSRF : SameSite=Lax bloque les tiers, pas un sous-domaine same-site
 // (pay.femzlab.shop est un CNAME Podia). Un <form enctype="text/plain"> y
@@ -40,19 +55,15 @@ const ORIGINS = ['https://www.femzlab.shop', 'http://localhost:8788', 'http://lo
 // content-type. Le middleware ne vise que les méthodes non sûres avec un
 // content-type de formulaire (urlencoded, multipart, text/plain) : les appels
 // JSON et les uploads image/* du front ne sont pas concernés.
-app.use('/espace/api/*', csrf({ origin: ORIGINS }));
-app.use('/espace/auth/logout', csrf({ origin: ORIGINS }));
-
-// En-têtes de sécurité. Pas de CSP dans cette vague : elle demande une
-// vérification navigateur (globe canvas, vidéos, polices) faite à part — d'où
-// l'absence volontaire de `contentSecurityPolicy` ici (secureHeaders n'en pose
-// aucune par défaut ; la clé n'accepte pas `false` dans le typage Hono).
-app.use('/espace/*', secureHeaders({ xFrameOptions: 'DENY', referrerPolicy: 'strict-origin-when-cross-origin' }));
-
-// Aucune réponse d'API ne doit être mise en cache (profil, DM, liste des membres).
-app.use('/espace/api/*', async (c, next) => { await next(); c.header('Cache-Control', 'no-store'); });
+app.use('/espace/api/*', csrf({ origin: (origin, c) => ORIGINS(c.env).includes(origin) }));
+app.use('/espace/auth/logout', csrf({ origin: (origin, c) => ORIGINS(c.env).includes(origin) }));
 
 const OAUTH_COOKIE = 'fz_oauth';
+/**
+ * Nom réel du cookie d'état OAuth : `__Host-fz_oauth` hors dev/test — même
+ * raisonnement que le cookie de session (cf. lib/session.ts::cookieName).
+ */
+const oauthCookieName = (env: Env) => (isDevLike(env) ? OAUTH_COOKIE : '__Host-fz_oauth');
 
 function redirectUri(c: any, p: Provider) { return `${c.env.APP_URL.replace(/\/$/, '')}/auth/${p}/callback`; }
 const hex = (b: Uint8Array) => [...b].map((x) => x.toString(16).padStart(2, '0')).join('');
@@ -73,7 +84,7 @@ app.get('/espace/auth/:provider', (c) => {
   const p = c.req.param('provider') as Provider;
   if (!PROVIDERS.includes(p)) return c.text('fournisseur inconnu', 404);
   const state = hex(crypto.getRandomValues(new Uint8Array(16)));
-  setCookie(c, OAUTH_COOKIE, state, { httpOnly: true, sameSite: 'Lax', secure: !isDevLike(c.env), path: '/espace/auth', maxAge: 600 });
+  setCookie(c, oauthCookieName(c.env), state, { httpOnly: true, sameSite: 'Lax', secure: !isDevLike(c.env), path: '/', maxAge: 600 });
   return c.redirect(authorizeUrl(p, c.env, redirectUri(c, p), state), 302);
 });
 
@@ -81,8 +92,8 @@ app.get('/espace/auth/:provider/callback', async (c) => {
   const p = c.req.param('provider') as Provider;
   if (!PROVIDERS.includes(p)) return c.text('fournisseur inconnu', 404);
   const state = c.req.query('state') || '', code = c.req.query('code') || '';
-  const expected = getCookie(c, OAUTH_COOKIE);
-  deleteCookie(c, OAUTH_COOKIE, { path: '/espace/auth' });
+  const expected = getCookie(c, oauthCookieName(c.env));
+  deleteCookie(c, oauthCookieName(c.env), { path: '/' });
   if (!code || !state || !expected || state !== expected) return c.text('état OAuth invalide', 400);
   let profile;
   try { profile = await exchange(p, c.env, redirectUri(c, p), code); }

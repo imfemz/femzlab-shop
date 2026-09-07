@@ -23,6 +23,13 @@ export function welcomeForLang(lang: string): string {
   return WELCOME[String(lang || '').toLowerCase()] || WELCOME.fr;
 }
 
-/** Langue tirée de l'en-tête Accept-Language du navigateur ; `fr` si absent. */
-export const langFrom = (h: string | null | undefined) =>
-  (h || '').split(',')[0].trim().slice(0, 2).toLowerCase() || 'fr';
+/**
+ * Langue tirée de l'en-tête Accept-Language du navigateur ; `fr` si absent,
+ * mal formé, ou si le code (même bien formé, ex. `zz`) n'est pas une langue
+ * gérée par WELCOME — `users.lang` ne doit jamais contenir autre chose que
+ * l'une de ces 5 valeurs.
+ */
+export const langFrom = (h: string | null | undefined): string => {
+  const code = (h || '').split(',')[0].trim().slice(0, 2).toLowerCase();
+  return /^[a-z]{2}$/.test(code) && code in WELCOME ? code : 'fr';
+};

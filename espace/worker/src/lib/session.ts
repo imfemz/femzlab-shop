@@ -7,6 +7,17 @@ export const COOKIE = 'fz_session';
 const SEVEN_DAYS = 7 * 24 * 3600;
 type C = Context<{ Bindings: Env; Variables: Vars }>;
 
+/**
+ * Nom réel du cookie de session : `__Host-fz_session` hors dev/test.
+ * Un navigateur refuse tout cookie `__Host-*` posé avec `Domain=`, depuis un
+ * autre hôte que celui qui le sert, ou sans `Secure`/`Path=/` — ça bloque la
+ * fixation de session par un sous-domaine same-site (ex. `pay.femzlab.shop`,
+ * CNAME Podia) qui ne peut plus imiter un cookie `__Host-*` de `www.femzlab.shop`.
+ * En dev/test on garde `fz_session` sans préfixe : ces environnements servent
+ * parfois en http (localhost), où `Secure` (donc `__Host-`) serait refusé.
+ */
+export const cookieName = (env: Pick<Env, 'ENV'>) => (isDevLike(env) ? COOKIE : '__Host-fz_session');
+
 export function signSession(userId: number, secret: string): Promise<string> {
   return sign({ sub: userId, exp: Math.floor(Date.now() / 1000) + SEVEN_DAYS }, secret, 'HS256');
 }
@@ -19,13 +30,13 @@ function cookieOpts(c: C) {
   return { httpOnly: true, sameSite: 'Lax' as const, secure: !isDevLike(c.env), path: '/' };
 }
 export async function setSession(c: C, userId: number) {
-  setCookie(c, COOKIE, await signSession(userId, c.env.JWT_SECRET), { ...cookieOpts(c), maxAge: SEVEN_DAYS });
+  setCookie(c, cookieName(c.env), await signSession(userId, c.env.JWT_SECRET), { ...cookieOpts(c), maxAge: SEVEN_DAYS });
 }
 export function clearSession(c: C) {
-  deleteCookie(c, COOKIE, cookieOpts(c));
+  deleteCookie(c, cookieName(c.env), cookieOpts(c));
 }
 export async function currentUser(c: C): Promise<User | null> {
-  const token = getCookie(c, COOKIE);
+  const token = getCookie(c, cookieName(c.env));
   if (!token) return null;
   try {
     const p: any = await verify(token, c.env.JWT_SECRET, 'HS256');

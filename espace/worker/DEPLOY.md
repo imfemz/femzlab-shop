@@ -4,7 +4,7 @@ Worker `femzlab-espace` (Hono + D1 + R2 + Workers Static Assets), routé sur
 `femzlab.shop/espace*` et `www.femzlab.shop/espace*` comme les autres Workers
 du site (`avis-worker`, le Worker des licences). État au 2026-09-07 : la
 migration D1 a été appliquée en distant, le bundle a été validé en
-`--dry-run`, **rien n'a été publié**. Deux pré-requis bloquent encore le
+`--dry-run`, **rien n'a été publié**. Quatre pré-requis bloquent encore le
 premier vrai déploiement — ils ne peuvent être levés que par Femz depuis les
 consoles Cloudflare / Google / Discord.
 
@@ -139,6 +139,11 @@ Plans 2 et 3.
 - `ENV` est une **liste blanche** : seules les valeurs `development` et `test`
   ouvrent la route `dev-login` et posent les cookies sans `Secure`. Une
   variable absente ou inconnue est traitée comme la production.
+- En production, les cookies s'appellent `__Host-fz_session` et
+  `__Host-fz_oauth` (préfixe `__Host-` : un navigateur les refuse s'ils sont
+  posés avec `Domain=`, depuis un autre hôte, ou sans `Secure`/`Path=/`) — ils
+  ne peuvent donc pas être posés par un sous-domaine comme `pay.femzlab.shop`.
+  En dev/test ils restent `fz_session` / `fz_oauth`, sans préfixe.
 - Le dépôt est **public** : jamais un identifiant OAuth ni un secret dans un
   fichier versionné. En local, ils vivent uniquement dans `.dev.vars` (ignoré
   par `espace/worker/.gitignore` ; `.dev.vars.example` en est le modèle

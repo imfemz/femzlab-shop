@@ -43,4 +43,27 @@ describe('CSRF', () => {
     expect(legit.status).toBe(200);
     expect(legit.headers.get('set-cookie')).toContain('Max-Age=0');
   });
+
+  it('en production, les origines de dev local ne sont plus de confiance', async () => {
+    const prodEnv = { ...env, ENV: 'production' };
+    const a = await mkUser({ dms_open: 1 }), b = await mkUser({ dms_open: 1 });
+    const attaque = await app.request(`/espace/api/blocks/${b}`, {
+      method: 'POST',
+      headers: { Cookie: await cookieFor(a, prodEnv), 'content-type': 'text/plain', Origin: 'http://localhost:8788' },
+      body: JSON.stringify({}),
+    }, prodEnv);
+    expect(attaque.status).toBe(403);
+  });
+
+  it('une réponse 403 CSRF porte quand même les en-têtes de sécurité et no-store', async () => {
+    const a = await mkUser({ dms_open: 1 }), b = await mkUser({ dms_open: 1 });
+    const attaque = await app.request(`/espace/api/blocks/${b}`, {
+      method: 'POST',
+      headers: { Cookie: await cookieFor(a), 'content-type': 'text/plain', Origin: 'https://evil.example' },
+      body: JSON.stringify({}),
+    }, env);
+    expect(attaque.status).toBe(403);
+    expect(attaque.headers.get('x-frame-options')).toBe('DENY');
+    expect(attaque.headers.get('cache-control')).toBe('no-store');
+  });
 });
