@@ -24,6 +24,7 @@ export default defineWorkersConfig(async () => {
               DISCORD_CLIENT_ID: 'did', DISCORD_CLIENT_SECRET: 'dsecret',
               APP_URL: 'http://localhost/espace',
               OWNER_EMAILS: 'fraps81@gmail.com,hello@imfemz.com',
+              EXPEDITEUR: 'espace@femzlab.shop',
             },
           },
         },

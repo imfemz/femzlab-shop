@@ -13,6 +13,9 @@
     { "binding": "DB", "database_name": "femzlab-espace-db", "database_id": "3b8d4b6f-1f99-495d-a35b-2ef97cadae11", "migrations_dir": "migrations" }
   ],
   "r2_buckets": [{ "binding": "MEDIA", "bucket_name": "femzlab-espace-media" }],
+  "send_email": [
+    { "name": "EMAIL", "destination_address": "hello@imfemz.com" }
+  ],
   "assets": {
     "directory": "../web/dist",
     "binding": "ASSETS",
@@ -23,6 +26,7 @@
   "vars": {
     "APP_URL": "https://www.femzlab.shop/espace",
     "ENV": "production",
-    "OWNER_EMAILS": "fraps81@gmail.com,hello@imfemz.com"
+    "OWNER_EMAILS": "fraps81@gmail.com,hello@imfemz.com",
+    "EXPEDITEUR": "espace@femzlab.shop"
   }
 }

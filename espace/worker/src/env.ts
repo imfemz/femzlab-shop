@@ -1,3 +1,5 @@
+export type EmailSendBinding = { send(msg: { from: { email: string; name?: string }; to: string; subject: string; html: string; text?: string; replyTo?: string }): Promise<void> };
+
 export type Env = {
   DB: D1Database;
   MEDIA: R2Bucket;
@@ -10,6 +12,8 @@ export type Env = {
   APP_URL: string;
   ENV: string;
   OWNER_EMAILS: string;
+  EMAIL: EmailSendBinding;
+  EXPEDITEUR: string;
 };
 
 /**
