@@ -71,6 +71,7 @@
     "Email utilisé pour l'achat": "Email used for the purchase",
     "Relier une autre adresse": "Link another address",
     "Demande de liaison envoyée — en attente de validation par Femz.": "Link request sent — waiting for Femz to review it.",
+    "Ta dernière demande de liaison a été refusée. Tu peux en soumettre une nouvelle.": "Your last link request was declined. You can submit a new one.",
 
     // Nav / messages
     "MON": "MY",

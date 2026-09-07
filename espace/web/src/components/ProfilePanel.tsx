@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { profileStore, type ProfileReel } from '../lib/profile';
 import { API, getMe, initSession, saveConsent, setMeAvatar, logout } from '../lib/api';
 import { initCreatorsFromApi } from '../lib/creators';
-import { getPurchases, getLinkStatus, submitLinkRequest, type Purchase } from '../lib/purchases';
+import { getPurchases, getLinkStatus, submitLinkRequest, type Purchase, type LinkStatus } from '../lib/purchases';
 import { Pencil } from './Icons';
 
 /** Réduit une image côté navigateur (max 512 px, WebP) avant envoi — pas de traitement serveur. */
@@ -36,7 +36,7 @@ export default function ProfilePanel({ onClose }: { onClose: () => void }) {
   const [err, setErr] = useState('');
   const [pending, setPending] = useState(false);
   const [produits, setProduits] = useState<Purchase[]>([]);
-  const [lienStatut, setLienStatut] = useState<'pending' | 'aucune' | null>(null);
+  const [lienStatut, setLienStatut] = useState<LinkStatus | null>(null);
   const [lienEmail, setLienEmail] = useState('');
   const [lienMsg, setLienMsg] = useState('');
   useEffect(() => profileStore.subscribe((d) => setAv(d.av)), []);
@@ -128,10 +128,15 @@ export default function ProfilePanel({ onClose }: { onClose: () => void }) {
         {lienStatut === 'pending' ? (
           <p className="pf-sub" style={{ marginTop: 10 }}>Demande de liaison envoyée — en attente de validation par Femz.</p>
         ) : (
-          <div className="pf-link-row" style={{ marginTop: 10 }}>
-            <input type="email" placeholder="Email utilisé pour l'achat" value={lienEmail} onChange={(e) => setLienEmail(e.target.value)} />
-            <button className="btn" type="button" onClick={() => void envoyerLiaison()}>Relier une autre adresse</button>
-          </div>
+          <>
+            {lienStatut === 'denied' && (
+              <p className="pf-sub" style={{ marginTop: 10 }}>Ta dernière demande de liaison a été refusée. Tu peux en soumettre une nouvelle.</p>
+            )}
+            <div className="pf-link-row" style={{ marginTop: 10 }}>
+              <input type="email" placeholder="Email utilisé pour l'achat" value={lienEmail} onChange={(e) => setLienEmail(e.target.value)} />
+              <button className="btn" type="button" onClick={() => void envoyerLiaison()}>Relier une autre adresse</button>
+            </div>
+          </>
         )}
         {lienMsg && <p className="login-err" role="alert">{lienMsg}</p>}
       </div>
