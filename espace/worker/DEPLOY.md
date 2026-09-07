@@ -149,3 +149,66 @@ Plans 2 et 3.
   par `espace/worker/.gitignore` ; `.dev.vars.example` en est le modèle
   versionné, sans valeur réelle) ; en production, uniquement via
   `wrangler secret put`.
+
+## Achats (Plan 2)
+
+Migration et déploiement faits le 2026-09-07 ; le snippet et l'import restent
+à faire par Femz.
+
+Ce plan ajoute les tables `purchases` et `link_requests`, le hook de
+checkout Podia, les demandes de liaison (rattachement d'un achat fait avec
+une autre adresse email), les badges produits et la carte « Mes produits »
+côté front. Aucun nouveau secret, aucune nouvelle variable d'environnement :
+mêmes bindings qu'au Plan 1.
+
+**Migration distante** — `cd espace/worker && npm run migrate:remote` a
+appliqué `0002_achats.sql` sur la base distante `femzlab-espace-db` (déjà à
+jour pour `0001_socle.sql`). Vérifié avec :
+
+```bash
+npx wrangler d1 execute femzlab-espace-db --remote \
+  --command "SELECT name FROM sqlite_master WHERE type='table' ORDER BY name"
+```
+
+→ `blocks`, `d1_migrations`, `dms`, `identities`, `link_requests`,
+`purchases`, `rate_events`, `user_emails`, `users` (+ tables internes
+SQLite/D1 `_cf_KV`, `sqlite_sequence`) : 8 tables applicatives, `purchases`
+et `link_requests` bien présentes.
+
+**Déploiement** — `npm run deploy` (front reconstruit puis `wrangler
+deploy`, comme au Plan 1). Vérifié avec les commandes de la section (d)
+ci-dessus, plus deux vérifications propres à ce plan :
+
+```bash
+curl -s -o /dev/null -w "%{http_code}\n" -X POST https://www.femzlab.shop/espace/hooks/checkout --data '{}'   # 200
+curl -s -o /dev/null -w "%{http_code}\n" https://www.femzlab.shop/espace/admin/link/0000/approve             # 200 (page « introuvable »)
+curl -s -o /dev/null -w "%{http_code}\n" https://www.femzlab.shop/espace/api/purchases                       # 401
+```
+
+**Reste à faire par Femz — pré-requis avant que les achats remontent
+réellement :**
+
+1. **Coller le nouveau snippet sur CHAQUE produit** — dans Podia, pour
+   `motionlab`, `metavision`, `fade-pack`, `ghost-fx-preset-after-effects`,
+   `sfx-whoosh-pack`, `ultimate-ios-pack`, `vortex-pack` : Settings →
+   Analytics → « Conversion tracking code » → coller le contenu de
+   `espace/worker/podia-snippet.html`. Retirer l'ancien snippet
+   MotionLAB-only (`MotionLAB/license-worker/podia-snippet.html`) de la page
+   MotionLAB s'il y est encore, pour ne pas poster deux fois (sans risque de
+   doublon métier — `UNIQUE(email,product,purchased_at)` et le service de
+   licences restent indépendants — mais deux requêtes réseau pour rien).
+2. **Importer les acheteurs existants** — exporter depuis Podia (par
+   produit) : Students/Customers → Export CSV. Pour chaque export : garder
+   les colonnes email + date d'achat, les mettre au format
+   `email,purchased_at` (AAAA-MM-JJ) attendu par le script. Puis, depuis
+   `espace/worker` :
+
+   ```bash
+   FZ_SESSION=<valeur du cookie __Host-fz_session, copiée depuis les DevTools> \
+     node scripts/import-purchases.mjs metavision.csv "MetaVision"
+   FZ_SESSION=<idem> node scripts/import-purchases.mjs motionlab.csv "MotionLAB"
+   ```
+
+   Vérifier ensuite dans l'app (`/espace/` → profil) que les badges
+   apparaissent pour les membres déjà connectés qui figuraient dans ces
+   exports.
