@@ -9,6 +9,10 @@ async function sha256Hex(s: string): Promise<string> {
 }
 const isEmail = (s: string) => /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(s);
 
+function escapeHtml(s: string): string {
+  return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+}
+
 async function notifyFemz(env: Env, subject: string, html: string) {
   await env.EMAIL.send({ from: { email: env.EXPEDITEUR, name: 'FemzLab — espace membre' }, to: 'hello@imfemz.com', subject, html, text: html.replace(/<[^>]+>/g, ' ') });
 }
@@ -20,7 +24,7 @@ export async function createLinkRequest(env: Env, userId: number, rawEmail: stri
 
   const existing = await env.DB.prepare('SELECT user_id FROM user_emails WHERE email = ?').bind(email).first<{ user_id: number }>();
   if (existing && existing.user_id !== userId) {
-    await notifyFemz(env, 'Conflit — email déjà lié à un autre membre', `<p>Le membre #${userId} a demandé à relier <b>${email}</b>, déjà rattachée au membre #${existing.user_id}. Aucune action requise ; à vérifier si besoin.</p>`);
+    await notifyFemz(env, 'Conflit — email déjà lié à un autre membre', `<p>Le membre #${userId} a demandé à relier <b>${escapeHtml(email)}</b>, déjà rattachée au membre #${existing.user_id}. Aucune action requise ; à vérifier si besoin.</p>`);
     return { error: 'deja_utilisee' };
   }
   if (existing && existing.user_id === userId) return { error: 'deja_reliee' };
@@ -34,8 +38,9 @@ export async function createLinkRequest(env: Env, userId: number, rawEmail: stri
   const r = await env.DB.prepare('INSERT INTO link_requests (user_id, email, token_hash) VALUES (?, ?, ?)').bind(userId, email, tokenHash).run();
   const id = r.meta.last_row_id;
   const base = `${env.APP_URL.replace(/\/$/, '').replace(/\/espace$/, '')}/espace/admin/link/${token}`;
+  const displayName = requester?.display_name || 'Un membre';
   await notifyFemz(env, `Relier une adresse — ${requester?.display_name || 'membre #' + userId}`,
-    `<p><b>${requester?.display_name || 'Un membre'}</b> (#${userId}) demande à relier l'adresse d'achat <b>${email}</b> à son compte.</p>
+    `<p><b>${escapeHtml(displayName)}</b> (#${userId}) demande à relier l'adresse d'achat <b>${escapeHtml(email)}</b> à son compte.</p>
      <p><a href="${base}/approve">Approuver</a> · <a href="${base}/deny">Refuser</a></p>
      <p style="color:#888">Demande #${id}, valable 30 jours.</p>`);
   return { ok: true };

@@ -65,4 +65,16 @@ describe('demandes de liaison', () => {
   it('un jeton inconnu ou invalide est refusé', async () => {
     expect(await decideLinkRequest(env, 'ff'.repeat(24), 'approved')).toEqual({ error: 'introuvable' });
   });
+
+  it('le pseudo et l\'email sont échappés dans l\'email à Femz', async () => {
+    const u = await mkUser({ display_name: '<img src=x onerror=alert(1)>' });
+    const fake = fakeEmail();
+    const r = await createLinkRequest({ ...env, EMAIL: fake as any }, u, 'pi<b>eg</b>e@ex.co');
+    expect(r).toEqual({ ok: true });
+    const html: string = fake.send.mock.calls[0][0].html;
+    expect(html).not.toContain('<img');
+    expect(html).not.toContain('<script');
+    expect(html).toContain('&lt;img');
+    expect(html).toContain('&lt;b&gt;eg&lt;/b&gt;');
+  });
 });
