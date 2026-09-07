@@ -2,6 +2,7 @@
 import { env, fetchMock } from 'cloudflare:test';
 import { beforeAll, afterEach, describe, it, expect } from 'vitest';
 import { app } from '../src/index';
+import { readImage } from '../src/lib/media';
 import { mkUser, cookieFor } from './helpers';
 
 const PNG = new Uint8Array([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a, 1, 2, 3]);
@@ -34,6 +35,17 @@ describe('media', () => {
     const r: any = await (await upload(u, '/espace/api/media/reel/0', PNG)).json();
     const p: any = await (await app.request('/espace/api/profile', { headers: { Cookie: await cookieFor(u) } }, env)).json();
     expect(p.reels[0]).toEqual({ url: 'https://instagram.com/reel/a', thumb: r.url });
+  });
+  it('un corps trop lourd est abandonné en cours de flux, sans content-length', async () => {
+    let envoyes = 0;
+    const stream = new ReadableStream<Uint8Array>({
+      pull(ctrl) { envoyes++; ctrl.enqueue(new Uint8Array(512 * 1024)); },
+    });
+    const req = new Request('http://x/upload', { method: 'POST', body: stream });
+    expect(req.headers.get('content-length')).toBeNull();
+    expect(await readImage(req)).toEqual({ status: 413 });
+    // 2 Mo = 4 chunks de 512 Ko ; le 5e dépasse et arrête la lecture net.
+    expect(envoyes).toBeLessThanOrEqual(6);
   });
   it('la route média ne sert que les avatars et les vignettes', async () => {
     await env.MEDIA.put('backups/2026-09-06.json', '{"users":[]}');

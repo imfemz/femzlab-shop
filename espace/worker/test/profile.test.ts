@@ -18,10 +18,33 @@ describe('profil & globe', () => {
   });
   it('PUT profil : ville géocodée, nom, réseaux, reels bornés à 3', async () => {
     const u = await mkUser();
-    const r = await (await json(u, { city: 'Cannes', display_name: '  Léo  ', socials: { ig: '@leo', tt: '', yt: 'x'.repeat(200) }, reels: [{ url: 'a' }, { url: 'b' }, { url: 'c' }, { url: 'd' }] })('/espace/api/profile')).json() as any;
+    const r = await (await json(u, { city: 'Cannes', display_name: '  Léo  ', socials: { ig: '@leo', tt: '', yt: 'x'.repeat(200) }, reels: [{ url: 'https://x.co/a' }, { url: 'https://x.co/b' }, { url: 'https://x.co/c' }, { url: 'https://x.co/d' }] })('/espace/api/profile')).json() as any;
     expect(r.city).toBe('Cannes'); expect(r.lat).toBeCloseTo(43.55, 1); expect(r.display_name).toBe('Léo');
     expect(r.socials.yt.length).toBe(100); expect(r.reels.length).toBe(3);
     expect((await json(u, { display_name: '' })('/espace/api/profile')).status).toBe(400);
+  });
+  it('PUT profil : une URL de reel non http(s) est refusée, une vide est acceptée', async () => {
+    const u = await mkUser();
+    const ko = await json(u, { reels: [{ url: 'javascript:alert(1)' }] })('/espace/api/profile');
+    expect(ko.status).toBe(400);
+    expect(await ko.json()).toEqual({ error: 'lien de reel invalide (http(s) uniquement)' });
+    const ok = await json(u, { reels: [{ url: 'https://www.instagram.com/reel/x' }, { url: '' }] })('/espace/api/profile');
+    expect(ok.status).toBe(200);
+    const p: any = await ok.json();
+    expect(p.reels.map((r: any) => r.url)).toEqual(['https://www.instagram.com/reel/x', '']);
+  });
+  it('PUT consent : un corps sans booléens est refusé et ne pose pas consented_at', async () => {
+    const u = await mkUser();
+    const ko = await json(u, {})('/espace/api/consent');
+    expect(ko.status).toBe(400);
+    expect(await ko.json()).toEqual({ error: 'visible et dms_open (booléens) requis' });
+    const avant = await env.DB.prepare('SELECT consented_at FROM users WHERE id = ?').bind(u).first<any>();
+    expect(avant.consented_at).toBeNull();
+    const ok = await json(u, { visible: true, dms_open: false })('/espace/api/consent');
+    expect(ok.status).toBe(200);
+    const apres = await env.DB.prepare('SELECT consented_at, visible, dms_open FROM users WHERE id = ?').bind(u).first<any>();
+    expect(apres.consented_at).not.toBeNull();
+    expect([apres.visible, apres.dms_open]).toEqual([1, 0]);
   });
   it('consentement puis /creators : nommé sans email, anonymes en points pays, fondateur en premier', async () => {
     const f = await mkUser({ display_name: 'Femz', founder: 1, visible: 1, city: 'Paris', lat: 48.85, lon: 2.35, consented_at: 'x' });

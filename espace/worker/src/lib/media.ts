@@ -20,12 +20,30 @@ export async function storeUserImage(env: Env, userId: number, prefix: 'avatars'
 }
 export async function deleteKey(env: Env, key: string | null) { if (key) await env.MEDIA.delete(key); }
 
-/** Lit et valide le corps d'un upload ; renvoie l'erreur HTTP à rendre sinon. */
+/**
+ * Lit et valide le corps d'un upload ; renvoie l'erreur HTTP à rendre sinon.
+ * Le corps est lu en flux et abandonné dès que le total dépasse MAX_BYTES :
+ * `content-length` est déclaratif (absent en chunked, ou mensonger), il ne
+ * sert que de pré-contrôle pour couper avant même de lire.
+ */
 export async function readImage(req: Request): Promise<{ bytes: Uint8Array; kind: 'png' | 'jpeg' | 'webp' } | { status: 413 | 415 }> {
   const len = Number(req.headers.get('content-length') || 0);
   if (len > MAX_BYTES) return { status: 413 };
-  const bytes = new Uint8Array(await req.arrayBuffer());
-  if (bytes.length > MAX_BYTES) return { status: 413 };
+  const reader = req.body?.getReader();
+  if (!reader) return { status: 415 };
+  const chunks: Uint8Array[] = [];
+  let total = 0;
+  for (;;) {
+    const { done, value } = await reader.read();
+    if (done) break;
+    if (!value) continue;
+    total += value.byteLength;
+    if (total > MAX_BYTES) { await reader.cancel().catch(() => {}); return { status: 413 }; }
+    chunks.push(value);
+  }
+  const bytes = new Uint8Array(total);
+  let at = 0;
+  for (const c of chunks) { bytes.set(c, at); at += c.byteLength; }
   const kind = sniffImage(bytes);
   if (!kind) return { status: 415 };
   return { bytes, kind };

@@ -33,7 +33,10 @@ describe('DM', () => {
     expect((await post(a, `/espace/api/blocks/${b}`)).status).toBe(200);
     expect((await post(b, `/espace/api/dms/${a}`, { text: 'x' })).status).toBe(403);
     expect((await post(a, `/espace/api/dms/${b}`, { text: 'x' })).status).toBe(403);
-    expect((await app.request(`/espace/api/blocks/${b}`, { method: 'DELETE', headers: { Cookie: await cookieFor(a) } }, env)).status).toBe(200);
+    // sec-fetch-site : posé par le navigateur sur toute requête même-origine ;
+    // sans lui ni content-type, le middleware csrf traite la requête comme un
+    // formulaire d'origine inconnue (cf. test/csrf.test.ts).
+    expect((await app.request(`/espace/api/blocks/${b}`, { method: 'DELETE', headers: { Cookie: await cookieFor(a), 'sec-fetch-site': 'same-origin' } }, env)).status).toBe(200);
     expect((await post(b, `/espace/api/dms/${a}`, { text: 'x' })).status).toBe(200);
   });
   it('limite : 30 messages par 10 minutes, le 31e est refusé (429)', async () => {

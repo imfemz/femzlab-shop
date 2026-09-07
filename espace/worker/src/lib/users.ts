@@ -1,11 +1,13 @@
 import type { Env, User } from '../env';
 import type { OAuthProfile } from './oauth';
-import { welcomeFor } from './welcome';
+import { welcomeForLang } from './welcome';
 import { geocode } from './geocode';
 import { sniffImage, storeUserImage, MAX_BYTES } from './media';
 
 export const parseJson = (s: any, fb: any) => { if (!s) return fb; try { return JSON.parse(s); } catch { return fb; } };
 export const cleanStr = (v: any, max: number) => (typeof v === 'string' ? v.trim().slice(0, max) : '');
+/** Schémas d'URL autorisés pour un lien de reel (rendu en href côté globe). */
+const HTTP_URL = /^https?:\/\//i;
 export const ownerEmails = (env: Env) => String(env.OWNER_EMAILS || '').split(',').map((e) => e.trim().toLowerCase()).filter(Boolean);
 
 export class ConflitIdentite extends Error {
@@ -22,8 +24,10 @@ async function byId(env: Env, id: number) {
  *  2. sinon email déjà connu → on attache l'identité à ce membre ;
  *  3. sinon création (fondateur si email propriétaire) + DM de bienvenue.
  * `attachTo` (mode attache) force le rattachement au membre connecté.
+ * `lang` (Accept-Language du navigateur) fixe `users.lang` et la langue du DM
+ * de bienvenue à la création ; français par défaut.
  */
-export async function findOrCreateFromIdentity(env: Env, p: OAuthProfile, attachTo?: number): Promise<{ user: User; created: boolean }> {
+export async function findOrCreateFromIdentity(env: Env, p: OAuthProfile, attachTo?: number, lang = 'fr'): Promise<{ user: User; created: boolean }> {
   const db = env.DB;
   const known = await db.prepare('SELECT user_id FROM identities WHERE provider = ? AND provider_id = ?').bind(p.provider, p.providerId).first<{ user_id: number }>();
   if (known && attachTo != null && known.user_id !== attachTo) {
@@ -46,8 +50,10 @@ export async function findOrCreateFromIdentity(env: Env, p: OAuthProfile, attach
   if (userId == null) {
     const existingFounder = await db.prepare('SELECT 1 FROM users WHERE founder = 1 LIMIT 1').first();
     const founder = !existingFounder && ownerEmails(env).includes(p.email) ? 1 : 0;
-    const dn = cleanStr(p.name, 60) || p.email.split('@')[0];
-    const r = await db.prepare('INSERT INTO users (display_name, name, founder) VALUES (?, ?, ?)').bind(dn, p.name || null, founder).run();
+    // Jamais la partie locale de l'email en repli : elle deviendrait publique
+    // dès que le membre se rend visible sur le globe.
+    const dn = cleanStr(p.name, 60) || 'Membre';
+    const r = await db.prepare('INSERT INTO users (display_name, name, founder, lang) VALUES (?, ?, ?, ?)').bind(dn, p.name || null, founder, lang).run();
     userId = r.meta.last_row_id as number;
     created = true;
   }
@@ -55,8 +61,8 @@ export async function findOrCreateFromIdentity(env: Env, p: OAuthProfile, attach
     .bind(userId, p.provider, p.providerId, p.email, p.name, p.avatarUrl).run();
   await db.prepare("INSERT OR IGNORE INTO user_emails (email, user_id, verified_by) VALUES (?, ?, 'oauth')").bind(p.email, userId).run();
   if (created) {
-    const f = await db.prepare('SELECT id, country FROM users WHERE founder = 1 AND id != ? ORDER BY id LIMIT 1').bind(userId).first<{ id: number }>();
-    if (f) await db.prepare('INSERT INTO dms (from_user, to_user, text) VALUES (?, ?, ?)').bind(f.id, userId, welcomeFor(null as any)).run();
+    const f = await db.prepare('SELECT id FROM users WHERE founder = 1 AND id != ? ORDER BY id LIMIT 1').bind(userId).first<{ id: number }>();
+    if (f) await db.prepare('INSERT INTO dms (from_user, to_user, text) VALUES (?, ?, ?)').bind(f.id, userId, welcomeForLang(lang)).run();
     if (p.avatarUrl) await copyProviderAvatar(env, userId, p.avatarUrl);
   }
   return { user: (await byId(env, userId))!, created };
@@ -78,8 +84,9 @@ async function copyProviderAvatar(env: Env, userId: number, avatarUrl: string) {
     if (!kind) throw new Error('type non reconnu');
     const key = await storeUserImage(env, userId, 'avatars', bytes, kind);
     await env.DB.prepare('UPDATE users SET avatar_key = ? WHERE id = ?').bind(key, userId).run();
-  } catch (e) {
-    console.warn('avatar fournisseur ignoré', userId, avatarUrl, e);
+  } catch (e: any) {
+    // Jamais l'URL du fournisseur dans les logs (identifiant tiers du membre).
+    console.warn('avatar fournisseur ignoré', userId, e?.message);
   }
 }
 
@@ -125,6 +132,9 @@ export async function updateProfile(env: Env, id: number, body: any): Promise<{ 
     if (!Array.isArray(body.reels)) return { error: 'reels doit être un tableau' };
     const prev = parseJson((await byId(env, id))!.reels, []) as any[];
     const reels = body.reels.slice(0, 3).map((r: any, i: number) => ({ url: cleanStr(r && r.url, 300), thumb_key: prev[i]?.thumb_key || null }));
+    // Ces URL sont rendues en href par le globe : seul http(s) est admis
+    // (javascript:, data: … seraient exécutables au clic). Une URL vide = reel vide.
+    if (reels.some((r: { url: string }) => r.url && !HTTP_URL.test(r.url))) return { error: 'lien de reel invalide (http(s) uniquement)' };
     sets.push('reels = ?'); args.push(JSON.stringify(reels));
   }
   if (!sets.length) return { error: 'aucun champ à mettre à jour' };

@@ -24,6 +24,16 @@ describe('session', () => {
     const del = (await app.request('/logout', {}, env)).headers.get('set-cookie') || '';
     expect(del).toContain('Max-Age=0');
   });
+  it('en production le cookie est host-only et Secure (jamais Domain=)', async () => {
+    const uid = await mkUser();
+    const prodEnv = { ...env, ENV: 'production' };
+    const set = (await app.request(`/login/${uid}`, {}, prodEnv)).headers.get('set-cookie') || '';
+    expect(set).toContain('Secure');
+    expect(set).toContain('Path=/');
+    expect(set).toContain('HttpOnly');
+    expect(set).toContain('SameSite=Lax');
+    expect(set).not.toContain('Domain=');
+  });
   it('refuse un utilisateur révoqué ou supprimé', async () => {
     const r = await mkUser({ revoked: 1 });
     expect((await app.request('/me', { headers: { Cookie: await cookieFor(r) } }, env)).status).toBe(401);

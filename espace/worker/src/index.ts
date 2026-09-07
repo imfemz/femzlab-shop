@@ -1,12 +1,15 @@
 import { Hono } from 'hono';
 import { getCookie, setCookie, deleteCookie } from 'hono/cookie';
-import type { Env, Vars } from './env';
+import { csrf } from 'hono/csrf';
+import { secureHeaders } from 'hono/secure-headers';
+import { isDevLike, type Env, type Vars } from './env';
 import { PROVIDERS, authorizeUrl, exchange, type Provider } from './lib/oauth';
 import { findOrCreateFromIdentity, ConflitIdentite, profileOf, updateProfile, setConsent, creatorsList, stats, mediaUrl, parseJson } from './lib/users';
 import { currentUser, setSession, clearSession, requireAuth } from './lib/session';
 import { readImage, storeUserImage, deleteKey } from './lib/media';
 import { peer, listConvs, thread, sendDm, markRead, block, unblock } from './lib/dms';
 import { backupToR2 } from './lib/backup';
+import { langFrom } from './lib/welcome';
 
 const app = new Hono<{ Bindings: Env; Variables: Vars }>();
 
@@ -28,6 +31,27 @@ app.use('/espace*', async (c, next) => {
   await next();
 });
 
+// Origines de confiance pour les requêtes mutantes (prod + dev local).
+const ORIGINS = ['https://www.femzlab.shop', 'http://localhost:8788', 'http://localhost:5173'];
+
+// CSRF : SameSite=Lax bloque les tiers, pas un sous-domaine same-site
+// (pay.femzlab.shop est un CNAME Podia). Un <form enctype="text/plain"> y
+// produit du JSON valide que c.req.json() accepte sans vérifier le
+// content-type. Le middleware ne vise que les méthodes non sûres avec un
+// content-type de formulaire (urlencoded, multipart, text/plain) : les appels
+// JSON et les uploads image/* du front ne sont pas concernés.
+app.use('/espace/api/*', csrf({ origin: ORIGINS }));
+app.use('/espace/auth/logout', csrf({ origin: ORIGINS }));
+
+// En-têtes de sécurité. Pas de CSP dans cette vague : elle demande une
+// vérification navigateur (globe canvas, vidéos, polices) faite à part — d'où
+// l'absence volontaire de `contentSecurityPolicy` ici (secureHeaders n'en pose
+// aucune par défaut ; la clé n'accepte pas `false` dans le typage Hono).
+app.use('/espace/*', secureHeaders({ xFrameOptions: 'DENY', referrerPolicy: 'strict-origin-when-cross-origin' }));
+
+// Aucune réponse d'API ne doit être mise en cache (profil, DM, liste des membres).
+app.use('/espace/api/*', async (c, next) => { await next(); c.header('Cache-Control', 'no-store'); });
+
 const OAUTH_COOKIE = 'fz_oauth';
 
 function redirectUri(c: any, p: Provider) { return `${c.env.APP_URL.replace(/\/$/, '')}/auth/${p}/callback`; }
@@ -37,10 +61,10 @@ const hex = (b: Uint8Array) => [...b].map((x) => x.toString(16).padStart(2, '0')
 // Déclarée avant /espace/auth/:provider : sinon ce dernier capture "dev-login"
 // comme valeur de :provider et répond 404 avant même d'atteindre cette route.
 app.get('/espace/auth/dev-login', async (c) => {
-  if (c.env.ENV === 'production') return c.text('indisponible', 404);
+  if (!isDevLike(c.env)) return c.text('indisponible', 404);
   const email = String(c.req.query('email') || '').trim().toLowerCase();
   if (!email) return c.text('email requis', 400);
-  const { user } = await findOrCreateFromIdentity(c.env, { provider: 'google', providerId: 'dev:' + email, email, emailVerified: true, name: email.split('@')[0], avatarUrl: null });
+  const { user } = await findOrCreateFromIdentity(c.env, { provider: 'google', providerId: 'dev:' + email, email, emailVerified: true, name: email.split('@')[0], avatarUrl: null }, undefined, langFrom(c.req.header('accept-language')));
   await setSession(c, user.id);
   return c.redirect('/espace/', 302);
 });
@@ -49,7 +73,7 @@ app.get('/espace/auth/:provider', (c) => {
   const p = c.req.param('provider') as Provider;
   if (!PROVIDERS.includes(p)) return c.text('fournisseur inconnu', 404);
   const state = hex(crypto.getRandomValues(new Uint8Array(16)));
-  setCookie(c, OAUTH_COOKIE, state, { httpOnly: true, sameSite: 'Lax', secure: c.env.ENV === 'production', path: '/espace/auth', maxAge: 600 });
+  setCookie(c, OAUTH_COOKIE, state, { httpOnly: true, sameSite: 'Lax', secure: !isDevLike(c.env), path: '/espace/auth', maxAge: 600 });
   return c.redirect(authorizeUrl(p, c.env, redirectUri(c, p), state), 302);
 });
 
@@ -66,7 +90,7 @@ app.get('/espace/auth/:provider/callback', async (c) => {
   if (!profile.email || !profile.emailVerified) return c.redirect('/espace/?erreur=email_non_verifie', 302);
   const me = await currentUser(c);
   let user;
-  try { ({ user } = await findOrCreateFromIdentity(c.env, profile, me?.id)); }
+  try { ({ user } = await findOrCreateFromIdentity(c.env, profile, me?.id, langFrom(c.req.header('accept-language')))); }
   catch (e) {
     if (e instanceof ConflitIdentite) return c.redirect(`/espace/?erreur=${e.code}`, 302);
     throw e;
@@ -96,8 +120,11 @@ app.put('/espace/api/profile', requireAuth, async (c) => {
 });
 app.put('/espace/api/consent', requireAuth, async (c) => {
   const b: any = await c.req.json().catch(() => ({}));
-  await setConsent(c.env, c.get('user').id, !!b.visible, !!b.dms_open);
-  return c.json({ ok: true, visible: !!b.visible, dms_open: !!b.dms_open });
+  // Un corps invalide ne doit jamais valoir « consentement enregistré à tout
+  // refusé » : sans les deux booléens, rien n'est écrit (consented_at reste nul).
+  if (typeof b.visible !== 'boolean' || typeof b.dms_open !== 'boolean') return c.json({ error: 'visible et dms_open (booléens) requis' }, 400);
+  await setConsent(c.env, c.get('user').id, b.visible, b.dms_open);
+  return c.json({ ok: true, visible: b.visible, dms_open: b.dms_open });
 });
 app.get('/espace/api/creators', requireAuth, async (c) => c.json(await creatorsList(c.env)));
 
@@ -161,10 +188,13 @@ app.delete('/espace/api/blocks/:peer', requireAuth, async (c) => { const { p, er
 app.all('/espace/api/*', (c) => c.json({ error: 'route inconnue' }, 404));
 
 // L'app React : les fichiers sont à la racine de web/dist, l'URL publique sous /espace/.
-app.all('/espace/*', (c) => {
+app.all('/espace/*', async (c) => {
   const u = new URL(c.req.url);
   u.pathname = u.pathname.replace(/^\/espace/, '') || '/';
-  return c.env.ASSETS.fetch(new Request(u.toString(), c.req.raw));
+  const res = await c.env.ASSETS.fetch(new Request(u.toString(), c.req.raw));
+  // Les en-têtes d'une réponse issue d'un fetch sont immuables : on la recopie
+  // pour que secureHeaders puisse y poser X-Frame-Options & consorts.
+  return new Response(res.body, res);
 });
 
 export { app };

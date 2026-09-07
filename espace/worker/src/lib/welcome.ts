@@ -17,3 +17,12 @@ const LANG: Record<string, string> = {
 export function welcomeFor(cc: string | null | undefined): string {
   return WELCOME[LANG[String(cc || '').toUpperCase()] || 'en'] || WELCOME.en;
 }
+
+/** Texte de bienvenue pour un code langue ISO 2 lettres ; français par défaut (l'app est en français). */
+export function welcomeForLang(lang: string): string {
+  return WELCOME[String(lang || '').toLowerCase()] || WELCOME.fr;
+}
+
+/** Langue tirée de l'en-tête Accept-Language du navigateur ; `fr` si absent. */
+export const langFrom = (h: string | null | undefined) =>
+  (h || '').split(',')[0].trim().slice(0, 2).toLowerCase() || 'fr';

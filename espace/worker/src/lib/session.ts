@@ -1,7 +1,7 @@
 import type { Context, Next } from 'hono';
 import { getCookie, setCookie, deleteCookie } from 'hono/cookie';
 import { sign, verify } from 'hono/jwt';
-import type { Env, User, Vars } from '../env';
+import { isDevLike, type Env, type User, type Vars } from '../env';
 
 export const COOKIE = 'fz_session';
 const SEVEN_DAYS = 7 * 24 * 3600;
@@ -10,9 +10,13 @@ type C = Context<{ Bindings: Env; Variables: Vars }>;
 export function signSession(userId: number, secret: string): Promise<string> {
   return sign({ sub: userId, exp: Math.floor(Date.now() / 1000) + SEVEN_DAYS }, secret, 'HS256');
 }
+/**
+ * Cookie *host-only* : jamais de `Domain=`. Avec `Domain=femzlab.shop`, le
+ * cookie de session partait vers tous les sous-domaines — dont `pay.femzlab.shop`
+ * (CNAME Podia) — et une page de ce sous-domaine pouvait en poser un (fixation).
+ */
 function cookieOpts(c: C) {
-  const prod = c.env.ENV === 'production';
-  return { httpOnly: true, sameSite: 'Lax' as const, secure: prod, path: '/', domain: prod ? c.env.COOKIE_DOMAIN : undefined };
+  return { httpOnly: true, sameSite: 'Lax' as const, secure: !isDevLike(c.env), path: '/' };
 }
 export async function setSession(c: C, userId: number) {
   setCookie(c, COOKIE, await signSession(userId, c.env.JWT_SECRET), { ...cookieOpts(c), maxAge: SEVEN_DAYS });

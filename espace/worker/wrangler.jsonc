@@ -23,7 +23,6 @@
   "vars": {
     "APP_URL": "https://www.femzlab.shop/espace",
     "ENV": "production",
-    "OWNER_EMAILS": "fraps81@gmail.com,hello@imfemz.com",
-    "COOKIE_DOMAIN": "femzlab.shop"
+    "OWNER_EMAILS": "fraps81@gmail.com,hello@imfemz.com"
   }
 }

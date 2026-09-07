@@ -15,8 +15,8 @@ function mockDiscord(user: object) {
   fetchMock.get('https://discord.com').intercept({ path: '/api/oauth2/token', method: 'POST' }).reply(200, { access_token: 'at' });
   fetchMock.get('https://discord.com').intercept({ path: '/api/users/@me' }).reply(200, user);
 }
-async function callback(provider: string, state: string, cookie: string) {
-  return app.request(`/espace/auth/${provider}/callback?code=abc&state=${state}`, { headers: { Cookie: cookie } }, env);
+async function callback(provider: string, state: string, cookie: string, headers: Record<string, string> = {}) {
+  return app.request(`/espace/auth/${provider}/callback?code=abc&state=${state}`, { headers: { Cookie: cookie, ...headers } }, env);
 }
 const stateCookie = (s: string) => `fz_oauth=${s}`;
 
@@ -51,6 +51,23 @@ describe('OAuth', () => {
     const dm = await env.DB.prepare("SELECT d.text FROM dms d JOIN users u ON u.id = d.to_user WHERE u.display_name = 'Léo'").first<any>();
     expect(dm.text).toContain('FemzLab');
   });
+  it('le DM de bienvenue suit Accept-Language, et vaut français par défaut', async () => {
+    mockGoogle({ sub: 'g1', email: 'fraps81@gmail.com', email_verified: true, name: 'Femz', picture: null });
+    await callback('google', 's1', stateCookie('s1'));
+    mockDiscord({ id: 'd7', username: 'leo', global_name: 'Léo', email: 'leo@example.com', verified: true, avatar: null });
+    await callback('discord', 's2', stateCookie('s2'), { 'Accept-Language': 'fr-FR,fr;q=0.9' });
+    const leo = await env.DB.prepare("SELECT id, lang FROM users WHERE display_name = 'Léo'").first<any>();
+    expect(leo.lang).toBe('fr');
+    const dm = await env.DB.prepare('SELECT text FROM dms WHERE to_user = ?').bind(leo.id).first<any>();
+    expect(dm.text).toContain("Bienvenue dans l'espace FemzLab");
+
+    mockGoogle({ sub: 'g5', email: 'sans@example.com', email_verified: true, name: 'Sans', picture: null });
+    await callback('google', 's3', stateCookie('s3'));
+    const sans = await env.DB.prepare("SELECT id, lang FROM users WHERE display_name = 'Sans'").first<any>();
+    expect(sans.lang).toBe('fr');
+    const dm2 = await env.DB.prepare('SELECT text FROM dms WHERE to_user = ?').bind(sans.id).first<any>();
+    expect(dm2.text).toContain("Bienvenue dans l'espace FemzLab");
+  });
   it('même email via un autre fournisseur → même compte ; email non vérifié → refus', async () => {
     mockGoogle({ sub: 'g2', email: 'anna@example.com', email_verified: true, name: 'Anna', picture: null });
     await callback('google', 's1', stateCookie('s1'));
@@ -77,10 +94,18 @@ describe('OAuth', () => {
     expect(emails.results.map((e) => e.email)).toEqual(['autre@example.com', 'p@example.com']);
   });
   it('logout efface le cookie ; dev-login interdit en production', async () => {
-    const r = await app.request('/espace/auth/logout', { method: 'POST' }, env);
+    // sec-fetch-site : posé par le navigateur sur le fetch même-origine du front
+    // (sans lui ni Origin de confiance, csrf refuse — cf. test/csrf.test.ts).
+    const r = await app.request('/espace/auth/logout', { method: 'POST', headers: { 'sec-fetch-site': 'same-origin' } }, env);
     expect(r.headers.get('set-cookie')).toContain('Max-Age=0');
     const prodEnv = { ...env, ENV: 'production' };
     expect((await app.request('/espace/auth/dev-login?email=a@b.co', {}, prodEnv)).status).toBe(404);
+  });
+  it('dev-login reste fermé si ENV est absent (liste blanche, pas liste noire)', async () => {
+    const sansEnv = { ...env, ENV: undefined as unknown as string };
+    expect((await app.request('/espace/auth/dev-login?email=a@b.co', {}, sansEnv)).status).toBe(404);
+    const n = await env.DB.prepare('SELECT COUNT(*) AS n FROM users').first<any>();
+    expect(n.n).toBe(0);
   });
   it('dev-login hors production connecte et pose la session', async () => {
     const r = await app.request('/espace/auth/dev-login?email=leo@example.com', {}, env);

@@ -13,6 +13,13 @@ describe('service de l’app', () => {
     const r4 = await app.request('http://www.femzlab.shop/espace/nimporte/quoi', {}, env);
     expect(r4.status).toBe(200);
   });
+  it('en-têtes de sécurité sur l’app, pas de cache sur l’API', async () => {
+    const page = await app.request('http://www.femzlab.shop/espace/', {}, env);
+    expect(page.headers.get('x-frame-options')).toBe('DENY');
+    expect(page.headers.get('x-content-type-options')).toBe('nosniff');
+    const api = await app.request('http://www.femzlab.shop/espace/api/stats', {}, env);
+    expect(api.headers.get('cache-control')).toBe('no-store');
+  });
   it('les routes API inconnues rendent du JSON 404, pas l’app', async () => {
     const r = await app.request('http://www.femzlab.shop/espace/api/inconnu', {}, env);
     expect(r.status).toBe(404); expect(r.headers.get('content-type')).toContain('json');

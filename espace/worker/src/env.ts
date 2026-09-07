@@ -10,8 +10,15 @@ export type Env = {
   APP_URL: string;
   ENV: string;
   OWNER_EMAILS: string;
-  COOKIE_DOMAIN?: string;
 };
+
+/**
+ * Liste blanche des environnements « de développement ».
+ * Volontairement positive : si `ENV` est absent ou inconnu, on est en mode
+ * verrouillé (route dev fermée, cookies `Secure`) plutôt qu'ouvert.
+ */
+export const isDevLike = (env: Pick<Env, 'ENV'>) => env.ENV === 'development' || env.ENV === 'test';
+
 export type User = {
   id: number; created_at: string; display_name: string | null; name: string | null;
   avatar_key: string | null; country: string | null; city: string | null;
