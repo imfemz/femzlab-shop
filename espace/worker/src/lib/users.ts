@@ -3,6 +3,7 @@ import type { OAuthProfile } from './oauth';
 import { welcomeForLang } from './welcome';
 import { geocode } from './geocode';
 import { sniffImage, storeUserImage, MAX_BYTES } from './media';
+import { badgesForMany } from './purchases';
 
 export const parseJson = (s: any, fb: any) => { if (!s) return fb; try { return JSON.parse(s); } catch { return fb; } };
 export const cleanStr = (v: any, max: number) => (typeof v === 'string' ? v.trim().slice(0, max) : '');
@@ -149,13 +150,15 @@ export async function setConsent(env: Env, id: number, visible: boolean, dmsOpen
 export async function creatorsList(env: Env) {
   const { results } = await env.DB.prepare(
     'SELECT * FROM users WHERE revoked = 0 AND deleted_at IS NULL ORDER BY founder DESC, id ASC').all<User>();
+  const visibles = results.filter((u) => u.visible && u.display_name);
+  const badges = await badgesForMany(env, visibles.map((u) => u.id));
   return results.map((u) => {
     if (!u.visible || !u.display_name) return anonPoint(u);
     const out: any = {
       id: u.id, display_name: u.display_name, city: u.city || u.country || '',
       socials: parseJson(u.socials, {}), founder: !!u.founder, dms_open: !!u.dms_open,
       reels: (parseJson(u.reels, []) as any[]).filter((r) => r.url || r.thumb_key).map((r) => ({ url: r.url || '', thumb: mediaUrl(r.thumb_key || null) })),
-      badges: [] as string[], // Plan 2 : produits achetés
+      badges: badges.get(u.id) || [],
     };
     if (u.lat != null && u.lon != null) { out.lat = u.lat; out.lon = u.lon; }
     if (u.avatar_key) out.avatar = mediaUrl(u.avatar_key);

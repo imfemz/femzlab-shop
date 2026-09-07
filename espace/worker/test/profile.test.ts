@@ -65,4 +65,12 @@ describe('profil & globe', () => {
     const s: any = await (await app.request('/espace/api/stats', {}, env)).json();
     expect(s.membres).toBe(1);
   });
+  it('/creators porte les badges dérivés des achats rattachés', async () => {
+    const v = await mkUser({ display_name: 'Vue', visible: 1, city: 'Cannes' });
+    await env.DB.prepare("INSERT INTO user_emails (email, user_id, verified_by) VALUES ('vue2@e.co', ?, 'oauth')").bind(v).run();
+    await env.DB.prepare("INSERT INTO purchases (email, product, user_id, source, purchased_at) VALUES ('vue2@e.co', 'MotionLAB', ?, 'checkout', '2026-01-01')").bind(v).run();
+    const a = await mkUser();
+    const list: any[] = await (await app.request('/espace/api/creators', { headers: { Cookie: await cookieFor(a) } }, env)).json();
+    expect(list.find((x) => x.display_name === 'Vue').badges).toEqual(['MotionLAB']);
+  });
 });
