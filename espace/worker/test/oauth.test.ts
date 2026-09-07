@@ -195,4 +195,12 @@ describe('OAuth', () => {
     const hello = await env.DB.prepare("SELECT founder FROM users WHERE display_name = 'Hello'").first<any>();
     expect(hello.founder).toBe(0);
   });
+  it('un achat en attente se rattache automatiquement à la connexion', async () => {
+    await env.DB.prepare("INSERT INTO purchases (email, product, source, purchased_at) VALUES ('nouveau@compte.co', 'Fade Pack', 'import', '2026-01-01')").run();
+    mockGoogle({ sub: 'g50', email: 'nouveau@compte.co', email_verified: true, name: 'Nouveau', picture: null });
+    await callback('google', 's1', stateCookie('s1'));
+    const u = await env.DB.prepare("SELECT id FROM users WHERE display_name = 'Nouveau'").first<any>();
+    const p = await env.DB.prepare('SELECT user_id FROM purchases WHERE email = ?').bind('nouveau@compte.co').first<any>();
+    expect(p.user_id).toBe(u.id);
+  });
 });

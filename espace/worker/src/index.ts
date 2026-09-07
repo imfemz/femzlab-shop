@@ -10,7 +10,8 @@ import { readImage, storeUserImage, deleteKey } from './lib/media';
 import { peer, listConvs, thread, sendDm, markRead, block, unblock } from './lib/dms';
 import { backupToR2 } from './lib/backup';
 import { langFrom } from './lib/welcome';
-import { recordPurchase, attachPurchases } from './lib/purchases';
+import { recordPurchase, attachPurchases, purchasesFor } from './lib/purchases';
+import { createLinkRequest } from './lib/link-requests';
 import { productFromSlug } from './lib/products';
 
 const app = new Hono<{ Bindings: Env; Variables: Vars }>();
@@ -111,6 +112,7 @@ app.get('/espace/auth/:provider/callback', async (c) => {
     if (e instanceof ConflitIdentite) return c.redirect(`/espace/?erreur=${e.code}`, 302);
     throw e;
   }
+  await attachPurchases(c.env, user.id).catch((e) => console.warn('attachPurchases (login) ignoré', (e as Error).message));
   await setSession(c, user.id);
   return c.redirect('/espace/', 302);
 });
@@ -200,6 +202,23 @@ app.post('/espace/api/dms/:peer', requireAuth, async (c) => {
 app.post('/espace/api/dms/:peer/read', requireAuth, async (c) => { const { p, err } = await withPeer(c); if (err) return err; return c.json({ ok: true, read: await markRead(c.env, c.get('user').id, p.id) }); });
 app.post('/espace/api/blocks/:peer', requireAuth, async (c) => { const { p, err } = await withPeer(c); if (err) return err; await block(c.env, c.get('user').id, p.id); return c.json({ ok: true }); });
 app.delete('/espace/api/blocks/:peer', requireAuth, async (c) => { const { p, err } = await withPeer(c); if (err) return err; await unblock(c.env, c.get('user').id, p.id); return c.json({ ok: true }); });
+
+app.get('/espace/api/purchases', requireAuth, async (c) => c.json(await purchasesFor(c.env, c.get('user').id)));
+
+app.post('/espace/api/link-requests', requireAuth, async (c) => {
+  const b: any = await c.req.json().catch(() => ({}));
+  const r = await createLinkRequest(c.env, c.get('user').id, String(b.email || ''));
+  if ('error' in r) {
+    const status = r.error === 'email_invalide' ? 400 : r.error === 'demande_en_attente' ? 409 : 409;
+    return c.json({ error: r.error }, status);
+  }
+  return c.json({ ok: true });
+});
+
+app.get('/espace/api/link-requests', requireAuth, async (c) => {
+  const row = await c.env.DB.prepare("SELECT id FROM link_requests WHERE user_id = ? AND status = 'pending'").bind(c.get('user').id).first();
+  return c.json({ status: row ? 'pending' : 'aucune' });
+});
 
 app.post('/espace/hooks/checkout', async (c) => {
   try {
