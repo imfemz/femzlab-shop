@@ -1,31 +1,58 @@
-/* NéoVision i18n — runtime FR→EN translation of the rendered DOM.
+/* FemzLab espace i18n — runtime FR→EN translation of the rendered DOM.
    Auto-detects the viewer's language (navigator.language), stores the choice,
    re-translates on every React re-render via a MutationObserver, and exposes
-   a FR/EN toggle injected top-right. FR is the source; EN comes from the dict. */
+   a FR/EN toggle injected top-right. FR is the source; EN comes from the dict.
+   Covers the socle's own static copy (login, error, consent, profile, nav).
+   Server error messages from the Worker are concatenated with dynamic text
+   before render and are not covered by this exact-text-node match. */
 (function () {
   "use strict";
 
   // FR -> EN. Keys are trimmed text-node values exactly as they render.
   var DICT = {
-    // Sidebar / nav
-    "Mon espace": "My space",
-    "Formation": "Course",
-    "Les modules": "The modules",
-    "Mes ressources": "My resources",
-    "Communauté": "Community",
-    "Le globe": "The globe",
-    "Les reels des élèves": "Student reels",
-    "Mon compte": "My account",
-    "Ma progression": "My progress",
-    "Mon pack · Créateur": "My pack · Creator",
-    "Support": "Support",
-    "Messages": "Messages",
-    "Reprendre · 3.2": "Resume · 3.2",
+    // Login (anonymous)
+    "Ton espace FemzLab": "Your FemzLab space",
+    "Ton profil, la carte des créateurs, tes messages — et tes produits, réunis au même endroit.":
+      "Your profile, the creator map, your messages — and your products, all in one place.",
+    "Continuer avec Google": "Continue with Google",
+    "Continuer avec Discord": "Continue with Discord",
+    "créateurs": "creators",
+    "créateur": "creator",
+    "dans la communauté": "in the community",
+    "Aucune adresse e-mail n’est jamais affichée. Tu choisis toi-même si tu apparais sur la carte.":
+      "Your email address is never shown. You choose whether you appear on the map.",
 
-    // Profile card
-    "@imfemz · Pack Créateur": "@imfemz · Creator Pack",
-    "15/40 épisodes vus": "15/40 episodes watched",
-    "1 reel produit": "1 reel produced",
+    // Error screen (backend unreachable)
+    "L’espace est momentanément indisponible": "The space is temporarily unavailable",
+    "Le serveur ne répond pas. Rien n’est perdu : ton profil vit sur nos serveurs, pas dans ce navigateur. Réessaie dans un instant.":
+      "The server isn't responding. Nothing is lost: your profile lives on our servers, not in this browser. Try again in a moment.",
+    "Réessayer": "Retry",
+
+    // OAuth errors (?erreur=…)
+    "La connexion a échoué chez le fournisseur. Réessaie.": "The connection failed with the provider. Try again.",
+    "Ton email n’est pas vérifié chez ce fournisseur : vérifie-le, puis reviens.":
+      "Your email isn't verified with this provider: verify it, then come back.",
+    "Cette connexion est déjà rattachée à un autre compte. Connecte-toi avec elle, ou contacte Femz pour fusionner.":
+      "This login is already linked to another account. Sign in with it, or contact Femz to merge them.",
+    "Cette adresse e-mail est déjà rattachée à un autre compte. Connecte-toi avec ce compte-là, ou contacte Femz.":
+      "This email address is already linked to another account. Sign in with that account, or contact Femz.",
+    "Connexion impossible pour le moment.": "Can't connect right now.",
+
+    // Consent modal (first login)
+    "Rejoins le globe FemzLab": "Join the FemzLab globe",
+    "La communauté des créateurs FemzLab vit sur un globe interactif. Choisis comment tu y apparais — tu pourras changer d'avis à tout moment dans ton profil.":
+      "The FemzLab creator community lives on an interactive globe. Choose how you show up there — you can change your mind anytime in your profile.",
+    "Ta ville et ton profil visibles par les autres créateurs": "Your city and profile visible to other creators",
+    "Les créateurs peuvent t'envoyer un DM": "Creators can send you a DM",
+    "Continuer": "Continue",
+    "Réglage non enregistré — réessaie.": "Setting not saved — try again.",
+    "Aucune adresse e-mail n'est jamais affichée.": "Your email address is never shown.",
+
+    // Profile panel
+    "Ton profil": "Your profile",
+    "Fondateur · FemzLab": "Founder · FemzLab",
+    "Membre FemzLab": "FemzLab member",
+    "Nom affiché": "Display name",
     "Ville": "City",
     "Mes 3 reels": "My 3 reels",
     "— ils s'affichent sur ta carte du globe": "— they appear on your globe map",
@@ -33,129 +60,36 @@
     "Apparaître sur le globe": "Appear on the globe",
     "Recevoir des messages": "Receive messages",
     "Enregistrer": "Save",
+    "Enregistré": "Saved",
+    "Réglage de confidentialité non enregistré — réessaie.": "Privacy setting not saved — try again.",
+    "Connexions :": "Connections:",
+    "ajouter Google": "add Google",
+    "ajouter Discord": "add Discord",
+    "Se déconnecter": "Log out",
 
-    // Welcome DM
-    "Bienvenue dans NéoVision ! Ravi de te compter parmi nous. Si tu bloques sur un épisode ou que tu as la moindre question, réponds ici — je lis tout. Bon VFX ! — Femz":
-      "Welcome to NéoVision! Glad to have you with us. If you get stuck on an episode or have any question at all, reply here — I read everything. Happy VFX! — Femz",
-
-    // Current episode hero
-    "Module 3 · En cours": "Module 3 · In progress",
-    "3.2 — Contrôler le mouvement et la caméra": "3.2 — Controlling movement and the camera",
-    "Push in, orbit, handheld : le vocabulaire qui transforme une animation molle en plan intentionnel.":
-      "Push in, orbit, handheld: the vocabulary that turns a limp animation into an intentional shot.",
-    "Reprendre l'épisode": "Resume the episode",
-    "2/4 épisodes du module": "2/4 episodes in the module",
-    "9 modules + bonus · 40 épisodes": "9 modules + bonus · 40 episodes",
-
-    // Module / episode list
-    "Le déclic": "The click",
-    "✓ Terminé": "✓ Completed",
-    "Le VFX IA en 2026": "AI VFX in 2026",
-    "Anatomie d’un Reel viral": "Anatomy of a viral Reel",
-    "Monte ton studio IA": "Build your AI studio",
-    "Ton tout premier plan IA": "Your very first AI shot",
-    "L’image qui a l’air cinéma": "The image that looks cinematic",
-    "Les 4 signaux qui trahissent l’IA": "The 4 signals that give away AI",
-    "Le framework de prompt image": "The image prompt framework",
-    "Générer ses images dans ChatGPT": "Generating your images in ChatGPT",
-    "La consistance du personnage": "Character consistency",
-    "Prompt Mastery": "Prompt Mastery",
-    "L’anatomie d’un prompt qui marche": "The anatomy of a prompt that works",
-    "Corriger un prompt raté": "Fixing a failed prompt",
-    "Le prompt pensé pour l’engagement": "The prompt built for engagement",
-    "Ta bibliothèque de prompts": "Your prompt library",
-    "Donner vie — image → vidéo": "Bringing it to life — image → video",
-    "En cours": "In progress",
-    "Le principe image-to-video": "The image-to-video principle",
-    "Contrôler le mouvement et la caméra": "Controlling movement and the camera",
-    "Seedance, Gemini, Kling : lequel quand": "Seedance, Gemini, Kling: which one when",
-    "Gérer les échecs": "Handling failures",
-    "Les effets signature": "The signature effects",
-    "À venir": "Coming soon",
-    "Effet : transformation / morph": "Effect: transformation / morph",
-    "Effet : caméra impossible": "Effect: impossible camera",
-    "Effet : apparition / duplication": "Effect: appearance / duplication",
-    "Effet : changement de monde": "Effect: world change",
-    "Assembler sans After Effects": "Editing without After Effects",
-    "Enchaîner les plans avec du rythme": "Cutting shots together with rhythm",
-    "Le sound design qui vend l’illusion": "The sound design that sells the illusion",
-    "Upscale & finition": "Upscale & finishing",
-    "Export 9:16 propre": "Clean 9:16 export",
-    "Idées & Script": "Ideas & Script",
-    "Trouver des idées qui ne sèchent jamais": "Finding ideas that never run dry",
-    "Valider une idée avant de produire": "Validating an idea before producing",
-    "Écrire le script d’un Reel VFX": "Writing the script of a VFX Reel",
-    "Du script au plan de production": "From script to production plan",
-    "Rendre viral": "Going viral",
-    "Le hook en 2 secondes": "The hook in 2 seconds",
-    "Structure de rétention": "Retention structure",
-    "Les leviers d’engagement": "The engagement levers",
-    "Emballage : titre, caption, CTA": "Packaging: title, caption, CTA",
-    "Ton système de production": "Your production system",
-    "Le workflow répétable": "The repeatable workflow",
-    "Batcher sa production": "Batching your production",
-    "Ta bibliothèque perso": "Your personal library",
-    "Éthique & limites": "Ethics & limits",
-    "Bonus — After Effects": "Bonus — After Effects",
-    "AE en 20 min + casser le « AI look »": "AE in 20 min + breaking the “AI look”",
-    "Intégrer un plan IA dans une vraie vidéo": "Integrating an AI shot into a real video",
-    "Le motion tracking": "Motion tracking",
-    "Le match final (grade, grain)": "The final match (grade, grain)",
-
-    // Packs
-    "Tes packs": "Your packs",
-    "inclus avec le pack Créateur": "included with the Creator pack",
-    "Templates de prompts": "Prompt templates",
-    "Image + vidéo, à variables, prêts à copier.": "Image + video, with variables, ready to copy.",
-    "Télécharger ↓": "Download ↓",
-    "VFX Pack": "VFX Pack",
-    "Les recettes d'effets complètes, au-delà du cours.": "The complete effect recipes, beyond the course.",
-    "SFX Pack": "SFX Pack",
-    "Whoosh, impacts, risers — le son qui vend l'illusion.": "Whoosh, impacts, risers — the sound that sells the illusion.",
-    "Audit de tes reels": "Audit of your reels",
-    "Retour direct de Femz sur tes 3 reels.": "Direct feedback from Femz on your 3 reels.",
-    "Passer à Studio →": "Upgrade to Studio →",
-
-    // Globe / community
-    "La communauté, en direct": "The community, live",
-    "créateurs · MetaVision & NéoVision": "creators · MetaVision & NéoVision",
-    "Chaque point est un vrai client FemzLab. Attrape le globe, zoome, clique.":
-      "Each dot is a real FemzLab client. Grab the globe, zoom, click.",
-    "Glisse pour tourner · molette pour zoomer · clique un point":
-      "Drag to rotate · scroll to zoom · click a dot",
-    "Explorer le globe": "Explore the globe",
-    "Dézoomer": "Zoom out",
-
-    // Testimonials
-    "Ils créent avec NéoVision": "They create with NéoVision",
-    "Reel de Léa · 48K vues": "Léa's reel · 48K views",
-    "Léa raconte…": "Léa's story…",
-    "« J'ai publié mon premier reel VFX trois jours après avoir commencé. 48 000 vues. »":
-      "“I published my first VFX reel three days after starting. 48,000 views.”",
-    "Reel de Maxime · 112K vues": "Maxime's reel · 112K views",
-    "Maxime raconte…": "Maxime's story…",
-    "« Prompt Mastery a changé ma façon de bosser. Deux essais au lieu de vingt. »":
-      "“Prompt Mastery changed the way I work. Two tries instead of twenty.”",
-    "Reel de Sarah · 27K vues": "Sarah's reel · 27K views",
-    "Sarah raconte…": "Sarah's story…",
-    "« Le Discord et le globe, c'est ce qui me fait rester. On se pousse vers le haut. »":
-      "“The Discord and the globe are what make me stay. We push each other up.”",
-
-    // Footer
-    "NéoVision — une formation FemzLab": "NéoVision — a FemzLab course",
-    "Support · Discord · femzlab.shop": "Support · Discord · femzlab.shop",
+    // Nav / messages
+    "MON": "MY",
+    "ESPACE": "SPACE",
+    "Mon compte": "My account",
+    "Mon profil": "My profile",
+    "Communauté": "Community",
+    "Le globe": "The globe",
+    "La boutique": "The shop",
+    "Aucune conversation — clique un créateur sur le globe.": "No conversation yet — click a creator on the globe.",
+    "Message non envoyé": "Message not sent",
 
     // Placeholders
     "@pseudo": "@handle",
+    "@chaîne": "@handle",
     "Lien du reel 1 (Instagram / TikTok)": "Reel 1 link (Instagram / TikTok)",
     "Lien du reel 2": "Reel 2 link",
     "Lien du reel 3": "Reel 3 link",
     "Rechercher un créateur… (@pseudo)": "Search a creator… (@handle)"
   };
 
-  // Kept identical in both languages (skip untranslated warnings / avoid touching):
-  // "NÉO","VISION","FZ","Femz","Instagram","TikTok","YouTube","Discord","STUDIO",
-  // "Le globe" module tags M0..M8/BONUS/B.x, @handles, names.
+  // Kept identical in both languages on purpose (no dict entry needed):
+  // "FemzLab", "Femz", "Instagram", "TikTok", "YouTube", "Discord",
+  // "Messages", "Support", @handles, city/display names, dynamic server text.
 
   var LS_KEY = "nv_lang";
   var lang = localStorage.getItem(LS_KEY);
