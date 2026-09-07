@@ -104,13 +104,15 @@ export default function DmModal({ convId, onClosed, onBackToList }: Props) {
      retire le message et relance l'erreur — sans ce catch, elle disparaissait
      sans un mot et la promesse restait rejetée. */
   function send() {
-    const v = text.trim();
+    const envoye = text;
+    const v = envoye.trim();
     if (!v || !convId) return;
     setErr('');
-    /* le champ n'est vidé qu'après succès : en cas de refus serveur, le texte
-       tapé reste pour que l'utilisateur puisse le corriger et renvoyer. */
+    /* le champ n'est vidé qu'après succès, et seulement s'il contient encore
+       exactement ce qui a été envoyé : en cas de refus serveur — ou si
+       l'utilisateur a retapé autre chose pendant l'envoi — le texte reste. */
     void NVDM.send(convId, v)
-      .then(() => setText(''))
+      .then(() => setText((cur) => (cur === envoye ? '' : cur)))
       .catch((e) => setErr(e?.message || 'Message non envoyé'));
   }
 

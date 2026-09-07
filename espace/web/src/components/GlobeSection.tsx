@@ -756,11 +756,16 @@ export default function GlobeSection() {
      sans un mot et la promesse restait rejetée. */
   function sendChat() {
     if (!pop || pop.kind !== 'chat') return;
-    const v = chatText.trim();
+    const envoye = chatText;
+    const v = envoye.trim();
     if (!v) return;
     setChatErr('');
-    void NVDM.send(chatId(CREATORS[pop.idx]), v).catch((e) => setChatErr(e?.message || 'Message non envoyé'));
-    setChatText('');
+    /* le champ n'est vidé qu'après succès, et seulement s'il contient encore
+       exactement ce qui a été envoyé : en cas de refus serveur — ou si
+       l'utilisateur a retapé autre chose pendant l'envoi — le texte reste. */
+    void NVDM.send(chatId(CREATORS[pop.idx]), v)
+      .then(() => setChatText((cur) => (cur === envoye ? '' : cur)))
+      .catch((e) => setChatErr(e?.message || 'Message non envoyé'));
   }
 
   /* ── contenus de la carte ancrée ── */
