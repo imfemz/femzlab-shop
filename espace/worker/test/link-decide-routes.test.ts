@@ -36,4 +36,13 @@ describe('routes approve/deny', () => {
     expect(r.status).toBe(200);
     expect(await r.text()).toContain('introuvable');
   });
+  it('l\'email est échappé dans la page de confirmation', async () => {
+    const u = await mkUser();
+    const token = await tokenFor(u, '<b>x</b>@ok.co');
+    const r = await app.request(`/espace/admin/link/${token}/approve`, {}, env);
+    expect(r.status).toBe(200);
+    const text = await r.text();
+    expect(text).not.toContain('<b>x</b>');
+    expect(text).toContain('&lt;b&gt;x&lt;/b&gt;');
+  });
 });

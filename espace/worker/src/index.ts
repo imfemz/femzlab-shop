@@ -11,7 +11,7 @@ import { peer, listConvs, thread, sendDm, markRead, block, unblock } from './lib
 import { backupToR2 } from './lib/backup';
 import { langFrom } from './lib/welcome';
 import { recordPurchase, attachPurchases, purchasesFor } from './lib/purchases';
-import { createLinkRequest, decideLinkRequest } from './lib/link-requests';
+import { createLinkRequest, decideLinkRequest, escapeHtml } from './lib/link-requests';
 import { productFromSlug } from './lib/products';
 
 const app = new Hono<{ Bindings: Env; Variables: Vars }>();
@@ -246,15 +246,21 @@ function pageDecision(titre: string, corps: string) {
 // Cliqués depuis le client mail de Femz (lien envoyé par createLinkRequest) :
 // pas de session, l'autorisation vient de la possession du jeton. Placée hors
 // /espace/api/* (le CSRF ne s'applique pas — jamais soumise par un formulaire).
+// Un segment :decision hors {approve|deny} ne produit pas un vrai 404 Hono :
+// il tombe dans le catch-all SPA `/espace/*` plus bas, qui répond 200 avec
+// l'app React (cf. test/serve.test.ts) — la contrainte sert seulement à
+// écarter la route ici, pas à garantir un statut d'erreur au client.
 app.get('/espace/admin/link/:token/:decision{approve|deny}', async (c) => {
   const decision = c.req.param('decision') === 'approve' ? 'approved' : 'denied';
   const r = await decideLinkRequest(c.env, c.req.param('token'), decision);
   if ('error' in r) {
+    const titres: Record<string, string> = { introuvable: 'Lien introuvable', deja_traite: 'Déjà traité', expire: 'Lien expiré' };
     const messages: Record<string, string> = { introuvable: 'Lien introuvable ou déjà utilisé.', deja_traite: 'Cette demande a déjà été traitée.', expire: 'Ce lien a expiré (30 jours).' };
-    return c.html(pageDecision('Lien introuvable', messages[r.error] || 'Une erreur est survenue.'));
+    return c.html(pageDecision(titres[r.error] || 'Lien introuvable', messages[r.error] || 'Une erreur est survenue.'));
   }
+  const email = escapeHtml(r.email);
   return c.html(pageDecision(decision === 'approved' ? 'Liaison approuvée' : 'Demande refusée',
-    decision === 'approved' ? `${r.email} est désormais rattachée au membre #${r.userId}, ses achats connus sont rattachés.` : `${r.email} n'a pas été rattachée.`));
+    decision === 'approved' ? `${email} est désormais rattachée au membre #${r.userId}, ses achats connus sont rattachés.` : `${email} n'a pas été rattachée.`));
 });
 
 app.all('/espace/api/*', (c) => c.json({ error: 'route inconnue' }, 404));
