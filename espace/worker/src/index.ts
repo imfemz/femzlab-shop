@@ -10,6 +10,8 @@ import { readImage, storeUserImage, deleteKey } from './lib/media';
 import { peer, listConvs, thread, sendDm, markRead, block, unblock } from './lib/dms';
 import { backupToR2 } from './lib/backup';
 import { langFrom } from './lib/welcome';
+import { recordPurchase, attachPurchases } from './lib/purchases';
+import { productFromSlug } from './lib/products';
 
 const app = new Hono<{ Bindings: Env; Variables: Vars }>();
 
@@ -198,6 +200,23 @@ app.post('/espace/api/dms/:peer', requireAuth, async (c) => {
 app.post('/espace/api/dms/:peer/read', requireAuth, async (c) => { const { p, err } = await withPeer(c); if (err) return err; return c.json({ ok: true, read: await markRead(c.env, c.get('user').id, p.id) }); });
 app.post('/espace/api/blocks/:peer', requireAuth, async (c) => { const { p, err } = await withPeer(c); if (err) return err; await block(c.env, c.get('user').id, p.id); return c.json({ ok: true }); });
 app.delete('/espace/api/blocks/:peer', requireAuth, async (c) => { const { p, err } = await withPeer(c); if (err) return err; await unblock(c.env, c.get('user').id, p.id); return c.json({ ok: true }); });
+
+app.post('/espace/hooks/checkout', async (c) => {
+  try {
+    const raw = await c.req.text();
+    if (raw.length > 8000) return c.json({ ok: true });
+    const body = JSON.parse(raw || '{}');
+    const email = String(body.email || '').trim().toLowerCase();
+    const product = productFromSlug(String(body.page || ''));
+    if (!email || !product) return c.json({ ok: true });
+    await recordPurchase(c.env, { email, product, source: 'checkout', purchasedAt: new Date().toISOString(), externalRef: body.podia_id ? String(body.podia_id) : undefined });
+    const owner = await c.env.DB.prepare('SELECT user_id FROM user_emails WHERE email = ?').bind(email).first<{ user_id: number }>();
+    if (owner) await attachPurchases(c.env, owner.user_id);
+  } catch (e) {
+    console.warn('hook checkout ignoré', (e as Error).message);
+  }
+  return c.json({ ok: true });
+});
 
 app.all('/espace/api/*', (c) => c.json({ error: 'route inconnue' }, 404));
 

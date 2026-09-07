@@ -1,0 +1,37 @@
+<!--
+  FemzLab — enregistrement automatique des acheteurs (tous produits).
+
+  OÙ LE COLLER : dans Podia, sur CHAQUE produit vendu → Settings → Analytics
+  (« Conversion tracking code », celui qui ne s'exécute QUE sur la page de
+  remerciement — jamais le « Website tracking code »). Nécessite un plan
+  Podia Mover ou Shaker.
+
+  CE QU'IL FAIT : sur la page de remerciement d'un achat, il lit l'email de
+  l'acheteur exposé par Podia et l'envoie à l'espace membre, qui enregistre
+  l'achat (badge visible sur le profil et le globe une fois le compte créé —
+  aucun accès à un contenu n'est débloqué par ce seul enregistrement).
+
+  POURQUOI sendBeacon : la requête doit survivre à la fermeture de l'onglet, et
+  un Blob text/plain évite la requête préalable CORS.
+-->
+<script>
+(function () {
+  try {
+    if (!window.Podia || !Podia.Conversion || !Podia.Customer) return;
+    var email = Podia.Customer.email;
+    if (!email) return;
+    var payload = JSON.stringify({ email: email, podia_id: Podia.Customer.id, page: location.pathname });
+    var url = 'https://www.femzlab.shop/espace/hooks/checkout';
+    if (navigator.sendBeacon) {
+      navigator.sendBeacon(url, new Blob([payload], { type: 'text/plain' }));
+    } else {
+      var xhr = new XMLHttpRequest();
+      xhr.open('POST', url, true);
+      xhr.setRequestHeader('Content-Type', 'text/plain');
+      xhr.send(payload);
+    }
+  } catch (e) {
+    // Un achat ne doit jamais échouer à cause de ce script.
+  }
+})();
+</script>
