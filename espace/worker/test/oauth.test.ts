@@ -37,6 +37,21 @@ describe('OAuth', () => {
     expect(set).toContain('Path=/');
     expect(set).toContain('Secure');
   });
+  it('le callback complet fonctionne en production (deleteCookie du __Host-fz_oauth ne plante pas)', async () => {
+    // Round 3 : deleteCookie(..., { path: '/' }) sans `secure` fait lever
+    // hono/cookie ("__Host- Cookie must have Secure attributes") pour un nom
+    // __Host-*, avant même la vérification du state → 500 sur tout callback
+    // OAuth en prod. Invisible en CI tant que le test ne force pas ENV=production.
+    const prod = { ...env, ENV: 'production' };
+    mockGoogle({ sub: 'gp', email: 'prod@example.com', email_verified: true, name: 'Prod', picture: null });
+    const r = await app.request('/espace/auth/google/callback?code=abc&state=s9', { headers: { Cookie: '__Host-fz_oauth=s9' } }, prod);
+    expect(r.status).toBe(302);
+    expect(r.headers.get('location')).toBe('/espace/');
+    const set = r.headers.get('set-cookie') || '';
+    expect(set).toContain('__Host-fz_session=');
+    expect(set).toContain('__Host-fz_oauth=;');
+    expect(set).toContain('Secure');
+  });
   it('refuse un state qui ne correspond pas', async () => {
     expect((await callback('google', 'bad', stateCookie('good'))).status).toBe(400);
   });

@@ -93,7 +93,10 @@ app.get('/espace/auth/:provider/callback', async (c) => {
   if (!PROVIDERS.includes(p)) return c.text('fournisseur inconnu', 404);
   const state = c.req.query('state') || '', code = c.req.query('code') || '';
   const expected = getCookie(c, oauthCookieName(c.env));
-  deleteCookie(c, oauthCookieName(c.env), { path: '/' });
+  // Mêmes attributs qu'à la pose : un cookie __Host-* sans `secure` fait
+  // lever `_serialize` ("__Host- Cookie must have Secure attributes") avant
+  // même la vérification du state — 500 sur chaque callback OAuth en prod.
+  deleteCookie(c, oauthCookieName(c.env), { path: '/', secure: !isDevLike(c.env), httpOnly: true, sameSite: 'Lax' });
   if (!code || !state || !expected || state !== expected) return c.text('état OAuth invalide', 400);
   let profile;
   try { profile = await exchange(p, c.env, redirectUri(c, p), code); }
