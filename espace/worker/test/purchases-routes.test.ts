@@ -34,4 +34,14 @@ describe('/api/purchases et /api/link-requests', () => {
     const etat: any = await (await app.request('/espace/api/link-requests', { headers: { Cookie: await cookieFor(u) } }, env)).json();
     expect(etat).toEqual({ status: 'denied' });
   });
+
+  it("/api/link-requests : refus silencieux (email déjà rattaché à un tiers) — GET ne doit pas révéler 'denied' (oracle d'énumération)", async () => {
+    const proprietaire = await mkUser();
+    await env.DB.prepare("INSERT INTO user_emails (email, user_id, verified_by) VALUES ('deja-pris@mail.co', ?, 'oauth')").bind(proprietaire).run();
+    const u = await mkUser();
+    const withAuth = async (email: string) => app.request('/espace/api/link-requests', { method: 'POST', headers: { Cookie: await cookieFor(u), 'content-type': 'application/json' }, body: JSON.stringify({ email }) }, env);
+    expect((await withAuth('deja-pris@mail.co')).status).toBe(200);
+    const etat: any = await (await app.request('/espace/api/link-requests', { headers: { Cookie: await cookieFor(u) } }, env)).json();
+    expect(etat).toEqual({ status: 'aucune' });
+  });
 });

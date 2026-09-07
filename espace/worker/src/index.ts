@@ -220,7 +220,11 @@ app.post('/espace/api/link-requests', requireAuth, async (c) => {
 app.get('/espace/api/link-requests', requireAuth, async (c) => {
   const pending = await c.env.DB.prepare("SELECT 1 FROM link_requests WHERE user_id = ? AND status = 'pending'").bind(c.get('user').id).first();
   if (pending) return c.json({ status: 'pending' });
-  const denied = await c.env.DB.prepare("SELECT 1 FROM link_requests WHERE user_id = ? AND status = 'denied' ORDER BY id DESC LIMIT 1").bind(c.get('user').id).first();
+  // `token_hash IS NOT NULL` exclut les refus silencieux (email déjà rattaché à
+  // un tiers, cf. createLinkRequest) : les montrer ici recréerait un oracle
+  // d'énumération (un membre saurait, en observant 'denied' juste après son
+  // POST, qu'une adresse appartient déjà à quelqu'un d'autre).
+  const denied = await c.env.DB.prepare("SELECT 1 FROM link_requests WHERE user_id = ? AND status = 'denied' AND token_hash IS NOT NULL ORDER BY id DESC LIMIT 1").bind(c.get('user').id).first();
   return c.json({ status: denied ? 'denied' : 'aucune' });
 });
 
