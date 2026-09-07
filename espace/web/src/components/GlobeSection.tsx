@@ -136,6 +136,9 @@ export default function GlobeSection() {
     setPopNonce((n) => n + 1);
   }
   function openChat(idx: number) {
+    /* sans ce reset, l'erreur d'un envoi raté sur un chat précédent restait
+       affichée en ouvrant celui d'un autre créateur */
+    setChatErr('');
     const c = CREATORS[idx];
     const id = chatId(c);
     NVDM.open(id, c.n, c.founder);
@@ -146,6 +149,7 @@ export default function GlobeSection() {
   }
   function closePop() {
     setPop(null);
+    setChatErr('');
     st.current.edge = null;
   }
   function flyTo(j: number) {

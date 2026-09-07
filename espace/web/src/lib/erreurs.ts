@@ -3,15 +3,22 @@
  * Partagé par l'écran de connexion (état anon) et le bandeau de l'espace
  * (état auth, mode attache d'un 2e fournisseur).
  */
-export const ERREURS: Record<string, string> = {
-  oauth: 'La connexion a échoué chez le fournisseur. Réessaie.',
-  email_non_verifie: 'Ton email n’est pas vérifié chez ce fournisseur : vérifie-le, puis reviens.',
-  identite_deja_liee: 'Cette connexion est déjà rattachée à un autre compte. Connecte-toi avec elle, ou contacte Femz pour fusionner.',
-  email_deja_utilise: 'Cette adresse e-mail est déjà rattachée à un autre compte. Connecte-toi avec ce compte-là, ou contacte Femz.',
-};
+/**
+ * `Map` plutôt qu'un objet : un code d'erreur vient de l'URL (`?erreur=`),
+ * potentiellement forgé (`__proto__`, `constructor`…). Un objet littéral
+ * résoudrait ces clés via la chaîne de prototype et renverrait une fonction —
+ * rendue comme enfant JSX, elle ferait planter la page blanche. `Map.get`
+ * n'a pas ce problème : seules les entrées insérées ci-dessous existent.
+ */
+export const ERREURS: Map<string, string> = new Map([
+  ['oauth', 'La connexion a échoué chez le fournisseur. Réessaie.'],
+  ['email_non_verifie', 'Ton email n’est pas vérifié chez ce fournisseur : vérifie-le, puis reviens.'],
+  ['identite_deja_liee', 'Cette connexion est déjà rattachée à un autre compte. Connecte-toi avec elle, ou contacte Femz pour fusionner.'],
+  ['email_deja_utilise', 'Cette adresse e-mail est déjà rattachée à un autre compte. Connecte-toi avec ce compte-là, ou contacte Femz.'],
+]);
 
 /** Texte à afficher pour un code d'erreur (repli générique si inconnu). */
-export const texteErreur = (code: string) => ERREURS[code] || 'Connexion impossible pour le moment.';
+export const texteErreur = (code: string) => ERREURS.get(code) || 'Connexion impossible pour le moment.';
 
 /**
  * `?erreur=` est lu **une seule fois**, au chargement du module (avant le

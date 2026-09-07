@@ -60,13 +60,20 @@ export async function logout() {
   location.assign('/espace/');
 }
 
-/** fetch JSON même-origine ; jette sur toute réponse non-2xx. */
+/**
+ * fetch JSON même-origine ; jette sur toute réponse non-2xx avec le message
+ * français du Worker (`{ error: '…' }`) quand il y en a un — sinon le repli
+ * générique `MÉTHODE url → code`.
+ */
 export async function apiJson<T>(url: string, init?: RequestInit): Promise<T> {
   const r = await fetch(url, {
     credentials: 'same-origin',
     headers: { 'content-type': 'application/json' },
     ...init,
   });
-  if (!r.ok) throw new Error(`${init?.method || 'GET'} ${url} → ${r.status}`);
+  if (!r.ok) {
+    const body = (await r.json().catch(() => null)) as { error?: string } | null;
+    throw new Error(body?.error || `${init?.method || 'GET'} ${url} → ${r.status}`);
+  }
   return (await r.json()) as T;
 }

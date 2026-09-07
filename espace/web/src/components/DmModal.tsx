@@ -34,6 +34,9 @@ export default function DmModal({ convId, onClosed, onBackToList }: Props) {
 
   /* ouverture : marquer lu, apparaître, focus */
   useEffect(() => {
+    /* sans ce reset, l'erreur d'une conversation précédente (ou d'un envoi
+       raté juste avant fermeture) restait affichée sur la suivante */
+    setErr('');
     if (!convId) return;
     closing.current = false;
     NVDM.read(convId);
@@ -104,8 +107,11 @@ export default function DmModal({ convId, onClosed, onBackToList }: Props) {
     const v = text.trim();
     if (!v || !convId) return;
     setErr('');
-    void NVDM.send(convId, v).catch((e) => setErr(e?.message || 'Message non envoyé'));
-    setText('');
+    /* le champ n'est vidé qu'après succès : en cas de refus serveur, le texte
+       tapé reste pour que l'utilisateur puisse le corriger et renvoyer. */
+    void NVDM.send(convId, v)
+      .then(() => setText(''))
+      .catch((e) => setErr(e?.message || 'Message non envoyé'));
   }
 
   return (
