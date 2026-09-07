@@ -1045,7 +1045,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
   <!-- ============= S1.5 : VIDÉO DE PRÉSENTATION (Comp 4) ============= -->
   <div class="hero-video rv" style="--d:.18s">
     <div class="hv-frame">
-      <video class="hv-vid" muted loop playsinline preload="metadata"
+      <video class="hv-vid" autoplay muted loop playsinline preload="auto"
              poster="assets/jpg-32.jpg"
              aria-label="MotionLAB en vidéo : les 10 presets texte et les outils du panel, en action.">
         <source src="assets/mp4-25.mp4" type="video/mp4">
@@ -1053,14 +1053,14 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     </div>
   </div>
   <script>
-  /* Lecture auto muette du hero (playsinline pour iOS), sauf prefers-reduced-motion.
-     Même idiome que les autres vidéos de la page : v.play().catch(). */
+  /* Autoplay muet inline. L'attribut `autoplay` est le déclencheur FIABLE sur
+     iOS/WebKit ; le précédent play() piloté par `canplay` ne se lançait jamais
+     avec preload=metadata → poster figé sur mobile. play() de secours en plus. */
   (function(){
     var v=document.querySelector('.hv-vid'); if(!v) return;
     try{ v.muted=true; }catch(e){}
-    if(window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-    var go=function(){ v.play && v.play().catch(function(){}); };
-    if(v.readyState>=2) go(); else v.addEventListener('canplay',go,{once:true});
+    var kick=function(){ var p=v.play&&v.play(); if(p&&p.catch) p.catch(function(){}); };
+    kick(); v.addEventListener('loadeddata', kick, {once:true});
   })();
   </script>
 
