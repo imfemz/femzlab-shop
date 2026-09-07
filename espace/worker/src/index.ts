@@ -5,7 +5,7 @@ import { secureHeaders } from 'hono/secure-headers';
 import { isDevLike, type Env, type Vars } from './env';
 import { PROVIDERS, authorizeUrl, exchange, type Provider } from './lib/oauth';
 import { findOrCreateFromIdentity, ConflitIdentite, profileOf, updateProfile, setConsent, creatorsList, stats, mediaUrl, parseJson } from './lib/users';
-import { currentUser, setSession, clearSession, requireAuth } from './lib/session';
+import { currentUser, setSession, clearSession, requireAuth, requireFounder } from './lib/session';
 import { readImage, storeUserImage, deleteKey } from './lib/media';
 import { peer, listConvs, thread, sendDm, markRead, block, unblock } from './lib/dms';
 import { backupToR2 } from './lib/backup';
@@ -218,6 +218,23 @@ app.post('/espace/api/link-requests', requireAuth, async (c) => {
 app.get('/espace/api/link-requests', requireAuth, async (c) => {
   const row = await c.env.DB.prepare("SELECT id FROM link_requests WHERE user_id = ? AND status = 'pending'").bind(c.get('user').id).first();
   return c.json({ status: row ? 'pending' : 'aucune' });
+});
+
+app.post('/espace/api/admin/purchases/import', requireAuth, requireFounder, async (c) => {
+  const b: any = await c.req.json().catch(() => ({}));
+  const product = String(b.product || '');
+  const rows: any[] = Array.isArray(b.rows) ? b.rows : [];
+  let inserted = 0, attached = 0, rejetees = 0;
+  for (const row of rows) {
+    const email = String(row?.email || '').trim().toLowerCase();
+    const purchasedAt = String(row?.purchased_at || '').trim();
+    if (!product || !/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email) || !purchasedAt) { rejetees++; continue; }
+    const { inserted: ok } = await recordPurchase(c.env, { email, product, source: 'import', purchasedAt });
+    if (ok) inserted++;
+    const owner = await c.env.DB.prepare('SELECT user_id FROM user_emails WHERE email = ?').bind(email).first<{ user_id: number }>();
+    if (owner && ok) { await attachPurchases(c.env, owner.user_id); attached++; }
+  }
+  return c.json({ inserted, attached, rejetees });
 });
 
 app.post('/espace/hooks/checkout', async (c) => {
