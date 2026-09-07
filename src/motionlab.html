@@ -230,6 +230,16 @@ nav.dock::before{content:"";position:absolute;inset:-70%;z-index:-1;pointer-even
 .hero-meta span{display:inline-flex;align-items:center;gap:7px}
 .hero-meta svg{width:14px;height:14px;stroke:var(--accent)}
 
+/* vidéo de présentation (Comp 4) — objet-héros pleine largeur, sous la carte.
+   Le mockup animé reste ; la vidéo vient EN PLUS. Loop auto, muet, playsinline. */
+.hero-video{position:relative;max-width:1100px;margin:6px auto 0;padding:0 clamp(20px,5vw,48px)}
+.hero-video::before{content:"";position:absolute;left:50%;top:-5%;transform:translateX(-50%);
+  width:72%;height:62%;z-index:-1;pointer-events:none;
+  background:radial-gradient(60% 100% at 50% 40%,rgba(94,162,255,.28),transparent 72%);filter:blur(16px)}
+.hv-frame{position:relative;border-radius:var(--r-lg);overflow:hidden;box-shadow:var(--shadow);
+  background:#0A0A08;border:1px solid var(--line-strong)}
+.hv-vid{display:block;width:100%;aspect-ratio:16/9;object-fit:cover;background:#0A0A08}
+
 /* le panel réel — objet-héros, posé comme du hardware */
 /* La box du héros = maquette HTML VIVANTE du panel : vrai logo Nabla
    animé, preview qui boucle sur les 10 presets (leurs web() du bundle),
@@ -1031,6 +1041,28 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
       </div>
     </div>
   </div>
+
+  <!-- ============= S1.5 : VIDÉO DE PRÉSENTATION (Comp 4) ============= -->
+  <div class="hero-video rv" style="--d:.18s">
+    <div class="hv-frame">
+      <video class="hv-vid" muted loop playsinline preload="metadata"
+             poster="assets/jpg-32.jpg"
+             aria-label="MotionLAB en vidéo : les 10 presets texte et les outils du panel, en action.">
+        <source src="assets/mp4-25.mp4" type="video/mp4">
+      </video>
+    </div>
+  </div>
+  <script>
+  /* Lecture auto muette du hero (playsinline pour iOS), sauf prefers-reduced-motion.
+     Même idiome que les autres vidéos de la page : v.play().catch(). */
+  (function(){
+    var v=document.querySelector('.hv-vid'); if(!v) return;
+    try{ v.muted=true; }catch(e){}
+    if(window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    var go=function(){ v.play && v.play().catch(function(){}); };
+    if(v.readyState>=2) go(); else v.addEventListener('canplay',go,{once:true});
+  })();
+  </script>
 
   <!-- ======================= S2 : LE DÉFILÉ DES DIX ======================= -->
   <section class="defile" role="img" aria-label="Les dix presets : Bounce In, Fade Up, Blur In, Stretch, Typewriter, Font Flip, Count-Up, Rise Bounce, Pop Bounce, Drop Bounce">

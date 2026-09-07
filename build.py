@@ -39,7 +39,7 @@ MIME = {
 # sinon partait à CHAQUE visite même sans clic sur play). Le chemin
 # `assets/<nom>` reste littéral dans le HTML ; le fichier est copié à côté de
 # la page qui le référence (voir la boucle des PAGES).
-SANS_INLINE = {"mp4-17.mp4", "mp4-24.mp4"}
+SANS_INLINE = {"mp4-17.mp4", "mp4-24.mp4", "mp4-25.mp4"}
 
 REVIEWS = SRC / "reviews.json"
 # Marqueurs d'injection. `produit="…"` sur le marqueur d'ouverture limite le
