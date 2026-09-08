@@ -1,4 +1,5 @@
 export type EmailSendBinding = { send(msg: { from: { email: string; name?: string }; to: string; subject: string; html: string; text?: string; replyTo?: string }): Promise<void> };
+export type RateLimitBinding = { limit(opts: { key: string }): Promise<{ success: boolean }> };
 
 export type Env = {
   DB: D1Database;
@@ -14,6 +15,9 @@ export type Env = {
   OWNER_EMAILS: string;
   EMAIL: EmailSendBinding;
   EXPEDITEUR: string;
+  /** Anti-abus sur /espace/media/* — voir wrangler.jsonc. Absent en test (pool
+   * vitest-pool-workers ne simule pas ce binding) : tout appelant doit tolérer son absence. */
+  MEDIA_LIMIT?: RateLimitBinding;
 };
 
 /**

@@ -13,6 +13,14 @@
     { "binding": "DB", "database_name": "femzlab-espace-db", "database_id": "3b8d4b6f-1f99-495d-a35b-2ef97cadae11", "migrations_dir": "migrations" }
   ],
   "r2_buckets": [{ "binding": "MEDIA", "bucket_name": "femzlab-espace-media" }],
+  // Anti-abus sur /espace/media/* (avatars, reels) : les clés existantes sont
+  // servies immuables (cache CDN 1 an, quasi gratuit) — le vrai coût R2 vient
+  // d'un bot qui balance des clés aléatoires/inexistantes en boucle, jamais
+  // mises en cache. Même limiteur natif que avis-worker (AVIS_LIMIT),
+  // permissif/best-effort par nœud, gratuit sur le plan Workers Free.
+  "ratelimits": [
+    { "name": "MEDIA_LIMIT", "namespace_id": "2002", "simple": { "limit": 120, "period": 60 } }
+  ],
   "send_email": [
     { "name": "EMAIL", "destination_address": "hello@imfemz.com" }
   ],

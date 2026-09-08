@@ -176,6 +176,15 @@ app.get('/espace/media/*', async (c) => {
   // Le bucket MEDIA accueillera d'autres préfixes (ex. backups/ en tâche 7) qui ne doivent
   // jamais être servables publiquement par cette route sans authentification.
   if (!/^(avatars|reels)\//.test(key)) return c.text('introuvable', 404);
+  // Anti-abus : une clé RÉELLE est immuable et mise en cache 1 an (le CDN absorbe
+  // le trafic répété sans retoucher R2) ; ce qui coûte, c'est un bot qui balance
+  // des clés inconnues en boucle (jamais mises en cache). 120 req/min/IP couvre
+  // large un chargement normal du globe (dizaines d'avatars) sans gêner personne.
+  if (c.env.MEDIA_LIMIT) {
+    const ip = c.req.header('CF-Connecting-IP') || 'inconnue';
+    const { success } = await c.env.MEDIA_LIMIT.limit({ key: ip });
+    if (!success) return c.text('trop de requêtes', 429);
+  }
   const obj = await c.env.MEDIA.get(key);
   if (!obj) return c.text('introuvable', 404);
   // On lit entièrement le corps ici (plutôt que de streamer obj.body) : sous le pool
