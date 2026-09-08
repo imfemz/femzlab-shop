@@ -50,6 +50,15 @@ REVIEWS = SRC / "reviews.json"
 MARQUEUR = re.compile(
     r'(<!-- reviews:start(?: produit="([^"]*)")? -->)(.*?)(<!-- reviews:end -->)', re.S)
 
+# Note moyenne en étoiles dans la carte héros d'une page produit (demande
+# Femz, 2026-09-08 : « le système de notes étoiles dans le hero card »). Même
+# source que les cartes : reviews.json. Seuls les avis qui portent une `note`
+# entrent dans la moyenne ; le nombre affiché est celui des avis publiés pour
+# le produit (ceux que le lien fait défiler). Sans aucune note : rien n'est
+# affiché — on n'invente pas d'étoiles.
+MARQUEUR_NOTE = re.compile(
+    r'(<!-- rating:start(?: produit="([^"]*)")? -->)(.*?)(<!-- rating:end -->)', re.S)
+
 # En dessous de ce nombre d'avis, pas de défilement. Le moteur repris de Bart
 # rend « 1 card = still seamless » en la clonant sur toute la largeur — soit
 # la même carte répétée quatre fois, ce qui crie « on n'a qu'un avis ». Un avis
@@ -238,7 +247,7 @@ JS_AVIS_I18N = """
 (function(){
   function apply(){
     var en=document.documentElement.lang==='en';
-    document.querySelectorAll('.mqcard blockquote[data-en]').forEach(function(q){
+    document.querySelectorAll('.mqcard blockquote[data-en], .rating [data-en]').forEach(function(q){
       if(q.dataset.fr===undefined) q.dataset.fr=q.textContent;
       q.textContent = en ? q.getAttribute('data-en') : q.dataset.fr;
     });
@@ -278,6 +287,46 @@ def injecte_avis(texte, donnees):
         lambda m: m.group(1) + bloc_avis(donnees, m.group(2)) + m.group(4), texte)
 
 
+ETOILE = ('<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.6l2.9 6 6.6.9'
+          '-4.8 4.6 1.2 6.6L12 17.5l-5.9 3.2 1.2-6.6L2.5 9.5l6.6-.9z"/></svg>')
+
+
+def bloc_note(donnees, produit=None):
+    """La ligne « ★★★★★ 5/5 · 2 avis » de la carte héros (style dans la page).
+
+    Deux rangées d'étoiles superposées : la grise dessous, la pleine dessus
+    découpée à `--fill` (moyenne / 5) — une moyenne de 4,5 se lit donc à la
+    demi-étoile près, sans image. Le lien mène à la section des avis. Le mot
+    « avis » porte sa traduction en `data-en` (même bascule que les cartes).
+    """
+    liste = donnees["avis"]
+    if produit:
+        liste = [a for a in liste if a.get("produit") == produit]
+    notes = [a["note"] for a in liste if isinstance(a.get("note"), (int, float))]
+    if not notes:
+        return ""
+    moyenne = sum(notes) / len(notes)
+    # 5 → « 5/5 », 4.5 → « 4,5/5 » : un chiffre après la virgule au plus
+    txt = f"{moyenne:.1f}".rstrip("0").rstrip(".").replace(".", ",")
+    pct = f"{moyenne / 5 * 100:.0f}%"
+    etoiles = ETOILE * 5
+    n = len(liste)
+    mot_en = "review" if n == 1 else "reviews"
+    return (
+        f'<a class="rating" href="#avis" aria-label="Noté {txt} sur 5 — lire les avis clients">'
+        f'<span class="stars" style="--fill:{pct}" aria-hidden="true">'
+        f'<span class="s-bg">{etoiles}</span><span class="s-fg">{etoiles}</span></span>'
+        f'<b>{txt}/5</b>'
+        f'<span class="rcount">{n} <span data-en="{mot_en}">avis</span></span>'
+        f'</a>'
+    )
+
+
+def injecte_note(texte, donnees):
+    return MARQUEUR_NOTE.sub(
+        lambda m: m.group(1) + bloc_note(donnees, m.group(2)) + m.group(4), texte)
+
+
 def data_uri(fichier):
     ext = fichier.suffix.lstrip(".").lower()
     if ext not in MIME:
@@ -305,6 +354,8 @@ def main():
         texte = (SRC / source).read_text(encoding="utf-8")
         if MARQUEUR.search(texte):
             texte = injecte_avis(texte, donnees)
+        if MARQUEUR_NOTE.search(texte):
+            texte = injecte_note(texte, donnees)
         for chemin, uri in remplacements:
             texte = texte.replace(chemin, uri)
 

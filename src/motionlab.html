@@ -211,6 +211,23 @@ nav.dock::before{content:"";position:absolute;inset:-70%;z-index:-1;pointer-even
 .mlname .v1{font-size:11px;letter-spacing:.08em;color:var(--dim);
   border:2px solid var(--line-strong);border-radius:8px;padding:2px 7px;
   vertical-align:middle;margin-left:8px}
+/* note moyenne en étoiles — générée par build.py depuis reviews.json
+   (marqueur rating). Étoiles encre sur gris : la rangée pleine (.s-fg) est
+   découpée à --fill, donc une moyenne de 4,5 se lit à la demi-étoile. */
+.rating{display:inline-flex;align-items:center;gap:9px;margin:-4px 0 16px;line-height:1;
+  font-size:13px;font-weight:600;color:var(--muted);text-decoration:none;transition:color .2s}
+.rating .stars{position:relative;display:block;height:16px}
+.rating .stars span{display:flex;gap:3px;width:max-content}
+.rating .stars svg{width:16px;height:16px;flex:none;fill:var(--line-strong)}
+.rating .s-fg{position:absolute;left:0;top:0;overflow:hidden;width:var(--fill,100%)}
+.rating .s-fg svg{fill:var(--ink)}
+.rating b{color:var(--ink);font-size:14px;letter-spacing:-.01em}
+.rating .rcount{position:relative;padding-left:9px}
+.rating .rcount::before{content:"·";position:absolute;left:0}
+.rating .rcount::after{content:"";position:absolute;left:9px;right:0;bottom:-3px;height:1px;
+  background:currentColor;opacity:.35;transition:opacity .2s}
+.rating:hover{color:var(--ink)}
+.rating:hover .rcount::after{opacity:1}
 .pitch{font-size:clamp(16px,1.7vw,19px);color:var(--muted);max-width:460px;line-height:1.55}
 .pitch b{color:var(--ink)}
 .ppay{margin-top:16px;font-family:var(--lbl);font-weight:700;font-size:12px;
@@ -1010,6 +1027,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
   <div class="buystrip">
     <div class="buy-left rv">
       <p class="mlname">MotionLAB<span class="v1">V1</span></p>
+      <!-- rating:start produit="MotionLAB" --><!-- rating:end -->
       <p class="pitch"><b>Dix animations de texte prêtes à poser</b>, huit outils d'animation et les guides de cadrage des plateformes, dans un seul panel pour After Effects et Premiere Pro.</p>
       <p class="ppay"><b>39&nbsp;€</b> · paiement unique · à toi pour toujours</p>
       <div class="hero-cta">
