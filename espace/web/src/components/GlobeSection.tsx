@@ -35,6 +35,8 @@ type GlobeState = {
   targetZoom: number;
   Wc: number;
   Hc: number;
+  /** centre vertical du globe (px section) — calé entre le bloc titre et le bloc bas */
+  cy: number;
   base: number;
   drag: { x: number; y: number; moved: number; l0: number; p0: number } | null;
   animT: { s: number; d: number; l0: number; l1: number; p0: number; p1: number; cb: (() => void) | null } | null;
@@ -54,6 +56,8 @@ type GlobeState = {
 export default function GlobeSection() {
   const secRef = useRef<HTMLElement>(null);
   const cvRef = useRef<HTMLCanvasElement>(null);
+  const topRef = useRef<HTMLDivElement>(null);
+  const botRef = useRef<HTMLDivElement>(null);
   const popRef = useRef<HTMLDivElement>(null);
   const chatScrollRef = useRef<HTMLDivElement>(null);
   const chatInputRef = useRef<HTMLInputElement>(null);
@@ -81,6 +85,7 @@ export default function GlobeSection() {
     targetZoom: 1,
     Wc: 0,
     Hc: 0,
+    cy: 0,
     base: 0,
     drag: null,
     animT: null,
@@ -201,17 +206,27 @@ export default function GlobeSection() {
       flyToCoords(lo, la, Math.min(8, st.current.targetZoom * 1.8), null);
     } else openList(cl.members);
   }
+  /* body.globe-fs : la card nav se condense et le logo s'efface (CSS) */
   function enterFS() {
     setFs(true);
     document.body.style.overflow = 'hidden';
+    document.body.classList.add('globe-fs');
     if (st.current.targetZoom < 1.15) st.current.targetZoom = 1.15;
   }
   function exitFS() {
     setFs(false);
     document.body.style.overflow = '';
+    document.body.classList.remove('globe-fs');
     st.current.targetZoom = 1;
     closePop();
   }
+  useEffect(
+    () => () => {
+      document.body.style.overflow = '';
+      document.body.classList.remove('globe-fs');
+    },
+    [],
+  );
 
   const actions = useRef({ clusterClick, closePop, enterFS, exitFS });
   useEffect(() => {
@@ -315,6 +330,9 @@ export default function GlobeSection() {
     const SPHERE = { type: 'Sphere' } as const;
     let rafId = 0;
 
+    /* Le globe se cale ENTRE le bloc titre (.g-top) et le bloc bas (.g-bottom) :
+       centre au milieu de l'espace libre, rayon borné pour ne jamais passer
+       sous les textes. En plein écran, les textes disparaissent : centre écran. */
     function resize() {
       s.Wc = sec.clientWidth;
       s.Hc = sec.clientHeight;
@@ -323,9 +341,27 @@ export default function GlobeSection() {
       cv.style.width = `${s.Wc}px`;
       cv.style.height = `${s.Hc}px`;
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-      s.base = Math.min(s.Wc, s.Hc) * 0.36;
+      /* la classe est posée au même commit que l'événement nv-globe-resize */
+      if (sec.classList.contains('fs')) {
+        s.cy = s.Hc * 0.52;
+        s.base = Math.min(s.Wc, s.Hc) * 0.36;
+        return;
+      }
+      const top = topRef.current;
+      const bot = botRef.current;
+      const topH = top ? top.offsetTop + top.offsetHeight : s.Hc * 0.3;
+      const botH = bot ? s.Hc - bot.offsetTop : 100;
+      const avail = Math.max(240, s.Hc - topH - botH);
+      s.cy = topH + avail / 2;
+      s.base = Math.min(s.Wc * 0.36, avail / 2 - 8);
     }
     resize();
+    /* polices / traduction / reflow : les blocs texte changent de hauteur */
+    const ro = typeof ResizeObserver !== 'undefined' ? new ResizeObserver(() => resize()) : null;
+    if (ro) {
+      ro.observe(sec);
+      if (topRef.current) ro.observe(topRef.current);
+    }
 
     function visible(c: Creator) {
       return geoDistance([c.lon, c.lat], [-s.lam, -s.phi]) < Math.PI / 2 - 0.03;
@@ -353,11 +389,11 @@ export default function GlobeSection() {
       } else if (popMirror.current === null && !s.drag && !reduced) {
         s.lam += 0.02; /* rotation ambiante */
       }
-      projection.rotate([s.lam, s.phi]).translate([s.Wc / 2, s.Hc * 0.55]).scale(s.base * s.zoom);
+      projection.rotate([s.lam, s.phi]).translate([s.Wc / 2, s.cy]).scale(s.base * s.zoom);
       ctx.clearRect(0, 0, s.Wc, s.Hc);
       const R = s.base * s.zoom;
       const gx = s.Wc / 2;
-      const gy = s.Hc * 0.55;
+      const gy = s.cy;
       /* halo façon Orb : anneau bleu→violet avec bloom, respiration lente */
       const br = reduced ? 1 : 0.88 + 0.12 * Math.sin(t / 900);
       const halo = ctx.createRadialGradient(gx, gy, R * 0.8, gx, gy, R * 1.5);
@@ -586,7 +622,7 @@ export default function GlobeSection() {
     function overSphere(e: { clientX: number; clientY: number }) {
       const p = pos(e);
       const dx = p.x - s.Wc / 2;
-      const dy = p.y - s.Hc * 0.55;
+      const dy = p.y - s.cy;
       return Math.sqrt(dx * dx + dy * dy) < s.base * s.zoom + 20;
     }
     function hitCluster(e: { clientX: number; clientY: number }) {
@@ -715,6 +751,7 @@ export default function GlobeSection() {
 
     return () => {
       cancelAnimationFrame(rafId);
+      ro?.disconnect();
       cv.removeEventListener('mousedown', onMouseDown);
       removeEventListener('mousemove', onMouseMove);
       removeEventListener('mouseup', onMouseUp);
@@ -931,11 +968,12 @@ export default function GlobeSection() {
         ref={cvRef}
         aria-label="Globe 3D de la communauté — glisse pour tourner, molette pour zoomer, clique un créateur"
       />
-      <div className="g-top g-fade">
-        <h2>La communauté, en direct</h2>
+      <div className="g-top g-fade" ref={topRef}>
+        {/* eyebrow live → titre → texte → recherche */}
         <span className="live">
-          <span className="pulse-dot" /> {creatorsTotal()} créateurs · MetaVision &amp; NéoVision
+          <span className="pulse-dot" /> {creatorsTotal()} {creatorsTotal() > 1 ? 'créateurs' : 'créateur'} · MetaVision &amp; NéoVision
         </span>
+        <h2>La communauté, en direct</h2>
         <p>Chaque point est un vrai client FemzLab. Attrape le globe, zoome, clique.</p>
         <div className="g-search">
           <input
@@ -978,7 +1016,7 @@ export default function GlobeSection() {
       >
         {renderPop()}
       </div>
-      <div className="g-bottom g-fade">
+      <div className="g-bottom g-fade" ref={botRef}>
         <span className="g-hint">Glisse pour tourner · molette pour zoomer · clique un point</span>
         <button className="btn ghost g-expand" onClick={enterFS}>
           Explorer le globe

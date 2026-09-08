@@ -1,6 +1,5 @@
 import { useRef, useState } from 'react';
 import Aurora from './components/Aurora';
-import DotField from './components/DotField';
 import CardNav, { type CardNavHandle } from './components/CardNav';
 import DmModal from './components/DmModal';
 import ConsentModal from './components/ConsentModal';
@@ -24,7 +23,10 @@ export default function App() {
   return (
     <>
       <Aurora />
-      <DotField />
+      {/* le même logo que femzlab.shop, fixe en haut au centre, sur tous les écrans */}
+      <a className="fixed-logo" href="https://www.femzlab.shop" aria-label="FemzLab — retour sur la boutique">
+        <span className="mark" aria-hidden="true" />
+      </a>
       {st === 'error' && <ErrorScreen />}
       {st === 'anon' && <Login />}
       {st === 'auth' && (
@@ -40,7 +42,12 @@ export default function App() {
           )}
           <GlobeSection />
           <div className="wrap" style={{ paddingTop: 0 }}>
-            <footer><span>FemzLab — l’espace des créateurs</span><span>Support · Discord · femzlab.shop</span></footer>
+            <footer>
+              <span>FemzLab — l’espace des créateurs</span>
+              <span>
+                <a href="mailto:hello@imfemz.com">Support</a> · <a href="https://discord.gg/xmwq2NMDTw" target="_blank" rel="noopener">Discord</a> · <a href="https://www.femzlab.shop">femzlab.shop</a>
+              </span>
+            </footer>
           </div>
           <DmModal convId={conv} onClosed={() => setConv(null)} onBackToList={() => { setConv(null); navRef.current?.openDms(); }} />
           <ConsentModal />

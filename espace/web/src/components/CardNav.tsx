@@ -16,6 +16,7 @@ type Props = { onOpenConv: (id: string) => void };
 
 const CardNav = forwardRef<CardNavHandle, Props>(function CardNav({ onOpenConv }, ref) {
   const navRef = useRef<HTMLElement>(null);
+  const topRef = useRef<HTMLDivElement>(null);
   const contentRef = useRef<HTMLDivElement>(null);
   const profileRef = useRef<HTMLDivElement>(null);
   const msgsRef = useRef<HTMLDivElement>(null);
@@ -30,10 +31,12 @@ const CardNav = forwardRef<CardNavHandle, Props>(function CardNav({ onOpenConv }
 
   useLayoutEffect(() => {
     const nav = navRef.current!;
-    let h = 94;
-    if (panel === 'menu') h = 94 + (contentRef.current?.scrollHeight || 0) + 2;
-    if (panel === 'profile') h = 94 + (profileRef.current?.scrollHeight || 0) + 2;
-    if (panel === 'msgs') h = 94 + (msgsRef.current?.scrollHeight || 0) + 2;
+    /* hauteur de base = la rangée du haut (64px desktop, 56px mobile, cf. CSS) */
+    const base = topRef.current?.offsetHeight || 64;
+    let h = base;
+    if (panel === 'menu') h = base + (contentRef.current?.scrollHeight || 0) + 2;
+    if (panel === 'profile') h = base + (profileRef.current?.scrollHeight || 0) + 2;
+    if (panel === 'msgs') h = base + (msgsRef.current?.scrollHeight || 0) + 2;
     if (Math.abs(nav.offsetHeight - h) < 1) return;
     gsap.to(nav, { height: h, duration: prefersReducedMotion() ? 0 : 0.45, ease: nvEase, overwrite: 'auto' });
   });
@@ -59,18 +62,13 @@ const CardNav = forwardRef<CardNavHandle, Props>(function CardNav({ onOpenConv }
   return (
     <div className="cnav-wrap">
       <nav className={navClass} ref={navRef}>
-        <div className="cnav-top">
+        <div className="cnav-top" ref={topRef}>
           <button className="hamb" aria-label="Ouvrir le menu" aria-expanded={panel === 'menu'} onClick={() => toggle('menu')}><i /><i /></button>
-          <div className="cnav-brand">
-            <a className="cnav-home" href="https://www.femzlab.shop" aria-label="Retour sur femzlab.shop">
-              <video className="cnav-logovid" autoPlay muted loop playsInline aria-hidden="true" onLoadedMetadata={(e) => { e.currentTarget.play().catch(() => {}); }}>
-                <source src="/espace/FemzLab-logo-safari.mov" type='video/mp4; codecs="hvc1"' />
-                <source src="/espace/FemzLab-logo.webm" type="video/webm" />
-              </video>
-            </a>
-            <div className="cnav-logo">MON <em>ESPACE</em></div>
-          </div>
+          {/* le logo FemzLab vit AU-DESSUS de la card (App) ; ici seulement le titre de la page */}
+          <span className="cnav-title">Mon espace</span>
           <div className="cnav-right">
+            {/* id="langslot" : i18n.js y docke le toggle FR/EN (flottant sinon) */}
+            <span id="langslot" />
             {/* id="msgBtn" : cible de l'animation « génie » de fermeture de DmModal */}
             <button id="msgBtn" className={'msg-btn' + (unread ? ' unread' : '')} aria-expanded={panel === 'msgs'} aria-controls="cnavMsgs" aria-label="Messages" onClick={() => toggle('msgs')}>
               <MessageBubble /><span className="msg-dot" />

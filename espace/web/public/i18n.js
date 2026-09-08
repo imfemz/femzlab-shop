@@ -74,8 +74,7 @@
     "Ta dernière demande de liaison a été refusée. Tu peux en soumettre une nouvelle.": "Your last link request was declined. You can submit a new one.",
 
     // Nav / messages
-    "MON": "MY",
-    "ESPACE": "SPACE",
+    "Mon espace": "My space",
     "Mon compte": "My account",
     "Mon profil": "My profile",
     "Communauté": "Community",
@@ -83,6 +82,21 @@
     "La boutique": "The shop",
     "Aucune conversation — clique un créateur sur le globe.": "No conversation yet — click a creator on the globe.",
     "Message non envoyé": "Message not sent",
+
+    // Globe section
+    "La communauté, en direct": "The community, live",
+    "Chaque point est un vrai client FemzLab. Attrape le globe, zoome, clique.":
+      "Every dot is a real FemzLab customer. Grab the globe, zoom in, click.",
+    "Glisse pour tourner · molette pour zoomer · clique un point": "Drag to rotate · scroll to zoom · click a dot",
+    "Explorer le globe": "Explore the globe",
+    "Dézoomer": "Zoom out",
+    "Réduire le globe": "Shrink the globe",
+    "Envoyer un DM": "Send a DM",
+    "créateurs ici": "creators here",
+    "Fermer": "Close",
+
+    // Footer
+    "FemzLab — l’espace des créateurs": "FemzLab — the creators’ space",
 
     // Placeholders
     "@pseudo": "@handle",
@@ -185,37 +199,38 @@
     applyLang();
   }
 
+  /* Toggle FR/EN : stylé par index.css (#nv-langsw). Docké dans la card nav
+     (#langslot, posé par React après le boot) quand elle existe, sinon
+     flottant en haut à droite (page de connexion). */
   function injectToggle() {
     if (document.getElementById("nv-langsw")) return;
     var box = document.createElement("div");
     box.id = "nv-langsw";
-    box.style.cssText =
-      "position:fixed;top:14px;right:16px;z-index:99999;display:flex;gap:2px;" +
-      "padding:3px;border-radius:999px;background:rgba(15,17,22,.72);" +
-      "backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);" +
-      "border:1px solid rgba(255,255,255,.12);font:600 12px/1 system-ui,-apple-system,sans-serif;" +
-      "box-shadow:0 4px 20px rgba(0,0,0,.35)";
+    box.setAttribute("aria-label", "Langue / Language");
     box.innerHTML =
-      '<button id="nv-lang-fr" style="all:unset;cursor:pointer;padding:5px 11px;border-radius:999px;color:#cfd3da">FR</button>' +
-      '<button id="nv-lang-en" style="all:unset;cursor:pointer;padding:5px 11px;border-radius:999px;color:#cfd3da">EN</button>';
+      '<button type="button" id="nv-lang-fr" aria-pressed="false">FR</button>' +
+      '<button type="button" id="nv-lang-en" aria-pressed="false">EN</button>';
     document.body.appendChild(box);
-    var fr = box.querySelector("#nv-lang-fr");
-    var en = box.querySelector("#nv-lang-en");
-    function paint() {
-      var active = "background:#5EA2FF;color:#0B0C0F";
-      fr.style.cssText = fr.style.cssText.replace(/;background:#5EA2FF;color:#0B0C0F/, "");
-      en.style.cssText = en.style.cssText.replace(/;background:#5EA2FF;color:#0B0C0F/, "");
-      if (lang === "fr") fr.style.cssText += ";" + active;
-      else en.style.cssText += ";" + active;
-    }
-    fr.addEventListener("click", function () { setLang("fr"); paint(); });
-    en.addEventListener("click", function () { setLang("en"); paint(); });
-    paint();
+    box.querySelector("#nv-lang-fr").addEventListener("click", function () { setLang("fr"); applyLang(); });
+    box.querySelector("#nv-lang-en").addEventListener("click", function () { setLang("en"); applyLang(); });
+  }
+  function dockToggle() {
+    var box = document.getElementById("nv-langsw");
+    var slot = document.getElementById("langslot");
+    if (!box) return;
+    if (slot && box.parentNode !== slot) slot.appendChild(box);
+    else if (!slot && box.parentNode !== document.body) document.body.appendChild(box);
+  }
+  function watchSlot() {
+    dockToggle();
+    if (typeof MutationObserver === "undefined") return;
+    new MutationObserver(dockToggle).observe(document.body, { childList: true, subtree: true });
   }
 
   function boot() {
     injectToggle();
     applyLang();
+    watchSlot();
   }
 
   if (document.body) boot();

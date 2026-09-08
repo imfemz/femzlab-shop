@@ -148,29 +148,44 @@ a {
   }
 }
 
-/* ── DotField : canvas plein écran + bande nette au-dessus du GradualBlur ── */
-#dots {
+/* ── Logo FemzLab : LE même wordmark que femzlab.shop (masque logo-white.png
+   rempli du gradient animé, glow) — fixe en haut au centre, la card passe
+   dessous. S'efface quand la card monte (scroll) ou en plein écran globe. ── */
+.fixed-logo {
   position: fixed;
-  inset: 0;
-  width: 100vw;
-  height: 100vh;
-  z-index: 0;
-  pointer-events: none;
-  opacity: 0.45;
+  top: 15px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 100;
+  height: 56px;
+  aspect-ratio: 2308 / 594;
+  display: block;
+  transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.4s ease;
 }
-#dots2 {
-  position: fixed;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  width: 100vw;
-  height: 112px;
-  z-index: 51;
+.fixed-logo .mark {
+  position: absolute;
+  inset: 0;
   pointer-events: none;
-  transition: opacity 0.35s ease; /* s'efface quand le globe entre dans la zone */
-  /* fondu du bord haut : évite l'arête « rectangle » quand le halo curseur entre dans la bande */
-  -webkit-mask-image: linear-gradient(to bottom, transparent 0%, #000 46%);
-  mask-image: linear-gradient(to bottom, transparent 0%, #000 46%);
+  -webkit-mask: url(/espace/logo-white.png) center / contain no-repeat;
+  mask: url(/espace/logo-white.png) center / contain no-repeat;
+  background: linear-gradient(110deg, #5ea2ff, #a78bff, #5ed9ff, #7c4dff, #5ea2ff);
+  background-size: 240% 100%;
+  filter: drop-shadow(0 2px 11px rgba(94, 162, 255, 0.55));
+  animation: logoGlow 6.5s linear infinite;
+}
+@keyframes logoGlow {
+  to {
+    background-position: 240% 0;
+  }
+}
+.fixed-logo:hover {
+  transform: translateX(-50%) scale(1.05);
+}
+body.scrolled .fixed-logo,
+body.globe-fs .fixed-logo {
+  opacity: 0;
+  pointer-events: none;
+  transform: translateX(-50%) scale(0.94);
 }
 
 .wrap {
@@ -243,58 +258,58 @@ a {
   opacity: 1;
 }
 
-/* ── CardNav — Glass Surface (blur fort + reflets d'arête 4 côtés) ── */
+/* ── CardNav — Glass Surface sous le logo (même position que le dock du shop :
+   top 84px, remonte à 14px quand la page défile ou en plein écran globe) ── */
 .cnav-wrap {
   position: fixed;
-  top: 14px;
+  top: 84px;
   left: 50%;
   transform: translateX(-50%);
   width: min(94%, 1020px);
   z-index: 99;
+  transition: top 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+}
+body.scrolled .cnav-wrap,
+body.globe-fs .cnav-wrap {
+  top: 14px;
 }
 .cnav {
-  background: rgba(17, 19, 24, 0.52);
-  backdrop-filter: blur(26px) saturate(175%) brightness(1.12);
-  -webkit-backdrop-filter: blur(26px) saturate(175%) brightness(1.12);
-  border: 1px solid rgba(237, 239, 242, 0.1);
+  /* verre franc : ce qui passe derrière (globe, textes) est nettement flouté */
+  background: rgba(15, 17, 23, 0.66);
+  backdrop-filter: blur(34px) saturate(180%);
+  -webkit-backdrop-filter: blur(34px) saturate(180%);
+  border: 1px solid rgba(255, 255, 255, 0.12);
   border-radius: var(--r-lg);
   overflow: hidden;
-  height: 94px; /* la hauteur est animée par GSAP */
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.1), inset 0 -1px 0 rgba(255, 255, 255, 0.03),
-    inset 1px 0 0 rgba(255, 255, 255, 0.04), inset -1px 0 0 rgba(255, 255, 255, 0.04),
-    0 14px 40px rgba(0, 0, 0, 0.38);
+  height: 64px; /* la hauteur est animée par GSAP (base = .cnav-top) */
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.12), inset 0 -1px 0 rgba(255, 255, 255, 0.03),
+    0 20px 54px rgba(0, 0, 0, 0.4), 0 3px 10px rgba(0, 0, 0, 0.24);
 }
 .cnav-top {
-  height: 94px;
+  position: relative;
+  height: 64px;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0 12px 0 14px;
+  /* trait du burger (42px, lignes 24px → 9px de marge interne) et bord de la
+     pastille avatar au MÊME retrait de 12px des bords de la card */
+  padding: 0 12px 0 3px;
   gap: 12px;
 }
-/* logo animé FemzLab (alpha, blanc forcé) empilé au-dessus du wordmark */
-.cnav-brand {
+/* titre de la page, discret, centré (le logo vit au-dessus de la card) */
+.cnav-title {
   position: absolute;
   left: 50%;
-  transform: translateX(-50%);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 1px;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 11.5px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  padding-left: 0.14em; /* compense l'interlettrage traînant : centrage optique */
+  text-transform: uppercase;
+  color: rgba(237, 239, 242, 0.62);
   pointer-events: none;
-}
-.cnav-home {
-  pointer-events: auto;
-  display: block;
-}
-.cnav-logovid {
-  height: 40px;
-  width: auto;
-  display: block;
-  /* blanc forcé + fondu doux du bord droit (le glow ne coupe plus) */
-  filter: brightness(0) invert(1);
-  -webkit-mask-image: linear-gradient(90deg, #000 91%, transparent 100%);
-  mask-image: linear-gradient(90deg, #000 91%, transparent 100%);
+  white-space: nowrap;
 }
 .hamb {
   display: flex;
@@ -326,42 +341,51 @@ a {
 .hamb:hover i {
   background: var(--acc);
 }
-/* wordmark ShinyText : balayage blanc 3s sur base #C9CDD3 */
-.cnav-logo {
-  font-family: var(--title);
-  font-weight: 800;
-  font-size: 24px;
-  letter-spacing: 0.07em;
-  background-image: linear-gradient(
-    120deg,
-    #c9cdd3 0%,
-    #c9cdd3 35%,
-    #ffffff 50%,
-    #c9cdd3 65%,
-    #c9cdd3 100%
-  );
-  background-size: 200% auto;
-  -webkit-background-clip: text;
-  background-clip: text;
-  -webkit-text-fill-color: transparent;
-  color: transparent;
-  animation: shine 3s linear infinite;
-}
-@keyframes shine {
-  0% {
-    background-position: 150% center;
-  }
-  100% {
-    background-position: -50% center;
-  }
-}
-.cnav-logo em {
-  font-style: normal;
-}
 .cnav-right {
   display: flex;
   align-items: center;
   gap: 10px;
+}
+/* toggle FR/EN (injecté par i18n.js) : docké dans la card quand elle existe */
+#langslot:empty {
+  display: none;
+}
+#nv-langsw {
+  display: flex;
+  gap: 2px;
+  padding: 3px;
+  border-radius: 999px;
+  background: rgba(237, 239, 242, 0.06);
+  border: 1px solid var(--line);
+  font: 700 11px/1 var(--body);
+  letter-spacing: 0.05em;
+}
+#nv-langsw button {
+  all: unset;
+  cursor: pointer;
+  padding: 6px 10px;
+  border-radius: 999px;
+  color: var(--muted);
+  transition: color 0.2s ease, background 0.2s ease;
+}
+#nv-langsw button:hover {
+  color: var(--paper);
+}
+#nv-langsw button[aria-pressed='true'] {
+  background: var(--acc);
+  color: #08101c;
+}
+/* hors card (page de connexion) : flottant en haut à droite, aligné sur le logo */
+body > #nv-langsw {
+  position: fixed;
+  top: 29px;
+  right: 16px;
+  z-index: 100;
+  background: rgba(15, 17, 22, 0.72);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border-color: rgba(255, 255, 255, 0.12);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.35);
 }
 
 /* « Mon espace » : la photo de profil EST l'icône, label déplié au hover */
@@ -1110,24 +1134,18 @@ h2 {
   color: var(--muted);
 }
 
-/* ── Communauté : la Terre occupe TOUTE la section, fond uni ── */
+/* ── Communauté : la Terre occupe TOUTE la section (premier écran) ──
+   Pas de fond ni de transform : aucune arête ne coupe l'Aurora ni le glow,
+   et la section ne crée pas de contexte d'empilement — ses boutons du bas
+   (z 60) passent AU-DESSUS du GradualBlur (z 50) comme le footer. */
 .commu {
   position: relative;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 100vw;
-  min-height: clamp(600px, 92vh, 820px);
-  /* fond uni qui FOND en haut et en bas (transparent → #0b0c0f) : plus d'arête nette
-     qui coupe l'Aurora/DotField, tout en cachant les dots derrière le globe au centre */
-  background: radial-gradient(52% 46% at 50% 55%, rgba(46, 111, 191, 0.1), transparent 70%),
-    linear-gradient(
-      to bottom,
-      transparent 0,
-      #0b0c0f 130px,
-      #0b0c0f calc(100% - 130px),
-      transparent 100%
-    );
-  padding: 54px 20px 70px;
+  width: 100%;
+  margin: 0; /* premier écran : annule le margin-top générique des sections */
+  min-height: 100vh;
+  min-height: 100svh;
+  /* 84 (card) + 64 (hauteur) + 42 de respiration */
+  padding: 190px 20px 0;
   overflow: hidden;
   display: flex;
   flex-direction: column;
@@ -1143,6 +1161,10 @@ h2 {
   cursor: grab;
   z-index: 1;
   touch-action: none;
+  /* feather haut/bas : quand le globe zoomé dépasse la section, il s'éteint
+     en fondu au lieu d'être coupé net (la « bande ») */
+  -webkit-mask-image: linear-gradient(to bottom, transparent 0, #000 96px, #000 calc(100% - 96px), transparent 100%);
+  mask-image: linear-gradient(to bottom, transparent 0, #000 96px, #000 calc(100% - 96px), transparent 100%);
 }
 .g-top {
   position: relative;
@@ -1157,13 +1179,25 @@ h2 {
 .g-top p {
   pointer-events: none;
 }
+.g-top h2 {
+  margin: 0;
+  font-family: var(--title);
+  font-weight: 700;
+  font-size: clamp(24px, 2.6vw, 30px);
+  letter-spacing: -0.02em;
+  line-height: 1.15;
+}
+/* eyebrow live AU-DESSUS du titre */
 .commu .live {
   display: inline-flex;
   align-items: center;
   gap: 8px;
   color: var(--muted);
-  font-size: 13px;
-  margin: 10px 0 4px;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  margin: 0 0 12px;
 }
 .pulse-dot {
   width: 7px;
@@ -1185,13 +1219,14 @@ h2 {
 }
 .commu p {
   color: var(--muted);
-  max-width: 48ch;
-  margin: 0;
+  max-width: 64ch;
+  margin: 10px 0 0;
+  text-wrap: balance;
 }
 .g-search {
   position: relative;
   width: min(100%, 340px);
-  margin: 16px 0 0;
+  margin: 22px 0 0;
   z-index: 7;
   pointer-events: auto;
 }
@@ -1268,13 +1303,13 @@ h2 {
 }
 .g-bottom {
   position: absolute;
-  bottom: 24px;
+  bottom: 28px;
   left: 0;
   right: 0;
-  z-index: 2;
+  z-index: 60; /* au-dessus du GradualBlur : jamais flouté */
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 12px;
   align-items: center;
   pointer-events: none;
 }
@@ -1297,13 +1332,13 @@ h2 {
 .commu.zoomed .g-fade * {
   pointer-events: none !important;
 }
-/* bouton Dézoomer / Réduire : ancré, JAMAIS flouté */
+/* bouton Dézoomer / Réduire : ancré, JAMAIS flouté (z 60 > GradualBlur) */
 .g-reset {
   position: absolute;
-  bottom: 22px;
+  bottom: 28px;
   left: 50%;
   transform: translateX(-50%);
-  z-index: 210;
+  z-index: 60;
   opacity: 0;
   pointer-events: none;
   transition: opacity 0.4s ease;
@@ -1316,21 +1351,28 @@ h2 {
   pointer-events: auto;
   filter: none;
 }
-/* mode plein écran : la section prend tout le site */
+/* mode plein écran : la section prend tout l'écran, SOUS la card (z 90 < 99)
+   qui la floute — les textes disparaissent, seul le globe reste */
 .commu.fs {
   position: fixed;
   inset: 0;
-  left: 0;
-  transform: none;
   width: 100vw;
   min-height: 100vh;
-  z-index: 200;
+  z-index: 90;
   margin: 0;
   border: 0;
-  padding-top: 34px;
+  padding-top: 0;
+}
+.commu.fs .g-fade {
+  opacity: 0;
+  pointer-events: none !important;
 }
 .commu.fs .g-expand {
   display: none;
+}
+/* la section n'a pas de fond : le footer ne doit pas transparaître dans le feather */
+body.globe-fs .wrap {
+  visibility: hidden;
 }
 
 /* popup profil ancrée au marqueur — se morphe en chat (FLIP) */
@@ -1708,6 +1750,13 @@ footer {
   font-size: 12px;
   border-top: 1px solid var(--line);
   padding-top: 20px;
+}
+footer a {
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+footer a:hover {
+  color: var(--paper);
 }
 
 /* ── GradualBlur : 5 couches masquées par bandes de 20 % ── */
@@ -2135,12 +2184,28 @@ footer {
   .wrap {
     padding-top: 126px;
   }
-  .cnav-brand {
-    position: static;
-    transform: none;
+  .fixed-logo {
+    height: 40px;
+    top: 14px;
   }
-  .cnav-logovid {
-    height: 32px;
+  .cnav-wrap {
+    top: 66px; /* logo 14+40, +12 */
+  }
+  .cnav,
+  .cnav-top {
+    height: 56px;
+  }
+  .cnav-top {
+    padding: 0 9px 0 0; /* même retrait de 9px : trait du burger / pastille */
+  }
+  .cnav-right {
+    gap: 8px;
+  }
+  .commu {
+    padding-top: 150px; /* 66 + 56 + 28 */
+  }
+  .app-err {
+    top: 134px;
   }
   .cnav-right .btn {
     display: none;
@@ -2189,6 +2254,11 @@ footer {
     transform: translateY(0);
   }
 }
+@media (max-width: 480px) {
+  .cnav-title {
+    display: none; /* pas la place entre le burger et les actions */
+  }
+}
 
 /* ── prefers-reduced-motion : tout se fige proprement ── */
 @media (prefers-reduced-motion: reduce) {
@@ -2221,11 +2291,11 @@ footer {
     filter: none;
     transition: none;
   }
-  .cnav-logo {
+  .fixed-logo,
+  .fixed-logo .mark,
+  .cnav-wrap {
     animation: none;
-    background-image: none;
-    -webkit-text-fill-color: #ffffff;
-    color: #ffffff;
+    transition: none;
   }
 }
 
@@ -2325,8 +2395,8 @@ footer {
 .login-err{color:#ff8a8a;background:rgba(255,80,80,.08);border:1px solid rgba(255,80,80,.25);border-radius:var(--r-sm);padding:10px 14px;font-size:14px}
 
 /* Bandeau d'erreur en état connecté (échec d'attache d'un 2e fournisseur) :
-   sous la nav flottante, au-dessus du globe. */
-.app-err{position:relative;z-index:2;width:min(94%,1020px);margin:104px auto 0}
+   flottant juste sous la card, au-dessus du globe — ne décale pas la page. */
+.app-err{position:fixed;top:164px;left:50%;transform:translateX(-50%);z-index:98;width:min(94%,1020px)}
 .app-err .login-err{display:flex;align-items:center;justify-content:space-between;gap:14px;text-align:left;margin:0}
 .app-err-x{flex:none;background:none;border:1px solid rgba(255,80,80,.35);color:inherit;border-radius:var(--r-sm);padding:5px 12px;font:inherit;font-size:12.5px;cursor:pointer}
 .app-err-x:hover{background:rgba(255,80,80,.14)}

@@ -3,6 +3,7 @@ import { hasFinePointer, prefersReducedMotion } from '../lib/motion';
 
 /**
  * Effets globaux de la page (valeurs v30) :
+ * - Classe body.scrolled (scrollY > 50) : card nav condensée, logo effacé.
  * - Parallax de scroll : les blocs près du bas émergent (+6 %, retard 26px,
  *   fondu −22 %, zone 400px) ; léger éloignement en haut (−1.4 %, zone 180px).
  * - Reveal : entrée en blur 14px→0 (IntersectionObserver).
@@ -10,6 +11,17 @@ import { hasFinePointer, prefersReducedMotion } from '../lib/motion';
  * - Tilt 3D discret : blocs médias uniquement (amplitude 5, scale 1.01).
  */
 export function useGlobalEffects() {
+  /* ── état « défilé » : la card remonte, le logo s'efface (comme le dock du shop) ── */
+  useEffect(() => {
+    const on = () => document.body.classList.toggle('scrolled', scrollY > 50);
+    on();
+    addEventListener('scroll', on, { passive: true });
+    return () => {
+      removeEventListener('scroll', on);
+      document.body.classList.remove('scrolled');
+    };
+  }, []);
+
   /* ── profondeur au scroll ── */
   useEffect(() => {
     if (prefersReducedMotion()) return;
