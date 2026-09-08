@@ -47,6 +47,11 @@ const CardNav = forwardRef<CardNavHandle, Props>(function CardNav({ onOpenConv }
     if (prefersReducedMotion()) { gsap.set(cards, { y: 0, opacity: 1 }); return; }
     gsap.fromTo(cards, { y: 24, opacity: 0 }, { y: 0, opacity: 1, duration: 0.4, ease: nvEase, stagger: 0.08, delay: 0.06 });
   }, [panel]);
+  /* body.nav-open : les textes du globe s'effacent derrière le panneau (CSS) */
+  useEffect(() => {
+    document.body.classList.toggle('nav-open', panel !== null);
+    return () => document.body.classList.remove('nav-open');
+  }, [panel]);
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => { if (e.key === 'Escape') setPanel(null); };
     const onClick = (e: MouseEvent) => { if (!(e.target as Element).closest?.('.cnav-wrap')) setPanel(null); };

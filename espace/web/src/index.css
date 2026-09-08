@@ -285,6 +285,18 @@ body.globe-fs .cnav-wrap {
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.12), inset 0 -1px 0 rgba(255, 255, 255, 0.03),
     0 20px 54px rgba(0, 0, 0, 0.4), 0 3px 10px rgba(0, 0, 0, 0.24);
 }
+/* panneau ouvert (menu, profil, messages) : jamais de texte derrière du texte —
+   la card devient quasi opaque et les textes du globe s'effacent (body.nav-open) */
+.cnav.open,
+.cnav.profile,
+.cnav.msgs {
+  background: rgba(13, 15, 20, 0.94);
+}
+body.nav-open .g-fade {
+  opacity: 0;
+  filter: blur(10px);
+  pointer-events: none !important;
+}
 .cnav-top {
   position: relative;
   height: 64px;
@@ -1241,7 +1253,6 @@ h2 {
   padding: 11px 14px;
   outline: none;
   transition: border-color 0.2s ease;
-  backdrop-filter: blur(8px);
 }
 .g-search input:focus {
   border-color: var(--acc-deep);
@@ -1343,13 +1354,16 @@ h2 {
   pointer-events: none;
   transition: opacity 0.4s ease;
   background: rgba(18, 20, 24, 0.9);
-  backdrop-filter: blur(8px);
 }
+/* Les couches backdrop-filter ne sont posées QUE sur les éléments visibles :
+   Safari/iOS plafonne leur nombre par page, et la card nav doit rester floutée. */
 .commu.zoomed .g-reset,
 .commu.fs .g-reset {
   opacity: 1;
   pointer-events: auto;
   filter: none;
+  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(8px);
 }
 /* mode plein écran : la section prend tout l'écran, SOUS la card (z 90 < 99)
    qui la floute — les textes disparaissent, seul le globe reste */
@@ -1382,7 +1396,6 @@ body.globe-fs .wrap {
   top: 0;
   width: 288px;
   background: rgba(18, 20, 24, 0.94);
-  backdrop-filter: blur(12px);
   border: 1px solid var(--line);
   border-radius: var(--r-lg);
   padding: 20px;
@@ -1398,6 +1411,8 @@ body.globe-fs .wrap {
 .gpop.on {
   opacity: 1;
   pointer-events: auto;
+  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(12px);
   transform: scale(1);
   animation: gpop-in 0.5s cubic-bezier(0.34, 1.56, 0.64, 1); /* bounce ressort iOS */
 }
@@ -2043,8 +2058,6 @@ footer a:hover {
   inset: 0;
   z-index: 150;
   background: rgba(8, 10, 14, 0.45);
-  -webkit-backdrop-filter: blur(14px) saturate(120%);
-  backdrop-filter: blur(14px) saturate(120%);
   opacity: 0;
   pointer-events: none;
   transition: opacity 0.4s ease;
@@ -2052,6 +2065,8 @@ footer a:hover {
 .dmov.on {
   opacity: 1;
   pointer-events: auto;
+  -webkit-backdrop-filter: blur(14px) saturate(120%);
+  backdrop-filter: blur(14px) saturate(120%);
 }
 .dmmod {
   position: fixed;
@@ -2064,8 +2079,6 @@ footer a:hover {
   opacity: 0;
   pointer-events: none;
   background: rgba(16, 18, 23, 0.92);
-  -webkit-backdrop-filter: blur(22px) saturate(150%);
-  backdrop-filter: blur(22px) saturate(150%);
   border: 1px solid rgba(237, 239, 242, 0.12);
   border-radius: var(--r-lg);
   box-shadow: 0 30px 90px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.08);
@@ -2078,6 +2091,8 @@ footer a:hover {
   transform: translate(-50%, -50%);
   opacity: 1;
   pointer-events: auto;
+  -webkit-backdrop-filter: blur(22px) saturate(150%);
+  backdrop-filter: blur(22px) saturate(150%);
 }
 /* fermeture « génie » : la fenêtre vole se ranger dans l'icône messages */
 .dmmod.zap {
