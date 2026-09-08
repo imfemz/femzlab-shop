@@ -484,6 +484,19 @@ if(navToggle&&navMenu){
         });
       });
     });
+
+    // Pré-sélection du produit via ?produit=... — le plugin MotionLAB
+    // (bouton « SUGGEST A FEATURE ») pointe ici avec ?produit=MotionLAB
+    // (retour Femz 2026-09-06). Sans param, le formulaire reste inchangé.
+    try {
+      var pp = new URLSearchParams(location.search).get('produit');
+      if (pp) {
+        var sel = document.getElementById('av-produit');
+        if (sel) for (var i = 0; i < sel.options.length; i++) {
+          if (sel.options[i].value === pp || sel.options[i].text === pp) { sel.selectedIndex = i; break; }
+        }
+      }
+    } catch (e) {}
   });
 </script>
 </body></html>
