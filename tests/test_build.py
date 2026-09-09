@@ -169,3 +169,26 @@ class TestFichierReel(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class TestNoteJsonLd(unittest.TestCase):
+    """Le jeton "@@RATING:<produit>@@" du JSON-LD devient un AggregateRating vrai, ou disparaît."""
+
+    JSON = '{"name":"X","offers":{"price":"39"},"aggregateRating":"@@RATING:MotionLAB@@"}'
+
+    def test_avec_notes(self):
+        d = {"avis": [{"produit": "MotionLAB", "note": 5, "date": "2026-09-06", "pseudo": "a", "texte": "t"},
+                      {"produit": "MotionLAB", "date": "2026-09-06", "pseudo": "b", "texte": "t"},
+                      {"produit": "Autre", "note": 1, "date": "2026-09-06", "pseudo": "c", "texte": "t"}]}
+        import json as _json
+        obj = _json.loads(build.injecte_note_jsonld(self.JSON, d))
+        self.assertEqual(obj["aggregateRating"]["ratingValue"], 5)
+        self.assertEqual(obj["aggregateRating"]["ratingCount"], 1)
+        self.assertEqual(obj["aggregateRating"]["reviewCount"], 2)
+
+    def test_sans_note(self):
+        d = {"avis": [{"produit": "MotionLAB", "date": "2026-09-06", "pseudo": "b", "texte": "t"}]}
+        import json as _json
+        obj = _json.loads(build.injecte_note_jsonld(self.JSON, d))
+        self.assertNotIn("aggregateRating", obj)
+        self.assertEqual(obj["offers"]["price"], "39")

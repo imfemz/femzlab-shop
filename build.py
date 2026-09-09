@@ -25,7 +25,15 @@ PAGES = [("index.html", "index.html"),
          ("portfolio.html", "portfolio/index.html"),
          ("avis.html", "avis/index.html"),
          ("motionlab.html", "motionlab/index.html"),
-         ("metavision.html", "metavision/index.html")]
+         ("metavision.html", "metavision/index.html"),
+         # Page 404 : sans elle, Cloudflare Pages sert index.html en 200 sur
+         # n'importe quelle URL (« soft 404 » que Google pénalise).
+         ("404.html", "404.html")]
+
+# Fichiers SEO servis tels quels à la racine, et le dossier des images de
+# partage (og:image doit être une URL absolue, jamais du base64).
+FICHIERS_RACINE = ("_headers", "motionlab-version.json", "robots.txt", "sitemap.xml")
+OG = SRC / "og"
 
 MIME = {
     "png": "image/png", "jpg": "image/jpeg", "jpeg": "image/jpeg",
@@ -327,6 +335,30 @@ def injecte_note(texte, donnees):
         lambda m: m.group(1) + bloc_note(donnees, m.group(2)) + m.group(4), texte)
 
 
+# Note moyenne dans les données structurées (JSON-LD) d'une page produit :
+# le jeton `"aggregateRating":"@@RATING:<produit>@@"` — du JSON valide dans
+# src/ — devient l'objet AggregateRating calculé depuis reviews.json, ou
+# disparaît s'il n'y a aucune note (Google refuse une note inventée, et une
+# clé vide invaliderait le bloc). ratingCount = avis notés, reviewCount = avis
+# publiés : les deux chiffres restent vrais séparément.
+MARQUEUR_RATING_LD = re.compile(r',\s*"aggregateRating"\s*:\s*"@@RATING:([^"@]+)@@"')
+
+
+def note_jsonld(donnees, produit):
+    liste = [a for a in donnees["avis"] if a.get("produit") == produit]
+    notes = [a["note"] for a in liste if isinstance(a.get("note"), (int, float))]
+    if not notes:
+        return ""
+    moyenne = round(sum(notes) / len(notes), 1)
+    obj = {"@type": "AggregateRating", "ratingValue": moyenne, "bestRating": 5,
+           "worstRating": 1, "ratingCount": len(notes), "reviewCount": len(liste)}
+    return ',"aggregateRating":' + json.dumps(obj, ensure_ascii=False)
+
+
+def injecte_note_jsonld(texte, donnees):
+    return MARQUEUR_RATING_LD.sub(lambda m: note_jsonld(donnees, m.group(1)), texte)
+
+
 def data_uri(fichier):
     ext = fichier.suffix.lstrip(".").lower()
     if ext not in MIME:
@@ -356,6 +388,8 @@ def main():
             texte = injecte_avis(texte, donnees)
         if MARQUEUR_NOTE.search(texte):
             texte = injecte_note(texte, donnees)
+        if MARQUEUR_RATING_LD.search(texte):
+            texte = injecte_note_jsonld(texte, donnees)
         for chemin, uri in remplacements:
             texte = texte.replace(chemin, uri)
 
@@ -376,11 +410,19 @@ def main():
 
     shutil.copyfile(SRC / "_redirects", DIST / "_redirects")
     print("dist/_redirects")
-    # fichiers annexes servis tels quels (version du plugin + en-têtes CORS)
-    for extra in ("_headers", "motionlab-version.json"):
+    # fichiers annexes servis tels quels (version du plugin, en-têtes CORS,
+    # robots.txt, sitemap.xml)
+    for extra in FICHIERS_RACINE:
         if (SRC / extra).exists():
             shutil.copyfile(SRC / extra, DIST / extra)
             print(f"dist/{extra}")
+    # images de partage (og:image / twitter:image), servies en fichiers
+    if OG.is_dir():
+        (DIST / "og").mkdir(exist_ok=True)
+        for img in sorted(OG.iterdir()):
+            if img.is_file():
+                shutil.copyfile(img, DIST / "og" / img.name)
+        print(f"dist/og/ ({sum(1 for f in OG.iterdir() if f.is_file())} images)")
 
 
 if __name__ == "__main__":

@@ -1,0 +1,38 @@
+<!doctype html><html lang="fr"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Page introuvable | FemzLab</title>
+<meta name="robots" content="noindex">
+<link rel="icon" type="image/png" href="assets/favicon.png">
+<style>
+@font-face{font-family:'Montserrat';font-weight:800;font-style:normal;font-display:swap;src:url(assets/woff2-01.woff2) format('woff2')}
+@font-face{font-family:'Inter';font-weight:400;font-style:normal;font-display:swap;src:url(assets/woff2-02.woff2) format('woff2')}
+@font-face{font-family:'Inter';font-weight:700;font-style:normal;font-display:swap;src:url(assets/woff2-03.woff2) format('woff2')}
+:root{color-scheme:light;--paper:#E4E4DF;--ink:#0A0A0A;--ease:cubic-bezier(.22,1,.36,1)}
+html,body{margin:0;min-height:100%}
+body{background:var(--paper);color:var(--ink);font-family:'Inter',system-ui,-apple-system,sans-serif;
+  background-image:radial-gradient(rgba(0,0,0,.16) 1.4px,transparent 1.6px);background-size:30px 30px;background-position:15px 15px;
+  display:flex;align-items:center;justify-content:center;padding:24px;box-sizing:border-box;min-height:100vh}
+main{max-width:640px;text-align:center;opacity:0;transform:translateY(14px);animation:in .9s var(--ease) .1s forwards}
+@keyframes in{to{opacity:1;transform:none}}
+.label{display:inline-flex;align-items:center;gap:10px;font-weight:700;font-size:12px;letter-spacing:.08em;text-transform:uppercase}
+.label i{width:8px;height:8px;border-radius:50%;background:var(--ink)}
+h1{font-family:'Montserrat',sans-serif;font-weight:800;font-size:clamp(40px,8vw,84px);line-height:.98;letter-spacing:-.035em;margin:22px 0 18px}
+h1 span{color:#5A5A55}
+p{font-size:17px;line-height:1.5;color:#2A2A26;margin:0 auto 30px;max-width:460px}
+.btns{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
+a.btn{display:inline-flex;align-items:center;gap:8px;padding:13px 22px;border-radius:999px;font-weight:700;font-size:14px;text-decoration:none;color:var(--ink);border:1.5px solid var(--ink);transition:transform .35s var(--ease),background .25s}
+a.btn:hover{transform:translateY(-2px)}
+a.btn.solid{background:var(--ink);color:#fff}
+@media (prefers-reduced-motion:reduce){main{animation:none;opacity:1;transform:none}}
+</style></head><body>
+<main>
+  <span class="label"><i></i>Erreur 404</span>
+  <h1>Cette page<br><span>n'existe pas.</span></h1>
+  <p>Le lien a peut-être changé. Le shop, la formation et le portfolio sont toujours là.</p>
+  <div class="btns">
+    <a class="btn solid" href="/">Retour au shop</a>
+    <a class="btn" href="/metavision/">MetaVision</a>
+    <a class="btn" href="/portfolio/">Portfolio</a>
+  </div>
+</main>
+</body></html>

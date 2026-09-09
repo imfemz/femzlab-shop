@@ -1,0 +1,8 @@
+# femzlab.shop — Cloudflare ajoute son bloc « managed content » (signaux IA)
+# devant ce fichier ; ici, seulement ce que le site décide lui-même.
+User-agent: *
+Allow: /
+# Espace membre : app derrière connexion, rien à indexer.
+Disallow: /espace/
+
+Sitemap: https://www.femzlab.shop/sitemap.xml
