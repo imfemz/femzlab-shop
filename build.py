@@ -34,6 +34,7 @@ PAGES = [("index.html", "index.html"),
 # partage (og:image doit être une URL absolue, jamais du base64).
 FICHIERS_RACINE = ("_headers", "motionlab-version.json", "robots.txt", "sitemap.xml")
 OG = SRC / "og"
+ICONS = SRC / "icons"
 
 MIME = {
     "png": "image/png", "jpg": "image/jpeg", "jpeg": "image/jpeg",
@@ -423,6 +424,14 @@ def main():
             if img.is_file():
                 shutil.copyfile(img, DIST / "og" / img.name)
         print(f"dist/og/ ({sum(1 for f in OG.iterdir() if f.is_file())} images)")
+    # icônes : Google exige un favicon en vrai fichier (pas de data-URI), carré,
+    # multiple de 48 px ; favicon.ico à la racine sert de repli universel.
+    if ICONS.is_dir():
+        (DIST / "icons").mkdir(exist_ok=True)
+        for ic in sorted(ICONS.iterdir()):
+            if ic.is_file():
+                shutil.copyfile(ic, DIST / ("favicon.ico" if ic.name == "favicon.ico" else f"icons/{ic.name}"))
+        print("dist/favicon.ico + dist/icons/")
 
 
 if __name__ == "__main__":
