@@ -6,4 +6,9 @@
 /terms https://pay.femzlab.shop/terms 301
 /privacy https://pay.femzlab.shop/privacy 301
 /account/* https://pay.femzlab.shop/account/:splat 301
+/login https://pay.femzlab.shop/login 301
+/forgot-password https://pay.femzlab.shop/forgot-password 301
+/dashboard https://pay.femzlab.shop/dashboard 301
+/view/* https://pay.femzlab.shop/view/:splat 301
+/p/* https://pay.femzlab.shop/p/:splat 301
 /assets /#assets 301

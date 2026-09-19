@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { profileStore, type ProfileReel } from '../lib/profile';
 import { API, getMe, initSession, saveConsent, setMeAvatar, logout } from '../lib/api';
 import { initCreatorsFromApi } from '../lib/creators';
-import { getPurchases, getLinkStatus, submitLinkRequest, type Purchase, type LinkStatus } from '../lib/purchases';
+import { getPurchases, getLinkStatus, submitLinkRequest, accessUrl, PODIA_RESET, type Purchase, type LinkStatus } from '../lib/purchases';
 import { Pencil } from './Icons';
 
 /** Réduit une image côté navigateur (max 512 px, WebP) avant envoi — pas de traitement serveur. */
@@ -114,8 +114,13 @@ export default function ProfilePanel({ onClose }: { onClose: () => void }) {
         <span className="pf-sub">Mes produits</span>
         {produits.length === 0 && <p className="pf-sub" style={{ opacity: .7 }}>Aucun produit rattaché pour l'instant.</p>}
         {produits.map((p) => (
-          <a key={p.product} className="pf-badge" href="https://www.femzlab.shop" target="_blank" rel="noopener">{p.product}</a>
+          <a key={p.product} className="pf-badge" href={accessUrl(p.product)} target="_blank" rel="noopener">
+            <b>{p.product}</b><span>Accéder</span>
+          </a>
         ))}
+        {produits.length > 0 && (
+          <p className="pf-sub pf-access-hint">Connecte-toi avec l'email de ton achat. <a href={PODIA_RESET} target="_blank" rel="noopener">Mot de passe oublié ?</a></p>
+        )}
       </div>
       <div className="pf-privacy">
         <span className="pf-sub">Confidentialité</span>
