@@ -53,12 +53,23 @@ body{
   display:flex;
   justify-content:center;
   padding: clamp(20px,4vh,48px) 18px;
+  background-color: var(--bg);
+}
+
+/* Fixed real elements instead of `background-attachment:fixed` — iOS Safari
+   doesn't reliably keep a fixed background painted past one viewport height,
+   which left a flat, seam-like dark band once the page scrolled taller than
+   the screen. A position:fixed element covers the viewport correctly. */
+.ambient{
+  position:fixed;
+  inset:0;
+  z-index:0;
+  pointer-events:none;
+  background-color: var(--bg);
   background-image:
     radial-gradient(760px 520px at 14% -6%, var(--bloom-orange), transparent 60%),
     radial-gradient(680px 560px at 92% 100%, var(--bloom-blue), transparent 60%),
     radial-gradient(1200px 800px at 50% 40%, rgba(255,255,255,.035), transparent 70%);
-  background-color: var(--bg);
-  background-attachment: fixed;
 }
 
 .dotfield{
@@ -275,6 +286,7 @@ body{
 }
 </style>
 
+<div class="ambient"></div>
 <div class="dotfield"></div>
 
 <div class="stage">
