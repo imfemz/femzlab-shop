@@ -1170,6 +1170,36 @@ main>section:last-of-type{padding-bottom:clamp(16px,2.5vh,26px)}
 .demo-wrap{max-width:1100px;margin:0 auto;padding:26px clamp(20px,5vw,48px) 0}
 .gw-stage{position:relative;display:flex;align-items:stretch;background:transparent}
 
+/* --- Dépliement du panneau du héros ---------------------------------
+   Il arrivait à plat, déjà rempli d'un téléchargement en cours : moche.
+   Il se déplie maintenant (couché → posé), son contenu monte en cascade,
+   et la scène ne démarre qu'une fois le panneau en place.
+   --fold va de 1 (couché) à 0 (posé) ; il est animable parce que déclaré. */
+@property --fold{syntax:'<number>';inherits:false;initial-value:1}
+.hpanel.gpanel{--fold:1;
+  transform-origin:50% 88%;
+  transform:rotateX(calc(8deg + var(--fold)*46deg)) rotateY(calc(-16deg + var(--fold)*11deg))
+            scale(calc(1 - var(--fold)*.07));
+  opacity:calc(1 - var(--fold)*.9);
+  transition:--fold 1.05s cubic-bezier(.22,1,.36,1), opacity .75s ease,
+             transform .5s cubic-bezier(.22,1,.36,1)}
+.hero-panel.in .hpanel.gpanel{--fold:0}
+/* l'ombre portée s'installe avec le panneau, sinon elle flotte sous le vide */
+.hpanel.gpanel{box-shadow:0 1px 0 rgba(255,255,255,.08) inset,
+  calc(26px*(1 - var(--fold))) calc(34px*(1 - var(--fold))) 60px rgba(15,20,40,.42),
+  0 30px 80px rgba(15,20,40,calc(.32*(1 - var(--fold))))}
+/* le contenu monte ensuite, ligne par ligne */
+.hero-panel .gwin > *{opacity:0}
+.hero-panel.in .gwin > *{animation:gwLigne .55s cubic-bezier(.22,1,.36,1) both;
+  animation-delay:calc(.42s + var(--k,0)*.075s)}
+@keyframes gwLigne{from{opacity:0;transform:translateY(7px)}to{opacity:1;transform:none}}
+.hero-panel .hp-postit{opacity:0}
+.hero-panel.in .hp-postit{animation:gwLigne .5s .95s cubic-bezier(.34,1.56,.64,1) both}
+@media (prefers-reduced-motion:reduce){
+  .hpanel.gpanel{--fold:0;opacity:1;transition:none}
+  .hero-panel .gwin > *,.hero-panel .hp-postit{opacity:1;animation:none}
+}
+
 /* --- slogan de vitesse : la seule ligne accentuée de la carte héros --- */
 .speedline{display:inline-flex;align-items:center;gap:9px;margin-top:16px;
   background:rgba(94,162,255,.12);border:1px solid rgba(94,162,255,.35);border-radius:999px;
@@ -1249,12 +1279,12 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
         <i class="hp-d" style="--z:1"></i><i class="hp-d" style="--z:2"></i><i class="hp-d" style="--z:3"></i><i class="hp-d" style="--z:4"></i><i class="hp-d" style="--z:5"></i><i class="hp-d" style="--z:6"></i><i class="hp-d" style="--z:7"></i><i class="hp-d" style="--z:8"></i><i class="hp-d" style="--z:9"></i><i class="hp-d" style="--z:10"></i><i class="hp-d" style="--z:11"></i><i class="hp-d" style="--z:12"></i><i class="hp-d" style="--z:13"></i><i class="hp-d" style="--z:14"></i>
         <span class="halo" aria-hidden="true"></span>
         <div class="gwin" id="gwin-hero">
-          <div class="gw-bar"><span class="gw-name">GrabLAB</span><i class="gw-cog" aria-hidden="true"></i></div>
-          <div class="gw-well">
+          <div class="gw-bar" style="--k:0"><span class="gw-name">GrabLAB</span><i class="gw-cog" aria-hidden="true"></i></div>
+          <div class="gw-well" style="--k:1">
             <span class="gw-ph" data-ph>Colle un lien YouTube, TikTok ou Instagram</span>
             <button class="gw-paste" type="button" data-paste tabindex="-1" aria-hidden="true">Coller</button>
           </div>
-          <div class="gw-segs">
+          <div class="gw-segs" style="--k:2">
             <div class="gw-seg" data-seg="kind" style="--n:2;--i:0">
               <button type="button" class="on" data-v="video" tabindex="-1" aria-hidden="true">Vidéo MP4</button>
               <button type="button" data-v="audio" tabindex="-1" aria-hidden="true">Audio MP3</button>
@@ -1268,8 +1298,8 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
               <button type="button" data-v="360p" tabindex="-1" aria-hidden="true">360p</button>
             </div>
           </div>
-          <p class="gw-hint" data-hint></p>
-          <ul class="gw-jobs" data-jobs></ul>
+          <p class="gw-hint" data-hint style="--k:3"></p>
+          <ul class="gw-jobs" data-jobs style="--k:4"></ul>
         </div>
         <span class="hp-postit">3× plus rapide</span>
       </div>
@@ -1767,15 +1797,20 @@ if(navToggle&&navMenu){
   if(hero){
     var f=fenetre(hero,{cliquable:false});
     var visible=false, boucle=null;
-    function relance(){
+    /* 1,3 s : le temps du dépliement et de la cascade. Sans cette attente, la
+       carte de téléchargement apparaît avant même que le panneau soit posé. */
+    var OUVERTURE=1150;
+    function relance(premier){
       clearTimeout(boucle);
       if(REDUCED||!visible) return;
-      f.joue('4k');
-      boucle=setTimeout(relance, 11000);
+      boucle=setTimeout(function(){
+        f.joue('4k');
+        boucle=setTimeout(function(){ relance(false); }, 11000);
+      }, premier?OUVERTURE:0);
     }
     new IntersectionObserver(function(es){ es.forEach(function(e){
       var avant=visible; visible=e.isIntersecting;
-      if(visible&&!avant) relance(); else if(!visible){ clearTimeout(boucle); f.nettoie(); }
+      if(visible&&!avant) relance(true); else if(!visible){ clearTimeout(boucle); f.nettoie(); }
     });},{threshold:.25}).observe(hero);
     if(REDUCED) f.joue('4k');
     aRejouer.push(function(){ if(visible||REDUCED) f.joue('4k'); });
