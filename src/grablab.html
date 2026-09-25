@@ -1118,11 +1118,24 @@ main>section:last-of-type{padding-bottom:clamp(16px,2.5vh,26px)}
   white-space:nowrap;transition:color .2s var(--ease)}
 .gw-seg button.on{color:#fff}
 .gw-hint{min-height:12px;font-size:10px;color:var(--ml-dim);padding-left:2px}
-.gw-jobs{list-style:none;display:flex;flex-direction:column;gap:7px;margin:0;padding:0;min-height:0}
-.gw-job{position:relative;overflow:hidden;display:grid;grid-template-columns:44px 1fr auto;gap:9px;
-  align-items:center;background:rgba(255,255,255,.055);border-radius:11px;padding:7px 9px 9px;
-  animation:gwDrop .5s cubic-bezier(.34,1.56,.64,1) both}
-@keyframes gwDrop{from{opacity:0;transform:translateY(-8px) scale(.98)}to{opacity:1;transform:none}}
+.gw-jobs{list-style:none;display:flex;flex-direction:column;gap:0;margin:0;padding:0;min-height:0}
+/* La carte ne surgit pas : sa rangée passe de 0fr à 1fr, donc elle POUSSE et
+   la fenêtre grandit avec elle. L'écart entre cartes est porté par l'intérieur,
+   sinon un espace de 7 px apparaîtrait avant la carte elle-même. */
+.gw-job{display:grid;grid-template-rows:0fr;opacity:0;
+  transition:grid-template-rows .55s cubic-bezier(.22,1,.36,1),opacity .4s ease .06s}
+.gw-job.ouvert{grid-template-rows:1fr;opacity:1}
+/* min-height:0 est indispensable : sans lui, un élément de grille refuse de
+   descendre sous sa hauteur de contenu et la carte démarre à mi-hauteur
+   (mesuré : 31 px au lieu de 0). L'écart entre cartes s'ouvre avec elle. */
+.gw-in{position:relative;overflow:hidden;min-height:0;display:grid;grid-template-columns:44px 1fr auto;gap:9px;
+  align-items:center;background:rgba(255,255,255,.055);border-radius:11px;
+  /* le padding vertical survit à un track de 0fr (mesuré : 16 px de reste) :
+     il s'ouvre avec la carte, sinon elle démarre déjà à un tiers de sa taille */
+  padding:0 9px;margin-bottom:0;transform:translateY(-4px);
+  transition:transform .55s cubic-bezier(.22,1,.36,1),margin-bottom .55s cubic-bezier(.22,1,.36,1),
+             padding .55s cubic-bezier(.22,1,.36,1)}
+.gw-job.ouvert .gw-in{transform:none;margin-bottom:7px;padding:7px 9px 9px}
 .gw-thumb{width:44px;height:25px;border-radius:5px;background:linear-gradient(135deg,#2C3442,#161A22);
   background-size:cover;background-position:center}
 .gw-t{font-weight:700;font-size:10.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
@@ -1130,7 +1143,7 @@ main>section:last-of-type{padding-bottom:clamp(16px,2.5vh,26px)}
   font-variant-numeric:tabular-nums}
 .gw-m b{color:var(--ml-txt);font-weight:700}
 .gw-badge{background:#EDEDE8;color:#0A0A08;border-radius:4px;padding:1px 5px;font-weight:700;font-size:9px}
-.gw-note{margin-top:2px;font-size:9px;color:#7E848D}
+.gw-note{margin-top:2px;font-size:9px;color:#7E848D;animation:gwLigne .4s cubic-bezier(.22,1,.36,1) both}
 .gw-go{flex:none;background:#EDEDE8;color:#0A0A08;font-weight:700;border-radius:999px;
   padding:5px 10px;font-size:9.5px}
 .gw-bar-p{position:absolute;left:9px;right:9px;bottom:3px;height:2px;border-radius:2px;background:rgba(255,255,255,.08)}
@@ -1700,10 +1713,10 @@ if(navToggle&&navMenu){
 
     function carte(j, dureeDl, dureeConv, fini){
       var li=document.createElement('li'); li.className='gw-job';
-      li.innerHTML='<span class="gw-thumb"></span><div><p class="gw-t"></p>'
+      li.innerHTML='<div class="gw-in"><span class="gw-thumb"></span><div><p class="gw-t"></p>'
         +'<div class="gw-m"><b class="gw-p"></b><span class="gw-badge" hidden></span><span class="gw-s"></span></div>'
         +'<p class="gw-note" hidden></p></div><span class="gw-go" hidden>'+M('afficher')+'</span>'
-        +'<span class="gw-bar-p"><i></i></span>';
+        +'<span class="gw-bar-p"><i></i></span></div>';
       li.querySelector('.gw-thumb').style.background=VIGNETTES[j.v];
       li.querySelector('.gw-t').textContent=txt(j,'t');
       li.querySelector('.gw-p').textContent=j.p;
@@ -1712,6 +1725,9 @@ if(navToggle&&navMenu){
           barre=li.querySelector('.gw-bar-p i');
       jobs.prepend(li);
       while (jobs.children.length > 3) jobs.lastElementChild.remove();
+      /* la transition n'existe que s'il y a DEUX états : on ouvre à l'image
+         suivante, une fois la carte posée fermée dans le document */
+      requestAnimationFrame(function(){ requestAnimationFrame(function(){ li.classList.add('ouvert'); }); });
 
       s.textContent=M('analyse');
       plus_tard(function(){
