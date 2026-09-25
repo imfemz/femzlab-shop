@@ -1686,6 +1686,25 @@ if(navToggle&&navMenu){
     var etat={kind:'video',q:'4K'}, minuteurs=[], enCours=false;
 
     function nettoie(){ minuteurs.forEach(clearTimeout); minuteurs=[]; }
+
+    /* Une carte s'en va comme elle est venue : la rangée repasse de 1fr à 0fr,
+       la fenêtre rétrécit avec elle, et l'élément n'est retiré qu'à la fin. */
+    function replie(el, apres){
+      if(!el||el.dataset.replie) { if(apres) apres(); return; }
+      el.dataset.replie='1';
+      el.classList.remove('ouvert');
+      var fin=function(){ el.remove(); if(apres) apres(); };
+      var garde=setTimeout(fin, 700);
+      el.addEventListener('transitionend', function(e){
+        if(e.propertyName==='grid-template-rows'){ clearTimeout(garde); fin(); }
+      }, { once:true });
+    }
+    function replieTout(apres){
+      var restants=[].slice.call(jobs.children);
+      if(!restants.length){ if(apres) apres(); return; }
+      var n=restants.length;
+      restants.forEach(function(el){ replie(el, function(){ if(--n===0&&apres) apres(); }); });
+    }
     function plus_tard(f,d){ var id=setTimeout(f,d); minuteurs.push(id); return id; }
 
     /* le sélecteur de qualité change de libellés selon vidéo/audio, comme dans l'app */
@@ -1724,7 +1743,7 @@ if(navToggle&&navMenu){
           note=li.querySelector('.gw-note'), go=li.querySelector('.gw-go'),
           barre=li.querySelector('.gw-bar-p i');
       jobs.prepend(li);
-      while (jobs.children.length > 3) jobs.lastElementChild.remove();
+      while (jobs.children.length > 3) replie(jobs.lastElementChild);
       /* la transition n'existe que s'il y a DEUX états : on ouvre à l'image
          suivante, une fois la carte posée fermée dans le document */
       requestAnimationFrame(function(){ requestAnimationFrame(function(){ li.classList.add('ouvert'); }); });
@@ -1762,7 +1781,9 @@ if(navToggle&&navMenu){
     function joue(nom){
       nettoie(); enCours=true;
       var sc=SCENES[nom]||SCENES['4k'];
-      jobs.replaceChildren();
+      /* les cartes de la scène précédente se replient au lieu de disparaître */
+      var avaitDesCartes=jobs.children.length>0;
+      replieTout();
       ph.classList.remove('filled'); ph.textContent=M('colle');
       hint.textContent='';
       /* on reflète les réglages de la scène dans les sélecteurs */
@@ -1783,7 +1804,7 @@ if(navToggle&&navMenu){
         sc.jobs.forEach(function(j,i){
           plus_tard(function(){ carte(j, 2600+i*500, j.conv?1800:0, i===sc.jobs.length-1?function(){enCours=false;}:null); }, i*450);
         });
-      }, 520);
+      }, avaitDesCartes?760:520);
     }
 
     /* le bouton « Coller » de la démo fabrique une carte avec les réglages choisis */
