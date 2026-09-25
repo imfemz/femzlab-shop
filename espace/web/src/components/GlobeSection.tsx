@@ -38,6 +38,8 @@ type GlobeState = {
   /** centre vertical du globe (px section) — calé entre le bloc titre et le bloc bas */
   cy: number;
   base: number;
+  /** rotation ambiante suspendue après un clic sur le globe — reprend au dézoom complet */
+  paused: boolean;
   drag: { x: number; y: number; moved: number; l0: number; p0: number } | null;
   animT: { s: number; d: number; l0: number; l1: number; p0: number; p1: number; cb: (() => void) | null } | null;
   /* members = index CREATORS (confirmés) ; anon = nombre de points anonymes agrégés */
@@ -67,6 +69,7 @@ export default function GlobeSection() {
   const [popNonce, setPopNonce] = useState(0);
   const [fs, setFs] = useState(false);
   const [zoomed, setZoomed] = useState(false);
+  const [paused, setPaused] = useState(false);
   const [query, setQuery] = useState('');
   const [results, setResults] = useState<{ c: Creator; j: number }[]>([]);
   const [chatText, setChatText] = useState('');
@@ -87,6 +90,7 @@ export default function GlobeSection() {
     Hc: 0,
     cy: 0,
     base: 0,
+    paused: false,
     drag: null,
     animT: null,
     clusters: [],
@@ -122,6 +126,12 @@ export default function GlobeSection() {
   }, []);
 
   /* ── actions (référencées par les handlers impératifs) ── */
+  /** Seul chemin pour changer le zoom : dézoomer à fond relance la rotation. */
+  function setZoom(z: number) {
+    const s = st.current;
+    s.targetZoom = Math.max(1, Math.min(8, z));
+    if (s.targetZoom <= 1) s.paused = false;
+  }
   function flyToCoords(lon: number, lat: number, zoomTo: number | null, cb: (() => void) | null) {
     const s = st.current;
     const l1 = -lon;
@@ -130,7 +140,7 @@ export default function GlobeSection() {
     const dl = (((l1 - l0) % 360) + 540) % 360 - 180;
     s.animT = { s: performance.now(), d: prefersReducedMotion() ? 1 : 850, l0, l1: l0 + dl, p0: s.phi, p1, cb };
     s.lam = l0;
-    if (zoomTo) s.targetZoom = zoomTo;
+    if (zoomTo) setZoom(zoomTo);
   }
   function openProfile(j: number) {
     setPop({ kind: 'profile', idx: j });
@@ -211,13 +221,13 @@ export default function GlobeSection() {
     setFs(true);
     document.body.style.overflow = 'hidden';
     document.body.classList.add('globe-fs');
-    if (st.current.targetZoom < 1.15) st.current.targetZoom = 1.15;
+    if (st.current.targetZoom < 1.15) setZoom(1.15);
   }
   function exitFS() {
     setFs(false);
     document.body.style.overflow = '';
     document.body.classList.remove('globe-fs');
-    st.current.targetZoom = 1;
+    setZoom(1);
     closePop();
   }
   useEffect(
@@ -368,7 +378,12 @@ export default function GlobeSection() {
     }
 
     let wasZoomed = false;
+    let wasPaused = false;
     function draw(t: number) {
+      if (s.paused !== wasPaused) {
+        wasPaused = s.paused;
+        setPaused(s.paused);
+      }
       s.zoom += (s.targetZoom - s.zoom) * 0.08;
       if (Math.abs(s.targetZoom - s.zoom) < 0.001) s.zoom = s.targetZoom;
       const isZoomed = s.zoom > 1.18;
@@ -386,7 +401,7 @@ export default function GlobeSection() {
           s.animT = null;
           if (cb) cb();
         }
-      } else if (popMirror.current === null && !s.drag && !reduced) {
+      } else if (popMirror.current === null && !s.drag && !reduced && !s.paused) {
         s.lam += 0.02; /* rotation ambiante */
       }
       projection.rotate([s.lam, s.phi]).translate([s.Wc / 2, s.cy]).scale(s.base * s.zoom);
@@ -645,6 +660,9 @@ export default function GlobeSection() {
     function startDrag(x: number, y: number) {
       s.drag = { x, y, moved: 0, l0: s.lam, p0: s.phi };
       s.animT = null;
+      /* toucher le globe fige la rotation ambiante : on navigue à la main
+         jusqu'au dézoom complet (bouton « Dézoomer », molette, Échap, pinch) */
+      s.paused = true;
     }
     function moveDrag(x: number, y: number) {
       if (!s.drag) return;
@@ -703,7 +721,7 @@ export default function GlobeSection() {
     const onTouchMove = (e: TouchEvent) => {
       if (pinch && e.touches.length === 2) {
         e.preventDefault();
-        s.targetZoom = Math.max(1, Math.min(8, pinch.z * (tDist(e.touches) / pinch.d)));
+        setZoom(pinch.z * (tDist(e.touches) / pinch.d));
         return;
       }
       const t = e.touches[0];
@@ -725,14 +743,14 @@ export default function GlobeSection() {
     const onWheel = (e: WheelEvent) => {
       if (!overSphere(e)) return;
       e.preventDefault();
-      s.targetZoom = Math.max(1, Math.min(8, s.targetZoom * (e.deltaY < 0 ? 1.12 : 0.89)));
+      setZoom(s.targetZoom * (e.deltaY < 0 ? 1.12 : 0.89));
     };
     const onKey = (e: KeyboardEvent) => {
       if (e.key === 'Escape') {
         if (fsMirror.current) actions.current.exitFS();
         else {
           actions.current.closePop();
-          s.targetZoom = 1;
+          setZoom(1);
         }
       }
     };
@@ -961,7 +979,7 @@ export default function GlobeSection() {
     <section
       id="globe"
       ref={secRef as MutableRefObject<HTMLElement | null>}
-      className={'commu' + (fs ? ' fs' : '') + (zoomed ? ' zoomed' : '')}
+      className={'commu' + (fs ? ' fs' : '') + (zoomed ? ' zoomed' : '') + (paused ? ' paused' : '')}
     >
       <canvas
         id="globeC"
@@ -1027,12 +1045,12 @@ export default function GlobeSection() {
         onClick={() => {
           if (fs) exitFS();
           else {
-            st.current.targetZoom = 1;
+            setZoom(1);
             closePop();
           }
         }}
       >
-        {fs ? 'Réduire le globe' : 'Dézoomer'}
+        {fs ? 'Réduire le globe' : zoomed ? 'Dézoomer' : 'Relancer la rotation'}
       </button>
     </section>
   );

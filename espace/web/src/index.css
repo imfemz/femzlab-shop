@@ -1358,6 +1358,7 @@ h2 {
 /* Les couches backdrop-filter ne sont posées QUE sur les éléments visibles :
    Safari/iOS plafonne leur nombre par page, et la card nav doit rester floutée. */
 .commu.zoomed .g-reset,
+.commu.paused .g-reset,
 .commu.fs .g-reset {
   opacity: 1;
   pointer-events: auto;
