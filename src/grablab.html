@@ -1084,6 +1084,100 @@ main>section:last-of-type{padding-bottom:clamp(16px,2.5vh,26px)}
   .how{grid-template-columns:1fr}
   .specs{grid-template-columns:repeat(2,1fr)}
 }
+/* ============ Réplique de l'app : héros 3D + démo cliquable ============ */
+/* Une seule fenêtre dessinée en CSS, deux emplois : figée en 3D dans le héros,
+   pilotable dans la section démo. Aucune capture n'est étirée, tout est net. */
+.gwin{position:relative;display:flex;flex-direction:column;gap:9px;min-width:0;max-width:100%;
+  font-size:11px;line-height:1.4;color:var(--ml-txt);text-align:left}
+.gw-bar{display:flex;align-items:center;justify-content:center;position:relative;height:20px}
+.gw-name{font-family:'Montserrat',sans-serif;font-weight:800;font-size:12px;letter-spacing:-.01em}
+.gw-cog{position:absolute;right:0;top:50%;transform:translateY(-50%);width:13px;height:9px;
+  background:
+    linear-gradient(currentColor,currentColor) 0 1px/13px 1px no-repeat,
+    linear-gradient(currentColor,currentColor) 0 8px/13px 1px no-repeat;
+  color:var(--ml-dim);opacity:.8}
+.gw-cog::before,.gw-cog::after{content:"";position:absolute;width:4px;height:4px;border-radius:50%;
+  background:currentColor;top:-1px;left:8px}
+.gw-cog::after{top:6px;left:3px}
+.gw-well{display:flex;align-items:center;gap:8px;background:#101114;border:1px solid rgba(255,255,255,.08);
+  border-radius:999px;padding:5px 5px 5px 14px}
+.gw-ph{flex:1;min-width:0;color:var(--ml-dim);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.gw-ph.filled{color:var(--ml-txt);font-weight:700}
+.gw-paste{flex:none;background:#EDEDE8;color:#0A0A08;font-weight:700;border-radius:999px;padding:6px 14px;
+  font-size:11px;border:0;cursor:pointer;transition:transform .18s var(--ease)}
+.gw-paste:active{transform:scale(.95)}
+.gw-segs{display:flex;gap:7px}
+.gw-seg{position:relative;display:grid;grid-auto-flow:column;grid-auto-columns:minmax(0,1fr);min-width:0;
+  background:rgba(255,255,255,.06);border-radius:9px;padding:2px;gap:0}
+.gw-seg.wide{flex:1;min-width:0}
+.gw-seg::before{content:"";position:absolute;top:2px;bottom:2px;left:2px;
+  width:calc((100% - 4px) / var(--n));background:rgba(255,255,255,.14);border-radius:7px;
+  transform:translateX(calc(var(--i) * 100%));transition:transform .34s var(--ease)}
+.gw-seg button{position:relative;z-index:1;border:0;background:none;color:var(--ml-dim);
+  font:inherit;font-weight:700;font-size:10px;padding:5px 9px;border-radius:7px;cursor:pointer;
+  white-space:nowrap;transition:color .2s var(--ease)}
+.gw-seg button.on{color:#fff}
+.gw-hint{min-height:12px;font-size:10px;color:var(--ml-dim);padding-left:2px}
+.gw-jobs{list-style:none;display:flex;flex-direction:column;gap:7px;margin:0;padding:0;min-height:0}
+.gw-job{position:relative;overflow:hidden;display:grid;grid-template-columns:44px 1fr auto;gap:9px;
+  align-items:center;background:rgba(255,255,255,.055);border-radius:11px;padding:7px 9px 9px;
+  animation:gwDrop .5s cubic-bezier(.34,1.56,.64,1) both}
+@keyframes gwDrop{from{opacity:0;transform:translateY(-8px) scale(.98)}to{opacity:1;transform:none}}
+.gw-thumb{width:44px;height:25px;border-radius:5px;background:linear-gradient(135deg,#2C3442,#161A22);
+  background-size:cover;background-position:center}
+.gw-t{font-weight:700;font-size:10.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.gw-m{display:flex;align-items:center;gap:6px;margin-top:3px;font-size:9.5px;color:var(--ml-dim);
+  font-variant-numeric:tabular-nums}
+.gw-m b{color:var(--ml-txt);font-weight:700}
+.gw-badge{background:#EDEDE8;color:#0A0A08;border-radius:4px;padding:1px 5px;font-weight:700;font-size:9px}
+.gw-note{margin-top:2px;font-size:9px;color:#7E848D}
+.gw-go{flex:none;background:#EDEDE8;color:#0A0A08;font-weight:700;border-radius:999px;
+  padding:5px 10px;font-size:9.5px}
+.gw-bar-p{position:absolute;left:9px;right:9px;bottom:3px;height:2px;border-radius:2px;background:rgba(255,255,255,.08)}
+.gw-bar-p i{display:block;height:100%;border-radius:2px;background:var(--accent);
+  transform-origin:0 50%;transform:scaleX(var(--p,0));transition:transform .25s linear}
+.gw-empty{flex:1;display:flex;flex-direction:column;justify-content:center;padding:6px 2px 14px}
+.gw-empty b{font-family:'Montserrat',sans-serif;font-weight:800;font-size:20px;letter-spacing:-.02em}
+.gw-empty span{margin-top:5px;color:var(--ml-dim);font-size:10px;max-width:26ch}
+
+/* le héros : la fenêtre posée dans le panneau 3D de la DA */
+.hpanel.gpanel{padding:16px 15px 14px}
+.hero-panel .gwin{pointer-events:none}
+
+/* la démo : mêmes gabarits que le panel MotionLAB, contenu GrabLAB */
+.demo.gdemo{aspect-ratio:auto;grid-template-columns:270px 1fr}
+.gdemo .gw-stage{padding:18px;display:flex;flex-direction:column;min-height:330px}
+.gdemo .gwin{flex:1;max-width:430px;width:100%;margin:0 auto}
+.gdemo .dp-list{overflow:visible}
+.gdemo-note{margin:12px auto 0;max-width:1100px;padding:0 clamp(20px,5vw,48px);
+  font-size:12px;color:var(--dim);text-align:center}
+@media (max-width:820px){
+  .demo.gdemo{grid-template-columns:1fr}
+  .gdemo .demo-panel{border-right:0;border-bottom:1px solid rgba(255,255,255,.07)}
+  .gdemo .demo-panel::after{display:none}
+}
+/* Six définitions ne tiennent pas sur une ligne de téléphone : les deux
+   sélecteurs passent l'un sous l'autre plutôt que de déborder de la fenêtre. */
+@media (max-width:560px){
+  .gw-segs{flex-direction:column;gap:6px}
+  .gw-seg,.gw-seg.wide{width:100%;flex:none}
+  .gw-seg button{font-size:9.5px;padding:5px 2px;min-width:0}
+  .gdemo .gw-stage{padding:13px}
+  .gw-job{grid-template-columns:38px 1fr auto;gap:7px}
+  .gw-thumb{width:38px;height:22px}
+}
+
+.demo-wrap{max-width:1100px;margin:0 auto;padding:26px clamp(20px,5vw,48px) 0}
+.gw-stage{position:relative;display:flex;align-items:stretch;background:transparent}
+
+/* ============ Rythme : une bande ne coupe jamais un bloc ============ */
+/* Chaque zone sur papier porte son propre bas (--secB) ; la bande porte le
+   sien. La frontière tombe donc TOUJOURS dans du vide, jamais dans un bloc. */
+.zone{padding-bottom:var(--secB)}
+.quote-sec,.final{padding-top:var(--secT);padding-bottom:var(--secB)}
+/* une carte seule se centre, elle ne reste pas orpheline à gauche */
+.buy-wrap.solo{grid-template-columns:min(620px,100%);justify-content:center}
+
 </style></head>
 <body>
 <!-- Google Tag Manager (noscript) -->
@@ -1114,12 +1208,15 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 
 <main id="top">
 
+  <!-- Chaque zone sur papier porte son propre bas : la frontière de bande
+       tombe dans du vide, jamais au milieu d'un bloc. -->
+  <div class="zone">
   <!-- ======================= S1 : HÉROS ======================= -->
   <section class="mani rv">
     <span class="ptag"><i></i>Application · Mac et Windows</span>
     <h1 aria-label="GrabLAB — un lien collé, ton fichier prêt">
-      <span class="mword m1">Un lien collé,</span>
-      <span class="mword m2">ton fichier prêt.</span>
+      <span class="mword m1" data-en="One link pasted,">Un lien collé,</span>
+      <span class="mword m2" data-en="your file is ready.">ton fichier prêt.</span>
     </h1>
   </section>
 
@@ -1131,7 +1228,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
       <div class="hero-cta">
         <a data-track="cta_gl_acheter_hero" class="btn-buy" href="https://pay.femzlab.shop/grablab">Acheter GrabLAB <span class="p">3,99&nbsp;€</span></a>
         <a data-track="cta_gl_voir_app" class="btn-ghost" href="#app">Voir l'app</a>
-        <a data-track="cta_gl_avant_achat" class="btn-ghost" href="#franchise">À savoir avant d'acheter</a>
+        <a data-track="cta_gl_voir_faq" class="btn-ghost" href="#faq">Questions fréquentes</a>
       </div>
       <div class="hero-meta">
         <span><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>Téléchargement immédiat</span>
@@ -1140,9 +1237,34 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
       </div>
     </div>
     <div class="hero-panel rv" style="--d:.12s">
-      <figure class="shot dark" style="margin:0">
-        <img src="assets/png-34.png" width="1240" height="900" alt="La fenêtre de GrabLAB en mode sombre : le champ où coller le lien, le choix vidéo ou audio, la définition, et deux téléchargements terminés." loading="eager" decoding="async">
-      </figure>
+      <div class="hpanel gpanel" role="img" aria-label="La fenêtre de GrabLAB : un lien collé, la définition choisie, et le téléchargement qui se termine.">
+        <i class="hp-d" style="--z:1"></i><i class="hp-d" style="--z:2"></i><i class="hp-d" style="--z:3"></i><i class="hp-d" style="--z:4"></i><i class="hp-d" style="--z:5"></i><i class="hp-d" style="--z:6"></i><i class="hp-d" style="--z:7"></i><i class="hp-d" style="--z:8"></i><i class="hp-d" style="--z:9"></i><i class="hp-d" style="--z:10"></i><i class="hp-d" style="--z:11"></i><i class="hp-d" style="--z:12"></i><i class="hp-d" style="--z:13"></i><i class="hp-d" style="--z:14"></i>
+        <span class="halo" aria-hidden="true"></span>
+        <div class="gwin" id="gwin-hero">
+          <div class="gw-bar"><span class="gw-name">GrabLAB</span><i class="gw-cog" aria-hidden="true"></i></div>
+          <div class="gw-well">
+            <span class="gw-ph" data-ph>Colle un lien YouTube, TikTok ou Instagram</span>
+            <button class="gw-paste" type="button" data-paste tabindex="-1" aria-hidden="true">Coller</button>
+          </div>
+          <div class="gw-segs">
+            <div class="gw-seg" data-seg="kind" style="--n:2;--i:0">
+              <button type="button" class="on" data-v="video" tabindex="-1" aria-hidden="true">Vidéo MP4</button>
+              <button type="button" data-v="audio" tabindex="-1" aria-hidden="true">Audio MP3</button>
+            </div>
+            <div class="gw-seg wide" data-seg="q" style="--n:6;--i:0">
+              <button type="button" class="on" data-v="4K" tabindex="-1" aria-hidden="true">4K</button>
+              <button type="button" data-v="1440p" tabindex="-1" aria-hidden="true">1440p</button>
+              <button type="button" data-v="1080p" tabindex="-1" aria-hidden="true">1080p</button>
+              <button type="button" data-v="720p" tabindex="-1" aria-hidden="true">720p</button>
+              <button type="button" data-v="480p" tabindex="-1" aria-hidden="true">480p</button>
+              <button type="button" data-v="360p" tabindex="-1" aria-hidden="true">360p</button>
+            </div>
+          </div>
+          <p class="gw-hint" data-hint></p>
+          <ul class="gw-jobs" data-jobs></ul>
+        </div>
+        <span class="hp-postit">Sans filigrane</span>
+      </div>
     </div>
   </div>
 
@@ -1153,6 +1275,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     <span class="plat"><svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><path d="M17.5 6.5h.01"/></svg>Instagram</span>
     <span class="plat"><svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12M7 10l5 5 5-5M5 21h14"/></svg>MP4 4K ou MP3 320</span>
     <span class="plat"><svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16M4 12h10M4 17h7"/></svg>Plusieurs liens d'un coup</span>
+  </div>
   </div>
 
   <!-- ======================= S3 : COMMENT ÇA MARCHE ======================= -->
@@ -1182,6 +1305,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
   </section>
 
   <!-- ======================= S4 : LA THÈSE 4K ======================= -->
+  <div class="zone">
   <div class="sec-head rv">
     <span class="eyebrow">Le détail qui change tout</span>
     <h2>Une 4K qui s'ouvre dans Premiere</h2>
@@ -1205,35 +1329,64 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     <div class="spec"><b>À jour</b><span>Le moteur se met à jour tout seul, une fois par jour : c'est ce qui le fait tenir quand les plateformes changent.</span></div>
   </div>
 
-  <!-- ======================= S5 : L'APP ======================= -->
+  </div>
+
+  <!-- ======================= S5 : L'APP, EN VRAI ======================= -->
   <section class="band">
   <div class="sec-head rv">
     <span class="eyebrow">L'interface</span>
-    <h2>Claire, sombre, française ou anglaise</h2>
-    <p>Une fenêtre, pas un tableau de bord. Elle suit le thème de ton système, ou celui que tu lui imposes.</p>
+    <h2>Essaie-la, elle est ici</h2>
+    <p>La fenêtre ci-dessous est la vraie interface de GrabLAB. Clique : choisis un format, une définition, colle un lien.</p>
   </div>
-  <div class="shots">
-    <div class="shot rv">
-      <figure>
-        <img src="assets/png-32.png" width="1240" height="900" alt="GrabLAB en mode clair : deux vidéos téléchargées, la définition obtenue affichée sur chaque carte." loading="lazy" decoding="async">
-      </figure>
-      <figcaption>Mode clair</figcaption>
+  <div class="demo-wrap">
+    <div class="demo gdemo rv" id="demo-app">
+      <div class="demo-panel">
+        <div class="dp-row"><span class="dp-lbl">Essais</span></div>
+        <div class="dp-list">
+          <button type="button" class="dp-item on" data-scene="4k" data-track="cta_gl_demo_scene"><span class="dp-name">Une vidéo en 4K</span><span class="dp-desc">Téléchargement, puis conversion en H.264 pour Premiere.</span></button>
+          <button type="button" class="dp-item" data-scene="mp3" data-track="cta_gl_demo_scene"><span class="dp-name">Le son en MP3</span><span class="dp-desc">320 kbps, métadonnées comprises.</span></button>
+          <button type="button" class="dp-item" data-scene="multi" data-track="cta_gl_demo_scene"><span class="dp-name">Trois liens d'un coup</span><span class="dp-desc">Une carte par vidéo, deux téléchargements en parallèle.</span></button>
+          <button type="button" class="dp-item" data-scene="limite" data-track="cta_gl_demo_scene"><span class="dp-name">La 4K n'existe pas</span><span class="dp-desc">L'app prend la meilleure définition et te le dit.</span></button>
+          <button type="button" class="dp-item" data-scene="tiktok" data-track="cta_gl_demo_scene"><span class="dp-name">Un TikTok sans filigrane</span><span class="dp-desc">Le format marqué est écarté à la source.</span></button>
+        </div>
+      </div>
+      <div class="gw-stage">
+        <div class="gwin" id="gwin-demo">
+          <div class="gw-bar"><span class="gw-name">GrabLAB</span><i class="gw-cog" aria-hidden="true"></i></div>
+          <div class="gw-well">
+            <span class="gw-ph" data-ph>Colle un lien YouTube, TikTok ou Instagram</span>
+            <button class="gw-paste" type="button" data-paste data-track="cta_gl_demo_coller">Coller</button>
+          </div>
+          <div class="gw-segs">
+            <div class="gw-seg" data-seg="kind" style="--n:2;--i:0" role="group" aria-label="Format">
+              <button type="button" class="on" data-v="video" data-track="cta_gl_demo_format">Vidéo MP4</button>
+              <button type="button" data-v="audio" data-track="cta_gl_demo_format">Audio MP3</button>
+            </div>
+            <div class="gw-seg wide" data-seg="q" style="--n:6;--i:0" role="group" aria-label="Qualité">
+              <button type="button" class="on" data-v="4K" data-track="cta_gl_demo_qualite">4K</button>
+              <button type="button" data-v="1440p" data-track="cta_gl_demo_qualite">1440p</button>
+              <button type="button" data-v="1080p" data-track="cta_gl_demo_qualite">1080p</button>
+              <button type="button" data-v="720p" data-track="cta_gl_demo_qualite">720p</button>
+              <button type="button" data-v="480p" data-track="cta_gl_demo_qualite">480p</button>
+              <button type="button" data-v="360p" data-track="cta_gl_demo_qualite">360p</button>
+            </div>
+          </div>
+          <p class="gw-hint" data-hint></p>
+          <ul class="gw-jobs" data-jobs></ul>
+        </div>
+      </div>
     </div>
-    <div class="shot dark rv" style="--d:.08s">
-      <figure>
-        <img src="assets/png-35.png" width="1240" height="850" alt="Les réglages de GrabLAB : cookies du navigateur, apparence claire ou sombre, langue française ou anglaise, et version du moteur." loading="lazy" decoding="async">
-      </figure>
-      <figcaption>Les réglages</figcaption>
-    </div>
+    <p class="gdemo-note">Démonstration de l'interface : les vitesses sont simulées, rien n'est téléchargé depuis cette page.</p>
   </div>
   </section>
 
   <!-- ======================= S6 : CE QUI EST INCLUS ======================= -->
+  <div class="zone">
   <div class="sec-head rv" id="acheter">
     <span class="eyebrow">Ce que tu reçois</span>
     <h2>Une app, trois fichiers</h2>
   </div>
-  <div class="buy-wrap">
+  <div class="buy-wrap solo">
     <div class="buy-card rv">
       <ul>
         <li><svg viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><path d="M20 6 9 17l-5-5"/></svg><span><b>GrabLAB pour Mac</b> — Apple Silicon (M1 à M4) et Intel, deux fichiers séparés pour ne pas te faire télécharger 700 Mo pour rien. macOS 11 ou plus récent.</span></li>
@@ -1247,23 +1400,6 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     </div>
   </div>
 
-  <!-- ======================= S7 : FRANCHISE ======================= -->
-  <div class="sec-head rv" id="franchise">
-    <span class="eyebrow">Sans enrobage</span>
-    <h2>À savoir avant d'acheter</h2>
-    <p>Tout ce qui pourrait te faire regretter l'achat est écrit ici, pas caché dans une note de bas de page.</p>
-  </div>
-  <div class="frank">
-    <div class="frank-card rv">
-      <ul>
-        <li><i></i><span><b>macOS bloque l'app au premier lancement.</b> Elle n'est pas notariée par Apple (99 €/an). Il faut passer une fois par Réglages Système → Confidentialité et sécurité → « Ouvrir quand même ». La marche à suivre est jointe au téléchargement. Après, double-clic normal.</span></li>
-        <li><i></i><span><b>La version Windows n'a jamais été ouverte sur un vrai PC.</b> Elle est fabriquée depuis un Mac et vérifiée par script, pas par l'usage. Elle est incluse en bonus — si elle coince chez toi, écris-moi, je corrige ou je rembourse.</span></li>
-        <li><i></i><span><b>La première ouverture demande une connexion</b> : l'app télécharge son moteur (~30 Mo), puis le maintient à jour.</span></li>
-        <li><i></i><span><b>La 4K n'existe pas sur toutes les vidéos.</b> GrabLAB prend alors la meilleure définition disponible et l'écrit noir sur blanc sur la carte.</span></li>
-        <li><i></i><span><b>Testé sur YouTube, TikTok et Instagram.</b> D'autres sites peuvent marcher, mais je ne les annonce pas tant que je ne les ai pas essayés.</span></li>
-        <li><i></i><span><b>Télécharger enfreint les conditions d'utilisation des plateformes.</b> GrabLAB est fait pour récupérer tes propres contenus, ou ceux dont tu as les droits.</span></li>
-      </ul>
-    </div>
   </div>
 
   <!-- ======================= S8 : POURQUOI ======================= -->
@@ -1277,7 +1413,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 
   <!-- ======================= S9 : FAQ ======================= -->
   <section class="band">
-  <div class="sec-head rv">
+  <div class="sec-head rv" id="faq">
     <span class="eyebrow">Questions fréquentes</span>
     <h2>Ce qu'on me demande</h2>
   </div>
@@ -1430,6 +1566,224 @@ if(navToggle&&navMenu){
   },{threshold:[0,.05,.1,.15,.2,.25,.3,.35]});
   document.querySelectorAll('.rv').forEach(el=>io.observe(el));
 })();
+/* ---- Titre du héros : les lettres arrivent au chargement (et à chaque
+   remontée de la section, comme tous les reveals du site). ---- */
+(function(){
+  function decouper(mot, texte){
+    mot.textContent='';
+    var i=0;
+    for (var k=0;k<texte.length;k++){
+      var c=texte[k];
+      if(c===' '){ mot.appendChild(document.createTextNode(' ')); continue; }
+      var sp=document.createElement('span');
+      sp.className='ml'; sp.style.setProperty('--li', i++); sp.textContent=c;
+      mot.appendChild(sp);
+    }
+  }
+  window.__decouperMots=function(lang){
+    document.querySelectorAll('.mani .mword').forEach(function(w){
+      if(!w.dataset.fr) w.dataset.fr=w.textContent.trim();
+      var t=(lang==='en'&&w.dataset.en)?w.dataset.en:w.dataset.fr;
+      decouper(w,t);
+    });
+  };
+  window.__decouperMots('fr');
+})();
+
+/* ---- La fenêtre de l'app : une seule mécanique pour le héros (en boucle)
+   et pour la démo (cliquable). Rien n'est téléchargé : les durées sont
+   simulées, et la page le dit sous la démo. ---- */
+(function(){
+  var VIGNETTES={
+    yt:'linear-gradient(135deg,#3B2F5E,#1B2234)',
+    yt2:'linear-gradient(135deg,#1F3B57,#152232)',
+    tk:'linear-gradient(135deg,#123B3A,#101A22)',
+    ig:'linear-gradient(135deg,#5A2E3E,#1E1622)'
+  };
+  var SCENES={
+    '4k':{q:'4K',kind:'video',jobs:[{t:'Aftermovie — Paris, 3 jours',p:'YouTube',v:'yt',badge:'4K',taille:'1,4 Go',conv:true}]},
+    'mp3':{q:'320 kbps',kind:'audio',jobs:[{t:'Interview — le montage sans temps mort',p:'YouTube',v:'yt2',badge:'MP3 320',taille:'42,7 Mo'}]},
+    'multi':{q:'1080p',kind:'video',jobs:[
+      {t:'Reel — la lumière de fin de journée',p:'Instagram',v:'ig',badge:'1080p',taille:'38,2 Mo'},
+      {t:'Tuto — trois transitions en 60 s',p:'TikTok',v:'tk',badge:'1080p',taille:'26,9 Mo'},
+      {t:'Vlog — la semaine où tout a basculé',p:'YouTube',v:'yt',badge:'1080p',taille:'214 Mo'}]},
+    'limite':{q:'4K',kind:'video',jobs:[{t:'Archive — concert filmé au téléphone',p:'YouTube',v:'yt2',badge:'720p',taille:'88,4 Mo',note:'4K indisponible pour cette vidéo'}]},
+    'tiktok':{q:'1080p',kind:'video',jobs:[{t:'Danse — la trend du moment',p:'TikTok',v:'tk',badge:'1080p',taille:'19,3 Mo',note:'Format sans filigrane retenu'}]}
+  };
+  var QUALITES=['4K','1440p','1080p','720p','480p','360p'];
+  var DEBITS=['320 kbps','256 kbps','192 kbps','128 kbps'];
+
+  function fenetre(root, opts){
+    var jobs=root.querySelector('[data-jobs]'), hint=root.querySelector('[data-hint]');
+    var ph=root.querySelector('[data-ph]'), coller=root.querySelector('[data-paste]');
+    var segK=root.querySelector('[data-seg=kind]'), segQ=root.querySelector('[data-seg=q]');
+    var etat={kind:'video',q:'4K'}, minuteurs=[], enCours=false;
+
+    function nettoie(){ minuteurs.forEach(clearTimeout); minuteurs=[]; }
+    function plus_tard(f,d){ var id=setTimeout(f,d); minuteurs.push(id); return id; }
+
+    /* le sélecteur de qualité change de libellés selon vidéo/audio, comme dans l'app */
+    function libelles(){
+      var vals = etat.kind==='audio'?DEBITS:QUALITES;
+      segQ.style.setProperty('--n', vals.length);
+      segQ.replaceChildren();
+      vals.forEach(function(v,i){
+        var b=document.createElement('button'); b.type='button'; b.dataset.v=v; b.textContent=v;
+        if(i===0){ b.className='on'; etat.q=v; }
+        b.addEventListener('click',function(){ choisir(segQ,i,v); });
+        segQ.appendChild(b);
+      });
+      segQ.style.setProperty('--i',0);
+    }
+    function choisir(seg,i,v){
+      seg.style.setProperty('--i',i);
+      [].forEach.call(seg.children,function(b,j){ b.classList.toggle('on',j===i); });
+      if(seg===segK){ etat.kind=v; libelles(); } else { etat.q=v; }
+    }
+    if(opts.cliquable){
+      [].forEach.call(segK.children,function(b,i){ b.addEventListener('click',function(){ choisir(segK,i,b.dataset.v); }); });
+      libelles();
+    }
+
+    function carte(j, dureeDl, dureeConv, fini){
+      var li=document.createElement('li'); li.className='gw-job';
+      li.innerHTML='<span class="gw-thumb"></span><div><p class="gw-t"></p>'
+        +'<div class="gw-m"><b class="gw-p"></b><span class="gw-badge" hidden></span><span class="gw-s"></span></div>'
+        +'<p class="gw-note" hidden></p></div><span class="gw-go" hidden>Afficher</span>'
+        +'<span class="gw-bar-p"><i></i></span>';
+      li.querySelector('.gw-thumb').style.background=VIGNETTES[j.v];
+      li.querySelector('.gw-t').textContent=j.t;
+      li.querySelector('.gw-p').textContent=j.p;
+      var s=li.querySelector('.gw-s'), badge=li.querySelector('.gw-badge'),
+          note=li.querySelector('.gw-note'), go=li.querySelector('.gw-go'),
+          barre=li.querySelector('.gw-bar-p i');
+      jobs.prepend(li);
+      while (jobs.children.length > 3) jobs.lastElementChild.remove();
+
+      s.textContent='Analyse du lien…';
+      plus_tard(function(){
+        var t0=Date.now();
+        (function pas(){
+          var k=Math.min(1,(Date.now()-t0)/dureeDl);
+          barre.style.setProperty('--p',k);
+          s.textContent=Math.round(k*100)+' %   '+(6.2+k*3).toFixed(1)+' Mo/s';
+          if(k<1) minuteurs.push(setTimeout(pas,120));
+          else if(dureeConv){
+            s.textContent='Conversion H.264…';
+            var t1=Date.now();
+            (function pas2(){
+              var k2=Math.min(1,(Date.now()-t1)/dureeConv);
+              barre.style.setProperty('--p',k2);
+              s.textContent='Conversion H.264   '+Math.round(k2*100)+' %';
+              if(k2<1) minuteurs.push(setTimeout(pas2,120)); else termine();
+            })();
+          } else termine();
+        })();
+        function termine(){
+          barre.parentNode.style.opacity=0;
+          badge.hidden=false; badge.textContent=j.badge;
+          s.textContent=j.taille;
+          if(j.note){ note.hidden=false; note.textContent=j.note; }
+          go.hidden=false;
+          if(fini) fini();
+        }
+      }, 700);
+    }
+
+    function joue(nom){
+      nettoie(); enCours=true;
+      var sc=SCENES[nom]||SCENES['4k'];
+      jobs.replaceChildren();
+      ph.classList.remove('filled'); ph.textContent='Colle un lien YouTube, TikTok ou Instagram';
+      hint.textContent='';
+      /* on reflète les réglages de la scène dans les sélecteurs */
+      var iK=sc.kind==='audio'?1:0;
+      segK.style.setProperty('--i',iK);
+      [].forEach.call(segK.children,function(b,j){ b.classList.toggle('on',j===iK); });
+      etat.kind=sc.kind;
+      if(opts.cliquable) libelles();
+      var vals=sc.kind==='audio'?DEBITS:QUALITES, iQ=Math.max(0,vals.indexOf(sc.q));
+      segQ.style.setProperty('--n',vals.length); segQ.style.setProperty('--i',iQ);
+      [].forEach.call(segQ.children,function(b,j){ b.classList.toggle('on',j===iQ); });
+      etat.q=sc.q;
+
+      plus_tard(function(){
+        ph.classList.add('filled');
+        ph.textContent=sc.jobs.length>1?sc.jobs.length+' liens collés':'https://youtu.be/…';
+        hint.textContent=sc.jobs.length>1?sc.jobs.length+' liens ajoutés':'';
+        sc.jobs.forEach(function(j,i){
+          plus_tard(function(){ carte(j, 2600+i*500, j.conv?1800:0, i===sc.jobs.length-1?function(){enCours=false;}:null); }, i*450);
+        });
+      }, 520);
+    }
+
+    /* le bouton « Coller » de la démo fabrique une carte avec les réglages choisis */
+    if(opts.cliquable){
+      coller.addEventListener('click',function(){
+        nettoie();
+        var audio=etat.kind==='audio';
+        carte({t:audio?'Podcast — épisode 14':'Tournage — la séquence du matin',
+               p:'YouTube', v:audio?'yt2':'yt',
+               badge:audio?'MP3 '+parseInt(etat.q,10):etat.q,
+               taille:audio?'38,1 Mo':'126 Mo',
+               conv:!audio&&['4K','1440p'].indexOf(etat.q)>-1}, 2200, 0, null);
+        ph.classList.add('filled'); ph.textContent='https://youtu.be/…';
+      });
+    }
+    return {joue:joue, nettoie:nettoie, occupe:function(){return enCours;}};
+  }
+
+  /* --- héros : la scène 4K tourne en boucle tant qu'elle est à l'écran --- */
+  var hero=document.getElementById('gwin-hero');
+  if(hero){
+    var f=fenetre(hero,{cliquable:false});
+    var visible=false, boucle=null;
+    function relance(){
+      clearTimeout(boucle);
+      if(REDUCED||!visible) return;
+      f.joue('4k');
+      boucle=setTimeout(relance, 11000);
+    }
+    new IntersectionObserver(function(es){ es.forEach(function(e){
+      var avant=visible; visible=e.isIntersecting;
+      if(visible&&!avant) relance(); else if(!visible){ clearTimeout(boucle); f.nettoie(); }
+    });},{threshold:.25}).observe(hero);
+    if(REDUCED) f.joue('4k');
+  }
+
+  /* --- démo : clic = scène choisie ; sans clic, elle se présente seule --- */
+  var demo=document.getElementById('gwin-demo');
+  if(demo){
+    var d=fenetre(demo,{cliquable:true});
+    var items=[].slice.call(document.querySelectorAll('#demo-app .dp-item'));
+    var idx=0, verrou=false, vu=false, tick=null;
+    function arme(){
+      clearTimeout(tick);
+      if(REDUCED||verrou) return;
+      tick=setTimeout(function(){
+        if(!vu){ arme(); return; }
+        idx=(idx+1)%items.length;
+        items.forEach(function(el,j){ el.classList.toggle('on',j===idx); });
+        d.joue(items[idx].dataset.scene); arme();
+      }, 12000);
+    }
+    items.forEach(function(el,i){
+      el.addEventListener('click',function(){
+        /* le minuteur déjà armé doit mourir ici : sinon il avance d'une scène
+           12 s après le clic et écrase le choix de l'utilisateur (constaté). */
+        clearTimeout(tick);
+        verrou=true; idx=i;
+        items.forEach(function(x,j){ x.classList.toggle('on',j===i); });
+        d.joue(el.dataset.scene);
+      });
+    });
+    new IntersectionObserver(function(es){ es.forEach(function(e){
+      var avant=vu; vu=e.isIntersecting;
+      if(vu&&!avant&&!REDUCED){ d.joue(items[idx].dataset.scene); arme(); }
+    });},{threshold:.25}).observe(demo);
+  }
+})();
+
 // Sticky bar mobile : deux sentinelles IO — la barre s'arme quand la buystrip
 // sort de l'écran, se masque quand un autre CTA d'achat est visible
 // (buy-wrap, final, footer). Jamais deux CTA d'achat à l'écran.
@@ -1457,6 +1811,24 @@ if(navToggle&&navMenu){
 (function(){
   const T={
     "Application · Mac et Windows":"App · Mac and Windows",
+    "Essaie-la, elle est ici":"Try it, right here",
+    "La fenêtre ci-dessous est la vraie interface de GrabLAB. Clique : choisis un format, une définition, colle un lien.":"The window below is GrabLAB's real interface. Click around: pick a format, a resolution, paste a link.",
+    "Essais":"Try",
+    "Une vidéo en 4K":"A 4K video",
+    "Téléchargement, puis conversion en H.264 pour Premiere.":"Download, then conversion to H.264 for Premiere.",
+    "Le son en MP3":"Audio as MP3",
+    "320 kbps, métadonnées comprises.":"320 kbps, metadata included.",
+    "Trois liens d'un coup":"Three links at once",
+    "Une carte par vidéo, deux téléchargements en parallèle.":"One card per video, two downloads in parallel.",
+    "La 4K n'existe pas":"No 4K available",
+    "L'app prend la meilleure définition et te le dit.":"The app takes the best resolution and tells you.",
+    "Un TikTok sans filigrane":"A TikTok with no watermark",
+    "Le format marqué est écarté à la source.":"The watermarked format is ruled out at the source.",
+    "Démonstration de l'interface : les vitesses sont simulées, rien n'est téléchargé depuis cette page.":"Interface demo: speeds are simulated, nothing is downloaded from this page.",
+    "Vidéo MP4":"Video MP4",
+    "Audio MP3":"Audio MP3",
+    "Coller":"Paste",
+    "Sans filigrane":"No watermark",
     "Acheter — 3,99 €":"Buy — €3.99",
     "3,99 €":"€3.99",
     "GrabLAB — 3,99 €":"GrabLAB — €3.99",
@@ -1600,6 +1972,8 @@ if(navToggle&&navMenu){
   let n; while(n=w.nextNode()){ const k=(n.nodeValue||'').trim(); if(k&&T[k]!==undefined) nodes.push([n,n.nodeValue,k]); }
   function set(lang){
     nodes.forEach(([node,fr,k])=>{ node.nodeValue = lang==='en'? fr.replace(k,T[k]) : fr; });
+    /* le titre est éclaté en lettres : le TreeWalker ne le voit plus, on le redécoupe */
+    if(window.__decouperMots) window.__decouperMots(lang);
     const h1=document.querySelector('.mani h1[aria-label]');
     if(h1){
       if(!h1.dataset.frLabel) h1.dataset.frLabel=h1.getAttribute('aria-label');
