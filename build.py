@@ -362,6 +362,83 @@ def injecte_note_jsonld(texte, donnees):
     return MARQUEUR_RATING_LD.sub(lambda m: note_jsonld(donnees, m.group(1)), texte)
 
 
+# ── Accès « Mon espace », posé sur CHAQUE page ────────────────────────────
+# Demande Femz (2026-09-25) : l'accès à l'espace membre doit exister partout,
+# sur les pages d'aujourd'hui comme sur celles de demain. C'est donc le build
+# qui le pose, et non huit copies à maintenir dans les sources : toute page
+# ajoutée à PAGES l'obtient sans rien faire.
+ESPACE_URL = '/espace/'
+
+# Icône membre (silhouette), inline : aucune requête, aucun asset à copier.
+_ICONE = ('<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" '
+          'stroke-linecap="round" aria-hidden="true">'
+          '<path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>'
+          '<circle cx="12" cy="7" r="4"/></svg>')
+
+LIEN_ESPACE = (f'<a data-track="cta_espace" class="btn espace-acces" href="{ESPACE_URL}">'
+               f'{_ICONE}<span>Mon espace</span></a>')
+
+# Dans le dock, le CTA de la page (Acheter, Instagram…) reste le bouton plein :
+# « Mon espace » est le second niveau. Sous 720px le dock est déjà serré — le
+# libellé s'efface, l'icône seule suffit à identifier l'accès.
+STYLE_ESPACE = (
+    '<style id="espace-acces">'
+    '.espace-acces{display:inline-flex;align-items:center;gap:7px;white-space:nowrap}'
+    # le dock devient plus serré : ses autres entrées ne doivent pas se couper
+    '.dock .nav-links a{white-space:nowrap}'
+    '.espace-acces svg{width:15px;height:15px;flex:none}'
+    '@media(max-width:720px){.espace-acces span{display:none}.espace-acces{padding:9px;border-radius:999px}}'
+    '.femz-espace-flottant{position:fixed;top:16px;right:16px;z-index:9999;display:inline-flex;'
+    'align-items:center;gap:8px;padding:10px 16px;border-radius:999px;text-decoration:none;'
+    'font:700 13px/1 system-ui,-apple-system,"Segoe UI",sans-serif;color:#fff;'
+    'background:rgba(15,17,23,.72);border:1px solid rgba(255,255,255,.22);'
+    '-webkit-backdrop-filter:blur(18px) saturate(160%);backdrop-filter:blur(18px) saturate(160%);'
+    'box-shadow:0 10px 30px rgba(0,0,0,.35)}'
+    '.femz-espace-flottant svg{width:15px;height:15px;flex:none}'
+    '.femz-espace-flottant:hover{background:rgba(25,28,36,.86)}'
+    '@media(max-width:720px){.femz-espace-flottant span{display:none}.femz-espace-flottant{padding:10px}}'
+    '</style>')
+
+FLOTTANT_ESPACE = (f'<a data-track="cta_espace" class="femz-espace-flottant" href="{ESPACE_URL}">'
+                   f'{_ICONE}<span>Mon espace</span></a>')
+
+# La traduction vit dans le dictionnaire de chaque page (const T={…}) : sans
+# elle, le bouton resterait en français quand le visiteur passe en EN.
+_T_ESPACE = '"Mon espace": "My space", '
+
+
+def injecte_espace(texte):
+    """Garantit un accès « Mon espace » sur la page, sans jamais le doubler.
+
+    Dans le dock quand la page en a un, en pastille flottante sinon (fiches
+    produit, 404). Une page qui pointe déjà vers /espace/ est laissée intacte.
+    """
+    if f'href="{ESPACE_URL}"' in texte:
+        return texte
+
+    place = texte.find('<nav class="dock">')
+    if place != -1:
+        fin_nav = texte.find('</nav>', place)
+        # la dernière fermeture de <div> avant </nav> ferme .nav-links : le
+        # bouton se pose à l'intérieur, à côté du CTA de la page
+        ferme = texte.rfind('</div>', place, fin_nav)
+        if ferme != -1:
+            texte = texte[:ferme] + LIEN_ESPACE + '\n  ' + texte[ferme:]
+    if f'href="{ESPACE_URL}"' not in texte:
+        # page sans dock : pastille flottante, posée juste après <body>
+        corps = re.search(r'<body[^>]*>', texte)
+        if not corps:
+            return texte
+        texte = texte[:corps.end()] + FLOTTANT_ESPACE + texte[corps.end():]
+
+    tete = texte.find('</head>')
+    if tete != -1 and 'id="espace-acces"' not in texte:
+        texte = texte[:tete] + STYLE_ESPACE + texte[tete:]
+    if _T_ESPACE not in texte:
+        texte = texte.replace('const T={', 'const T={' + _T_ESPACE, 1)
+    return texte
+
+
 def data_uri(fichier):
     ext = fichier.suffix.lstrip(".").lower()
     if ext not in MIME:
@@ -393,6 +470,8 @@ def main():
             texte = injecte_note(texte, donnees)
         if MARQUEUR_RATING_LD.search(texte):
             texte = injecte_note_jsonld(texte, donnees)
+        # sans condition : l'accès à l'espace membre est dû sur toute page
+        texte = injecte_espace(texte)
         for chemin, uri in remplacements:
             texte = texte.replace(chemin, uri)
 

@@ -1,7 +1,7 @@
 import type { Env, User } from '../env';
 import type { OAuthProfile } from './oauth';
 import { welcomeForLang } from './welcome';
-import { geocode } from './geocode';
+import { geocode, countryCenter } from './geocode';
 import { sniffImage, storeUserImage, MAX_BYTES } from './media';
 import { badgesForMany } from './purchases';
 
@@ -93,16 +93,19 @@ async function copyProviderAvatar(env: Env, userId: number, avatarUrl: string) {
 
 export const mediaUrl = (key: string | null) => (key ? `/espace/media/${key}` : null);
 
-const COUNTRY_CENTER: Record<string, [number, number]> = {
-  FR: [46.6, 2.4], BE: [50.6, 4.7], CH: [46.8, 8.2], DE: [51.1, 10.4], LU: [49.8, 6.1], MC: [43.74, 7.42],
-  ES: [40.3, -3.7], PT: [39.6, -8.0], IT: [42.8, 12.5], GB: [52.6, -1.5], US: [39.8, -98.6], CA: [50.0, -95.0],
-  MA: [31.8, -7.1], DZ: [35.7, 2.9], TN: [34.9, 9.6], SN: [14.5, -14.5], CI: [7.5, -5.5], CM: [5.7, 12.3],
-  BR: [-14.2, -51.9], MX: [23.6, -102.5], AT: [47.6, 14.1], NL: [52.2, 5.3],
-};
 const seeded = (id: number, k: number) => { const x = Math.sin(id * 127.1 + k * 311.7) * 43758.5453; return x - Math.floor(x); };
+/**
+ * Position de repli : centre du pays, dispersée de façon stable par membre pour
+ * que deux membres du même pays ne se superposent pas. Les 243 pays ISO sont
+ * couverts (src/data/countries.json) — avant, une table de 21 pays renvoyait
+ * tout le reste du monde au centre de la France.
+ */
+function countryPoint(u: User) {
+  const c = countryCenter(u.country) || countryCenter('FR')!;
+  return { lat: +(c.lat + (seeded(u.id, 1) - 0.5) * 3).toFixed(2), lon: +(c.lon + (seeded(u.id, 2) - 0.5) * 4).toFixed(2) };
+}
 function anonPoint(u: User) {
-  const c = COUNTRY_CENTER[u.country || ''] || COUNTRY_CENTER.FR;
-  return { anon: true as const, lat: +(c[0] + (seeded(u.id, 1) - 0.5) * 3).toFixed(2), lon: +(c[1] + (seeded(u.id, 2) - 0.5) * 4).toFixed(2) };
+  return { anon: true as const, ...countryPoint(u) };
 }
 
 export async function profileOf(env: Env, id: number) {
@@ -160,7 +163,13 @@ export async function creatorsList(env: Env) {
       reels: (parseJson(u.reels, []) as any[]).filter((r) => r.url || r.thumb_key).map((r) => ({ url: r.url || '', thumb: mediaUrl(r.thumb_key || null) })),
       badges: badges.get(u.id) || [],
     };
-    if (u.lat != null && u.lon != null) { out.lat = u.lat; out.lon = u.lon; }
+    /* Coordonnées : celles enregistrées ; sinon on re-géocode la ville à la
+       lecture (les villes écrites en français n'étaient pas reconnues, elles
+       le sont depuis les alias — inutile de faire ressaisir le profil) ; en
+       dernier recours le centre du pays. Sans coordonnées, le front ignore le
+       membre : se rendre visible le faisait DISPARAÎTRE au lieu de l'afficher. */
+    const p = u.lat != null && u.lon != null ? { lat: u.lat, lon: u.lon } : geocode(u.city || '') || countryPoint(u);
+    out.lat = p.lat; out.lon = p.lon;
     if (u.avatar_key) out.avatar = mediaUrl(u.avatar_key);
     return out;
   });

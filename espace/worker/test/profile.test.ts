@@ -65,6 +65,58 @@ describe('profil & globe', () => {
     const s: any = await (await app.request('/espace/api/stats', {}, env)).json();
     expect(s.membres).toBe(1);
   });
+  it('ville écrite en français : « Bruxelles » est géocodée comme « brussels »', async () => {
+    const u = await mkUser();
+    const r = await (await json(u, { city: 'Bruxelles' })('/espace/api/profile')).json() as any;
+    expect(r.lat).toBeCloseTo(50.85, 1);
+    expect(r.lon).toBeCloseTo(4.35, 1);
+  });
+  it('visible avec une ville non reconnue : reste sur le globe, placé sur son pays', async () => {
+    /* Sans ce repli, se rendre visible FAISAIT DISPARAÎTRE le membre : plus de
+       point nommé (pas de lat/lon) et plus de point anonyme (car visible). */
+    const v = await mkUser({ display_name: 'Sans Ville', visible: 1, country: 'BE', city: 'Trifouillis' });
+    const a = await mkUser();
+    const list: any[] = await (await app.request('/espace/api/creators', { headers: { Cookie: await cookieFor(a) } }, env)).json();
+    const moi = list.find((x) => x.display_name === 'Sans Ville');
+    expect(moi).toBeTruthy();
+    expect(typeof moi.lat).toBe('number');
+    expect(typeof moi.lon).toBe('number');
+    expect(moi.lat).toBeGreaterThan(48); /* quelque part en Belgique */
+    expect(moi.lat).toBeLessThan(53);
+  });
+  it('profil déjà enregistré sans coordonnées : la ville est re-géocodée à la lecture', async () => {
+    /* le cas réel : « Bruxelles » saisie avant les alias → lat/lon NULL en base.
+       Le membre doit retrouver sa vraie ville sans avoir à ressaisir son profil. */
+    const v = await mkUser({ display_name: 'Belge', visible: 1, country: 'BE', city: 'Bruxelles' });
+    const a = await mkUser();
+    const list: any[] = await (await app.request('/espace/api/creators', { headers: { Cookie: await cookieFor(a) } }, env)).json();
+    expect(list.find((x) => x.display_name === 'Belge')).toMatchObject({ lat: 50.85, lon: 4.349 });
+  });
+  it('un pays saisi à la place de la ville est reconnu, en français comme en anglais', async () => {
+    const be = await (await json(await mkUser(), { city: 'Belgique' })('/espace/api/profile')).json() as any;
+    expect(be.lat).toBeCloseTo(50.8, 0);
+    const jp = await (await json(await mkUser(), { city: 'Japan' })('/espace/api/profile')).json() as any;
+    expect(jp.lat).toBeCloseTo(36, 0);
+    /* 7.5 / -5.5 : le centre réglé à la main pour CI, qui prime sur la table générée */
+    const ci = await (await json(await mkUser(), { city: "Côte d'Ivoire" })('/espace/api/profile')).json() as any;
+    expect([ci.lat, ci.lon]).toEqual([7.5, -5.5]);
+  });
+  it('« Ville, Pays » : la ville prime, et à défaut le pays rattrape', async () => {
+    const ok = await (await json(await mkUser(), { city: 'Casablanca, Maroc' })('/espace/api/profile')).json() as any;
+    expect(ok.lat).toBeCloseTo(33.6, 0);
+    /* ville inconnue mais pays écrit : on atterrit au Maroc, pas en France */
+    const repli = await (await json(await mkUser(), { city: 'Trifouillis, Maroc' })('/espace/api/profile')).json() as any;
+    expect(repli.lat).toBeCloseTo(32, 0);
+    expect(repli.lon).toBeLessThan(0);
+  });
+  it('repli sur le pays de connexion, pour TOUS les pays et plus seulement une poignée', async () => {
+    const v = await mkUser({ display_name: 'Tokyoïte', visible: 1, country: 'JP', city: 'Inconnue' });
+    const a = await mkUser();
+    const list: any[] = await (await app.request('/espace/api/creators', { headers: { Cookie: await cookieFor(a) } }, env)).json();
+    const moi = list.find((x) => x.display_name === 'Tokyoïte');
+    expect(moi.lat).toBeGreaterThan(30); /* Japon, pas France */
+    expect(moi.lon).toBeGreaterThan(125);
+  });
   it('/creators porte les badges dérivés des achats rattachés', async () => {
     const v = await mkUser({ display_name: 'Vue', visible: 1, city: 'Cannes' });
     await env.DB.prepare("INSERT INTO user_emails (email, user_id, verified_by) VALUES ('vue2@e.co', ?, 'oauth')").bind(v).run();

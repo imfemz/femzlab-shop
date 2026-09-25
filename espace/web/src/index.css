@@ -187,6 +187,12 @@ body.globe-fs .fixed-logo {
   pointer-events: none;
   transform: translateX(-50%) scale(0.94);
 }
+/* invisible mais toujours animé : le dégradé du logo continuait à se repeindre
+   (background-position + drop-shadow) à chaque frame, pendant le scroll */
+body.scrolled .fixed-logo .mark,
+body.globe-fs .fixed-logo .mark {
+  animation-play-state: paused;
+}
 
 .wrap {
   position: relative;
@@ -291,6 +297,10 @@ body.globe-fs .cnav-wrap {
 .cnav.profile,
 .cnav.msgs {
   background: rgba(13, 15, 20, 0.94);
+  /* la card est quasi opaque : le flou de fond ne se voit plus mais coûtait un
+     floutage plein écran par frame — il partait en saccades pendant le scroll */
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
 }
 body.nav-open .g-fade {
   opacity: 0;
@@ -451,6 +461,23 @@ body > #nv-langsw {
 }
 .cnav.profile .me-btn {
   color: var(--acc);
+}
+
+/* Panneaux de la nav : quand le contenu dépasse la hauteur d'écran, CardNav pose
+   --cnav-panel-max sur la nav et le panneau défile chez lui (sinon, card fixed +
+   overflow:hidden = contenu coupé et c'est la page derrière qui bougeait). */
+.cnav-profile,
+.cnav-msgs,
+.cnav-content {
+  max-height: var(--cnav-panel-max, none);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
+}
+.cnav-profile::-webkit-scrollbar,
+.cnav-msgs::-webkit-scrollbar,
+.cnav-content::-webkit-scrollbar {
+  width: 0;
 }
 
 /* panneau profil intégré à la nav */
@@ -1153,6 +1180,10 @@ h2 {
 .commu {
   position: relative;
   width: 100%;
+  /* Toute la zone du globe : seul le défilement vertical est rendu au navigateur.
+     Sans ça, un doigt qui défilait puis un second doigt posé = le navigateur
+     basculait en zoom de page, et le JS ne pouvait plus rien annuler. */
+  touch-action: pan-y;
   margin: 0; /* premier écran : annule le margin-top générique des sections */
   min-height: 100vh;
   min-height: 100svh;
@@ -1172,7 +1203,10 @@ h2 {
   display: block;
   cursor: grab;
   z-index: 1;
-  touch-action: none;
+  /* Le canvas couvre toute la section : avec touch-action:none, le navigateur
+     refusait TOUT défilement au-dessus du globe sur mobile. pan-y rend le
+     glissement vertical à la page ; l'horizontal reste au globe. */
+  touch-action: pan-y;
   /* feather haut/bas : quand le globe zoomé dépasse la section, il s'éteint
      en fondu au lieu d'être coupé net (la « bande ») */
   -webkit-mask-image: linear-gradient(to bottom, transparent 0, #000 96px, #000 calc(100% - 96px), transparent 100%);
@@ -1344,12 +1378,27 @@ h2 {
   pointer-events: none !important;
 }
 /* bouton Dézoomer / Réduire : ancré, JAMAIS flouté (z 60 > GradualBlur) */
-.g-reset {
-  position: absolute;
-  bottom: 28px;
-  left: 50%;
-  transform: translateX(-50%);
-  z-index: 60;
+/* la ligne d'état : l'aide et le bouton de reprise dans la MÊME case */
+.g-line {
+  display: grid;
+  place-items: center;
+  min-height: 34px;
+  pointer-events: none;
+}
+.g-line > * {
+  grid-area: 1 / 1;
+}
+/* rotation arrêtée : l'aide s'efface, le bouton prend sa place (même case) */
+.commu.paused .g-hint,
+.commu.zoomed .g-hint,
+.commu.fs .g-hint {
+  opacity: 0;
+}
+/* sélecteur à la même force que « .g-bottom .btn », sinon le bouton invisible
+   restait cliquable et interceptait les doigts posés sur la ligne d'aide */
+.g-bottom .g-reset {
+  white-space: nowrap;
+  z-index: 61;
   opacity: 0;
   pointer-events: none;
   transition: opacity 0.4s ease;
@@ -1365,6 +1414,18 @@ h2 {
   filter: none;
   -webkit-backdrop-filter: blur(8px);
   backdrop-filter: blur(8px);
+}
+/* Plein écran OU zoomé : le globe reprend les deux axes.
+   `pan-y` rend le glissé vertical au navigateur — pratique au repos (la page
+   défile sous le doigt), intenable une fois zoomé : chaque tentative de
+   déplacer le globe vers le haut faisait défiler la page à la place
+   (signalé par Femz sur iPhone). Dès qu'on est zoomé, plus rien ne passe au
+   navigateur ; le bouton « Dézoomer », lui, reste au-dessus du canvas. */
+.commu.fs,
+.commu.fs #globeC,
+.commu.zoomed,
+.commu.zoomed #globeC {
+  touch-action: none;
 }
 /* mode plein écran : la section prend tout l'écran, SOUS la card (z 90 < 99)
    qui la floute — les textes disparaissent, seul le globe reste */
@@ -1820,6 +1881,35 @@ footer a:hover {
   -webkit-backdrop-filter: blur(0.75rem);
   backdrop-filter: blur(0.75rem);
 }
+/* Mobile : 5 backdrop-filter empilés en bas d'écran = 5 floutages plein écran à
+   chaque frame de scroll. Une seule couche dégradée rend la même impression
+   pour un cinquième du coût. */
+@media (max-width: 820px) {
+  .gblur i:nth-child(n + 2) {
+    display: none;
+  }
+  /* L'aurore : 3 voiles animés DANS un parent en blur(58px) → le flou plein
+     écran était recalculé à chaque frame, en permanence. Sur mobile on fige le
+     mouvement (15-21 s, invisible à l'œil) et le halo devient une image posée. */
+  .aurora i {
+    animation: none !important;
+  }
+  .aurora i:nth-child(1) {
+    transform: translateX(-50%) rotate(0deg);
+  }
+  .aurora i:nth-child(2) {
+    transform: translateX(-50%) rotate(-1deg) scaleY(1.07);
+  }
+  .aurora i:nth-child(3) {
+    transform: translateX(-50%) rotate(1deg) scaleY(1.04);
+  }
+  .gblur i:nth-child(1) {
+    -webkit-mask-image: linear-gradient(to bottom, transparent 0%, black 62%);
+    mask-image: linear-gradient(to bottom, transparent 0%, black 62%);
+    -webkit-backdrop-filter: blur(0.5rem);
+    backdrop-filter: blur(0.5rem);
+  }
+}
 
 /* ── Messagerie (DM) ── */
 .msg-btn {
@@ -2273,6 +2363,17 @@ footer a:hover {
 @media (max-width: 480px) {
   .cnav-title {
     display: none; /* pas la place entre le burger et les actions */
+  }
+}
+
+/* iOS zoome AUTOMATIQUEMENT la page dès qu'on tape dans un champ dont le texte
+   fait moins de 16px — et il reste zoomé ensuite. Seule parade : 16px pile sur
+   mobile. Ne pas redescendre ces valeurs pour des raisons esthétiques. */
+@media (max-width: 820px) {
+  input,
+  textarea,
+  select {
+    font-size: 16px !important; /* doit battre .pf-right input, .g-search input, etc. */
   }
 }
 

@@ -379,7 +379,23 @@ export default function GlobeSection() {
 
     let wasZoomed = false;
     let wasPaused = false;
+    /* Le globe redessinait 60×/s même invisible : onglet en arrière-plan, globe
+       sorti de l'écran, ou panneau de la nav ouvert par-dessus sur mobile. Ce
+       travail volait des frames au scroll → on saute le dessin, pas la boucle. */
+    const etroit = matchMedia('(max-width: 820px)');
+    let aLEcran = true;
+    const io =
+      typeof IntersectionObserver !== 'undefined'
+        ? new IntersectionObserver(([e]) => { aLEcran = e.isIntersecting; }, { threshold: 0 })
+        : null;
+    io?.observe(sec);
+    const dort = () =>
+      document.hidden || !aLEcran || (etroit.matches && document.body.classList.contains('nav-open'));
     function draw(t: number) {
+      if (dort()) {
+        rafId = requestAnimationFrame(draw);
+        return;
+      }
       if (s.paused !== wasPaused) {
         wasPaused = s.paused;
         setPaused(s.paused);
@@ -708,13 +724,36 @@ export default function GlobeSection() {
       const dy = ts[0].clientY - ts[1].clientY;
       return Math.sqrt(dx * dx + dy * dy);
     }
+    /* Le canvas occupe tout l'écran : capturer chaque glissement empêchait toute
+       possibilité de faire défiler la page sur mobile (le doigt faisait tourner
+       le globe, jamais défiler). On ne prend la main que si le doigt se pose SUR
+       la sphère — « attrape le globe » — ou en plein écran. Ailleurs : la page. */
+    let tap: { x: number; y: number } | null = null;
+    let axe: 'globe' | null = null; /* tranché au 1er mouvement : globe ou page */
+    /**
+     * Le globe prend-il TOUT le geste ? Zoomé ou en plein écran, oui : il n'y a
+     * plus rien à faire défiler derrière, et c'est justement là qu'on a besoin
+     * de le déplacer dans les deux sens. Au repos, non : la page doit défiler.
+     */
+    const globePrend = () => fsMirror.current || sec.classList.contains('zoomed');
     const onTouchStart = (e: TouchEvent) => {
+      // Zoomé, on annule le geste natif dès le contact : sinon iOS part en
+      // défilement — ou en « retour » quand le doigt se pose près du bord
+      // gauche — et le globe ne reçoit plus rien (signalé par Femz).
+      if (globePrend() && e.cancelable) e.preventDefault();
       if (e.touches.length === 2) {
         s.drag = null;
+        tap = null;
         pinch = { d: tDist(e.touches), z: s.targetZoom };
         return;
       }
       const t = e.touches[0];
+      tap = { x: t.clientX, y: t.clientY };
+      axe = null;
+      /* Le doigt prend le globe partout sur le canvas, plus seulement sur la
+         sphère : sur un téléphone, la sphère n'occupe que le milieu de l'écran
+         et les côtés ne répondaient à rien. L'arbitrage vertical ci-dessous
+         suffit à rendre la page à qui veut la faire défiler. */
       const r = cv.getBoundingClientRect();
       startDrag(t.clientX - r.left, t.clientY - r.top);
     };
@@ -724,15 +763,32 @@ export default function GlobeSection() {
         setZoom(pinch.z * (tDist(e.touches) / pinch.d));
         return;
       }
+      if (!s.drag) return; /* le doigt n'a pas pris le globe : laisser la page défiler */
       const t = e.touches[0];
+      /* Un geste = une intention. Vertical → la page défile (on lâche le globe) ;
+         horizontal → le globe tourne. Sans ça les deux bougeaient ensemble. */
+      if (axe === null && tap && !globePrend()) {
+        const dx = t.clientX - tap.x, dy = t.clientY - tap.y;
+        if (Math.hypot(dx, dy) < 8) return;
+        if (Math.abs(dy) > Math.abs(dx)) {
+          s.drag = null;
+          return;
+        }
+        axe = 'globe';
+      }
       const r = cv.getBoundingClientRect();
       moveDrag(t.clientX - r.left, t.clientY - r.top);
       e.preventDefault();
     };
     const onTouchEnd = (e: TouchEvent) => {
       if (e.touches.length < 2) pinch = null;
+      const t = e.changedTouches[0];
+      /* tap hors sphère : on ferme la carte ouverte, sans avoir pris le globe */
+      if (!s.drag && tap && t && Math.hypot(t.clientX - tap.x, t.clientY - tap.y) < 6) {
+        actions.current.closePop();
+      }
+      tap = null;
       if (s.drag && s.drag.moved < 6) {
-        const t = e.changedTouches[0];
         const h = hitCluster(t);
         s.drag = null;
         if (h) actions.current.clusterClick(h);
@@ -759,7 +815,8 @@ export default function GlobeSection() {
     cv.addEventListener('mousedown', onMouseDown);
     addEventListener('mousemove', onMouseMove, { passive: true });
     addEventListener('mouseup', onMouseUp);
-    cv.addEventListener('touchstart', onTouchStart, { passive: true });
+    /* non passif : zoomé, touchstart doit pouvoir annuler le geste natif */
+    cv.addEventListener('touchstart', onTouchStart, { passive: false });
     cv.addEventListener('touchmove', onTouchMove, { passive: false });
     cv.addEventListener('touchend', onTouchEnd, { passive: true });
     cv.addEventListener('wheel', onWheel, { passive: false });
@@ -770,6 +827,7 @@ export default function GlobeSection() {
     return () => {
       cancelAnimationFrame(rafId);
       ro?.disconnect();
+      io?.disconnect();
       cv.removeEventListener('mousedown', onMouseDown);
       removeEventListener('mousemove', onMouseMove);
       removeEventListener('mouseup', onMouseUp);
@@ -1034,24 +1092,30 @@ export default function GlobeSection() {
       >
         {renderPop()}
       </div>
-      <div className="g-bottom g-fade" ref={botRef}>
-        <span className="g-hint">Glisse pour tourner · molette pour zoomer · clique un point</span>
-        <button className="btn ghost g-expand" onClick={enterFS}>
+      {/* Une seule ligne pour deux états : l'aide quand le globe tourne, le bouton
+          de reprise quand il est arrêté. Ils occupent la même case (grille
+          superposée) — rien ne se chevauche, rien ne passe sur le globe, et la
+          hauteur du bloc ne bouge pas quand on passe de l'un à l'autre. */}
+      <div className="g-bottom" ref={botRef}>
+        <div className="g-line">
+          <span className="g-hint g-fade">Glisse pour tourner · molette pour zoomer · clique un point</span>
+          <button
+            className="btn ghost btn-sm g-reset"
+            onClick={() => {
+              if (fs) exitFS();
+              else {
+                setZoom(1);
+                closePop();
+              }
+            }}
+          >
+            {fs ? 'Réduire le globe' : zoomed ? 'Dézoomer' : 'Relancer la rotation'}
+          </button>
+        </div>
+        <button className="btn ghost g-expand g-fade" onClick={enterFS}>
           Explorer le globe
         </button>
       </div>
-      <button
-        className="btn ghost btn-sm g-reset"
-        onClick={() => {
-          if (fs) exitFS();
-          else {
-            setZoom(1);
-            closePop();
-          }
-        }}
-      >
-        {fs ? 'Réduire le globe' : zoomed ? 'Dézoomer' : 'Relancer la rotation'}
-      </button>
     </section>
   );
 }

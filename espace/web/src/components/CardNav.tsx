@@ -33,13 +33,36 @@ const CardNav = forwardRef<CardNavHandle, Props>(function CardNav({ onOpenConv }
     const nav = navRef.current!;
     /* hauteur de base = la rangée du haut (64px desktop, 56px mobile, cf. CSS) */
     const base = topRef.current?.offsetHeight || 64;
+    const panneau = panel === 'menu' ? contentRef.current : panel === 'profile' ? profileRef.current : panel === 'msgs' ? msgsRef.current : null;
     let h = base;
-    if (panel === 'menu') h = base + (contentRef.current?.scrollHeight || 0) + 2;
-    if (panel === 'profile') h = base + (profileRef.current?.scrollHeight || 0) + 2;
-    if (panel === 'msgs') h = base + (msgsRef.current?.scrollHeight || 0) + 2;
+    if (panneau) {
+      /* la nav est fixed + overflow:hidden : si elle dépasse le bas de l'écran, le
+         contenu est coupé et c'est la page derrière qui défile (bug mobile).
+         On plafonne la card à l'écran et on laisse le panneau défiler dedans. */
+      const dispo = Math.max(200, (visualViewport?.height || innerHeight) - nav.getBoundingClientRect().top - 14);
+      const plein = base + panneau.scrollHeight + 2;
+      h = Math.min(plein, dispo);
+      if (plein > dispo) nav.style.setProperty('--cnav-panel-max', `${h - base}px`);
+      else nav.style.removeProperty('--cnav-panel-max');
+    } else {
+      nav.style.removeProperty('--cnav-panel-max');
+    }
     if (Math.abs(nav.offsetHeight - h) < 1) return;
     gsap.to(nav, { height: h, duration: prefersReducedMotion() ? 0 : 0.45, ease: nvEase, overwrite: 'auto' });
   });
+  /* rotation / clavier virtuel / redimensionnement : la hauteur dispo change → on remesure */
+  const [, remesure] = useState(0);
+  useEffect(() => {
+    const on = () => remesure((n) => n + 1);
+    addEventListener('resize', on);
+    addEventListener('orientationchange', on);
+    visualViewport?.addEventListener('resize', on);
+    return () => {
+      removeEventListener('resize', on);
+      removeEventListener('orientationchange', on);
+      visualViewport?.removeEventListener('resize', on);
+    };
+  }, []);
   useLayoutEffect(() => {
     if (panel !== 'menu') return;
     const cards = contentRef.current?.querySelectorAll('.ncard');
@@ -51,6 +74,19 @@ const CardNav = forwardRef<CardNavHandle, Props>(function CardNav({ onOpenConv }
   useEffect(() => {
     document.body.classList.toggle('nav-open', panel !== null);
     return () => document.body.classList.remove('nav-open');
+  }, [panel]);
+  /* Panneau ouvert sur mobile : la page derrière est GELÉE (body figé à sa
+     position de scroll), seul le panneau au premier plan défile. Sans ça, le
+     doigt entraînait l'arrière-plan dès que le panneau touchait son butoir. */
+  useEffect(() => {
+    if (panel === null || !matchMedia('(max-width: 820px)').matches) return;
+    const b = document.body, y = scrollY;
+    const memo = { position: b.style.position, top: b.style.top, left: b.style.left, right: b.style.right, width: b.style.width };
+    b.style.position = 'fixed'; b.style.top = `-${y}px`; b.style.left = '0'; b.style.right = '0'; b.style.width = '100%';
+    return () => {
+      b.style.position = memo.position; b.style.top = memo.top; b.style.left = memo.left; b.style.right = memo.right; b.style.width = memo.width;
+      scrollTo(0, y);
+    };
   }, [panel]);
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => { if (e.key === 'Escape') setPanel(null); };

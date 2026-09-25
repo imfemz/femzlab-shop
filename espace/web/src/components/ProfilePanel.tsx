@@ -65,6 +65,9 @@ export default function ProfilePanel({ onClose }: { onClose: () => void }) {
     setVisible(v); setDmsOpen(d);
     try {
       await saveConsent(v, d);
+      /* le globe lit CREATORS : sans ce rechargement, se rendre visible ne
+         changeait rien à l'écran tant qu'on n'avait pas rouvert la page */
+      await initCreatorsFromApi().catch(() => {});
     } catch {
       await initSession().catch(() => {});
       const m = getMe();
