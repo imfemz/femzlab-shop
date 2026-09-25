@@ -2359,6 +2359,23 @@ footer a:hover {
   .gpop.on {
     transform: translateY(0);
   }
+  /* Carte ouverte : « Dézoomer » passait DEVANT la liste et masquait un nom
+     (relevé par Femz sur iPhone). Il monte au-dessus de la carte, dont la
+     hauteur est mesurée à l'ouverture (--gpop-h). Le min() l'empêche de
+     grimper sous la card nav quand la carte est très haute (un chat) : dans
+     ce cas il se pose aussi haut que possible, jamais plus. */
+  .commu.has-pop .g-bottom .g-reset {
+    /* Le bouton vit dans le bloc du bas, en flux : pour passer au-dessus de la
+       carte il faut le sortir du flux — et l'ancrer à l'ÉCRAN, pas à ce bloc.
+       En absolu, son parent positionné est `.g-bottom` (94 px de haut) et le
+       garde-fou `100% - 150px` valait -56 px : le bouton tombait sous l'écran
+       (mesuré). `fixed` + `svh` donnent la référence attendue sur iPhone. */
+    position: fixed;
+    left: 50%;
+    transform: translateX(-50%);
+    bottom: min(calc(76px + var(--gpop-h, 200px)), calc(100svh - 150px));
+    z-index: 61;
+  }
 }
 @media (max-width: 480px) {
   .cnav-title {

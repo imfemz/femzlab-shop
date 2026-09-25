@@ -252,6 +252,9 @@ export default function GlobeSection() {
       el.style.left = '';
       el.style.top = '';
       s.edge = null;
+      /* la carte est une feuille en bas d'écran : sa hauteur sert à remonter
+         le bouton « Dézoomer » au-dessus d'elle (voir --gpop-h dans le CSS) */
+      secRef.current?.style.setProperty('--gpop-h', `${el.offsetHeight}px`);
       return;
     }
     const pw = 284;
@@ -1037,7 +1040,7 @@ export default function GlobeSection() {
     <section
       id="globe"
       ref={secRef as MutableRefObject<HTMLElement | null>}
-      className={'commu' + (fs ? ' fs' : '') + (zoomed ? ' zoomed' : '') + (paused ? ' paused' : '')}
+      className={'commu' + (fs ? ' fs' : '') + (zoomed ? ' zoomed' : '') + (paused ? ' paused' : '') + (pop ? ' has-pop' : '')}
     >
       <canvas
         id="globeC"
