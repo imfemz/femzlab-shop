@@ -483,7 +483,12 @@ section{max-width:1120px;margin:0 auto;padding:clamp(60px,9vh,104px) clamp(20px,
 @media (prefers-reduced-motion:reduce){.mb-logo .lgs i{animation:none}}
 .no-colr .mb-logo .lg{display:none}
 .no-colr .mb-logo .lgs{display:inline-block}
-.mb-tabs{display:flex;gap:5px;margin-bottom:8px}
+/* WebKit (Safari, donc tout iPhone) ne remonte PAS les enfants en flux
+   au-dessus des couches .mb-d absolues du preserve-3d : les onglets et la
+   ligne Controls disparaissaient purement et simplement, alors que Chromium
+   les affichait. Un position:relative suffit — c'est ce qui sauvait déjà
+   .mb-stage. Vérifié en comparant les rendus chromium/webkit du même build. */
+.mb-tabs{position:relative;display:flex;gap:5px;margin-bottom:8px}
 .mb-tabs span{flex:1;text-align:center;font-family:var(--lbl);font-weight:700;font-size:6.5px;
   letter-spacing:.08em;text-transform:uppercase;color:#8A9096;
   background:#34383D;border:1px solid rgba(255,255,255,.07);border-radius:7px;padding:6px 2px}
@@ -494,12 +499,89 @@ section{max-width:1120px;margin:0 auto;padding:clamp(60px,9vh,104px) clamp(20px,
   background-size:10px 10px;margin-bottom:8px}
 .mb-stage{font-family:'Montserrat',sans-serif;font-weight:800;font-size:14px;
   letter-spacing:.02em;color:#fff;text-align:center}
-.mb-controls{display:flex;align-items:center;gap:7px;border:1px solid rgba(255,255,255,.07);
+.mb-controls{position:relative;display:flex;align-items:center;gap:7px;border:1px solid rgba(255,255,255,.07);
   border-radius:8px;padding:7px 9px;font-family:var(--lbl);font-weight:700;font-size:6.5px;
   letter-spacing:.12em;text-transform:uppercase;color:#8A9096}
 .mb-controls i{flex:1;height:1px;background:rgba(255,255,255,.08)}
 @media (prefers-reduced-motion:reduce){
   .mlbox::after,.mb-logo .lg{animation:none}}
+
+/* Carte GrabLAB : la fenêtre de l'app rebâtie en CSS, comme le panel
+   MotionLAB juste à côté — même matière (charcoal extrudé, sweep glow sur
+   l'arête, même axe de rotation), mais silhouette paysage et palette
+   monochrome : c'est celle de la vraie app, et ça évite que les deux cartes
+   voisines se lisent comme des clones. Remplace la capture PNG qui
+   remplissait toute la case et rognait l'interface en bas.
+   Le contenu est coupé par rapport à la page produit (3 définitions au lieu
+   de 6, un seul téléchargement) : en dessous de ~9px le texte redevient la
+   bouillie qu'on essaie de supprimer. Réutilise --mba et mb-sweep du panel. */
+.glbox{position:relative;width:min(62%,230px);align-self:center;border-radius:16px;
+  padding:14px 12px 10px;background:linear-gradient(180deg,#2A2D31,#1B1D20);
+  transform:rotateX(7deg) rotateY(-13deg);transform-style:preserve-3d;
+  text-align:left;font-family:var(--lbl);font-size:11px;line-height:1.4;color:#E6E8EA;
+  box-shadow:0 1px 0 rgba(255,255,255,.08) inset,18px 24px 44px rgba(15,20,40,.45)}
+/* Les lignes vivent dans un conteneur POSITIONNÉ, comme .gwin sur la page
+   produit : sinon les couches .gb-d (absolues) se peignent par-dessus et
+   avalent le champ de lien et les sélecteurs. */
+.gb-in{position:relative;display:flex;flex-direction:column;gap:8px;min-width:0}
+.gb-d{position:absolute;inset:0;border-radius:16px;pointer-events:none;
+  background:hsl(222 18% calc(13% - var(--z)*0.6%));
+  border:1px solid hsl(222 16% calc(17% - var(--z)*0.65%));
+  transform:translateZ(calc(var(--z)*-2.4px))}
+.glbox::after{content:"";position:absolute;inset:-2px;border-radius:18px;padding:2px;
+  background:conic-gradient(from var(--mba),transparent 0 72%,rgba(237,237,232,.12) 80%,rgba(237,237,232,.8) 88%,rgba(237,237,232,.12) 96%,transparent 100%);
+  -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);
+  -webkit-mask-composite:xor;mask-composite:exclude;
+  animation:mb-sweep 5.2s linear infinite;pointer-events:none}
+.gb-bar{position:relative;display:flex;align-items:center;justify-content:center;height:15px}
+.gb-name{font-family:'Montserrat',sans-serif;font-weight:800;font-size:11px;letter-spacing:-.01em;color:#fff}
+.gb-cog{position:absolute;right:0;top:50%;transform:translateY(-50%);width:11px;height:8px;
+  background:linear-gradient(currentColor,currentColor) 0 1px/11px 1px no-repeat,
+             linear-gradient(currentColor,currentColor) 0 7px/11px 1px no-repeat;
+  color:#8A9096;opacity:.8}
+.gb-cog::before,.gb-cog::after{content:"";position:absolute;width:3.5px;height:3.5px;border-radius:50%;
+  background:currentColor;top:-1px;left:7px}
+.gb-cog::after{top:5px;left:2px}
+.gb-well{display:flex;align-items:center;gap:6px;background:#101114;
+  border:1px solid rgba(255,255,255,.08);border-radius:999px;padding:4px 4px 4px 11px}
+.gb-ph{flex:1;min-width:0;font-size:9.5px;color:#8A9096;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.gb-paste{flex:none;background:#EDEDE8;color:#0A0A08;font-weight:700;border-radius:999px;
+  padding:4px 10px;font-size:9.5px;line-height:1}
+.gb-segs{display:flex;gap:6px}
+.gb-seg{display:grid;grid-auto-flow:column;grid-auto-columns:minmax(0,1fr);min-width:0;
+  gap:3px;background:rgba(255,255,255,.06);border-radius:8px;padding:2px}
+.gb-seg.wide{flex:1;min-width:0}
+.gb-seg b{font-weight:700;font-size:9px;color:#8A9096;padding:4px 6px;border-radius:6px;
+  text-align:center;white-space:nowrap}
+.gb-seg b.on{background:rgba(255,255,255,.14);color:#fff}
+.gb-job{position:relative;display:grid;grid-template-columns:34px minmax(0,1fr);align-items:center;
+  gap:7px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.07);
+  border-radius:9px;padding:6px 8px 9px}
+.gb-thumb{width:34px;height:20px;border-radius:4px;background:linear-gradient(135deg,#2C3442,#161A22)}
+.gb-meta{min-width:0}
+.gb-t{display:block;font-weight:700;font-size:9.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.gb-sub{display:block;margin-top:1px;font-size:8.5px;color:#8A9096;
+  white-space:nowrap;font-variant-numeric:tabular-nums}
+.gb-sub b{color:#E6E8EA;font-weight:700}
+/* En grid, la pastille Afficher réservait sa largeur même invisible
+   (opacity:0 pendant 64% du cycle) — le titre en pâtissait, tronqué en
+   « Me at the z… ». Sortie du grid en position absolue : elle se pose sur
+   le job sans jamais rogner la place du titre. */
+.gb-go{position:absolute;top:6px;right:8px;background:#EDEDE8;color:#0A0A08;font-weight:700;
+  border-radius:999px;padding:3px 8px;font-size:8.5px;line-height:1;white-space:nowrap;
+  opacity:0;animation:gb-done 5.2s linear infinite}
+.gb-prog{position:absolute;left:8px;right:8px;bottom:3px;height:2px;border-radius:2px;
+  background:rgba(255,255,255,.08)}
+.gb-prog i{display:block;height:100%;border-radius:2px;background:#EDEDE8;
+  transform-origin:0 50%;transform:scaleX(0);animation:gb-fill 5.2s linear infinite}
+@keyframes gb-fill{0%{transform:scaleX(0)}14%{transform:scaleX(.2)}
+  44%{transform:scaleX(.52)}68%{transform:scaleX(1)}100%{transform:scaleX(1)}}
+@keyframes gb-done{0%,64%{opacity:0}73%,100%{opacity:1}}
+@media (prefers-reduced-motion:reduce){
+  .glbox::after,.gb-prog i,.gb-go{animation:none}
+  .gb-prog i{transform:scaleX(1)}
+  .gb-go{opacity:1}}
+
 .pcard .media.ml img{width:54%;align-self:flex-start;margin-top:7%;border-radius:14px;
   filter:drop-shadow(0 18px 30px rgba(0,0,0,.55))}
 .pcard .media .newtag{position:absolute;top:12px;left:12px;z-index:9;font-family:var(--lbl);font-weight:700;
@@ -745,13 +827,28 @@ footer{background:var(--charcoal);color:#EDEDE8;margin-top:0;position:relative;z
 /* Shop mobile : les cartes 2-col sont trop étroites pour la taille de contenu
    mini du panel MotionLAB (onglets + logo). À 62% de largeur il débordait du
    cadre (logo rogné en haut, onglet FAVORITES coupé). On lui rend sa largeur
-   naturelle et on le met à l'échelle pour qu'il tienne net dans le média. */
+   naturelle et on le met à l'échelle pour qu'il tienne net dans le média.
+   Même traitement pour la fenêtre GrabLAB, appliqué d'emblée : elle est plus
+   large (268px) et plus dense (3 chips + une ligne de téléchargement), donc
+   elle tomberait dans le même piège en plus dur. Les échelles sont réglées
+   pour laisser ~10% de marge dans le média jusqu'à 320px de large. */
 @media (max-width:600px){
   .pcard .media.ml{perspective:720px}
   .mlbox{width:230px;transform:rotateX(6deg) rotateY(-11deg) scale(.58);transform-origin:center}
+  /* Même gabarit desktop que .mlbox (width, padding, radius, rotation) →
+     même traitement mobile : largeur figée + scale() par palier, à
+     l'identique. Le contenu de GrabLAB est plus dense (champ + 2 lignes de
+     chips + job) que celui de MotionLAB (logo + tabs + stage + controls) ;
+     vérifié au pixel (Chromium + WebKit, 320→640px) que rien ne déborde ni
+     ne devient illisible à .58/.5 malgré cette densité plus forte. */
+  .glbox{width:230px;transform:rotateX(6deg) rotateY(-11deg) scale(.58);transform-origin:center}
+  /* la pastille NOUVEAU est posée en haut à gauche du média : à cette
+     échelle elle mordait sur les maquettes. On la réduit. */
+  .pcard .media .newtag{top:9px;left:9px;font-size:8px;padding:3px 8px}
 }
 @media (max-width:430px){
   .mlbox{transform:rotateX(6deg) rotateY(-11deg) scale(.5)}
+  .glbox{transform:rotateX(6deg) rotateY(-11deg) scale(.5)}
 }
 @media (prefers-reduced-motion:reduce){
   .shine{animation:none;background:none;color:#fff}
@@ -837,7 +934,23 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
       <article class="card glow-card pcard tilt rv" style="--d:.0s">
         <span class="sheen" aria-hidden="true"></span>
         <div class="media ml"><span class="newtag">Nouveau</span>
-          <img src="assets/png-34.png" alt="GrabLAB : la fenêtre de l'app en mode sombre, deux téléchargements terminés." loading="lazy" decoding="async" style="width:100%;height:100%;object-fit:cover;object-position:top center">
+          <div class="glbox" role="img" aria-label="La fenêtre de GrabLAB : un lien collé, la définition 4K choisie, et le téléchargement qui se termine.">
+            <i class="gb-d" style="--z:1"></i><i class="gb-d" style="--z:2"></i><i class="gb-d" style="--z:3"></i><i class="gb-d" style="--z:4"></i><i class="gb-d" style="--z:5"></i><i class="gb-d" style="--z:6"></i><i class="gb-d" style="--z:7"></i><i class="gb-d" style="--z:8"></i><i class="gb-d" style="--z:9"></i><i class="gb-d" style="--z:10"></i>
+            <div class="gb-in" aria-hidden="true">
+              <div class="gb-bar"><span class="gb-name">GrabLAB</span><i class="gb-cog"></i></div>
+              <div class="gb-well"><span class="gb-ph">Colle un lien</span><span class="gb-paste">Coller</span></div>
+              <div class="gb-segs">
+                <span class="gb-seg"><b class="on">MP4</b><b>MP3</b></span>
+                <span class="gb-seg wide"><b class="on">4K</b><b>1080p</b></span>
+              </div>
+              <div class="gb-job">
+                <i class="gb-thumb"></i>
+                <span class="gb-meta"><b class="gb-t">Mon voyage en Asie</b><span class="gb-sub">YouTube · <b>4K</b></span></span>
+                <span class="gb-go">Afficher</span>
+                <span class="gb-prog"><i></i></span>
+              </div>
+            </div>
+          </div>
         </div>
         <div class="body">
           <div class="top"><span class="ptype">App · Mac + Windows</span><span class="pprice">3,99&nbsp;€</span></div>
@@ -1408,7 +1521,7 @@ if(FINE && !REDUCED){
 
 <script>
 (function(){
-  const T={"À propos": "About", "Mon espace": "My space", "Promo à durée limitée — code": "Limited-time offer — code", "tes edits.": "your edits.", "Packs After Effects, banques SFX et la formation": "After Effects packs, SFX libraries and the", "— les mêmes assets que sur nos plus gros projets, prêts à glisser-déposer dans ta timeline.": "— the same assets we use on our biggest projects, ready to drag and drop into your timeline.", "Explorer le shop": "Explore the shop", "Découvrir MetaVision": "Discover MetaVision", "Produits": "Products", "Leçons MetaVision": "MetaVision lessons", "Support Discord": "Discord support", "Les packs": "The packs", "Nouveau": "New", "Plugin · AE + Premiere": "Plugin · AE + Premiere", "10 animations de texte, 8 outils et les guides de cadrage des plateformes — le même panel dans After Effects et Premiere Pro.":"10 text animations, 8 tools and the platform framing guides — the same panel in After Effects and Premiere Pro.", "Découvrir le plugin": "Discover the plugin", "Presets, templates et SFX pensés pour After Effects — testés en prod avant d'arriver ici.": "Presets, templates and SFX built for After Effects — battle-tested in production before they land here.", "Le pack tout-en-un pour un rendu clean et moderne : icônes PNG, templates After Effects, éléments UI.": "The all-in-one pack for a clean, modern look: PNG icons, After Effects templates, UI elements.", "Voir le pack": "View the pack", "Presets · 8 fichiers": "Presets · 8 files", "Particules pour After Effects : 4 presets de transitions + 4 overlays GhostFX.": "Particles for After Effects: 4 transition presets + 4 GhostFX overlays.", "Gratuit": "Free", "Plus de 10 track mattes modifiables pour tes transitions — le point d'entrée idéal.": "10+ editable track mattes for your transitions — the perfect starting point.", "Télécharger": "Download", "SFX · 70+ sons": "SFX · 70+ sounds", "Bruitages percutants — énergie, impacts, transitions — et ambiances immersives haute qualité.": "Punchy sound effects — energy, impacts, transitions — plus immersive high-quality ambiences.", "Le pack parfait pour dynamiser tes edits : cinématique, digital, rapide, ambient et plus.": "The perfect pack to energize your edits: cinematic, digital, fast, ambient and more.", "Cours · 18 leçons": "Course · 18 lessons", "La formation VFX complète — d'After Effects niveau zéro jusqu'à tes premiers clients.": "The complete VFX course — from zero in After Effects to your first clients.", "Voir la formation": "View the course", "Assets gratuits": "Free assets", "À télécharger": "Downloads", "Clique sur un asset pour le télécharger — gratuit, direct, sans compte.": "Click an asset to download it — free, instant, no account.", "Pourquoi nos packs": "Why our packs", "Level up tes edits": "Level up your edits", "Utilisé sur nos plus gros projets": "Used on our biggest projects", "Rejoins la ligue des professionnels qui font confiance à nos produits pour leurs projets les plus significatifs. Ta créativité mérite le meilleur.": "Join the league of professionals who trust our products for their most meaningful projects. Your creativity deserves the best.", "Polyvalence redéfinie": "Versatility redefined", "Créateur de contenu, cinéaste ou passionné : nos packs s'adaptent à ton style. Élève tes projets grâce à la simplicité du glisser-déposer.": "Content creator, filmmaker or enthusiast: our packs adapt to your style. Elevate your projects with simple drag-and-drop.", "Accompagnement Discord — dispo 7j/7": "Discord support — available 7 days a week", "Une question sur un preset, un template qui coince ? La communauté et Femz répondent tous les jours.": "A question about a preset, a template acting up? The community and Femz reply every day.", "Une approche moderne": "A modern approach", "du storytelling visuel.": "to visual storytelling.", "Monteur · Créateur · Fondateur de FemzLab": "Editor · Creator · Founder of FemzLab", "J'ai pris une caméra il y a des années — et je n'ai jamais lâché.": "I picked up a camera years ago — and never put it down.", "Des clips de musique certifiés or et platine aux campagnes des plus grandes marques, chaque projet m'a appris la même chose : une image ne vaut que par l'histoire qu'elle raconte.": "From gold- and platinum-certified music videos to campaigns for the biggest brands, every project taught me the same thing: an image is only worth the story it tells.", "Je ne cherche pas le beau. Je cherche l'émotion.": "I'm not after pretty. I'm after emotion.", "Un plan qui arrête le pouce, une transition qu'on rejoue, un son qu'on ressent avant même de le comprendre. Le détail n'est pas de la décoration — c'est ce qui fait qu'une vidéo reste en tête.": "A shot that stops the thumb, a transition you replay, a sound you feel before you understand it. Detail isn't decoration — it's what makes a video stick.", "FemzLab, c'est te passer mes outils.": "FemzLab is me handing you my tools.", "Les presets, packs SFX et templates qui tournent sur mes plus gros projets, je les mets entre tes mains — pour que tu passes moins de temps à galérer, et plus de temps à créer ce qui te ressemble.": "The presets, SFX packs and templates I run on my biggest projects, I put them in your hands — so you spend less time struggling and more time creating what feels like you.", "Ma boîte à outils": "My toolbox", "Créateur de contenu": "Content creator", "abonnés": "followers", "Sur toutes les plateformes": "Across all platforms", "abonnés cumulés": "total followers", "Conditions générales de vente": "Terms of sale", "Politique de confidentialité": "Privacy policy"};
+  const T={"À propos": "About", "Mon espace": "My space", "Promo à durée limitée — code": "Limited-time offer — code", "tes edits.": "your edits.", "Packs After Effects, banques SFX et la formation": "After Effects packs, SFX libraries and the", "— les mêmes assets que sur nos plus gros projets, prêts à glisser-déposer dans ta timeline.": "— the same assets we use on our biggest projects, ready to drag and drop into your timeline.", "Explorer le shop": "Explore the shop", "Découvrir MetaVision": "Discover MetaVision", "Produits": "Products", "Leçons MetaVision": "MetaVision lessons", "Support Discord": "Discord support", "Les packs": "The packs", "Nouveau": "New", "Plugin · AE + Premiere": "Plugin · AE + Premiere", "10 animations de texte, 8 outils et les guides de cadrage des plateformes — le même panel dans After Effects et Premiere Pro.":"10 text animations, 8 tools and the platform framing guides — the same panel in After Effects and Premiere Pro.", "Découvrir le plugin": "Discover the plugin", "Presets, templates et SFX pensés pour After Effects — testés en prod avant d'arriver ici.": "Presets, templates and SFX built for After Effects — battle-tested in production before they land here.", "Le pack tout-en-un pour un rendu clean et moderne : icônes PNG, templates After Effects, éléments UI.": "The all-in-one pack for a clean, modern look: PNG icons, After Effects templates, UI elements.", "Voir le pack": "View the pack", "Presets · 8 fichiers": "Presets · 8 files", "Particules pour After Effects : 4 presets de transitions + 4 overlays GhostFX.": "Particles for After Effects: 4 transition presets + 4 GhostFX overlays.", "Gratuit": "Free", "Plus de 10 track mattes modifiables pour tes transitions — le point d'entrée idéal.": "10+ editable track mattes for your transitions — the perfect starting point.", "Télécharger": "Download", "SFX · 70+ sons": "SFX · 70+ sounds", "Bruitages percutants — énergie, impacts, transitions — et ambiances immersives haute qualité.": "Punchy sound effects — energy, impacts, transitions — plus immersive high-quality ambiences.", "Le pack parfait pour dynamiser tes edits : cinématique, digital, rapide, ambient et plus.": "The perfect pack to energize your edits: cinematic, digital, fast, ambient and more.", "Cours · 18 leçons": "Course · 18 lessons", "La formation VFX complète — d'After Effects niveau zéro jusqu'à tes premiers clients.": "The complete VFX course — from zero in After Effects to your first clients.", "Voir la formation": "View the course", "Assets gratuits": "Free assets", "À télécharger": "Downloads", "Clique sur un asset pour le télécharger — gratuit, direct, sans compte.": "Click an asset to download it — free, instant, no account.", "Pourquoi nos packs": "Why our packs", "Level up tes edits": "Level up your edits", "Utilisé sur nos plus gros projets": "Used on our biggest projects", "Rejoins la ligue des professionnels qui font confiance à nos produits pour leurs projets les plus significatifs. Ta créativité mérite le meilleur.": "Join the league of professionals who trust our products for their most meaningful projects. Your creativity deserves the best.", "Polyvalence redéfinie": "Versatility redefined", "Créateur de contenu, cinéaste ou passionné : nos packs s'adaptent à ton style. Élève tes projets grâce à la simplicité du glisser-déposer.": "Content creator, filmmaker or enthusiast: our packs adapt to your style. Elevate your projects with simple drag-and-drop.", "Accompagnement Discord — dispo 7j/7": "Discord support — available 7 days a week", "Une question sur un preset, un template qui coince ? La communauté et Femz répondent tous les jours.": "A question about a preset, a template acting up? The community and Femz reply every day.", "Une approche moderne": "A modern approach", "du storytelling visuel.": "to visual storytelling.", "Monteur · Créateur · Fondateur de FemzLab": "Editor · Creator · Founder of FemzLab", "J'ai pris une caméra il y a des années — et je n'ai jamais lâché.": "I picked up a camera years ago — and never put it down.", "Des clips de musique certifiés or et platine aux campagnes des plus grandes marques, chaque projet m'a appris la même chose : une image ne vaut que par l'histoire qu'elle raconte.": "From gold- and platinum-certified music videos to campaigns for the biggest brands, every project taught me the same thing: an image is only worth the story it tells.", "Je ne cherche pas le beau. Je cherche l'émotion.": "I'm not after pretty. I'm after emotion.", "Un plan qui arrête le pouce, une transition qu'on rejoue, un son qu'on ressent avant même de le comprendre. Le détail n'est pas de la décoration — c'est ce qui fait qu'une vidéo reste en tête.": "A shot that stops the thumb, a transition you replay, a sound you feel before you understand it. Detail isn't decoration — it's what makes a video stick.", "FemzLab, c'est te passer mes outils.": "FemzLab is me handing you my tools.", "Les presets, packs SFX et templates qui tournent sur mes plus gros projets, je les mets entre tes mains — pour que tu passes moins de temps à galérer, et plus de temps à créer ce qui te ressemble.": "The presets, SFX packs and templates I run on my biggest projects, I put them in your hands — so you spend less time struggling and more time creating what feels like you.", "Ma boîte à outils": "My toolbox", "Créateur de contenu": "Content creator", "abonnés": "followers", "Sur toutes les plateformes": "Across all platforms", "abonnés cumulés": "total followers", "Conditions générales de vente": "Terms of sale", "Politique de confidentialité": "Privacy policy", "Colle un lien": "Paste a link", "Coller": "Paste", "Mon voyage en Asie": "My trip to Asia", "Afficher": "Show", "Découvrir l'app": "Discover the app"};
   const nodes=[]; const w=document.createTreeWalker(document.body,NodeFilter.SHOW_TEXT,null);
   let n; while(n=w.nextNode()){ const k=(n.nodeValue||'').trim(); if(k&&T[k]!==undefined) nodes.push([n,n.nodeValue,k]); }
   function set(lang){
@@ -1429,6 +1542,13 @@ if(FINE && !REDUCED){
 @media(max-width:640px){
   /* header : la promo passe SOUS le dock au lieu d'être recouverte */
   .promo-chip{margin-top:64px}
+  /* « Mon espace » se retrouvait rétréci sous sa largeur naturelle (mesuré :
+     88×64px replié sur 2 lignes, contre 120×44px sur une ligne en desktop),
+     ce qui gonflait toute la barre à 78,6px de haut et rendait le bouton
+     visuellement bancal à côté du sélecteur FR/EN. En bloquant le texte sur
+     une ligne, la barre retombe à 56,8px — exactement la hauteur du bandeau
+     promo et du bouton « Explorer le shop » juste en dessous. */
+  .dock .btn.solid{white-space:nowrap;flex-shrink:0}
   /* packs : 2 produits par ligne */
   .grid{grid-template-columns:repeat(2,1fr)!important;gap:14px!important}
   .grid .pcard .body{padding:12px 12px 14px}
@@ -1440,13 +1560,20 @@ if(FINE && !REDUCED){
      à travers le verre des cartes. Sur mobile : cartes opaques, zéro backdrop. */
   .card{background:#fff!important;backdrop-filter:none!important;-webkit-backdrop-filter:none!important}
   .card .body{background:transparent}
-  /* bas de page : le canvas dots2 repeignait les points PAR-DESSUS les cartes,
-     et iOS lâche les couches du blurveil → fondu propre vers le fond à la place */
   footer video{display:none!important}
   .flogo-fb{display:inline-block!important;height:26px;width:auto}
   #dots2{display:none!important}
-  .blurveil i{backdrop-filter:none!important;-webkit-backdrop-filter:none!important;mask:none!important;-webkit-mask:none!important}
-  .blurveil{background:linear-gradient(to bottom,rgba(228,228,223,0),rgba(228,228,223,.72) 62%,rgba(228,228,223,.97))}
+  /* Le voile de flou du bas de l'écran est fixe : il reste plaqué sur les
+     112 derniers px du viewport à TOUT moment du scroll, pas seulement en
+     bas de page. Sur desktop c'est un vrai flou (backdrop-filter), qui
+     s'adapte à n'importe quel fond derrière lui. iOS ignore ce flou, d'où
+     l'ancien filet de secours : un dégradé beige uni à la place — mais un
+     uni ne s'adapte à rien, et il lessivait tout fond sombre qui passait
+     sous lui (le hero au chargement, la section noire « Level up tes
+     edits » au scroll). #dots2 étant déjà masqué sur mobile juste
+     au-dessus, ce voile n'a plus aucune fonction à protéger : on le
+     retire plutôt que de rafistoler sa couleur. */
+  .blurveil{display:none}
 }
 
 .who .av{overflow:hidden;display:inline-flex;align-items:center;justify-content:center}
