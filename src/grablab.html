@@ -1600,15 +1600,30 @@ if(navToggle&&navMenu){
     tk:'linear-gradient(135deg,#123B3A,#101A22)',
     ig:'linear-gradient(135deg,#5A2E3E,#1E1622)'
   };
+  /* Les textes de la démo suivent la langue de la page : elle est lue sur
+     <html lang>, que le sélecteur FR/EN met à jour. */
+  function EN(){ return document.documentElement.lang==='en'; }
+  var MOTS={
+    analyse:['Analyse du lien…','Reading the link…'],
+    conv:['Conversion H.264','Converting H.264'],
+    convPoints:['Conversion H.264…','Converting H.264…'],
+    afficher:['Afficher','Show'],
+    debit:['Mo/s','MB/s'],
+    colle:['Colle un lien YouTube, TikTok ou Instagram','Paste a YouTube, TikTok or Instagram link'],
+    collesN:['{n} liens collés','{n} links pasted'],
+    ajoutesN:['{n} liens ajoutés','{n} links added']
+  };
+  function M(k,n){ var t=MOTS[k][EN()?1:0]; return n===undefined?t:t.replace('{n}',n); }
+  function txt(o,champ){ var v=EN()&&o[champ+'En']!==undefined?o[champ+'En']:o[champ]; return v||''; }
   var SCENES={
-    '4k':{q:'4K',kind:'video',jobs:[{t:'Aftermovie — Paris, 3 jours',p:'YouTube',v:'yt',badge:'4K',taille:'1,4 Go',conv:true}]},
-    'mp3':{q:'320 kbps',kind:'audio',jobs:[{t:'Interview — le montage sans temps mort',p:'YouTube',v:'yt2',badge:'MP3 320',taille:'42,7 Mo'}]},
+    '4k':{q:'4K',kind:'video',jobs:[{t:'Aftermovie — Paris, 3 jours',tEn:'Aftermovie — Paris, 3 days',p:'YouTube',v:'yt',badge:'4K',taille:'1,4 Go',tailleEn:'1.4 GB',conv:true}]},
+    'mp3':{q:'320 kbps',kind:'audio',jobs:[{t:'Interview — le montage sans temps mort',tEn:'Interview — editing with no dead air',p:'YouTube',v:'yt2',badge:'MP3 320',taille:'42,7 Mo',tailleEn:'42.7 MB'}]},
     'multi':{q:'1080p',kind:'video',jobs:[
-      {t:'Reel — la lumière de fin de journée',p:'Instagram',v:'ig',badge:'1080p',taille:'38,2 Mo'},
-      {t:'Tuto — trois transitions en 60 s',p:'TikTok',v:'tk',badge:'1080p',taille:'26,9 Mo'},
-      {t:'Vlog — la semaine où tout a basculé',p:'YouTube',v:'yt',badge:'1080p',taille:'214 Mo'}]},
-    'limite':{q:'4K',kind:'video',jobs:[{t:'Archive — concert filmé au téléphone',p:'YouTube',v:'yt2',badge:'720p',taille:'88,4 Mo',note:'4K indisponible pour cette vidéo'}]},
-    'tiktok':{q:'1080p',kind:'video',jobs:[{t:'Danse — la trend du moment',p:'TikTok',v:'tk',badge:'1080p',taille:'19,3 Mo',note:'Format sans filigrane retenu'}]}
+      {t:'Reel — la lumière de fin de journée',tEn:'Reel — late afternoon light',p:'Instagram',v:'ig',badge:'1080p',taille:'38,2 Mo',tailleEn:'38.2 MB'},
+      {t:'Tuto — trois transitions en 60 s',tEn:'Tutorial — three transitions in 60 s',p:'TikTok',v:'tk',badge:'1080p',taille:'26,9 Mo',tailleEn:'26.9 MB'},
+      {t:'Vlog — la semaine où tout a basculé',tEn:'Vlog — the week everything changed',p:'YouTube',v:'yt',badge:'1080p',taille:'214 Mo',tailleEn:'214 MB'}]},
+    'limite':{q:'4K',kind:'video',jobs:[{t:'Archive — concert filmé au téléphone',tEn:'Archive — gig filmed on a phone',p:'YouTube',v:'yt2',badge:'720p',taille:'88,4 Mo',tailleEn:'88.4 MB',note:'4K indisponible pour cette vidéo',noteEn:'4K unavailable for this video'}]},
+    'tiktok':{q:'1080p',kind:'video',jobs:[{t:'Danse — la trend du moment',tEn:'Dance — the trend of the moment',p:'TikTok',v:'tk',badge:'1080p',taille:'19,3 Mo',tailleEn:'19.3 MB',note:'Format sans filigrane retenu',noteEn:'Watermark-free format picked'}]}
   };
   var QUALITES=['4K','1440p','1080p','720p','480p','360p'];
   var DEBITS=['320 kbps','256 kbps','192 kbps','128 kbps'];
@@ -1649,10 +1664,10 @@ if(navToggle&&navMenu){
       var li=document.createElement('li'); li.className='gw-job';
       li.innerHTML='<span class="gw-thumb"></span><div><p class="gw-t"></p>'
         +'<div class="gw-m"><b class="gw-p"></b><span class="gw-badge" hidden></span><span class="gw-s"></span></div>'
-        +'<p class="gw-note" hidden></p></div><span class="gw-go" hidden>Afficher</span>'
+        +'<p class="gw-note" hidden></p></div><span class="gw-go" hidden>'+M('afficher')+'</span>'
         +'<span class="gw-bar-p"><i></i></span>';
       li.querySelector('.gw-thumb').style.background=VIGNETTES[j.v];
-      li.querySelector('.gw-t').textContent=j.t;
+      li.querySelector('.gw-t').textContent=txt(j,'t');
       li.querySelector('.gw-p').textContent=j.p;
       var s=li.querySelector('.gw-s'), badge=li.querySelector('.gw-badge'),
           note=li.querySelector('.gw-note'), go=li.querySelector('.gw-go'),
@@ -1660,21 +1675,21 @@ if(navToggle&&navMenu){
       jobs.prepend(li);
       while (jobs.children.length > 3) jobs.lastElementChild.remove();
 
-      s.textContent='Analyse du lien…';
+      s.textContent=M('analyse');
       plus_tard(function(){
         var t0=Date.now();
         (function pas(){
           var k=Math.min(1,(Date.now()-t0)/dureeDl);
           barre.style.setProperty('--p',k);
-          s.textContent=Math.round(k*100)+' %   '+(6.2+k*3).toFixed(1)+' Mo/s';
+          s.textContent=Math.round(k*100)+' %   '+(6.2+k*3).toFixed(1)+' '+M('debit');
           if(k<1) minuteurs.push(setTimeout(pas,120));
           else if(dureeConv){
-            s.textContent='Conversion H.264…';
+            s.textContent=M('convPoints');
             var t1=Date.now();
             (function pas2(){
               var k2=Math.min(1,(Date.now()-t1)/dureeConv);
               barre.style.setProperty('--p',k2);
-              s.textContent='Conversion H.264   '+Math.round(k2*100)+' %';
+              s.textContent=M('conv')+'   '+Math.round(k2*100)+' %';
               if(k2<1) minuteurs.push(setTimeout(pas2,120)); else termine();
             })();
           } else termine();
@@ -1682,8 +1697,8 @@ if(navToggle&&navMenu){
         function termine(){
           barre.parentNode.style.opacity=0;
           badge.hidden=false; badge.textContent=j.badge;
-          s.textContent=j.taille;
-          if(j.note){ note.hidden=false; note.textContent=j.note; }
+          s.textContent=txt(j,'taille');
+          if(j.note){ note.hidden=false; note.textContent=txt(j,'note'); }
           go.hidden=false;
           if(fini) fini();
         }
@@ -1694,7 +1709,7 @@ if(navToggle&&navMenu){
       nettoie(); enCours=true;
       var sc=SCENES[nom]||SCENES['4k'];
       jobs.replaceChildren();
-      ph.classList.remove('filled'); ph.textContent='Colle un lien YouTube, TikTok ou Instagram';
+      ph.classList.remove('filled'); ph.textContent=M('colle');
       hint.textContent='';
       /* on reflète les réglages de la scène dans les sélecteurs */
       var iK=sc.kind==='audio'?1:0;
@@ -1709,8 +1724,8 @@ if(navToggle&&navMenu){
 
       plus_tard(function(){
         ph.classList.add('filled');
-        ph.textContent=sc.jobs.length>1?sc.jobs.length+' liens collés':'https://youtu.be/…';
-        hint.textContent=sc.jobs.length>1?sc.jobs.length+' liens ajoutés':'';
+        ph.textContent=sc.jobs.length>1?M('collesN',sc.jobs.length):'https://youtu.be/…';
+        hint.textContent=sc.jobs.length>1?M('ajoutesN',sc.jobs.length):'';
         sc.jobs.forEach(function(j,i){
           plus_tard(function(){ carte(j, 2600+i*500, j.conv?1800:0, i===sc.jobs.length-1?function(){enCours=false;}:null); }, i*450);
         });
@@ -1723,9 +1738,10 @@ if(navToggle&&navMenu){
         nettoie();
         var audio=etat.kind==='audio';
         carte({t:audio?'Podcast — épisode 14':'Tournage — la séquence du matin',
+               tEn:audio?'Podcast — episode 14':'Shoot — the morning sequence',
                p:'YouTube', v:audio?'yt2':'yt',
                badge:audio?'MP3 '+parseInt(etat.q,10):etat.q,
-               taille:audio?'38,1 Mo':'126 Mo',
+               taille:audio?'38,1 Mo':'126 Mo', tailleEn:audio?'38.1 MB':'126 MB',
                conv:!audio&&['4K','1440p'].indexOf(etat.q)>-1}, 2200, 0, null);
         ph.classList.add('filled'); ph.textContent='https://youtu.be/…';
       });
