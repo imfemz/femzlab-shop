@@ -1170,6 +1170,13 @@ main>section:last-of-type{padding-bottom:clamp(16px,2.5vh,26px)}
 .demo-wrap{max-width:1100px;margin:0 auto;padding:26px clamp(20px,5vw,48px) 0}
 .gw-stage{position:relative;display:flex;align-items:stretch;background:transparent}
 
+/* --- slogan de vitesse : la seule ligne accentuée de la carte héros --- */
+.speedline{display:inline-flex;align-items:center;gap:9px;margin-top:16px;
+  background:rgba(94,162,255,.12);border:1px solid rgba(94,162,255,.35);border-radius:999px;
+  padding:9px 16px 9px 13px;font-size:13.5px;font-weight:700;color:var(--accent-deep);line-height:1.25}
+.speedline svg{width:15px;height:15px;stroke:var(--accent-deep);fill:none;stroke-width:2;flex:none}
+@media (max-width:520px){.speedline{font-size:12.5px;padding:8px 13px 8px 11px}}
+
 /* ============ Rythme : une bande ne coupe jamais un bloc ============ */
 /* Chaque zone sur papier porte son propre bas (--secB) ; la bande porte le
    sien. La frontière tombe donc TOUJOURS dans du vide, jamais dans un bloc. */
@@ -1224,6 +1231,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     <div class="buy-left rv">
       <p class="mlname">GrabLAB<span class="v1">V1</span></p>
       <p class="pitch"><b>Colle un lien YouTube, TikTok ou Instagram.</b> GrabLAB récupère la vidéo en MP4 jusqu'en 4K, ou le son en MP3 — sans filigrane, sans site douteux, sans pub.</p>
+      <p class="speedline"><svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M13 2 4.5 13.5H11l-1 8.5 8.5-11.5H12l1-8.5z"/></svg>Jusqu'à 3× plus rapide que les convertisseurs en ligne</p>
       <p class="ppay"><b>3,99&nbsp;€</b> · paiement unique · à toi pour toujours</p>
       <div class="hero-cta">
         <a data-track="cta_gl_acheter_hero" class="btn-buy" href="https://pay.femzlab.shop/grablab">Acheter GrabLAB <span class="p">3,99&nbsp;€</span></a>
@@ -1263,7 +1271,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
           <p class="gw-hint" data-hint></p>
           <ul class="gw-jobs" data-jobs></ul>
         </div>
-        <span class="hp-postit">Sans filigrane</span>
+        <span class="hp-postit">3× plus rapide</span>
       </div>
     </div>
   </div>
@@ -1749,6 +1757,11 @@ if(navToggle&&navMenu){
     return {joue:joue, nettoie:nettoie, occupe:function(){return enCours;}};
   }
 
+  /* Les cartes déjà dessinées gardent la langue du moment : changer de langue
+     les rejoue, sinon le héros reste en anglais sur une page passée en FR. */
+  var aRejouer=[];
+  window.__rejouerFenetres=function(){ aRejouer.forEach(function(f){ f(); }); };
+
   /* --- héros : la scène 4K tourne en boucle tant qu'elle est à l'écran --- */
   var hero=document.getElementById('gwin-hero');
   if(hero){
@@ -1765,6 +1778,7 @@ if(navToggle&&navMenu){
       if(visible&&!avant) relance(); else if(!visible){ clearTimeout(boucle); f.nettoie(); }
     });},{threshold:.25}).observe(hero);
     if(REDUCED) f.joue('4k');
+    aRejouer.push(function(){ if(visible||REDUCED) f.joue('4k'); });
   }
 
   /* --- démo : clic = scène choisie ; sans clic, elle se présente seule --- */
@@ -1797,6 +1811,7 @@ if(navToggle&&navMenu){
       var avant=vu; vu=e.isIntersecting;
       if(vu&&!avant&&!REDUCED){ d.joue(items[idx].dataset.scene); arme(); }
     });},{threshold:.25}).observe(demo);
+    aRejouer.push(function(){ if(vu||REDUCED) d.joue(items[idx].dataset.scene); });
   }
 })();
 
@@ -1827,6 +1842,8 @@ if(navToggle&&navMenu){
 (function(){
   const T={
     "Application · Mac et Windows":"App · Mac and Windows",
+    "Jusqu'à 3× plus rapide que les convertisseurs en ligne":"Up to 3× faster than web converters",
+    "3× plus rapide":"3× faster",
     "Essaie-la, elle est ici":"Try it, right here",
     "La fenêtre ci-dessous est la vraie interface de GrabLAB. Clique : choisis un format, une définition, colle un lien.":"The window below is GrabLAB's real interface. Click around: pick a format, a resolution, paste a link.",
     "Essais":"Try",
@@ -1990,6 +2007,7 @@ if(navToggle&&navMenu){
     nodes.forEach(([node,fr,k])=>{ node.nodeValue = lang==='en'? fr.replace(k,T[k]) : fr; });
     /* le titre est éclaté en lettres : le TreeWalker ne le voit plus, on le redécoupe */
     if(window.__decouperMots) window.__decouperMots(lang);
+    if(window.__rejouerFenetres) window.__rejouerFenetres();
     const h1=document.querySelector('.mani h1[aria-label]');
     if(h1){
       if(!h1.dataset.frLabel) h1.dataset.frLabel=h1.getAttribute('aria-label');
