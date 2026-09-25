@@ -27,6 +27,7 @@ PAGES = [("index.html", "index.html"),
          ("motionlab.html", "motionlab/index.html"),
          ("metavision.html", "metavision/index.html"),
          ("xray-effect.html", "xray-effect/index.html"),
+         ("grablab.html", "grablab/index.html"),
          # Page 404 : sans elle, Cloudflare Pages sert index.html en 200 sur
          # n'importe quelle URL (« soft 404 » que Google pénalise).
          ("404.html", "404.html")]

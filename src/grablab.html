@@ -1,0 +1,1633 @@
+<!doctype html><html lang="fr"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>GrabLAB — Télécharger une vidéo YouTube, TikTok ou Instagram sur Mac | FemzLab</title>
+<link rel="icon" type="image/png" href="assets/favicon.png">
+<link rel="icon" href="/favicon.ico" sizes="48x48">
+<link rel="icon" type="image/png" href="/icons/icon-96.png" sizes="96x96">
+<link rel="icon" type="image/png" href="/icons/icon-192.png" sizes="192x192">
+<link rel="apple-touch-icon" href="/icons/icon-180.png">
+<meta name="description" content="Colle un lien YouTube, TikTok ou Instagram : GrabLAB récupère le MP4 jusqu'en 4K ou le MP3, sans filigrane. App Mac (Apple Silicon et Intel), version Windows incluse. 3,99 €, paiement unique.">
+<link rel="canonical" href="https://www.femzlab.shop/grablab/">
+<meta name="robots" content="index,follow,max-image-preview:large">
+<meta property="og:type" content="product">
+<meta property="og:site_name" content="FemzLab">
+<meta property="og:locale" content="fr_FR">
+<meta property="og:locale:alternate" content="en_US">
+<meta property="og:url" content="https://www.femzlab.shop/grablab/">
+<meta property="og:title" content="GrabLAB — un lien collé, ton fichier prêt">
+<meta property="og:description" content="MP4 jusqu'en 4K ou MP3, sans filigrane, depuis YouTube, TikTok et Instagram. App Mac et Windows. 3,99 €, paiement unique.">
+<meta property="og:image" content="https://www.femzlab.shop/og/grablab.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="GrabLAB — l'app qui récupère une vidéo depuis un lien">
+<meta property="product:price:amount" content="3.99">
+<meta property="product:price:currency" content="EUR">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="GrabLAB — un lien collé, ton fichier prêt">
+<meta name="twitter:description" content="MP4 jusqu'en 4K ou MP3, sans filigrane. App Mac et Windows. 3,99 €, paiement unique.">
+<meta name="twitter:image" content="https://www.femzlab.shop/og/grablab.jpg">
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"SoftwareApplication",
+ "name":"GrabLAB","applicationCategory":"MultimediaApplication",
+ "operatingSystem":"macOS 11+ (Apple Silicon et Intel), Windows 10/11 64 bits",
+ "softwareVersion":"1.0.0",
+ "description":"Application de bureau qui récupère une vidéo MP4 (jusqu'en 4K) ou un MP3 à partir d'un lien YouTube, TikTok ou Instagram.",
+ "url":"https://www.femzlab.shop/grablab/",
+ "image":"https://www.femzlab.shop/og/grablab.jpg",
+ "publisher":{"@id":"https://www.femzlab.shop/#org"},
+ "offers":{"@type":"Offer","price":"3.99","priceCurrency":"EUR","availability":"https://schema.org/InStock",
+ "url":"https://pay.femzlab.shop/grablab","seller":{"@id":"https://www.femzlab.shop/#org"}}}
+</script>
+<!-- Google Tag Manager -->
+<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+})(window,document,'script','dataLayer','GTM-5ZD8M8DC');</script>
+<!-- End Google Tag Manager -->
+<style>
+@font-face{font-family:'Montserrat';font-weight:800;font-style:normal;font-display:swap;src:url(assets/woff2-01.woff2) format('woff2')}
+@font-face{font-family:'Inter';font-weight:400;font-style:normal;font-display:swap;src:url(assets/woff2-02.woff2) format('woff2')}
+@font-face{font-family:'Inter';font-weight:700;font-style:normal;font-display:swap;src:url(assets/woff2-03.woff2) format('woff2')}
+@font-face {
+  font-family: 'NablaLogo';
+  src: url(data:font/ttf;base64,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) format('truetype');
+  font-weight: 400;
+  font-style: normal;
+  font-display: block;
+}
+@font-palette-values --ml-nabla {
+  font-family: 'NablaLogo';
+  base-palette: 2;
+  override-colors: 0 #4573D2, 2 #4573D2, 3 #34549E, 4 #4573D2, 5 #6B93E0, 6 #4573D2, 7 #6B93E0;
+}
+
+
+:root{
+  --paper:#E4E4DF;--ink:#0A0A08;--charcoal:#161616;--muted:#67675F;--dim:#8D8D84;
+  --line:rgba(20,20,15,.1);--line-strong:rgba(20,20,15,.18);
+  --shadow:0 18px 44px rgba(25,25,18,.10);--shadow-lg:0 30px 70px rgba(25,25,18,.16);
+  --accent:#5EA2FF;--r-lg:18px;--lbl:'Inter',sans-serif;
+  /* Accent typographique : même famille que --accent/--ml-blue mais assez
+     foncé pour rester lisible sur paper (≈4.3:1) ; le glow reste en #5EA2FF */
+  --accent-deep:#3E63C4;
+  /* requis par stretch.js (bundle presets) : sa branche héros pose
+     font-family:'RobotoFlexML', var(--font-ui) — sans cette variable la
+     déclaration est invalide et la vague de pression devient invisible */
+  --font-ui:'Inter',system-ui,-apple-system,sans-serif;
+  /* Tokens du panel lui-même — les tuiles sombres citent la vraie UI du plugin */
+  --ml-top:#2A2D31;--ml-bottom:#1B1D20;--ml-card:#34383D;--ml-txt:#E6E8EA;--ml-dim:#8A9096;--ml-blue:#4573D2;
+  color-scheme:light;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--paper);color:var(--ink);font-family:'Inter',system-ui,-apple-system,sans-serif;
+  font-size:16px;line-height:1.6;overflow-x:hidden;-webkit-font-smoothing:antialiased}
+::selection{background:rgba(5,5,5,.12)}
+a{color:inherit;text-decoration:none}
+img,video{max-width:100%;display:block}
+button{font:inherit;cursor:pointer}
+a:focus-visible,button:focus-visible,summary:focus-visible{outline:2px solid var(--ink);outline-offset:3px;border-radius:4px}
+
+#dots{position:fixed;inset:0;z-index:0;pointer-events:none}
+.vignette{position:fixed;inset:0;z-index:1;pointer-events:none;
+  background:radial-gradient(120% 90% at 50% 34%, transparent 56%, rgba(25,25,18,.12) 100%)}
+main,footer{position:relative;z-index:2}
+/* le halo décoratif du panel héros (inset négatif) ne doit jamais créer de
+   scroll horizontal — clip garde le body sans overflow sans casser fixed */
+main{overflow-x:hidden;overflow-x:clip}
+
+.lbl,.eyebrow,.legal,.ptag{font-family:var(--lbl);font-weight:700;text-transform:uppercase;letter-spacing:.08em}
+
+#playhead{position:fixed;top:0;left:0;height:2px;width:100%;z-index:60;transform-origin:0 50%;transform:scaleX(0);
+  background:linear-gradient(90deg,#5EA2FF,#fff);box-shadow:0 0 10px rgba(94,162,255,.6)}
+
+/* ---------- logo + dock (identiques au reste du site) ---------- */
+.fixed-logo{position:fixed;top:15px;left:50%;transform:translateX(-50%);z-index:56;height:56px;aspect-ratio:2308/594;display:block;
+  transition:transform .35s cubic-bezier(.22,1,.36,1),opacity .4s ease}
+.fixed-logo .mark{position:absolute;inset:0;pointer-events:none;
+  -webkit-mask:url(assets/png-01.png) center/contain no-repeat;mask:url(assets/png-01.png) center/contain no-repeat;
+  background:linear-gradient(110deg,#5EA2FF,#A78BFF,#5ED9FF,#7C4DFF,#5EA2FF);background-size:240% 100%;
+  filter:drop-shadow(0 2px 11px rgba(94,162,255,.55));animation:logoGlow 6.5s linear infinite}
+@keyframes logoGlow{to{background-position:240% 0}}
+.fixed-logo:hover{transform:translateX(-50%) scale(1.05)}
+.fixed-logo.hidden{opacity:0;pointer-events:none;transform:translateX(-50%) scale(.94)}
+
+nav.dock{position:fixed;top:84px;left:50%;transform:translateX(-50%);z-index:55;
+  display:flex;align-items:center;gap:4px;padding:6px;border-radius:999px;
+  background:rgba(15,17,23,.34);
+  backdrop-filter:blur(34px) saturate(200%) brightness(1.06);-webkit-backdrop-filter:blur(34px) saturate(200%) brightness(1.06);
+  border:1px solid rgba(255,255,255,.3);
+  box-shadow:
+    inset 0 1.5px 1px rgba(255,255,255,.5),
+    inset 0 -6px 16px rgba(0,0,0,.28),
+    inset 0 0 0 1px rgba(255,255,255,.06),
+    0 20px 54px rgba(0,0,0,.4),0 3px 10px rgba(0,0,0,.24);
+  overflow:hidden;transition:transform .45s cubic-bezier(.22,1,.36,1),box-shadow .4s,top .4s}
+nav.dock::before{content:"";position:absolute;inset:-70%;z-index:-1;pointer-events:none;
+  background:
+    radial-gradient(36% 58% at 20% 28%,rgba(120,175,255,.6),transparent 60%),
+    radial-gradient(42% 55% at 80% 64%,rgba(180,140,255,.5),transparent 62%),
+    radial-gradient(38% 48% at 52% 90%,rgba(255,255,255,.45),transparent 60%),
+    radial-gradient(30% 40% at 70% 12%,rgba(120,220,255,.4),transparent 60%);
+  filter:blur(12px);animation:dockFluid 15s ease-in-out infinite alternate}
+@keyframes dockFluid{
+  0%{transform:translate(0,0) rotate(0deg) scale(1)}
+  50%{transform:translate(8%,-6%) rotate(12deg) scale(1.18)}
+  100%{transform:translate(-7%,5%) rotate(-9deg) scale(1.08)}
+}
+.dock-scrolled{top:14px!important;transform:translateX(-50%) scale(.96)!important}
+.langsw{display:flex;gap:1px;position:relative;z-index:2;background:rgba(255,255,255,.09);border-radius:999px;padding:2px}
+.langsw button{font:inherit;font-size:11px;font-weight:800;letter-spacing:.05em;color:rgba(255,255,255,.62);background:transparent;border:none;cursor:pointer;padding:7px 9px;border-radius:999px;transition:.2s}
+.langsw button.on{background:#fff;color:#0A0A0A}
+.langsw button:hover:not(.on){color:#fff}
+.nav-links{display:flex;gap:2px;align-items:center;position:relative;z-index:1}
+.nav-links-menu{display:flex;gap:2px;align-items:center}
+.nav-links a{font-size:13px;color:rgba(255,255,255,.78);letter-spacing:.01em;font-weight:700;
+  padding:9px 15px;border-radius:999px;transition:color .2s,background .2s}
+.nav-links a:not(.btn):hover,.nav-links a.active{color:#fff;background:rgba(255,255,255,.16)}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:9px;border:1.5px solid currentColor;
+  border-radius:999px;padding:11px 22px;font-size:13.5px;font-weight:700;letter-spacing:.02em;
+  background:transparent;transition:background .2s,color .2s,transform .2s,box-shadow .25s}
+.dock .btn.solid{background:#fff;color:#0A0A0A;border:none;padding:10px 19px;white-space:nowrap}
+.dock .btn.solid:hover{transform:translateY(-1px);box-shadow:0 0 24px rgba(255,255,255,.45)}
+.nav-toggle{display:none;background:transparent;border:0;padding:9px;border-radius:999px;cursor:pointer;position:relative;z-index:1}
+.nav-toggle span{display:block;width:19px;height:1.5px;background:#fff;border-radius:1px;transition:transform .25s,opacity .25s}
+.nav-toggle span+span{margin-top:4px}
+.nav-toggle[aria-expanded="true"] span:first-child{transform:translateY(2.75px) rotate(45deg)}
+.nav-toggle[aria-expanded="true"] span:last-child{transform:translateY(-2.75px) rotate(-45deg)}
+@media (max-width:600px){
+  .fixed-logo{height:44px}
+  nav.dock{top:74px;overflow:visible}
+  .dock-scrolled{top:14px!important}
+  .dock .btn.solid{padding:9px 14px;font-size:12.5px}
+  .nav-toggle{display:inline-flex;flex-direction:column;align-items:center;justify-content:center}
+  .nav-links-menu{position:absolute;top:calc(100% + 12px);left:50%;transform:translateX(-50%);
+    flex-direction:column;align-items:stretch;gap:2px;min-width:210px;
+    background:rgba(15,17,23,.92);backdrop-filter:blur(34px) saturate(200%);-webkit-backdrop-filter:blur(34px) saturate(200%);
+    border:1px solid rgba(255,255,255,.16);border-radius:20px;padding:8px;
+    box-shadow:0 20px 54px rgba(0,0,0,.4);
+    opacity:0;pointer-events:none;transform:translateX(-50%) translateY(-6px);
+    transition:opacity .22s,transform .22s}
+  .nav-links-menu.open{opacity:1;pointer-events:auto;transform:translateX(-50%) translateY(0)}
+  .nav-links-menu a{display:block;text-align:center;padding:12px 15px}
+}
+
+/* ---------- bandes de section : alternance fond de base (points) /
+   blanc cassé uni pour rythmer la lecture (Femz). #F6F6F2 est un cran
+   plus clair que les stages (#EFEFEA) pour que les démos s'en détachent. */
+.band{background:#F6F6F2;padding-bottom:clamp(48px,7vh,80px)}
+
+/* ---------- reveals (motif du site : rejoués à chaque scroll) ---------- */
+.rv{opacity:0;transform:translateY(22px);filter:blur(14px);will-change:opacity,transform,filter;
+  transition:opacity .7s cubic-bezier(.22,1,.36,1),transform .7s cubic-bezier(.22,1,.36,1),filter .7s cubic-bezier(.22,1,.36,1);
+  transition-delay:var(--d,0s)}
+.rv.in{opacity:1;transform:none;filter:none}
+
+/* ---------- en-têtes de section ---------- */
+.eyebrow{font-size:12px;color:var(--muted);display:inline-flex;align-items:center;gap:12px;letter-spacing:.24em}
+.eyebrow::before,.eyebrow::after{content:"";width:30px;height:1px;background:var(--line-strong)}
+.sec-head{max-width:1100px;margin:0 auto;padding:clamp(48px,8vh,92px) clamp(20px,5vw,48px) 0;text-align:center}
+.sec-head h2{font-family:'Montserrat',sans-serif;font-weight:800;text-transform:uppercase;
+  font-size:clamp(26px,4vw,42px);letter-spacing:-.015em;margin-top:12px;
+  background-image:linear-gradient(110deg,var(--ink) 0%,var(--ink) 38%,#5EA2FF 46%,#fff 50%,#A78BFF 56%,var(--ink) 64%,var(--ink) 100%);
+  background-size:280% 100%;background-position:200% 0;-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:var(--ink);transition:-webkit-text-fill-color .2s}
+.sec-head h2:hover{-webkit-text-fill-color:transparent;animation:titleMagic 2.6s linear infinite}
+@keyframes titleMagic{from{background-position:200% 0}to{background-position:-120% 0}}
+.sec-head p{color:var(--muted);margin-top:8px;font-size:14.5px;max-width:560px;margin-left:auto;margin-right:auto}
+
+/* ---------- S1 : HÉROS MANIFESTE + BANDE D'ACHAT ---------- */
+.ptag{display:inline-flex;align-items:center;gap:8px;font-size:11px;color:var(--muted);
+  border:1px solid var(--line-strong);border-radius:999px;padding:7px 14px;background:rgba(255,255,255,.5)}
+.ptag i{width:7px;height:7px;border-radius:50%;background:var(--accent);display:inline-block;
+  box-shadow:0 0 8px rgba(94,162,255,.9);font-style:normal}
+
+/* deux lignes, de l'air autour (Femz : « respire peu ») */
+.mani{max-width:1100px;margin:0 auto;padding:clamp(136px,19vh,200px) clamp(20px,5vw,48px) 0;text-align:center}
+.mani .ptag{margin-bottom:28px}
+.mani h1{font-family:'Montserrat',sans-serif;font-weight:800;text-transform:uppercase;
+  letter-spacing:-.025em;font-size:clamp(30px,9vw,84px);line-height:1.04;
+  display:flex;flex-direction:column;align-items:center}
+.mani .mword{display:block;position:relative}
+/* accent bleu DA + glow minimaliste (l'outline est abandonné — Femz) */
+.mani .m2{color:var(--accent-deep);
+  text-shadow:0 0 16px rgba(94,162,255,.45),0 0 52px rgba(94,162,255,.28)}
+@keyframes a-blurin-h{from{filter:blur(14px);opacity:0;letter-spacing:.12em}
+  to{filter:blur(0);opacity:1;letter-spacing:-.025em}}
+/* héros en LETTERS (Femz) : Blur In lettre par lettre (m1), Rise Bounce
+   lettre par lettre (m2). Les .ml sont créées par JS depuis le texte. */
+.mword .ml{display:inline-block;white-space:pre}
+.mani:not(.in) .mword{opacity:0}
+.mani:not(.in) .mword .ml{opacity:0}
+@keyframes a-blurletter{from{filter:blur(12px);opacity:0;transform:translateY(6px)}to{filter:blur(0);opacity:1;transform:translateY(0)}}
+@keyframes a-riseletter{0%{transform:translateY(1.05em);opacity:0}55%{opacity:1}100%{transform:translateY(0);opacity:1}}
+.mani.in .mword{opacity:1}
+.mani.in .m1 .ml{animation:a-blurletter .6s calc(var(--li,0)*.04s + .05s) cubic-bezier(.22,1,.36,1) both}
+.mani.in .m2 .ml{animation:a-riseletter .72s calc(var(--li,0)*.038s + .4s) cubic-bezier(.34,1.32,.5,1) both}
+/* GREFFE B — chips nom-de-preset, style .psplit en version claire */
+.mchip{position:absolute;top:2px;right:0;transform:translate(calc(100% + 16px),0);
+  font-family:var(--lbl);font-weight:700;font-size:9px;letter-spacing:.12em;
+  text-transform:uppercase;color:var(--muted);white-space:nowrap;
+  border:1px solid var(--line-strong);border-radius:999px;padding:3px 8px;
+  background:rgba(255,255,255,.6);opacity:0}
+.mani.in .m1 .mchip{animation:chipIn .4s 1.1s ease both}
+.mani.in .m2 .mchip{animation:chipIn .4s 1.55s ease both}
+.mani.in .m3 .mchip{animation:chipIn .4s 2s ease both}
+@keyframes chipIn{from{opacity:0;transform:translate(calc(100% + 8px),0)}
+  to{opacity:1;transform:translate(calc(100% + 16px),0)}}
+@media (max-width:700px){.mchip{display:none}} /* pas de débordement mobile */
+
+.buystrip{max-width:1100px;margin:clamp(44px,6vh,64px) auto 0;padding:0 clamp(20px,5vw,48px) 34px;
+  display:grid;grid-template-columns:1.15fr .85fr;gap:clamp(28px,5vw,64px);align-items:center}
+/* la colonne texte dans une carte blanche arrondie (Femz) */
+.buy-left{background:#fff;border-radius:var(--r-lg);box-shadow:var(--shadow);
+  padding:clamp(24px,3.4vw,40px)}
+.mlname{font-family:'Montserrat',sans-serif;font-weight:800;text-transform:uppercase;
+  font-size:20px;letter-spacing:-.01em;margin-bottom:14px}
+.mlname .v1{font-size:11px;letter-spacing:.08em;color:var(--dim);
+  border:2px solid var(--line-strong);border-radius:8px;padding:2px 7px;
+  vertical-align:middle;margin-left:8px}
+/* note moyenne en étoiles — générée par build.py depuis reviews.json
+   (marqueur rating). Étoiles encre sur gris : la rangée pleine (.s-fg) est
+   découpée à --fill, donc une moyenne de 4,5 se lit à la demi-étoile. */
+.rating{display:inline-flex;align-items:center;gap:9px;margin:-4px 0 16px;line-height:1;
+  font-size:13px;font-weight:600;color:var(--muted);text-decoration:none;transition:color .2s}
+.rating .stars{position:relative;display:block;height:16px}
+.rating .stars span{display:flex;gap:3px;width:max-content}
+.rating .stars svg{width:16px;height:16px;flex:none;fill:var(--line-strong)}
+.rating .s-fg{position:absolute;left:0;top:0;overflow:hidden;width:var(--fill,100%)}
+.rating .s-fg svg{fill:var(--ink)}
+.rating b{color:var(--ink);font-size:14px;letter-spacing:-.01em}
+.rating .rcount{position:relative;padding-left:9px}
+.rating .rcount::before{content:"·";position:absolute;left:0}
+.rating .rcount::after{content:"";position:absolute;left:9px;right:0;bottom:-3px;height:1px;
+  background:currentColor;opacity:.35;transition:opacity .2s}
+.rating:hover{color:var(--ink)}
+.rating:hover .rcount::after{opacity:1}
+.pitch{font-size:clamp(16px,1.7vw,19px);color:var(--muted);max-width:460px;line-height:1.55}
+.pitch b{color:var(--ink)}
+.ppay{margin-top:16px;font-family:var(--lbl);font-weight:700;font-size:12px;
+  letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.ppay b{color:var(--ink);font-size:15px;letter-spacing:0}
+.hero-cta{display:flex;gap:14px;margin-top:22px;flex-wrap:wrap;align-items:center}
+.btn-buy{display:inline-flex;align-items:center;gap:10px;background:var(--ink);color:#fff;border-radius:999px;
+  padding:16px 30px;font-weight:700;font-size:15px;letter-spacing:.01em;white-space:nowrap;
+  transition:transform .18s,box-shadow .25s}
+.btn-buy:hover{transform:translateY(-2px);box-shadow:0 10px 34px rgba(94,162,255,.45),0 0 0 2px rgba(94,162,255,.3)}
+.btn-buy .p{font-family:var(--lbl);font-weight:700;font-size:12px;letter-spacing:.06em;
+  background:rgba(255,255,255,.16);border-radius:999px;padding:4px 10px}
+.btn-ghost{display:inline-flex;align-items:center;gap:8px;border:1.5px solid var(--line-strong);border-radius:999px;
+  padding:14px 24px;font-weight:700;font-size:13.5px;color:var(--muted);transition:color .2s,border-color .2s,transform .18s}
+.btn-ghost:hover{color:var(--ink);border-color:var(--ink);transform:translateY(-2px)}
+.hero-meta{display:flex;gap:18px;margin-top:22px;font-size:12px;color:var(--dim);flex-wrap:wrap}
+.hero-meta span{display:inline-flex;align-items:center;gap:7px}
+.hero-meta svg{width:14px;height:14px;stroke:var(--accent)}
+
+/* vidéo de présentation (Comp 4) — objet-héros pleine largeur, sous la carte.
+   Le mockup animé reste ; la vidéo vient EN PLUS. Loop auto, muet, playsinline. */
+.hero-video{position:relative;max-width:1100px;margin:6px auto 0;padding:0 clamp(20px,5vw,48px)}
+.hero-video::before{content:"";position:absolute;left:50%;top:-5%;transform:translateX(-50%);
+  width:72%;height:62%;z-index:-1;pointer-events:none;
+  background:radial-gradient(60% 100% at 50% 40%,rgba(94,162,255,.28),transparent 72%);filter:blur(16px)}
+.hv-frame{position:relative;border-radius:var(--r-lg);overflow:hidden;box-shadow:var(--shadow);
+  background:#0A0A08;border:1px solid var(--line-strong)}
+.hv-vid{display:block;width:100%;aspect-ratio:16/9;object-fit:cover;background:#0A0A08}
+
+/* le panel réel — objet-héros, posé comme du hardware */
+/* La box du héros = maquette HTML VIVANTE du panel : vrai logo Nabla
+   animé, preview qui boucle sur les 10 presets (leurs web() du bundle),
+   CONTROLS replié. Volume 3D (perspective + extrusion d'ombres, réf
+   reactbits depth-text) + sweep glow bleu qui parcourt l'arête. */
+.hero-panel{position:relative;display:flex;justify-content:center;perspective:1200px}
+.hpanel{position:relative;width:min(400px,86vw);border-radius:24px;padding:22px 18px 16px;
+  background:linear-gradient(180deg,var(--ml-top),var(--ml-bottom));
+  transform:rotateX(8deg) rotateY(-16deg);transform-style:preserve-3d;
+  transition:transform .5s cubic-bezier(.22,1,.36,1);
+  box-shadow:0 1px 0 rgba(255,255,255,.08) inset,
+    26px 34px 60px rgba(15,20,40,.42),0 30px 80px rgba(15,20,40,.32)}
+/* l'épaisseur : 8 plaques empilées en profondeur réelle (translateZ) —
+   elles tournent AVEC la box, l'extrusion reste vraie sous tous les angles */
+.hp-d{position:absolute;inset:0;border-radius:24px;pointer-events:none;
+  background:hsl(222 18% calc(13% - var(--z)*0.55%));
+  border:1px solid hsl(222 16% calc(17% - var(--z)*0.6%));
+  transform:translateZ(calc(var(--z)*-3px))}
+.hero-panel:hover .hpanel{transform:rotateX(4deg) rotateY(-7deg) scale(1.01)}
+/* sweep glow : un anneau conique qui tourne, masqué sur l'arête seule */
+@property --hpa{syntax:'<angle>';inherits:false;initial-value:0deg}
+.hpanel::after{content:"";position:absolute;inset:-2px;border-radius:26px;padding:2px;z-index:5;
+  background:conic-gradient(from var(--hpa),transparent 0 72%,rgba(94,162,255,.15) 80%,#5EA2FF 88%,rgba(94,162,255,.15) 96%,transparent 100%);
+  -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);
+  -webkit-mask-composite:xor;mask-composite:exclude;
+  animation:hp-sweep 4.5s linear infinite;pointer-events:none}
+@keyframes hp-sweep{to{--hpa:360deg}}
+.hero-panel .halo{position:absolute;inset:-14%;z-index:-1;pointer-events:none;
+  background:radial-gradient(52% 46% at 50% 42%,rgba(94,162,255,.3),transparent 70%);
+  filter:blur(10px)}
+/* logo — le vrai (Nabla + pulse EDPT du panel) */
+.hp-logo{text-align:center;padding:2px 0 14px;line-height:1;white-space:nowrap}
+.hp-logo .lg{font-family:'NablaLogo';font-palette:--ml-nabla;font-size:34px;display:inline-block;color:#4573D2;
+  font-variation-settings:'EDPT' 100,'EHLT' 12;
+  animation:hp-edpt 1.4s ease-in-out infinite;animation-delay:calc(var(--i,0)*90ms)}
+@keyframes hp-edpt{0%,100%{font-variation-settings:'EDPT' 100,'EHLT' 12}50%{font-variation-settings:'EDPT' 196,'EHLT' 12}}
+.hp-logo .lgs{display:none;vertical-align:middle;white-space:nowrap;font-size:0;line-height:0;--ls:.25}
+.hp-logo .lgs i{display:inline-block;height:calc(136px*var(--ls));width:calc(var(--lw)*var(--ls)*1px);
+  background-image:url(assets/png-21.png);background-repeat:no-repeat;
+  background-size:calc(650px*var(--ls)) calc(136px*var(--ls));
+  background-position:calc(var(--lx)*var(--ls)*-1px) 0;
+  transform-origin:50% 100%;animation:lgs-pulse 1.4s ease-in-out infinite;
+  animation-delay:calc(var(--i,0)*90ms)}
+@keyframes lgs-pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.08)}}
+@media (prefers-reduced-motion:reduce){.hp-logo .lgs i{animation:none}}
+.no-colr .hp-logo .lg{display:none}
+.no-colr .hp-logo .lgs{display:inline-block}
+.hp-v1{font-family:var(--lbl);font-weight:700;font-size:9px;letter-spacing:.08em;color:var(--ml-dim);
+  border:1px solid rgba(255,255,255,.14);border-radius:6px;padding:2px 5px;
+  vertical-align:top;margin-left:7px;display:inline-block}
+/* tabs */
+.hp-tabs{display:flex;gap:8px;margin-bottom:12px}
+.hp-tab{flex:1;position:relative;text-align:center;font-family:var(--lbl);font-weight:700;font-size:10.5px;
+  letter-spacing:.1em;text-transform:uppercase;color:var(--ml-dim);
+  background:var(--ml-card);border:1px solid rgba(255,255,255,.07);border-radius:12px;padding:11px 4px}
+.hp-tab.on{background:var(--ml-blue);color:#fff;border-color:#6B93E0;
+  box-shadow:0 0 16px rgba(94,162,255,.4)}
+.hp-soon{position:absolute;top:-8px;left:50%;transform:translateX(-50%);
+  font-size:7.5px;letter-spacing:.1em;color:#B9CBF2;background:#17181C;
+  border:1px solid rgba(69,115,210,.55);border-radius:999px;padding:2px 7px;white-space:nowrap}
+/* preview stage — la matière du vrai panel, les presets y bouclent */
+.hp-stage{position:relative;height:170px;border-radius:14px;overflow:hidden;
+  display:flex;align-items:center;justify-content:center;
+  background-color:#0F1013;
+  background-image:radial-gradient(rgba(255,255,255,.07) 1px,transparent 1.3px);
+  background-size:13px 13px;margin-bottom:12px}
+.hp-stage .stg{font-size:28px;color:#fff;letter-spacing:.02em}
+/* CONTROLS replié */
+.hp-controls{display:flex;align-items:center;gap:10px;
+  border:1px solid rgba(255,255,255,.07);border-radius:12px;padding:12px 14px;
+  font-family:var(--lbl);font-weight:700;font-size:9.5px;letter-spacing:.14em;
+  text-transform:uppercase;color:var(--ml-dim)}
+.hp-controls svg{width:10px;height:6px;stroke:currentColor;flex:none}
+.hp-controls i{flex:1;height:1px;background:rgba(255,255,255,.08)}
+/* la pilule badge (réf Femz) : sombre, bord blanc épais, wiggle léger,
+   DEVANT tout (sweep compris) */
+.hp-postit{position:absolute;right:-22px;bottom:-16px;z-index:6;white-space:nowrap;
+  padding:11px 18px;background:#17181C;color:#fff;
+  font-family:var(--lbl);font-weight:800;font-size:11px;letter-spacing:.12em;
+  text-transform:uppercase;border:4px solid #fff;border-radius:999px;
+  box-shadow:0 12px 28px rgba(25,25,18,.35);
+  animation:hp-wiggle 5s ease-in-out infinite;transform:rotate(-5deg)}
+.hp-postit::before{content:"\2733\FE0E\00A0\00A0"}
+@keyframes hp-wiggle{0%,100%{transform:rotate(-5deg)}25%{transform:rotate(-2.5deg)}
+  50%{transform:rotate(-6.5deg)}75%{transform:rotate(-3.5deg)}}
+
+/* ---------- S2 : LE DÉFILÉ DES DIX ---------- */
+/* discret façon Gaku : bandeau-étiquette, pas un titre géant (Femz) */
+.defile{border-top:1px solid var(--line);border-bottom:1px solid var(--line);
+  margin:clamp(44px,7vh,84px) 0 0;padding:13px 0;overflow:hidden;
+  -webkit-mask-image:linear-gradient(90deg,transparent,#000 6%,#000 94%,transparent);
+  mask-image:linear-gradient(90deg,transparent,#000 6%,#000 94%,transparent)}
+.defile-track{display:flex;width:max-content;animation:defileX 36s linear infinite;will-change:transform}
+.defile:hover .defile-track{animation-play-state:paused}
+@keyframes defileX{to{transform:translateX(-50%)}}
+.defile-set{display:flex;align-items:center;gap:26px;padding-right:26px}
+.defile-set b{font-family:'Montserrat',sans-serif;font-weight:800;text-transform:uppercase;
+  font-size:14px;letter-spacing:.09em;white-space:nowrap;line-height:1.2;color:var(--ink)}
+.defile-set b:nth-child(4n+3){color:var(--accent-deep);text-shadow:0 0 12px rgba(94,162,255,.5)}
+.defile-set .dot{width:5px;height:5px;border-radius:50%;background:var(--accent);flex:none}
+.defile-set sup.sp{font-family:var(--lbl);font-weight:700;font-size:8px;
+  letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-left:5px}
+
+/* ---------- S3 : WORKFLOW 01/02/03 ---------- */
+.flow-wrap{max-width:1100px;margin:0 auto;padding:26px clamp(20px,5vw,48px) 0;
+  display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+.fstep{background:#fff;border-radius:var(--r-lg);box-shadow:var(--shadow);padding:28px}
+.fn{display:block;font-family:'Montserrat',sans-serif;font-weight:800;font-size:46px;
+  letter-spacing:-.02em;color:var(--accent-deep);text-shadow:0 0 14px rgba(94,162,255,.38)}
+.fstep h3{font-family:'Montserrat',sans-serif;font-weight:800;font-size:17px;text-transform:uppercase;
+  letter-spacing:-.01em;margin-top:12px}
+.fstep p{font-size:14px;color:var(--muted);margin-top:8px;line-height:1.55}
+
+/* ---------- S3 : GUIDES — vidéo (rendu de la comp « colo 3 ») + carte
+   explicative avec mini-panel interactif (chips plateforme → calque guide
+   posé sur une comp 9:16 ou 16:9, re-clic = retiré, comme dans le plugin) */
+.guides-wrap{max-width:1100px;margin:0 auto;padding:26px clamp(20px,5vw,48px) clamp(48px,7vh,80px);
+  display:grid;grid-template-columns:1.3fr .9fr;gap:20px;align-items:stretch}
+.gcol{display:flex;flex-direction:column;gap:20px;min-width:0}
+.gv{position:relative;aspect-ratio:16/9;border-radius:var(--r-lg);overflow:hidden;
+  background:#1B1D20;box-shadow:var(--shadow-lg)}
+.gv video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block}
+.gcard{background:#fff;border-radius:var(--r-lg);box-shadow:var(--shadow);padding:24px;
+  display:flex;flex-direction:column;gap:10px;flex:1}
+.gcard h3{font-family:'Montserrat',sans-serif;font-weight:800;font-size:17px;text-transform:uppercase;letter-spacing:-.01em}
+.gcard p{font-size:14px;color:var(--muted);line-height:1.55}
+.gcard-note{font-size:11.5px;color:var(--dim);margin-top:auto}
+/* tuile charcoal (DA : l'UI du produit se cite en sombre) qui prend toute la
+   hauteur de la colonne ; la comp 9:16 s'étire avec la scène */
+.gmini{background:linear-gradient(180deg,#2A2D31,#1B1D20);border-radius:var(--r-lg);
+  border:1px solid rgba(255,255,255,.08);box-shadow:var(--shadow-lg);
+  padding:12px;display:flex;flex-direction:column;gap:10px;min-width:0}
+.gm-tabs{display:flex;gap:2px;padding:3px;background:#34383D;border:1px solid rgba(255,255,255,.06);border-radius:12px}
+.gm-tab{flex:1 1 auto;min-width:0;font-family:var(--lbl);font-weight:700;font-size:9.5px;letter-spacing:.06em;
+  text-transform:uppercase;color:#8A9096;background:transparent;border:none;border-radius:9px;
+  padding:7px 4px;cursor:pointer;white-space:nowrap;transition:background .15s,color .15s}
+.gm-tab:hover{background:#3D4248;color:#fff}
+.gm-tab.on{background:var(--ml-blue);color:#fff;box-shadow:0 1px 4px rgba(0,0,0,.28)}
+.gm-stage{flex:1;min-height:250px;display:flex;align-items:center;justify-content:center;
+  background:#101114;border-radius:10px;overflow:hidden;position:relative}
+.gm-stage::after{content:"";position:absolute;inset:0;pointer-events:none;
+  background:radial-gradient(100% 90% at 50% 50%,transparent 45%,rgba(0,0,0,.45) 100%)}
+.gm-comp{position:relative;overflow:hidden;border-radius:6px;box-shadow:0 8px 24px rgba(0,0,0,.5);z-index:1}
+.gm-comp.v{align-self:stretch;margin:12px 0;height:auto;aspect-ratio:9/16}
+.gm-comp.h{align-self:center;width:min(100% - 24px,372px);aspect-ratio:16/9}
+.gm-sample{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
+  background:radial-gradient(120% 80% at 30% 18%,#5EA2FF 0,#2E4A7A 38%,#1B1D20 75%)}
+.gm-sample span{font-family:'Montserrat',sans-serif;font-weight:800;text-transform:uppercase;
+  font-size:15px;letter-spacing:.02em;color:rgba(255,255,255,.9);transform:rotate(-8deg)}
+.gm-ov{position:absolute;inset:0;width:100%;height:100%;display:block;opacity:0;transition:opacity .25s}
+.gm-ov.on{opacity:.94}
+.gm-note{font-family:var(--lbl);font-weight:700;font-size:9.5px;letter-spacing:.1em;text-transform:uppercase;
+  color:#8A9096!important;text-align:center;line-height:1.4!important}
+
+/* ---------- S4 : PRESETS — preview interactive « à la Bart » : le panel à
+   gauche (liste + réglages), la scène animée à droite. Le JS pilote tout
+   (sélection, texte custom, split, vitesse, boucle). ---------- */
+.presets-wrap{max-width:1100px;margin:0 auto;padding:26px clamp(20px,5vw,48px) 0}
+/* cadre 16:9 (Femz) : le panneau garde ses réglages en tête, la liste des
+   presets scrolle en dessous ; la scène remplit la hauteur */
+.demo{display:grid;grid-template-columns:300px 1fr;border-radius:20px;overflow:hidden;
+  aspect-ratio:16/9;
+  background:linear-gradient(180deg,var(--ml-top),var(--ml-bottom));
+  border:1px solid rgba(255,255,255,.07);box-shadow:var(--shadow-lg)}
+.demo-panel{position:relative;min-height:0;padding:16px;display:flex;flex-direction:column;gap:12px;
+  border-right:1px solid rgba(255,255,255,.07);background:rgba(0,0,0,.16)}
+/* indice visuel : la liste continue en dessous */
+.demo-panel::after{content:"";position:absolute;left:0;right:0;bottom:0;height:34px;
+  background:linear-gradient(180deg,transparent,rgba(20,22,25,.92));
+  pointer-events:none;border-radius:0 0 0 20px}
+.dp-input{font:inherit;font-weight:700;font-size:14px;color:var(--ml-txt);background:#101114;
+  border:1px solid rgba(255,255,255,.1);border-radius:10px;padding:11px 12px;width:100%}
+.dp-input:focus-visible{outline:2px solid var(--ml-blue);outline-offset:1px}
+.dp-row{display:flex;align-items:center;gap:10px}
+.dp-lbl{font-family:var(--lbl);font-weight:700;font-size:9.5px;letter-spacing:.12em;
+  text-transform:uppercase;color:var(--ml-dim);width:52px;flex:none}
+.dp-seg{display:flex;background:#101114;border-radius:999px;padding:2px;gap:2px;flex:1;transition:opacity .25s}
+.dp-seg button{flex:1;font-family:var(--lbl);font-weight:700;font-size:10px;letter-spacing:.06em;
+  text-transform:uppercase;color:var(--ml-dim);background:transparent;border:none;border-radius:999px;
+  padding:6px 0;cursor:pointer;transition:background .2s,color .2s}
+.dp-seg button.on{background:var(--ml-blue);color:#fff}
+.dp-seg.off{opacity:.32;pointer-events:none}
+.dp-range{flex:1;accent-color:var(--ml-blue)}
+.dp-val{font-size:11px;font-weight:700;color:var(--ml-txt);width:38px;text-align:right;
+  font-variant-numeric:tabular-nums;flex:none}
+.dp-list{display:flex;flex-direction:column;gap:7px;margin-top:2px;
+  flex:1;min-height:0;overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;
+  padding-right:6px;padding-bottom:30px;
+  scrollbar-width:thin;scrollbar-color:rgba(255,255,255,.22) transparent}
+.dp-list::-webkit-scrollbar{width:6px}
+.dp-list::-webkit-scrollbar-thumb{background:rgba(255,255,255,.22);border-radius:3px}
+.dp-item{flex:none}
+.dp-item{position:relative;display:flex;flex-direction:column;gap:2px;text-align:left;
+  color:var(--ml-txt);background:var(--ml-card);border:1px solid rgba(255,255,255,.08);
+  border-radius:12px;padding:9px 12px;cursor:pointer;font:inherit;
+  transition:background .2s,box-shadow .25s,border-color .2s}
+.dp-item:hover{background:#3D4248}
+.dp-item.on{background:var(--ml-blue);border-color:#6B93E0;color:#fff;
+  box-shadow:0 0 0 3px rgba(69,115,210,.26),0 0 20px rgba(94,162,255,.45)}
+.dp-name{display:flex;align-items:center;gap:8px;font-family:var(--lbl);font-weight:700;
+  font-size:11.5px;letter-spacing:.1em;text-transform:uppercase}
+.dp-name svg{width:15px;height:15px;stroke:#7FA4E8;flex:none}
+.dp-item.on .dp-name svg{stroke:#fff}
+.dp-desc{font-size:11px;color:var(--ml-dim);line-height:1.35}
+.dp-item.on .dp-desc{color:rgba(255,255,255,.75)}
+.psplit{margin-left:auto;font-family:var(--lbl);font-weight:700;font-size:8px;
+  letter-spacing:.1em;text-transform:uppercase;color:#B9CBF2;background:rgba(69,115,210,.28);
+  border:1px solid rgba(69,115,210,.5);border-radius:999px;padding:2px 7px;flex:none}
+.dp-item.on .psplit{color:#fff;background:rgba(255,255,255,.16);border-color:rgba(255,255,255,.4)}
+.pr-ok{margin-left:auto;font-family:var(--lbl);font-weight:700;font-size:8px;
+  letter-spacing:.1em;text-transform:uppercase;color:#D9A9FF;background:rgba(120,60,180,.22);
+  border:1px solid rgba(160,100,220,.4);border-radius:999px;padding:2px 7px;flex:none}
+.dp-item.on .pr-ok{color:#fff;background:rgba(255,255,255,.16);border-color:rgba(255,255,255,.4)}
+/* la scène : blanc cassé uni (Femz) — le panneau sombre reste à gauche,
+   la preview claire à droite, comme la réf */
+.demo-stage{position:relative;display:flex;align-items:center;justify-content:center;
+  min-height:0;padding:30px;overflow:hidden;background:#F1F1EC}
+/* vignette légère : l'œil revient au centre de la scène (Femz) */
+.demo-stage::after{content:"";position:absolute;inset:0;pointer-events:none;
+  background:radial-gradient(105% 88% at 50% 50%,transparent 38%,rgba(25,25,18,.09) 70%,rgba(25,25,18,.24) 100%)}
+/* .stg reçoit les .pv-text / .pv-letter créés par les web() du plugin —
+   mêmes classes que le vrai panneau de preview */
+/* pas de text-transform : la preview respecte la casse tapée (comme le
+   plugin depuis le fix fontCapsOption) */
+.stg{font-family:'Montserrat',sans-serif;font-weight:800;
+  font-size:clamp(26px,4.6vw,54px);letter-spacing:.02em;color:var(--ink);text-align:center;
+  line-height:1.15;max-width:100%;overflow-wrap:anywhere}
+.stg .pv-text{display:inline-block}
+.stg .pv-letter{display:inline-block;white-space:pre;will-change:transform,opacity,filter}
+
+/* keyframes des presets — partagées : a-drop / a-pop / a-rise servent aussi
+   au manifeste (S1) et au CTA final (S11), ne pas renommer. Les états `to`
+   correspondent au style de base (repos) : sans animation, tout est posé. */
+/* Les animations des presets vivent désormais dans le bundle des web() du
+   plugin (WAAPI) — plus aucune keyframe CSS maison pour les presets.
+   Celles qui restent servent le manifeste (S1) et le CTA final (S11). */
+/* a-rise / a-pop : ressorts mono-segment — l'overshoot vient d'une bezier
+   qui dépasse 1, la vélocité reste continue du départ à la pose (le plus
+   fluide possible). L'ease se règle là où l'animation est appelée. */
+@keyframes a-rise{from{transform:translateY(130%);opacity:0}to{transform:translateY(0);opacity:1}}
+@keyframes a-pop{from{transform:scale(0);opacity:0}to{transform:scale(1);opacity:1}}
+@keyframes a-drop{
+  0%{transform:translateY(-180%) scaleY(1.05);opacity:0;animation-timing-function:cubic-bezier(.55,0,.85,.36)}
+  36%{transform:translateY(-10%) scaleY(1.05);opacity:1;animation-timing-function:cubic-bezier(.3,0,.7,1)}
+  42%{transform:translateY(0) scaleY(.8);animation-timing-function:cubic-bezier(.15,.65,.3,1)}
+  60%{transform:translateY(-20%) scaleY(1.04);animation-timing-function:cubic-bezier(.6,0,.85,.4)}
+  76%{transform:translateY(0) scaleY(.95);animation-timing-function:cubic-bezier(.2,.75,.35,1)}
+  88%{transform:translateY(-4%) scaleY(1);animation-timing-function:cubic-bezier(.55,0,.8,.5)}
+  100%{transform:translateY(0) scaleY(1)}}
+
+.split-note{max-width:1100px;margin:16px auto 0;padding:0 clamp(20px,5vw,48px);
+  font-size:13px;color:var(--muted);text-align:center}
+.split-note b{color:var(--ink)}
+
+/* ---------- S5 : DIX ANIMATIONS, UNE SEULE SIGNATURE ---------- */
+.sig-wrap{max-width:1100px;margin:0 auto;padding:26px clamp(20px,5vw,48px) 0;
+  display:grid;grid-template-columns:1.05fr .95fr;gap:clamp(28px,5vw,60px);align-items:center}
+.sig-txt p{font-size:16px;line-height:1.65;color:var(--muted)}
+.sig-txt p+p{margin-top:14px}
+.sig-txt b{color:var(--ink)}
+.sig-fig{justify-self:center;width:100%;max-width:400px;margin:0}
+.sig-crop{width:100%;aspect-ratio:1/1.02;overflow:hidden;border-radius:20px;
+  box-shadow:var(--shadow-lg);background:linear-gradient(180deg,var(--ml-top),var(--ml-bottom))}
+.sig-crop img{width:100%;height:100%;object-fit:cover;object-position:center bottom}
+.sig-cap{margin-top:12px;font-size:12px;color:var(--dim);text-align:center;
+  font-family:var(--lbl);font-weight:700;letter-spacing:.1em;text-transform:uppercase}
+
+/* ---------- S6 : DEUX APPS ---------- */
+.apps-wrap{max-width:1100px;margin:0 auto;padding:26px clamp(20px,5vw,48px) clamp(48px,7vh,80px);
+  display:grid;grid-template-columns:1fr 1fr;gap:20px}
+.app-card{background:#fff;border-radius:var(--r-lg);box-shadow:var(--shadow);padding:28px;
+  display:flex;flex-direction:column;gap:14px}
+.app-card .ah{display:flex;align-items:center;gap:12px}
+.app-badge{width:44px;height:44px;border-radius:11px;display:flex;align-items:center;justify-content:center;
+  font-family:'Montserrat',sans-serif;font-weight:800;font-size:15px;flex:none}
+.app-badge.ae{background:#1B1A2E;color:#B9B6FF}
+.app-badge.pr{background:#1D0E2E;color:#D9A9FF}
+.app-card h3{font-family:'Montserrat',sans-serif;font-weight:800;font-size:18px;text-transform:uppercase;letter-spacing:-.01em}
+.app-card .sub{font-size:11px;color:var(--dim);font-family:var(--lbl);font-weight:700;letter-spacing:.1em;text-transform:uppercase}
+.app-card ul{list-style:none;display:flex;flex-direction:column;gap:9px;font-size:14px;color:var(--muted)}
+.app-card li{display:flex;gap:10px;align-items:flex-start;line-height:1.45}
+.app-card li svg{width:15px;height:15px;stroke:var(--accent);flex:none;margin-top:3px}
+.app-card li b{color:var(--ink)}
+
+/* mock Essential Graphics — version claire et INTERACTIVE (Femz) : le
+   prospect bouge un réglage et voit le titre se rejouer, comme dans la
+   timeline Premiere. Vrais <input>, pas des barres peintes. */
+.eg-mock{margin-top:auto;background:#F6F6F2;border-radius:13px;
+  border:1px solid var(--line-strong);padding:14px 16px 12px;display:flex;flex-direction:column;gap:10px}
+.eg-head{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.eg-title{font-family:var(--lbl);font-weight:700;font-size:9.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--dim)}
+.eg-tag{font-family:var(--lbl);font-weight:700;font-size:8.5px;letter-spacing:.1em;text-transform:uppercase;
+  color:var(--accent-deep);background:rgba(94,162,255,.13);border-radius:999px;padding:3px 8px;white-space:nowrap}
+.eg-prev{height:66px;display:flex;align-items:center;justify-content:center;overflow:hidden;
+  background:#fff;border:1px solid var(--line);border-radius:9px;
+  font-family:'Montserrat',sans-serif;font-weight:800;font-size:22px;letter-spacing:.01em;color:var(--ink)}
+.eg-prev .pv-text{display:inline-block}
+.eg-prev .pv-letter{display:inline-block;white-space:pre;will-change:transform,opacity}
+.eg-text{font:inherit;font-size:12.5px;font-weight:600;color:var(--ink);background:#fff;
+  border:1px solid var(--line-strong);border-radius:8px;padding:8px 11px;width:100%}
+.eg-text:focus-visible{outline:2px solid var(--accent);outline-offset:1px}
+.eg-row{display:flex;align-items:center;gap:12px}
+.eg-lbl{font-family:var(--lbl);font-weight:700;font-size:9.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);width:58px;flex:none}
+.eg-range{flex:1;min-width:0;height:18px;margin:0;accent-color:var(--accent-deep);cursor:pointer}
+.eg-val{width:46px;text-align:right;font-size:11px;font-weight:700;color:var(--ink);font-variant-numeric:tabular-nums;flex:none}
+.eg-toggle{position:relative;width:32px;height:18px;flex:none;margin-left:auto;cursor:pointer}
+.eg-toggle input{position:absolute;inset:0;margin:0;opacity:0;cursor:pointer}
+.eg-toggle i{position:absolute;inset:0;border-radius:999px;background:#C9C9C3;transition:background .2s}
+.eg-toggle i::after{content:"";position:absolute;top:2px;left:2px;width:14px;height:14px;border-radius:50%;
+  background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.25);transition:transform .2s}
+.eg-toggle input:checked+i{background:var(--accent-deep)}
+.eg-toggle input:checked+i::after{transform:translateX(14px)}
+.eg-toggle input:focus-visible+i{outline:2px solid var(--accent);outline-offset:2px}
+.eg-hint{font-size:11px;color:var(--dim);line-height:1.4;margin-top:2px}
+
+/* maquette TOOLS du panel dans la carte AE — styles, glow de bord suiveur
+   de curseur et dock magnification repris du vrai plugin */
+.atm{margin-top:auto;background:linear-gradient(180deg,#F4F4F6,#E9EAED);border-radius:13px;
+  border:1px solid rgba(20,20,15,.10);padding:14px 16px 16px}
+.atm-lbl{font-family:var(--lbl);font-weight:700;font-size:9.5px;letter-spacing:.12em;
+  text-transform:uppercase;color:#6B7076;margin-bottom:10px}
+#atm-tools{position:relative;display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.atool{
+  --edge-sensitivity:30;
+  --color-sensitivity:calc(var(--edge-sensitivity) + 20);
+  --border-radius:14px;
+  --glow-padding:10px;
+  --cone-spread:25;
+  --fill-opacity:.5;
+  --card-bg:rgba(255,255,255,.72);
+  --edge-proximity:0;
+  --cursor-angle:45deg;
+  --glow-color:hsl(217deg 100% 68% / 100%);
+  --glow-color-60:hsl(217deg 100% 68% / 60%);
+  --glow-color-50:hsl(217deg 100% 68% / 50%);
+  --glow-color-40:hsl(217deg 100% 68% / 40%);
+  --glow-color-30:hsl(217deg 100% 68% / 30%);
+  --glow-color-20:hsl(217deg 100% 68% / 20%);
+  --glow-color-10:hsl(217deg 100% 68% / 10%);
+  --gradient-one:radial-gradient(at 80% 55%, #4D8DFF 0px, transparent 50%);
+  --gradient-two:radial-gradient(at 69% 34%, #6FB0FF 0px, transparent 50%);
+  --gradient-three:radial-gradient(at 8% 6%, #38BDF8 0px, transparent 50%);
+  --gradient-four:radial-gradient(at 41% 38%, #4D8DFF 0px, transparent 50%);
+  --gradient-five:radial-gradient(at 86% 85%, #6FB0FF 0px, transparent 50%);
+  --gradient-six:radial-gradient(at 82% 18%, #38BDF8 0px, transparent 50%);
+  --gradient-seven:radial-gradient(at 51% 4%, #6FB0FF 0px, transparent 50%);
+  --gradient-base:linear-gradient(#4D8DFF 0 100%);
+  isolation:isolate;position:relative;
+  display:flex;flex-direction:column;align-items:center;gap:4px;
+  padding:10px 0 8px;border:1px solid rgba(20,20,15,.10);border-radius:14px;
+  background:rgba(255,255,255,.72);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.9),0 2px 5px rgba(25,25,18,.10);
+  cursor:pointer;transform-origin:bottom center;
+  transition:background .12s,box-shadow .12s,transform .12s;min-width:0}
+.atool:hover{background:#fff;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.9),0 4px 10px rgba(25,25,18,.14)}
+.atool:active{border-color:#4573D2;box-shadow:inset 0 1px 3px rgba(25,25,18,.14)}
+.at-ico{color:#4573D2;display:flex}
+.at-lbl{font-family:'Inter',sans-serif;font-size:8px;font-weight:600;letter-spacing:1px;color:#5A5F66}
+.atool::before,.atool::after,.atool > .edge-light{
+  content:'';position:absolute;inset:0;border-radius:inherit;
+  transition:opacity .25s ease-out;z-index:-1}
+.atool:not(:hover)::before,.atool:not(:hover)::after,.atool:not(:hover) > .edge-light{
+  opacity:0;transition:opacity .75s ease-in-out}
+.atool::before{
+  border:1px solid transparent;
+  background:
+    linear-gradient(var(--card-bg) 0 100%) padding-box,
+    linear-gradient(rgb(255 255 255 / 0%) 0% 100%) border-box,
+    var(--gradient-one) border-box,
+    var(--gradient-two) border-box,
+    var(--gradient-three) border-box,
+    var(--gradient-four) border-box,
+    var(--gradient-five) border-box,
+    var(--gradient-six) border-box,
+    var(--gradient-seven) border-box,
+    var(--gradient-base) border-box;
+  opacity:calc((var(--edge-proximity) - var(--color-sensitivity)) / (100 - var(--color-sensitivity)));
+  mask-image:conic-gradient(from var(--cursor-angle) at center,
+    black calc(var(--cone-spread) * 1%),
+    transparent calc((var(--cone-spread) + 15) * 1%),
+    transparent calc((100 - var(--cone-spread) - 15) * 1%),
+    black calc((100 - var(--cone-spread)) * 1%))}
+.atool::after{
+  border:1px solid transparent;
+  background:
+    var(--gradient-one) padding-box,
+    var(--gradient-two) padding-box,
+    var(--gradient-three) padding-box,
+    var(--gradient-four) padding-box,
+    var(--gradient-five) padding-box,
+    var(--gradient-six) padding-box,
+    var(--gradient-seven) padding-box,
+    var(--gradient-base) padding-box;
+  mask-image:
+    linear-gradient(to bottom, black, black),
+    radial-gradient(ellipse at 50% 50%, black 40%, transparent 65%),
+    radial-gradient(ellipse at 66% 66%, black 5%, transparent 40%),
+    radial-gradient(ellipse at 33% 33%, black 5%, transparent 40%),
+    radial-gradient(ellipse at 66% 33%, black 5%, transparent 40%),
+    radial-gradient(ellipse at 33% 66%, black 5%, transparent 40%),
+    conic-gradient(from var(--cursor-angle) at center, transparent 5%, black 15%, black 85%, transparent 95%);
+  mask-composite:subtract, add, add, add, add, add;
+  opacity:calc(var(--fill-opacity) * (var(--edge-proximity) - var(--color-sensitivity)) / (100 - var(--color-sensitivity)));
+  mix-blend-mode:soft-light}
+.atool > .edge-light{
+  inset:calc(var(--glow-padding) * -1);pointer-events:none;z-index:1;
+  mask-image:conic-gradient(from var(--cursor-angle) at center, black 2.5%, transparent 10%, transparent 90%, black 97.5%);
+  opacity:calc((var(--edge-proximity) - var(--edge-sensitivity)) / (100 - var(--edge-sensitivity)));
+  mix-blend-mode:plus-lighter}
+.atool > .edge-light::before{
+  content:'';position:absolute;inset:var(--glow-padding);border-radius:inherit;
+  box-shadow:
+    inset 0 0 0 1px var(--glow-color),
+    inset 0 0 1px 0 var(--glow-color-60),
+    inset 0 0 3px 0 var(--glow-color-50),
+    inset 0 0 6px 0 var(--glow-color-40),
+    inset 0 0 15px 0 var(--glow-color-30),
+    inset 0 0 25px 2px var(--glow-color-20),
+    inset 0 0 50px 2px var(--glow-color-10),
+    0 0 1px 0 var(--glow-color-60),
+    0 0 3px 0 var(--glow-color-50),
+    0 0 6px 0 var(--glow-color-40),
+    0 0 15px 0 var(--glow-color-30),
+    0 0 25px 2px var(--glow-color-20),
+    0 0 50px 2px var(--glow-color-10)}
+
+/* flèche de liaison : la maquette TOOLS de la carte AE « désigne » la
+   section qui détaille ces mêmes huit outils */
+.tools-arrow{max-width:1100px;margin:-6px auto -18px;padding:0 clamp(20px,5vw,48px);
+  display:flex;justify-content:flex-start;pointer-events:none}
+.tools-arrow svg{width:150px;height:86px;overflow:visible;margin-left:11%;
+  color:var(--muted);opacity:.75}
+.tools-arrow path{stroke:currentColor;stroke-width:1.6;fill:none;stroke-linecap:round}
+.tools-arrow .ta-head{stroke-width:1.6;fill:none;stroke-linejoin:round}
+@media (max-width:860px){
+  .tools-arrow{justify-content:center;margin:2px auto -14px}
+  .tools-arrow svg{margin-left:0;width:104px;height:62px}
+}
+@media (prefers-reduced-motion:no-preference){
+  .tools-arrow.in .ta-line{stroke-dasharray:210;stroke-dashoffset:210;
+    animation:ta-draw .9s cubic-bezier(.5,0,.2,1) .1s forwards}
+  .tools-arrow.in .ta-head{opacity:0;animation:ta-head .3s ease-out .8s forwards}
+}
+@keyframes ta-draw{to{stroke-dashoffset:0}}
+@keyframes ta-head{to{opacity:1}}
+
+/* ---------- S7 : OUTILS — même gabarit démo : liste à gauche, mini-scène
+   « comp » à droite qui joue le geste sélectionné ---------- */
+.tools-wrap{max-width:1100px;margin:0 auto;padding:26px clamp(20px,5vw,48px) 0}
+.tools-note{margin-top:14px;font-size:12.5px;color:var(--dim);text-align:center}
+/* la mini-comp : un cadre 16/9, un « calque » bleu, une timeline */
+.ts{position:relative;width:min(440px,86%);aspect-ratio:16/9;
+  border:1.5px solid rgba(20,20,15,.22);border-radius:10px}
+.ts i{position:absolute;display:block}
+.ts-layer{left:50%;top:50%;width:38%;height:32%;transform:translate(-50%,-50%);
+  background:linear-gradient(135deg,#4573D2,#6B93E0);border-radius:8px;
+  box-shadow:0 10px 30px rgba(69,115,210,.45)}
+/* CROP : le cadre accent se resserre sur le calque */
+.ts-cropbox{left:31%;top:34%;width:38%;height:32%;border:2px solid var(--accent);
+  border-radius:8px;box-shadow:0 0 16px rgba(94,162,255,.5)}
+.playing .ts-cropbox{animation:t-crop .95s .25s cubic-bezier(.65,0,.35,1) both}
+@keyframes t-crop{from{left:2%;top:3%;width:96%;height:94%;opacity:.65}to{left:31%;top:34%;width:38%;height:32%;opacity:1}}
+/* FILL : le calque s'étire plein cadre */
+.ts-layer.f{width:96%;height:90%;border-radius:7px}
+.playing .ts-layer.f{animation:t-fill 1s .25s cubic-bezier(.65,0,.35,1) both}
+@keyframes t-fill{from{transform:translate(-50%,-50%) scale(.38);opacity:.7}to{transform:translate(-50%,-50%) scale(1);opacity:1}}
+/* CURSOR : le clip vient se caler sur la tête de lecture */
+.ts-tl{position:absolute;left:6%;right:6%;bottom:9%;height:17%;border-radius:6px;background:#101114}
+.ts-ph{left:58%;top:-24%;bottom:-24%;width:2px;background:#fff;box-shadow:0 0 10px rgba(255,255,255,.8)}
+.ts-clip{left:58%;width:30%;top:16%;bottom:16%;border-radius:4px;background:linear-gradient(135deg,#4573D2,#6B93E0)}
+.playing .ts-clip{animation:t-cursor .9s .3s cubic-bezier(.65,0,.35,1) both}
+@keyframes t-cursor{from{left:9%}to{left:58%}}
+/* ALIGN & BOUNCE : rejoués à l'identique depuis les comps AE de Femz
+   (échantillons valueAtTime 24 fps, coordonnées monde recomposées
+   parent+enfant), remplacées depuis par les RENDUS CAPTURES (AE_VIDS).
+   Sources : docs/ae-captures/align-bounce.json. */
+/* ALIGN : vidéo rendue par AE — remplit la scène comme la comp */
+.ts-vid{width:min(440px,86%);aspect-ratio:16/9;border-radius:10px;display:block;
+  box-shadow:0 14px 34px rgba(25,25,18,.18)}
+
+/* WIGGLE : tremblement organique qui s'amortit */
+.playing .ts-layer.wi{animation:t-wiggle 1.4s .25s ease-in-out both}
+@keyframes t-wiggle{0%,100%{transform:translate(-50%,-50%) rotate(0)}12%{transform:translate(-54%,-46%) rotate(-2.4deg)}26%{transform:translate(-45%,-53%) rotate(2deg)}40%{transform:translate(-53%,-48%) rotate(-1.6deg)}55%{transform:translate(-47%,-52%) rotate(1.2deg)}70%{transform:translate(-51%,-49%) rotate(-.7deg)}85%{transform:translate(-49.5%,-50.5%) rotate(.4deg)}}
+
+/* STAGGER : le même mouvement pour chaque calque, décalé dans le temps —
+   grand trajet + ressort + délais bien espacés pour que la cascade se lise */
+
+
+
+
+/* ---------- S8 : CITATION CRÉATEUR ---------- */
+.quote-sec{max-width:760px;margin:0 auto;padding:clamp(56px,9vh,100px) clamp(20px,5vw,48px);text-align:center}
+.qmark{display:block;font-family:'Montserrat',sans-serif;font-weight:800;font-size:64px;line-height:.7;color:var(--accent)}
+.quote-sec blockquote p{font-style:italic;font-size:clamp(19px,2.6vw,26px);line-height:1.5;color:var(--ink);margin-top:12px}
+.quote-sec figcaption{margin-top:20px;font-family:var(--lbl);font-weight:700;font-size:13px;
+  letter-spacing:.04em;color:var(--muted)}
+
+/* ---------- MOTION coming soon ---------- */
+.soon{max-width:1100px;margin:26px auto 0;padding:0 clamp(20px,5vw,48px)}
+.soon-card{background:linear-gradient(115deg,#17181C,#232630);border-radius:var(--r-lg);
+  padding:30px clamp(22px,4vw,44px);display:flex;align-items:center;gap:22px;flex-wrap:wrap;
+  border:1px solid rgba(255,255,255,.08);position:relative;overflow:hidden}
+.soon-card::before{content:"";position:absolute;inset:0;pointer-events:none;
+  background:radial-gradient(60% 130% at 85% 20%,rgba(69,115,210,.25),transparent 60%)}
+.soon-card .lbl{font-size:10px;color:#B9CBF2;background:rgba(69,115,210,.25);border:1px solid rgba(69,115,210,.5);
+  border-radius:999px;padding:5px 12px;flex:none;position:relative}
+.soon-card p{color:#B9BDC4;font-size:14px;max-width:640px;position:relative}
+.soon-card p b{color:#fff}
+
+/* ---------- S9 : ACHAT ---------- */
+.buy-wrap{max-width:1100px;margin:0 auto;padding:26px clamp(20px,5vw,48px) 10px;
+  display:grid;grid-template-columns:1.05fr .95fr;gap:20px;align-items:stretch}
+.buy-card{background:#fff;border-radius:var(--r-lg);box-shadow:var(--shadow-lg);padding:34px;
+  display:flex;flex-direction:column;gap:18px}
+.price-line{display:flex;align-items:baseline;gap:14px}
+.price-line .price{font-family:'Montserrat',sans-serif;font-weight:800;font-size:52px;letter-spacing:-.02em}
+.price-line .once{font-size:12px;color:var(--dim);font-family:var(--lbl);font-weight:700;letter-spacing:.1em;text-transform:uppercase}
+.buy-card ul{list-style:none;display:flex;flex-direction:column;gap:11px;font-size:14.5px;color:var(--muted)}
+.buy-card li{display:flex;gap:11px;align-items:flex-start;line-height:1.45}
+.buy-card li svg{width:16px;height:16px;stroke:var(--accent);flex:none;margin-top:3px}
+.buy-card li b{color:var(--ink)}
+.li-updates b{color:var(--accent-deep);text-shadow:0 0 14px rgba(94,162,255,.45)}
+.li-updates svg{stroke:var(--accent-deep);filter:drop-shadow(0 0 6px rgba(94,162,255,.7))}
+.buy-card .btn-buy{justify-content:center;font-size:16px;padding:18px 30px}
+.buy-compat{font-size:12px;color:var(--dim);text-align:center;line-height:1.6}
+.install-card{justify-content:center;background:linear-gradient(180deg,var(--ml-top),var(--ml-bottom));border-radius:var(--r-lg);
+  padding:34px;display:flex;flex-direction:column;gap:20px;border:1px solid rgba(255,255,255,.07)}
+.install-card h3{font-family:'Montserrat',sans-serif;font-weight:800;font-size:17px;text-transform:uppercase;color:var(--ml-txt)}
+.step{display:flex;gap:16px;align-items:flex-start}
+/* pictos d'étapes animés — minimalistes, en boucle douce, coupés en
+   reduced-motion. 1: la flèche descend dans le plateau (téléchargement).
+   2: le fichier glisse dans la fenêtre (glisser-déposer).
+   3: le panneau vient se docker dans l'app. */
+.ipic{position:relative;width:52px;height:52px;border-radius:12px;background:#101114;
+  border:1px solid rgba(255,255,255,.09);flex:none;overflow:hidden}
+.ipic i{position:absolute;display:block}
+.ip-tray{left:13px;right:13px;bottom:12px;height:2px;background:#7FA4E8;border-radius:2px}
+.ip-tray::before,.ip-tray::after{content:"";position:absolute;bottom:0;width:2px;height:7px;background:#7FA4E8;border-radius:2px}
+.ip-tray::before{left:0}.ip-tray::after{right:0}
+.ip-arrow{left:50%;top:9px;width:2px;height:14px;background:#E6E8EA;border-radius:2px;transform:translateX(-50%)}
+.ip-arrow::after{content:"";position:absolute;left:50%;bottom:-1px;width:8px;height:8px;
+  border-right:2px solid #E6E8EA;border-bottom:2px solid #E6E8EA;transform:translateX(-50%) rotate(45deg);border-radius:1px}
+@keyframes ip-dl{
+  0%,10%{transform:translate(-50%,-6px);opacity:0;animation-timing-function:cubic-bezier(.55,0,.85,.36)}
+  18%{opacity:1;animation-timing-function:cubic-bezier(.55,0,.85,.36)}
+  34%{transform:translate(-50%,9px);animation-timing-function:cubic-bezier(.17,.67,.35,1)}
+  46%{transform:translate(-50%,3.5px);animation-timing-function:cubic-bezier(.6,0,.8,.4)}
+  56%{transform:translate(-50%,9px);animation-timing-function:cubic-bezier(.2,.7,.38,1)}
+  64%{transform:translate(-50%,6.2px);animation-timing-function:cubic-bezier(.6,0,.8,.45)}
+  71%{transform:translate(-50%,9px);animation-timing-function:cubic-bezier(.25,.7,.4,1)}
+  76%{transform:translate(-50%,7.8px);animation-timing-function:cubic-bezier(.55,0,.75,.5)}
+  80%,86%{transform:translate(-50%,9px);opacity:1}
+  95%,100%{transform:translate(-50%,9px);opacity:0}}
+.ipic .ip-arrow{animation:ip-dl 2.6s ease-in-out infinite}
+/* dossier (réf reactbits Folder) : arrière avec onglet, le fichier entre,
+   le rabat avant s'ouvre puis se referme — cycle complet */
+.ipic.fo{perspective:120px}
+.ip-back{left:11px;right:11px;top:16px;bottom:12px;border-radius:4px;
+  background:#3a3f46;border:1.5px solid rgba(255,255,255,.3)}
+.ip-back::before{content:"";position:absolute;top:-6px;left:0;width:13px;height:6px;
+  border-radius:3px 3px 0 0;background:#3a3f46;border:1.5px solid rgba(255,255,255,.3);border-bottom:none}
+.ip-file{left:50%;top:6px;width:13px;height:13px;margin-left:-6.5px;border-radius:4px;
+  background:linear-gradient(135deg,#4573D2,#6B93E0);z-index:1;
+  animation:ip-drop 3.2s cubic-bezier(.65,0,.35,1) infinite}
+@keyframes ip-drop{0%,20%{transform:translateY(-4px);opacity:0}30%{opacity:1}
+  50%,60%{transform:translateY(18px);opacity:1}66%,100%{transform:translateY(20px);opacity:0}}
+.ip-front{left:11px;right:11px;top:22px;bottom:12px;border-radius:4px;z-index:2;
+  background:linear-gradient(180deg,#2A2D31,#22252a);border:1.5px solid rgba(255,255,255,.4);
+  transform-origin:bottom center;
+  animation:ip-open 3.2s cubic-bezier(.65,0,.35,1) infinite}
+@keyframes ip-open{0%,16%{transform:rotateX(0)}32%,58%{transform:rotateX(-52deg)}76%,100%{transform:rotateX(0)}}
+/* les deux hôtes qui alternent en slide dans le carré */
+.ip-app{inset:11px;border:1.5px solid rgba(255,255,255,.35);border-radius:6px;overflow:hidden}
+.ip-ae,.ip-pr{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
+  font-family:'Montserrat',sans-serif;font-weight:800;font-size:15px;font-style:normal;
+  padding-left:1.8px}/* centre optique : l'encre Montserrat est asymétrique */
+.ip-pr{padding-left:3.7px}
+.ip-ae{color:#B9B6FF;animation:ip-slide-a 4.4s cubic-bezier(.65,0,.35,1) infinite}
+.ip-pr{color:#D9A9FF;animation:ip-slide-b 4.4s cubic-bezier(.65,0,.35,1) infinite}
+@keyframes ip-slide-a{0%,38%{transform:translateX(0)}48%,88%{transform:translateX(-30px)}98%,100%{transform:translateX(0)}}
+@keyframes ip-slide-b{0%,38%{transform:translateX(30px)}48%,88%{transform:translateX(0)}98%,100%{transform:translateX(30px)}}
+/* scène « extension tuto » — réplique de la comp AE de Femz (Window →
+   Extensions → MotionLAB) : chorégraphie rejouée depuis les échantillons
+   valueAtTime, visuels = mock de l'UI AE de sa comp. */
+.et{position:relative;margin-top:6px;aspect-ratio:16/9;border-radius:10px;overflow:hidden;
+  background:#101114;border:1px solid rgba(255,255,255,.09)}
+.et::after{content:"";position:absolute;inset:0;pointer-events:none;
+  background:radial-gradient(120% 95% at 50% 48%,transparent 58%,rgba(0,0,0,.28) 100%)}
+.et-vid{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.step div p{font-size:13.5px;color:var(--ml-dim);line-height:1.5}
+.step div p b{color:var(--ml-txt)}
+.step div p a{color:#7FA4E8;text-decoration:underline}
+
+/* ---------- S10 : FAQ ---------- */
+.faq-wrap{max-width:720px;margin:0 auto;padding:26px clamp(20px,5vw,48px) 20px;display:flex;flex-direction:column;gap:12px}
+.faq-wrap details{background:#fff;border-radius:14px;box-shadow:var(--shadow);padding:0;overflow:hidden}
+.faq-wrap summary{list-style:none;cursor:pointer;padding:19px 24px;font-weight:700;font-size:15px;
+  display:flex;justify-content:space-between;align-items:center;gap:14px}
+.faq-wrap summary::-webkit-details-marker{display:none}
+.faq-wrap summary::after{content:"+";font-family:'Montserrat',sans-serif;font-weight:800;font-size:19px;
+  color:var(--dim);transition:transform .25s}
+.faq-wrap details[open] summary::after{transform:rotate(45deg)}
+.faq-wrap details p{padding:0 24px 20px;color:var(--muted);font-size:14px;line-height:1.6}
+.faq-wrap details p a{text-decoration:underline}
+
+/* ---------- S11 : CTA FINAL ---------- */
+.final{max-width:900px;margin:0 auto;padding:clamp(56px,9vh,100px) clamp(20px,5vw,48px);text-align:center}
+.final h2{font-family:'Montserrat',sans-serif;font-weight:800;text-transform:uppercase;
+  font-size:clamp(30px,5.5vw,60px);letter-spacing:-.02em;line-height:1.08}
+.final.in h2{animation:a-rise .9s cubic-bezier(.28,1.45,.45,1) both}
+.final:not(.in) h2{opacity:0}
+.final .btn-buy{margin-top:28px;font-size:16px;padding:18px 34px}
+.final .btn-buy svg{width:16px;height:16px;stroke:currentColor;flex:none}
+.final-sub{margin-top:12px;font-size:12px;color:var(--dim);font-family:var(--lbl);
+  font-weight:700;letter-spacing:.1em;text-transform:uppercase}
+.assure{display:flex;justify-content:center;gap:26px;flex-wrap:wrap;margin-top:28px;
+  font-size:12.5px;color:var(--muted)}
+.assure span{display:inline-flex;gap:8px;align-items:center}
+.assure svg{width:16px;height:16px;stroke:var(--accent);flex:none}
+
+/* ---------- S12 : CROSS-SELL ---------- */
+.more-wrap{max-width:820px;margin:0 auto;padding:26px clamp(20px,5vw,48px) 10px}
+.mrow{display:grid;grid-template-columns:44px minmax(110px,auto) 1fr auto auto;gap:18px;
+  align-items:center;padding:20px 4px;border-top:1px solid var(--line)}
+.mtile{width:44px;height:44px;border-radius:11px;display:flex;align-items:center;justify-content:center;
+  font-family:'Montserrat',sans-serif;font-weight:800;font-size:13px;letter-spacing:.02em;flex:none}
+.mtile.ml{background:linear-gradient(135deg,var(--ml-top),var(--ml-bottom));color:#7FA4E8;
+  box-shadow:inset 0 0 0 1px rgba(255,255,255,.08)}
+.mtile.mv{background:#1B1A2E;color:#B9B6FF}
+.mtile.fl{background:#fff;color:var(--ink);border:1px solid var(--line-strong)}
+.mtile.fl svg{width:18px;height:18px}
+.mrow:last-child{border-bottom:1px solid var(--line)}
+.mname{font-family:'Montserrat',sans-serif;font-weight:800;text-transform:uppercase;font-size:16px;letter-spacing:-.01em}
+.mdesc{font-size:13.5px;color:var(--muted)}
+.mprice{font-family:var(--lbl);font-weight:700;font-size:12px;letter-spacing:.08em;
+  text-transform:uppercase;color:var(--ink);white-space:nowrap}
+.here{font-family:var(--lbl);font-weight:700;font-size:9px;letter-spacing:.12em;text-transform:uppercase;
+  color:var(--muted);border:1px solid var(--line-strong);background:rgba(255,255,255,.6);
+  border-radius:999px;padding:3px 8px;justify-self:end;white-space:nowrap}
+.go{display:inline-flex;align-items:center;gap:8px;font-size:13px;font-weight:700;color:var(--ink);
+  border-bottom:1.5px solid var(--ink);padding-bottom:3px;transition:gap .25s;justify-self:end;white-space:nowrap}
+.go:hover{gap:13px}
+.go svg{width:13px;height:13px;stroke:currentColor;flex:none}
+@media (max-width:640px){
+  .mrow{grid-template-columns:38px 1fr auto;row-gap:6px}
+  .mtile{width:38px;height:38px;grid-column:1;grid-row:1/3;align-self:start}
+  .mname{grid-column:2;grid-row:1}
+  .mprice{grid-column:3;grid-row:1;justify-self:end}
+  .mdesc{grid-column:2/-1;grid-row:2}
+  .here,.mrow .go{grid-column:2/-1;grid-row:3;justify-self:start}
+}
+
+/* ---------- SB : STICKY BAR MOBILE (greffe B) ---------- */
+.stickybar{position:fixed;left:12px;right:12px;
+  bottom:calc(12px + env(safe-area-inset-bottom));z-index:54;display:none;
+  align-items:center;justify-content:space-between;gap:12px;padding:8px 8px 8px 20px;
+  background:rgba(15,17,23,.6);backdrop-filter:blur(24px) saturate(180%);
+  -webkit-backdrop-filter:blur(24px) saturate(180%);
+  border:1px solid rgba(255,255,255,.22);border-radius:999px;
+  box-shadow:0 14px 40px rgba(0,0,0,.35);
+  transform:translateY(120%);transition:transform .35s cubic-bezier(.22,1,.36,1)}
+.stickybar.on{transform:translateY(0)}
+.sb-l{font-family:var(--lbl);font-weight:700;font-size:13px;color:#fff}
+.sb-btn{background:#fff;color:#0A0A0A;border-radius:999px;padding:10px 19px;
+  font-weight:700;font-size:13.5px;transition:box-shadow .25s}
+.sb-btn:hover{box-shadow:0 0 18px rgba(94,162,255,.6)}
+@media (max-width:720px){.stickybar{display:flex}}
+
+/* ---------- footer ---------- */
+footer{background:var(--charcoal);color:#EDEDE8;margin-top:0;position:relative;z-index:2}
+/* dernière section → footer : pas de vide inutile (le footer a déjà 46px de
+   padding haut). On resserre le bas de la dernière section. */
+main>section:last-of-type{padding-bottom:clamp(16px,2.5vh,26px)}
+.foot{max-width:1100px;margin:0 auto;padding:46px clamp(20px,5vw,48px);display:flex;justify-content:space-between;align-items:center;gap:26px;flex-wrap:wrap}
+.foot img{height:30px;width:auto;filter:brightness(0) invert(1)}
+.foot-links{display:flex;gap:24px;font-size:12.5px;color:#A8A8A2;flex-wrap:wrap}
+.foot-links a:hover{color:#fff}
+.socials{display:flex;gap:12px}
+.socials a{width:38px;height:38px;border:1px solid rgba(255,255,255,.25);border-radius:50%;display:flex;align-items:center;justify-content:center;transition:background .2s,border-color .2s}
+.socials a:hover{background:rgba(255,255,255,.12);border-color:rgba(255,255,255,.5)}
+.socials svg{width:16px;height:16px;stroke:#fff}
+.legal{max-width:1100px;margin:0 auto;padding:0 clamp(20px,5vw,48px) 32px;font-size:9.5px;letter-spacing:.14em;color:#7E7E78;display:flex;justify-content:space-between;gap:14px;flex-wrap:wrap}
+
+@media (max-width:860px){
+  .mani{padding-top:150px}
+  .buystrip{grid-template-columns:1fr;text-align:center;gap:36px}
+  .hero-panel{order:-1}
+  .pitch{margin-left:auto;margin-right:auto}
+  .hero-cta,.hero-meta{justify-content:center}
+  .hpanel{width:min(300px,80vw)}
+  .flow-wrap{grid-template-columns:1fr}
+  .guides-wrap{grid-template-columns:1fr}
+  .gm-stage{flex:none;height:250px}
+  .sig-wrap{grid-template-columns:1fr}
+  .sig-fig{max-width:min(360px,86vw);margin:0 auto}
+  .apps-wrap,.buy-wrap{grid-template-columns:1fr}
+  /* démos : la scène passe au-dessus, le panneau en dessous */
+  .demo{grid-template-columns:1fr;aspect-ratio:auto}
+  .demo-stage{order:-1;min-height:280px}
+  .demo-panel{border-right:none;border-top:1px solid rgba(255,255,255,.07)}
+  .dp-list{display:grid;grid-template-columns:repeat(2,1fr);flex:none;
+    max-height:298px;padding-right:4px;padding-bottom:30px}
+  .demo-panel::after{border-radius:0 0 20px 20px}
+  .stg{font-size:clamp(22px,7.4vw,34px)}
+}
+@media (max-width:480px){
+  .dp-list{grid-template-columns:1fr}
+}
+
+@media (prefers-reduced-motion:reduce){
+  .rv{opacity:1;transform:none;filter:none;transition:none}
+  .stg *,.ts *,.ipic i,.eg-prev *{animation:none!important}
+  .sec-head h2:hover{animation:none!important;-webkit-text-fill-color:var(--ink)}
+  .fixed-logo .mark,nav.dock::before{animation:none}
+  .hpanel,.hero-panel:hover .hpanel{transform:none;transition:none}
+  .hpanel::after,.hp-logo .lg,.hp-postit{animation:none}
+  .mani.in .m1 .ml,.mani.in .m2 .ml,.mani .mword .ml{animation:none;opacity:1!important}
+  .mani .mword{opacity:1!important}
+  .mchip{display:none}
+  .defile{-webkit-mask-image:none;mask-image:none}
+  .defile-track{animation:none;width:auto;flex-wrap:wrap;justify-content:center}
+  .defile-set[aria-hidden="true"]{display:none}
+  .defile-set{flex-wrap:wrap;justify-content:center;padding:0 20px}
+  .final.in h2{animation:none}
+  .final h2{opacity:1!important}
+  .stickybar{transition:none}
+}
+
+/* ================= GrabLAB : ajouts propres à cette page ================= */
+/* Rythme vertical : une seule paire de variables, comme partout sur le site. */
+:root{--secT:clamp(48px,8vh,92px);--secB:clamp(48px,7vh,80px)}
+
+/* --- capture de l'app, posée sur son halo --- */
+.shots{max-width:1100px;margin:0 auto;padding:26px clamp(20px,5vw,48px) 0;
+  display:grid;grid-template-columns:1fr 1fr;gap:clamp(18px,3vw,34px);align-items:start}
+.shot{position:relative}
+.shot figure{position:relative;border-radius:22px;overflow:hidden;background:#fff;box-shadow:var(--shadow-lg)}
+.shot.dark figure{background:#121211}
+.shot img{width:100%;height:auto;display:block}
+.shot figcaption{margin-top:12px;text-align:center;font-family:var(--lbl);font-weight:700;font-size:11.5px;
+  letter-spacing:.1em;text-transform:uppercase;color:var(--dim)}
+.shot::before{content:'';position:absolute;inset:8% 12% 18%;border-radius:40px;z-index:-1;
+  background:radial-gradient(60% 60% at 50% 40%,rgba(94,162,255,.30),transparent 70%);filter:blur(42px)}
+
+/* --- trois étapes --- */
+.how{max-width:1100px;margin:0 auto;padding:30px clamp(20px,5vw,48px) 0;
+  display:grid;grid-template-columns:repeat(3,1fr);gap:clamp(16px,2.4vw,26px)}
+.how-card{background:#fff;border-radius:var(--r-lg);box-shadow:var(--shadow);padding:26px 24px 24px}
+.how-card .n{font-family:'Montserrat',sans-serif;font-weight:800;font-size:13px;letter-spacing:.08em;
+  color:var(--accent-deep)}
+.how-card h3{font-family:'Montserrat',sans-serif;font-weight:800;text-transform:uppercase;
+  font-size:clamp(17px,1.9vw,20px);letter-spacing:-.01em;margin:10px 0 8px}
+.how-card p{color:var(--muted);font-size:14.5px;line-height:1.55}
+.how-card p b{color:var(--ink)}
+
+/* --- tuiles sombres qui citent l'app (même grammaire que les tuiles panel) --- */
+.specs{max-width:1100px;margin:0 auto;padding:26px clamp(20px,5vw,48px) 0;
+  display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+.spec{background:linear-gradient(180deg,var(--ml-top),var(--ml-bottom));border-radius:16px;padding:20px 18px;color:var(--ml-txt)}
+.spec b{display:block;font-family:'Montserrat',sans-serif;font-weight:800;font-size:22px;letter-spacing:-.02em}
+.spec span{display:block;margin-top:6px;font-size:12.5px;line-height:1.5;color:var(--ml-dim)}
+
+/* --- plateformes prises en charge --- */
+.plats{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;
+  max-width:760px;margin:22px auto 0;padding:0 clamp(20px,5vw,48px)}
+.plat{display:inline-flex;align-items:center;gap:8px;background:#fff;border-radius:999px;
+  padding:9px 16px;font-size:13.5px;font-weight:700;box-shadow:var(--shadow)}
+.plat svg{width:15px;height:15px;stroke:var(--accent);fill:none;stroke-width:2}
+
+/* --- bloc « à savoir avant d'acheter » : l'honnêteté, en clair --- */
+.frank{max-width:720px;margin:0 auto;padding:26px clamp(20px,5vw,48px) 0}
+.frank-card{background:#fff;border-radius:var(--r-lg);box-shadow:var(--shadow);padding:26px 28px}
+.frank-card h3{font-family:'Montserrat',sans-serif;font-weight:800;text-transform:uppercase;font-size:15px;
+  letter-spacing:.02em;margin-bottom:12px}
+.frank-card ul{list-style:none;display:flex;flex-direction:column;gap:10px}
+.frank-card li{display:flex;gap:11px;font-size:14px;line-height:1.55;color:var(--muted)}
+.frank-card li b{color:var(--ink)}
+.frank-card li i{width:6px;height:6px;border-radius:50%;background:var(--accent);flex:none;margin-top:8px}
+
+/* --- choix de la version, sous le CTA final --- */
+.files{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;margin-top:20px}
+.file{display:inline-flex;flex-direction:column;align-items:center;gap:2px;background:#fff;border-radius:14px;
+  padding:12px 18px;box-shadow:var(--shadow);min-width:150px}
+.file b{font-size:13.5px}
+.file span{font-size:11.5px;color:var(--dim);font-family:var(--lbl)}
+
+@media (max-width:880px){
+  .shots{grid-template-columns:1fr}
+  .how{grid-template-columns:1fr}
+  .specs{grid-template-columns:repeat(2,1fr)}
+}
+</style></head>
+<body>
+<!-- Google Tag Manager (noscript) -->
+<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-5ZD8M8DC"
+height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+<!-- End Google Tag Manager (noscript) -->
+
+<canvas id="dots" aria-hidden="true"></canvas>
+<div class="vignette" aria-hidden="true"></div>
+<span id="playhead" aria-hidden="true"></span>
+
+<a class="fixed-logo" href="/" aria-label="FemzLab — accueil">
+  <span class="mark" aria-hidden="true"></span>
+</a>
+<nav class="dock">
+  <div class="langsw"><button data-langbtn="fr" onclick="__setLang('fr')">FR</button><button data-langbtn="en" onclick="__setLang('en')">EN</button></div>
+  <button class="nav-toggle" aria-label="Menu" aria-expanded="false" aria-controls="nav-links-menu"><span></span><span></span></button>
+  <div class="nav-links">
+    <div class="nav-links-menu" id="nav-links-menu">
+      <a data-track="cta_gl_nav_portfolio" href="/portfolio/">Portfolio</a>
+      <a data-track="cta_gl_nav_shop" href="/#shop">Boutique</a>
+      <a data-track="cta_gl_nav_assets" href="/#assets">Assets</a>
+      <a data-track="cta_gl_nav_profil" href="/#profil">À propos</a>
+    </div>
+    <a data-track="cta_gl_acheter_nav" class="btn solid" href="https://pay.femzlab.shop/grablab">Acheter — 3,99&nbsp;€</a>
+  </div>
+</nav>
+
+<main id="top">
+
+  <!-- ======================= S1 : HÉROS ======================= -->
+  <section class="mani rv">
+    <span class="ptag"><i></i>Application · Mac et Windows</span>
+    <h1 aria-label="GrabLAB — un lien collé, ton fichier prêt">
+      <span class="mword m1">Un lien collé,</span>
+      <span class="mword m2">ton fichier prêt.</span>
+    </h1>
+  </section>
+
+  <div class="buystrip">
+    <div class="buy-left rv">
+      <p class="mlname">GrabLAB<span class="v1">V1</span></p>
+      <p class="pitch"><b>Colle un lien YouTube, TikTok ou Instagram.</b> GrabLAB récupère la vidéo en MP4 jusqu'en 4K, ou le son en MP3 — sans filigrane, sans site douteux, sans pub.</p>
+      <p class="ppay"><b>3,99&nbsp;€</b> · paiement unique · à toi pour toujours</p>
+      <div class="hero-cta">
+        <a data-track="cta_gl_acheter_hero" class="btn-buy" href="https://pay.femzlab.shop/grablab">Acheter GrabLAB <span class="p">3,99&nbsp;€</span></a>
+        <a data-track="cta_gl_voir_app" class="btn-ghost" href="#app">Voir l'app</a>
+        <a data-track="cta_gl_avant_achat" class="btn-ghost" href="#franchise">À savoir avant d'acheter</a>
+      </div>
+      <div class="hero-meta">
+        <span><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>Téléchargement immédiat</span>
+        <span><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>Mac Apple Silicon et Intel</span>
+        <span><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>Version Windows incluse</span>
+      </div>
+    </div>
+    <div class="hero-panel rv" style="--d:.12s">
+      <figure class="shot dark" style="margin:0">
+        <img src="assets/png-34.png" width="1240" height="900" alt="La fenêtre de GrabLAB en mode sombre : le champ où coller le lien, le choix vidéo ou audio, la définition, et deux téléchargements terminés." loading="eager" decoding="async">
+      </figure>
+    </div>
+  </div>
+
+  <!-- ======================= S2 : LES PLATEFORMES ======================= -->
+  <div class="plats rv">
+    <span class="plat"><svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><rect x="2.5" y="5.5" width="19" height="13" rx="4"/><path d="M10.5 9.5 15 12l-4.5 2.5v-5z"/></svg>YouTube</span>
+    <span class="plat"><svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M9 9v7a3 3 0 1 0 3-3"/><path d="M12 4c.6 2.3 2.2 3.7 4.5 4"/></svg>TikTok</span>
+    <span class="plat"><svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><path d="M17.5 6.5h.01"/></svg>Instagram</span>
+    <span class="plat"><svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12M7 10l5 5 5-5M5 21h14"/></svg>MP4 4K ou MP3 320</span>
+    <span class="plat"><svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16M4 12h10M4 17h7"/></svg>Plusieurs liens d'un coup</span>
+  </div>
+
+  <!-- ======================= S3 : COMMENT ÇA MARCHE ======================= -->
+  <section class="band">
+  <div class="sec-head rv" id="app">
+    <span class="eyebrow">Trois gestes</span>
+    <h2>Copier, coller, c'est fini</h2>
+    <p>Aucun réglage obligatoire, aucun compte à créer dans l'app, aucune page de pub à fermer.</p>
+  </div>
+  <div class="how">
+    <div class="how-card rv">
+      <span class="n">01</span>
+      <h3>Choisis le format</h3>
+      <p>En haut de la fenêtre : <b>vidéo MP4</b> ou <b>audio MP3</b>, et la définition — 4K, 1440p, 1080p, 720p, 480p, 360p (ou 320 à 128 kbps pour le son). Ton choix reste, l'app s'en souvient.</p>
+    </div>
+    <div class="how-card rv" style="--d:.06s">
+      <span class="n">02</span>
+      <h3>Colle le lien</h3>
+      <p>Dans le champ, ou <b>⌘V n'importe où dans la fenêtre</b>. Colle-en dix d'un coup si tu veux : une carte par vidéo, deux téléchargements en parallèle. Une playlist ou un carrousel se déplient tout seuls.</p>
+    </div>
+    <div class="how-card rv" style="--d:.12s">
+      <span class="n">03</span>
+      <h3>Récupère ton fichier</h3>
+      <p>Le téléchargement démarre seul. À la fin, <b>Afficher</b> ouvre le fichier dans le Finder. Tout arrive dans Téléchargements/GrabLAB — ou dans le dossier que tu choisis.</p>
+    </div>
+  </div>
+  </section>
+
+  <!-- ======================= S4 : LA THÈSE 4K ======================= -->
+  <div class="sec-head rv">
+    <span class="eyebrow">Le détail qui change tout</span>
+    <h2>Une 4K qui s'ouvre dans Premiere</h2>
+    <p>C'est là que les téléchargeurs gratuits te lâchent, et c'est pour ça que cette app existe.</p>
+  </div>
+  <div class="frank">
+    <div class="frank-card rv">
+      <ul>
+        <li><i></i><span>Au-delà de 1080p, <b>YouTube ne sert plus que du VP9 ou de l'AV1</b>. Ces fichiers-là, Premiere, After Effects et QuickTime ne savent pas toujours les lire : tu récupères une 4K inutilisable pour ton montage.</span></li>
+        <li><i></i><span>GrabLAB <b>reconvertit en H.264 avec l'encodeur matériel de ta machine</b> — 3,5× le temps réel en 4K sur un Mac Apple Silicon (mesuré sur M4 Max). Le fichier s'ouvre partout, y compris sur iPhone.</span></li>
+        <li><i></i><span>Qualité mesurée, pas promise : <b>SSIM 0,9906</b> contre la source 4K d'origine. Autrement dit, la différence ne se voit pas.</span></li>
+        <li><i></i><span>Tu préfères le fichier brut ? Le réglage <b>« Au-delà de 1080p »</b> offre H.264, HEVC ou Original — aucune conversion, le fichier exact de la plateforme.</span></li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="specs rv">
+    <div class="spec"><b>4K</b><span>Jusqu'à 2160p quand la vidéo l'a. Sinon, la meilleure définition disponible — et l'app te le dit sur la carte.</span></div>
+    <div class="spec"><b>Sans filigrane</b><span>Le sélecteur écarte les formats marqués. Vérifié sur TikTok par les métadonnées, la durée et les images.</span></div>
+    <div class="spec"><b>MP3 320</b><span>Le son seul, avec les métadonnées. Si la source plafonne plus bas, l'étiquette affiche le vrai débit.</span></div>
+    <div class="spec"><b>À jour</b><span>Le moteur se met à jour tout seul, une fois par jour : c'est ce qui le fait tenir quand les plateformes changent.</span></div>
+  </div>
+
+  <!-- ======================= S5 : L'APP ======================= -->
+  <section class="band">
+  <div class="sec-head rv">
+    <span class="eyebrow">L'interface</span>
+    <h2>Claire, sombre, française ou anglaise</h2>
+    <p>Une fenêtre, pas un tableau de bord. Elle suit le thème de ton système, ou celui que tu lui imposes.</p>
+  </div>
+  <div class="shots">
+    <div class="shot rv">
+      <figure>
+        <img src="assets/png-32.png" width="1240" height="900" alt="GrabLAB en mode clair : deux vidéos téléchargées, la définition obtenue affichée sur chaque carte." loading="lazy" decoding="async">
+      </figure>
+      <figcaption>Mode clair</figcaption>
+    </div>
+    <div class="shot dark rv" style="--d:.08s">
+      <figure>
+        <img src="assets/png-35.png" width="1240" height="850" alt="Les réglages de GrabLAB : cookies du navigateur, apparence claire ou sombre, langue française ou anglaise, et version du moteur." loading="lazy" decoding="async">
+      </figure>
+      <figcaption>Les réglages</figcaption>
+    </div>
+  </div>
+  </section>
+
+  <!-- ======================= S6 : CE QUI EST INCLUS ======================= -->
+  <div class="sec-head rv" id="acheter">
+    <span class="eyebrow">Ce que tu reçois</span>
+    <h2>Une app, trois fichiers</h2>
+  </div>
+  <div class="buy-wrap">
+    <div class="buy-card rv">
+      <ul>
+        <li><svg viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><path d="M20 6 9 17l-5-5"/></svg><span><b>GrabLAB pour Mac</b> — Apple Silicon (M1 à M4) et Intel, deux fichiers séparés pour ne pas te faire télécharger 700 Mo pour rien. macOS 11 ou plus récent.</span></li>
+        <li><svg viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><path d="M20 6 9 17l-5-5"/></svg><span><b>GrabLAB pour Windows</b> — 10 et 11, 64 bits. Inclus dans le même achat.</span></li>
+        <li><svg viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><path d="M20 6 9 17l-5-5"/></svg><span><b>Français et anglais</b>, thème clair, sombre ou automatique.</span></li>
+        <li><svg viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><path d="M20 6 9 17l-5-5"/></svg><span><b>Les mises à jour de la V1</b>, et le moteur qui se met à jour seul chaque jour.</span></li>
+        <li><svg viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><path d="M20 6 9 17l-5-5"/></svg><span><b>Activation par ton email d'achat</b> : tu la fais une fois, sur autant de tes machines que tu veux. L'app marche ensuite sans connexion.</span></li>
+      </ul>
+      <a data-track="cta_gl_acheter_carte" class="btn-buy" href="https://pay.femzlab.shop/grablab">Acheter GrabLAB <span class="p">3,99&nbsp;€</span></a>
+      <p class="buy-compat">Paiement unique, pas d'abonnement. CB ou PayPal via Podia.</p>
+    </div>
+  </div>
+
+  <!-- ======================= S7 : FRANCHISE ======================= -->
+  <div class="sec-head rv" id="franchise">
+    <span class="eyebrow">Sans enrobage</span>
+    <h2>À savoir avant d'acheter</h2>
+    <p>Tout ce qui pourrait te faire regretter l'achat est écrit ici, pas caché dans une note de bas de page.</p>
+  </div>
+  <div class="frank">
+    <div class="frank-card rv">
+      <ul>
+        <li><i></i><span><b>macOS bloque l'app au premier lancement.</b> Elle n'est pas notariée par Apple (99 €/an). Il faut passer une fois par Réglages Système → Confidentialité et sécurité → « Ouvrir quand même ». La marche à suivre est jointe au téléchargement. Après, double-clic normal.</span></li>
+        <li><i></i><span><b>La version Windows n'a jamais été ouverte sur un vrai PC.</b> Elle est fabriquée depuis un Mac et vérifiée par script, pas par l'usage. Elle est incluse en bonus — si elle coince chez toi, écris-moi, je corrige ou je rembourse.</span></li>
+        <li><i></i><span><b>La première ouverture demande une connexion</b> : l'app télécharge son moteur (~30 Mo), puis le maintient à jour.</span></li>
+        <li><i></i><span><b>La 4K n'existe pas sur toutes les vidéos.</b> GrabLAB prend alors la meilleure définition disponible et l'écrit noir sur blanc sur la carte.</span></li>
+        <li><i></i><span><b>Testé sur YouTube, TikTok et Instagram.</b> D'autres sites peuvent marcher, mais je ne les annonce pas tant que je ne les ai pas essayés.</span></li>
+        <li><i></i><span><b>Télécharger enfreint les conditions d'utilisation des plateformes.</b> GrabLAB est fait pour récupérer tes propres contenus, ou ceux dont tu as les droits.</span></li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- ======================= S8 : POURQUOI ======================= -->
+  <section class="quote-sec rv">
+    <blockquote>
+      <span class="eyebrow">Pourquoi je l'ai fait</span>
+      <p>« Je passais mon temps sur des sites qui me vendaient trois pubs avant de me rendre une vidéo en 720p compressée. J'ai fait l'outil que je voulais avoir : un champ, un lien, le fichier — en 4K, prêt à monter. »</p>
+    </blockquote>
+    <figcaption>Femz — créateur de FemzLab</figcaption>
+  </section>
+
+  <!-- ======================= S9 : FAQ ======================= -->
+  <section class="band">
+  <div class="sec-head rv">
+    <span class="eyebrow">Questions fréquentes</span>
+    <h2>Ce qu'on me demande</h2>
+  </div>
+  <div class="faq-wrap">
+    <details class="rv" name="faq">
+      <summary>Comment je sais si mon Mac est Apple Silicon ou Intel ?</summary>
+      <p>Menu Pomme (en haut à gauche) → « À propos de ce Mac ». Si tu lis « Puce Apple M1 », M2, M3 ou M4 → prends la version Apple Silicon. Si tu lis « Processeur Intel » → prends la version Intel. Dans le doute, prends Intel : elle fonctionne aussi sur les Mac Apple Silicon, simplement un peu moins vite.</p>
+    </details>
+    <details class="rv" name="faq" style="--d:.05s">
+      <summary>macOS dit que l'app ne peut pas être ouverte. C'est grave ?</summary>
+      <p>Non, et c'est prévu. GrabLAB n'est pas notariée par Apple : macOS bloque par défaut tout ce qui ne l'est pas. Double-clique sur l'app, clique sur OK, puis va dans Réglages Système → Confidentialité et sécurité : un bouton « Ouvrir quand même » est apparu en bas de la page. Une seule fois, ensuite l'app s'ouvre normalement. Tout est détaillé dans le fichier joint au téléchargement.</p>
+    </details>
+    <details class="rv" name="faq" style="--d:.1s">
+      <summary>Ça marche sur combien d'ordinateurs ?</summary>
+      <p>Sur les tiens. L'activation se fait avec l'email de ton achat, sans limite de machines pour un usage personnel. Elle est valable 30 jours hors connexion, et se revalide toute seule ensuite.</p>
+    </details>
+    <details class="rv" name="faq" style="--d:.15s">
+      <summary>Mon email est refusé à l'activation</summary>
+      <p>Neuf fois sur dix, c'est une autre adresse que celle du paiement. Réessaie avec celle qui a reçu le reçu Podia, et si ça coince toujours, écris-moi à <a data-track="cta_gl_contact_faq_activation" href="mailto:hello@imfemz.com">hello@imfemz.com</a> : je débloque ton accès dans la journée.</p>
+    </details>
+    <details class="rv" name="faq" style="--d:.2s">
+      <summary>Est-ce que je peux télécharger une playlist entière ?</summary>
+      <p>Oui. Colle le lien de la playlist ou du carrousel : GrabLAB le déplie et crée une carte par vidéo (50 au maximum), puis les enchaîne deux par deux.</p>
+    </details>
+    <details class="rv" name="faq" style="--d:.25s">
+      <summary>Les vidéos privées ou avec limite d'âge ?</summary>
+      <p>Une vidéo privée reste privée : rien à faire. Pour une limite d'âge ou un Instagram qui demande une connexion, les réglages proposent « Cookies du navigateur » : GrabLAB réutilise alors la session de ton navigateur. macOS peut demander l'accès au trousseau à ce moment-là.</p>
+    </details>
+    <details class="rv" name="faq" style="--d:.3s">
+      <summary>Et si ça ne me convient pas ?</summary>
+      <p>C'est un fichier numérique, il n'y a pas de remboursement automatique. Mais écris-moi — on trouve une solution. Le détail est dans les <a href="https://pay.femzlab.shop/terms" target="_blank" rel="noopener">CGV</a>.</p>
+    </details>
+    <details class="rv" name="faq" style="--d:.35s">
+      <summary>C'est légal ?</summary>
+      <p>Télécharger une vidéo va contre les conditions d'utilisation de YouTube, TikTok et Instagram, et le contenu des autres reste protégé par le droit d'auteur. GrabLAB est vendu pour récupérer <b>tes</b> contenus — tes propres publications, tes rushes, ce dont tu détiens les droits ou ce qui est libre. Ce que tu en fais ensuite te regarde et t'engage.</p>
+    </details>
+  </div>
+  </section>
+
+  <!-- ======================= S10 : CTA FINAL ======================= -->
+  <section class="final rv">
+    <h2>Un lien. Ton fichier.</h2>
+    <a data-track="cta_gl_acheter_final" class="btn-buy" href="https://pay.femzlab.shop/grablab">Acheter GrabLAB — 3,99&nbsp;€ <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 5l7 7-7 7"/></svg></a>
+    <p class="final-sub">Paiement unique · CB ou PayPal · téléchargement immédiat</p>
+    <div class="files">
+      <span class="file"><b>Mac Apple Silicon</b><span>142 Mo</span></span>
+      <span class="file"><b>Mac Intel</b><span>154 Mo</span></span>
+      <span class="file"><b>Windows 64 bits</b><span>206 Mo</span></span>
+    </div>
+    <div class="assure">
+      <span><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v11M6 12l6 6 6-6M5 21h14"/></svg>Téléchargement immédiat</span>
+      <span><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 7h16M4 12h10M4 17h7"/></svg>Français et anglais</span>
+      <span><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12M7 10l5 5 5-5"/></svg>MP4 4K ou MP3</span>
+      <span><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17 3l4 4L8 20l-5 1 1-5 13-13z"/></svg>Mises à jour V1 incluses</span>
+    </div>
+  </section>
+
+  <!-- ======================= S11 : CROSS-SELL ======================= -->
+  <section class="band">
+  <div class="sec-head rv">
+    <span class="eyebrow">Et après</span>
+    <h2>Complète ton setup</h2>
+  </div>
+  <div class="more-wrap">
+    <div class="mrow rv">
+      <span class="mtile fl" aria-hidden="true"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M8 2v9M4.5 7.5 8 11l3.5-3.5M3 14h10"/></svg></span>
+      <span class="mname">GrabLAB</span>
+      <span class="mdesc">L'app que tu viens de voir</span>
+      <span class="mprice">3,99&nbsp;€</span>
+      <span class="here">Tu es ici</span>
+    </div>
+    <div class="mrow rv" style="--d:.05s">
+      <span class="mtile ml" aria-hidden="true">ML</span>
+      <span class="mname">MotionLAB</span>
+      <span class="mdesc">Le panel texte pour After Effects et Premiere</span>
+      <span class="mprice">39&nbsp;€</span>
+      <a data-track="cta_gl_cross_motionlab" class="go" href="/motionlab/">Voir le plugin <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 5l7 7-7 7"/></svg></a>
+    </div>
+    <div class="mrow rv" style="--d:.1s">
+      <span class="mtile mv" aria-hidden="true">MV</span>
+      <span class="mname">MetaVision</span>
+      <span class="mdesc">La formation VFX complète — 18 leçons</span>
+      <span class="mprice">150&nbsp;€ ou 2×75&nbsp;€</span>
+      <a data-track="cta_gl_cross_metavision" class="go" href="/metavision/">Voir la formation <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 5l7 7-7 7"/></svg></a>
+    </div>
+  </div>
+  </section>
+
+</main>
+
+<footer>
+  <div class="foot">
+    <a href="/" aria-label="FemzLab"><img src="assets/png-01.png" alt="FemzLab"></a>
+    <div class="foot-links">
+      <a data-track="cta_gl_nav_shop_2" href="/#shop">Boutique</a>
+      <a data-track="cta_gl_nav_assets_2" href="/#assets">Assets</a>
+      <a data-track="cta_gl_nav_profil_2" href="/#profil">À propos</a>
+    </div>
+    <div class="socials">
+      <a data-track="cta_gl_instagram" href="https://www.instagram.com/imfemz/" target="_blank" rel="noopener" aria-label="Instagram"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><path d="M17.5 6.5h.01"/></svg></a>
+      <a data-track="cta_gl_youtube" href="https://www.youtube.com/c/Femzprod" target="_blank" rel="noopener" aria-label="YouTube"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2.5" y="5.5" width="19" height="13" rx="4"/><path d="M10.5 9.5 15 12l-4.5 2.5v-5z"/></svg></a>
+      <a data-track="cta_gl_email" href="mailto:hello@imfemz.com" aria-label="Email"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="3"/><path d="m3 7 9 6 9-6"/></svg></a>
+    </div>
+  </div>
+  <div class="legal"><span>© 2026 FemzLab — hello@imfemz.com</span><span>GrabLAB · ffmpeg (GPL) et yt-dlp inclus</span></div>
+</footer>
+
+<div class="stickybar" aria-hidden="true">
+  <span class="sb-l">GrabLAB — 3,99&nbsp;€</span>
+  <a data-track="cta_gl_acheter_sticky" class="sb-btn" href="https://pay.femzlab.shop/grablab" tabindex="-1">Acheter</a>
+</div>
+
+<script>
+const REDUCED=matchMedia('(prefers-reduced-motion: reduce)').matches;
+const FINE=matchMedia('(pointer: fine)').matches;
+
+// dots
+(function(){const cv=document.getElementById('dots'),ctx=cv.getContext('2d');let W,H,DPR,pts=[],mx=-9e3,my=-9e3,raf;const SP=30,R=1.3,BU=67,RAD=400;
+function build(){DPR=Math.min(devicePixelRatio||1,2);W=innerWidth;H=innerHeight;cv.width=W*DPR;cv.height=H*DPR;cv.style.width=W+'px';cv.style.height=H+'px';ctx.setTransform(DPR,0,0,DPR,0,0);pts=[];for(let y=SP/2;y<H;y+=SP)for(let x=SP/2;x<W;x+=SP)pts.push({x,y});}
+function draw(){ctx.clearRect(0,0,W,H);for(const p of pts){const dx=p.x-mx,dy=p.y-my,d=Math.hypot(dx,dy);let r=R,a=.16,ox=0,oy=0;if(d<RAD){const f=1-d/RAD,pu=f*f*BU*.16;ox=(dx/(d||1))*pu;oy=(dy/(d||1))*pu;r=R+f*1.4;a=Math.min(.5,a+f*.3);}ctx.beginPath();ctx.arc(p.x+ox,p.y+oy,r,0,6.2832);ctx.fillStyle='rgba(96,96,88,'+a.toFixed(3)+')';ctx.fill();}raf=null;}
+function q(){if(!raf)raf=requestAnimationFrame(draw);}addEventListener('resize',()=>{build();q();});
+if(!REDUCED&&FINE){addEventListener('pointermove',e=>{mx=e.clientX;my=e.clientY;q();},{passive:true});addEventListener('pointerleave',()=>{mx=my=-9e3;q();});}
+build();draw();})();
+
+// playhead + dock condense + menu mobile
+(function(){const ph=document.getElementById('playhead'),dock=document.querySelector('.dock'),logo=document.querySelector('.fixed-logo');let t=false;
+addEventListener('scroll',()=>{if(t)return;t=true;requestAnimationFrame(()=>{const m=document.documentElement.scrollHeight-innerHeight;ph.style.transform='scaleX('+(m>0?scrollY/m:0)+')';const past=scrollY>50;if(dock)dock.classList.toggle('dock-scrolled',past);if(logo)logo.classList.toggle('hidden',past);t=false;});},{passive:true});
+const navToggle=document.querySelector('.nav-toggle'),navMenu=document.getElementById('nav-links-menu');
+if(navToggle&&navMenu){
+  const closeMenu=()=>{navMenu.classList.remove('open');navToggle.setAttribute('aria-expanded','false')};
+  navToggle.addEventListener('click',()=>{const open=navMenu.classList.toggle('open');navToggle.setAttribute('aria-expanded',open?'true':'false')});
+  navMenu.addEventListener('click',e=>{if(e.target.closest('a'))closeMenu()});
+  document.addEventListener('click',e=>{if(!dock.contains(e.target))closeMenu()});
+}
+})();
+
+// reveals rejoués à chaque scroll (motif du site).
+// Hystérésis (entrée >0.3 / sortie <0.05, zone morte au milieu) au lieu d'un
+// seuil unique : un seuil unique flickait au scroll trackpad — un
+// micro-mouvement autour de la frontière refaisait osciller isIntersecting
+// plusieurs fois par seconde, ce qui relançait la transition filter:blur en
+// boucle courte (le "flou qui clignote"). La zone morte absorbe ce jitter.
+(function(){
+  const io=new IntersectionObserver(es=>{
+    es.forEach(e=>{
+      const r=e.intersectionRatio;
+      if(r>0.3)e.target.classList.add('in');
+      else if(r<0.05)e.target.classList.remove('in');
+    });
+  },{threshold:[0,.05,.1,.15,.2,.25,.3,.35]});
+  document.querySelectorAll('.rv').forEach(el=>io.observe(el));
+})();
+// Sticky bar mobile : deux sentinelles IO — la barre s'arme quand la buystrip
+// sort de l'écran, se masque quand un autre CTA d'achat est visible
+// (buy-wrap, final, footer). Jamais deux CTA d'achat à l'écran.
+(function(){
+  const sb=document.querySelector('.stickybar');if(!sb)return;
+  const strip=document.querySelector('.buystrip');if(!strip)return;
+  const btn=sb.querySelector('.sb-btn');
+  const others=[document.querySelector('.buy-wrap'),document.querySelector('.final'),document.querySelector('footer')].filter(Boolean);
+  const mq=matchMedia('(max-width:720px)');
+  let stripOut=false;const vis=new Set();
+  function upd(){
+    const on=stripOut&&vis.size===0&&mq.matches;
+    sb.classList.toggle('on',on);
+    sb.setAttribute('aria-hidden',on?'false':'true');
+    if(btn)btn.tabIndex=on?0:-1;
+  }
+  new IntersectionObserver(es=>{es.forEach(e=>{stripOut=!e.isIntersecting;});upd();},{threshold:0}).observe(strip);
+  const io2=new IntersectionObserver(es=>{es.forEach(e=>{if(e.isIntersecting)vis.add(e.target);else vis.delete(e.target);});upd();},{threshold:0});
+  others.forEach(el=>io2.observe(el));
+  if(mq.addEventListener)mq.addEventListener('change',upd);
+})();</script>
+
+<!-- Traduction FR→EN : chaque chaîne visible a son entrée, le TreeWalker fait le reste. -->
+<script>
+(function(){
+  const T={
+    "Application · Mac et Windows":"App · Mac and Windows",
+    "Acheter — 3,99 €":"Buy — €3.99",
+    "3,99 €":"€3.99",
+    "GrabLAB — 3,99 €":"GrabLAB — €3.99",
+    "Acheter GrabLAB — 3,99 €":"Buy GrabLAB — €3.99",
+    "39 €":"€39",
+    "150 € ou 2×75 €":"€150 or 2×€75",
+    "ou":"or",
+    "Acheter — 3,99 €":"Buy — €3.99",
+    "3,99 €":"€3.99",
+    "GrabLAB — 3,99 €":"GrabLAB — €3.99",
+    "Acheter":"Buy",
+    "Un lien collé,":"One link pasted,",
+    "ton fichier prêt.":"your file is ready.",
+    "Colle un lien YouTube, TikTok ou Instagram.":"Paste a YouTube, TikTok or Instagram link.",
+    "GrabLAB récupère la vidéo en MP4 jusqu'en 4K, ou le son en MP3 — sans filigrane, sans site douteux, sans pub.":"GrabLAB pulls the video as MP4 up to 4K, or the sound as MP3 — no watermark, no shady website, no ads.",
+    "· paiement unique · à toi pour toujours":"· one-time payment · yours forever",
+    "Acheter GrabLAB":"Buy GrabLAB",
+    "Voir l'app":"See the app",
+    "À savoir avant d'acheter":"Before you buy",
+    "Téléchargement immédiat":"Instant download",
+    "Mac Apple Silicon et Intel":"Mac Apple Silicon and Intel",
+    "Version Windows incluse":"Windows version included",
+    "Plusieurs liens d'un coup":"Several links at once",
+    "MP4 4K ou MP3 320":"MP4 4K or MP3 320",
+    "Trois gestes":"Three moves",
+    "Copier, coller, c'est fini":"Copy, paste, done",
+    "Aucun réglage obligatoire, aucun compte à créer dans l'app, aucune page de pub à fermer.":"No mandatory settings, no account to create in the app, no ad page to close.",
+    "Choisis le format":"Pick the format",
+    "vidéo MP4":"MP4 video",
+    "audio MP3":"MP3 audio",
+    ", et la définition — 4K, 1440p, 1080p, 720p, 480p, 360p (ou 320 à 128 kbps pour le son). Ton choix reste, l'app s'en souvient.":", and the resolution — 4K, 1440p, 1080p, 720p, 480p, 360p (or 320 down to 128 kbps for audio). Your choice sticks, the app remembers it.",
+    "En haut de la fenêtre :":"At the top of the window:",
+    "Colle le lien":"Paste the link",
+    "Dans le champ, ou":"In the field, or",
+    "⌘V n'importe où dans la fenêtre":"⌘V anywhere in the window",
+    ". Colle-en dix d'un coup si tu veux : une carte par vidéo, deux téléchargements en parallèle. Une playlist ou un carrousel se déplient tout seuls.":". Paste ten at once if you like: one card per video, two downloads in parallel. A playlist or a carousel unfolds on its own.",
+    "Récupère ton fichier":"Grab your file",
+    "Le téléchargement démarre seul. À la fin,":"The download starts on its own. When it's done,",
+    "Afficher":"Show",
+    "ouvre le fichier dans le Finder. Tout arrive dans Téléchargements/GrabLAB — ou dans le dossier que tu choisis.":"opens the file in the Finder. Everything lands in Downloads/GrabLAB — or in the folder you pick.",
+    "Le détail qui change tout":"The detail that changes everything",
+    "Une 4K qui s'ouvre dans Premiere":"A 4K that opens in Premiere",
+    "C'est là que les téléchargeurs gratuits te lâchent, et c'est pour ça que cette app existe.":"This is where free downloaders let you down, and why this app exists.",
+    "Au-delà de 1080p,":"Above 1080p,",
+    "YouTube ne sert plus que du VP9 ou de l'AV1":"YouTube only serves VP9 or AV1",
+    ". Ces fichiers-là, Premiere, After Effects et QuickTime ne savent pas toujours les lire : tu récupères une 4K inutilisable pour ton montage.":". Premiere, After Effects and QuickTime can't always read those files: you end up with a 4K that's useless for your edit.",
+    "GrabLAB":"GrabLAB",
+    "reconvertit en H.264 avec l'encodeur matériel de ta machine":"re-encodes to H.264 with your machine's hardware encoder",
+    "— 3,5× le temps réel en 4K sur un Mac Apple Silicon (mesuré sur M4 Max). Le fichier s'ouvre partout, y compris sur iPhone.":"— 3.5× real time in 4K on an Apple Silicon Mac (measured on an M4 Max). The file opens anywhere, iPhone included.",
+    "Qualité mesurée, pas promise :":"Quality measured, not promised:",
+    "SSIM 0,9906":"SSIM 0.9906",
+    "contre la source 4K d'origine. Autrement dit, la différence ne se voit pas.":"against the original 4K source. In other words, you can't see the difference.",
+    "Tu préfères le fichier brut ? Le réglage":"Prefer the raw file? The",
+    "« Au-delà de 1080p »":"“Above 1080p”",
+    "offre H.264, HEVC ou Original — aucune conversion, le fichier exact de la plateforme.":"setting offers H.264, HEVC or Original — no conversion, the platform's exact file.",
+    "Jusqu'à 2160p quand la vidéo l'a. Sinon, la meilleure définition disponible — et l'app te le dit sur la carte.":"Up to 2160p when the video has it. Otherwise the best available resolution — and the app says so on the card.",
+    "Sans filigrane":"No watermark",
+    "Le sélecteur écarte les formats marqués. Vérifié sur TikTok par les métadonnées, la durée et les images.":"The selector rules out watermarked formats. Verified on TikTok through metadata, duration and frames.",
+    "Le son seul, avec les métadonnées. Si la source plafonne plus bas, l'étiquette affiche le vrai débit.":"Audio only, with metadata. If the source caps lower, the label shows the real bitrate.",
+    "À jour":"Up to date",
+    "Le moteur se met à jour tout seul, une fois par jour : c'est ce qui le fait tenir quand les plateformes changent.":"The engine updates itself once a day: that's what keeps it working when platforms change.",
+    "L'interface":"The interface",
+    "Claire, sombre, française ou anglaise":"Light, dark, French or English",
+    "Une fenêtre, pas un tableau de bord. Elle suit le thème de ton système, ou celui que tu lui imposes.":"A window, not a dashboard. It follows your system theme, or the one you force on it.",
+    "Mode clair":"Light mode",
+    "Les réglages":"Settings",
+    "Ce que tu reçois":"What you get",
+    "Une app, trois fichiers":"One app, three files",
+    "GrabLAB pour Mac":"GrabLAB for Mac",
+    "— Apple Silicon (M1 à M4) et Intel, deux fichiers séparés pour ne pas te faire télécharger 700 Mo pour rien. macOS 11 ou plus récent.":"— Apple Silicon (M1 to M4) and Intel, as two separate files so you don't download 700 MB for nothing. macOS 11 or newer.",
+    "GrabLAB pour Windows":"GrabLAB for Windows",
+    "— 10 et 11, 64 bits. Inclus dans le même achat.":"— 10 and 11, 64-bit. Included in the same purchase.",
+    "Français et anglais":"French and English",
+    ", thème clair, sombre ou automatique.":", light, dark or automatic theme.",
+    "Les mises à jour de la V1":"All V1 updates",
+    ", et le moteur qui se met à jour seul chaque jour.":", and the engine that updates itself every day.",
+    "Activation par ton email d'achat":"Activation with your purchase email",
+    ": tu la fais une fois, sur autant de tes machines que tu veux. L'app marche ensuite sans connexion.":": do it once, on as many of your machines as you like. The app then works offline.",
+    "Paiement unique, pas d'abonnement. CB ou PayPal via Podia.":"One-time payment, no subscription. Card or PayPal through Podia.",
+    "Sans enrobage":"No sugar-coating",
+    "Tout ce qui pourrait te faire regretter l'achat est écrit ici, pas caché dans une note de bas de page.":"Everything that could make you regret this purchase is written here, not buried in a footnote.",
+    "macOS bloque l'app au premier lancement.":"macOS blocks the app on first launch.",
+    "Elle n'est pas notariée par Apple (99 €/an). Il faut passer une fois par Réglages Système → Confidentialité et sécurité → « Ouvrir quand même ». La marche à suivre est jointe au téléchargement. Après, double-clic normal.":"It isn't notarised by Apple (€99/year). You go once through System Settings → Privacy & Security → “Open Anyway”. The steps come with the download. After that, a normal double-click.",
+    "La version Windows n'a jamais été ouverte sur un vrai PC.":"The Windows version has never been opened on a real PC.",
+    "Elle est fabriquée depuis un Mac et vérifiée par script, pas par l'usage. Elle est incluse en bonus — si elle coince chez toi, écris-moi, je corrige ou je rembourse.":"It is built from a Mac and checked by script, not by use. It comes as a bonus — if it fails on your machine, write to me and I'll fix it or refund you.",
+    "La première ouverture demande une connexion":"The first launch needs a connection",
+    ": l'app télécharge son moteur (~30 Mo), puis le maintient à jour.":": the app downloads its engine (~30 MB), then keeps it updated.",
+    "La 4K n'existe pas sur toutes les vidéos.":"4K doesn't exist on every video.",
+    "GrabLAB prend alors la meilleure définition disponible et l'écrit noir sur blanc sur la carte.":"GrabLAB then takes the best available resolution and says so plainly on the card.",
+    "Testé sur YouTube, TikTok et Instagram.":"Tested on YouTube, TikTok and Instagram.",
+    "D'autres sites peuvent marcher, mais je ne les annonce pas tant que je ne les ai pas essayés.":"Other sites may work, but I won't claim them until I've tried them.",
+    "Télécharger enfreint les conditions d'utilisation des plateformes.":"Downloading goes against the platforms' terms of use.",
+    "GrabLAB est fait pour récupérer tes propres contenus, ou ceux dont tu as les droits.":"GrabLAB is made to grab your own content, or content you hold the rights to.",
+    "Pourquoi je l'ai fait":"Why I made it",
+    "« Je passais mon temps sur des sites qui me vendaient trois pubs avant de me rendre une vidéo en 720p compressée. J'ai fait l'outil que je voulais avoir : un champ, un lien, le fichier — en 4K, prêt à monter. »":"“I kept landing on sites that served me three ads before handing back a compressed 720p video. I built the tool I wanted: one field, one link, the file — in 4K, ready to edit.”",
+    "Femz — créateur de FemzLab":"Femz — founder of FemzLab",
+    "Questions fréquentes":"FAQ",
+    "Ce qu'on me demande":"What people ask me",
+    "Comment je sais si mon Mac est Apple Silicon ou Intel ?":"How do I know if my Mac is Apple Silicon or Intel?",
+    "Menu Pomme (en haut à gauche) → « À propos de ce Mac ». Si tu lis « Puce Apple M1 », M2, M3 ou M4 → prends la version Apple Silicon. Si tu lis « Processeur Intel » → prends la version Intel. Dans le doute, prends Intel : elle fonctionne aussi sur les Mac Apple Silicon, simplement un peu moins vite.":"Apple menu (top left) → “About This Mac”. If it says “Apple M1 chip”, M2, M3 or M4 → take the Apple Silicon version. If it says “Intel processor” → take the Intel one. When in doubt, take Intel: it also runs on Apple Silicon Macs, just a little slower.",
+    "macOS dit que l'app ne peut pas être ouverte. C'est grave ?":"macOS says the app can't be opened. Is that bad?",
+    "Non, et c'est prévu. GrabLAB n'est pas notariée par Apple : macOS bloque par défaut tout ce qui ne l'est pas. Double-clique sur l'app, clique sur OK, puis va dans Réglages Système → Confidentialité et sécurité : un bouton « Ouvrir quand même » est apparu en bas de la page. Une seule fois, ensuite l'app s'ouvre normalement. Tout est détaillé dans le fichier joint au téléchargement.":"No, and it's expected. GrabLAB isn't notarised by Apple, and macOS blocks anything that isn't. Double-click the app, click OK, then open System Settings → Privacy & Security: an “Open Anyway” button has appeared at the bottom. Once only — after that the app opens normally. It's all detailed in the file that comes with the download.",
+    "Ça marche sur combien d'ordinateurs ?":"How many computers can I use it on?",
+    "Sur les tiens. L'activation se fait avec l'email de ton achat, sans limite de machines pour un usage personnel. Elle est valable 30 jours hors connexion, et se revalide toute seule ensuite.":"Yours. Activation uses your purchase email, with no machine limit for personal use. It lasts 30 days offline, then revalidates by itself.",
+    "Mon email est refusé à l'activation":"My email is rejected at activation",
+    "Neuf fois sur dix, c'est une autre adresse que celle du paiement. Réessaie avec celle qui a reçu le reçu Podia, et si ça coince toujours, écris-moi à":"Nine times out of ten it's a different address from the payment one. Try the one that received the Podia receipt, and if it still fails, write to",
+    ": je débloque ton accès dans la journée.":": I'll unlock your access the same day.",
+    "Est-ce que je peux télécharger une playlist entière ?":"Can I download a whole playlist?",
+    "Oui. Colle le lien de la playlist ou du carrousel : GrabLAB le déplie et crée une carte par vidéo (50 au maximum), puis les enchaîne deux par deux.":"Yes. Paste the playlist or carousel link: GrabLAB unfolds it, creates one card per video (50 maximum), then runs them two at a time.",
+    "Les vidéos privées ou avec limite d'âge ?":"What about private or age-restricted videos?",
+    "Une vidéo privée reste privée : rien à faire. Pour une limite d'âge ou un Instagram qui demande une connexion, les réglages proposent « Cookies du navigateur » : GrabLAB réutilise alors la session de ton navigateur. macOS peut demander l'accès au trousseau à ce moment-là.":"A private video stays private: nothing to do. For an age limit or an Instagram that wants you signed in, the settings offer “Browser cookies”: GrabLAB then reuses your browser session. macOS may ask for keychain access at that point.",
+    "Et si ça ne me convient pas ?":"What if it's not for me?",
+    "C'est un fichier numérique, il n'y a pas de remboursement automatique. Mais écris-moi — on trouve une solution. Le détail est dans les":"It's a digital file, so there's no automatic refund. But write to me — we'll sort something out. The details are in the",
+    "C'est légal ?":"Is it legal?",
+    "Télécharger une vidéo va contre les conditions d'utilisation de YouTube, TikTok et Instagram, et le contenu des autres reste protégé par le droit d'auteur. GrabLAB est vendu pour récupérer":"Downloading a video goes against the terms of use of YouTube, TikTok and Instagram, and other people's content stays protected by copyright. GrabLAB is sold to grab",
+    "tes":"your own",
+    "contenus — tes propres publications, tes rushes, ce dont tu détiens les droits ou ce qui est libre. Ce que tu en fais ensuite te regarde et t'engage.":"content — your own posts, your rushes, whatever you hold the rights to or is free to use. What you do with it afterwards is on you.",
+    "Un lien. Ton fichier.":"One link. Your file.",
+    "Acheter GrabLAB — 3,99 €":"Buy GrabLAB — €3.99",
+    "Paiement unique · CB ou PayPal · téléchargement immédiat":"One-time payment · card or PayPal · instant download",
+    "Mac Apple Silicon":"Mac Apple Silicon",
+    "Mac Intel":"Mac Intel",
+    "Windows 64 bits":"Windows 64-bit",
+    "MP4 4K ou MP3":"MP4 4K or MP3",
+    "Mises à jour V1 incluses":"V1 updates included",
+    "Et après":"What's next",
+    "Complète ton setup":"Round out your setup",
+    "L'app que tu viens de voir":"The app you just saw",
+    "Tu es ici":"You are here",
+    "Le panel texte pour After Effects et Premiere":"The text panel for After Effects and Premiere",
+    "Voir le plugin":"See the plugin",
+    "La formation VFX complète — 18 leçons":"The complete VFX course — 18 lessons",
+    "150 € ou 2×75 €":"€150 or 2×€75",
+    "Voir la formation":"See the course",
+    "Boutique":"Shop",
+    "Assets":"Assets",
+    "À propos":"About",
+    "GrabLAB · ffmpeg (GPL) et yt-dlp inclus":"GrabLAB · ffmpeg (GPL) and yt-dlp included"
+  };
+  const nodes=[]; const w=document.createTreeWalker(document.body,NodeFilter.SHOW_TEXT,null);
+  let n; while(n=w.nextNode()){ const k=(n.nodeValue||'').trim(); if(k&&T[k]!==undefined) nodes.push([n,n.nodeValue,k]); }
+  function set(lang){
+    nodes.forEach(([node,fr,k])=>{ node.nodeValue = lang==='en'? fr.replace(k,T[k]) : fr; });
+    const h1=document.querySelector('.mani h1[aria-label]');
+    if(h1){
+      if(!h1.dataset.frLabel) h1.dataset.frLabel=h1.getAttribute('aria-label');
+      h1.setAttribute('aria-label', lang==='en' ? 'GrabLAB — one link pasted, your file is ready.' : h1.dataset.frLabel);
+    }
+    document.documentElement.lang=lang; try{localStorage.setItem('femz_lang',lang)}catch(e){}
+    document.querySelectorAll('[data-langbtn]').forEach(b=>b.classList.toggle('on', b.dataset.langbtn===lang));
+  }
+  let saved=null; try{saved=localStorage.getItem('femz_lang')}catch(e){}
+  const initial = saved || ((navigator.language||navigator.userLanguage||'').toLowerCase().slice(0,2)==='en'?'en':'fr');
+  window.__setLang=set; set(initial);
+})();
+</script>
+
+<!-- Suivi des CTA vers le dataLayer -->
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    document.querySelectorAll('[data-track]').forEach(function (el) {
+      el.addEventListener('click', function () {
+        window.dataLayer = window.dataLayer || [];
+        window.dataLayer.push({
+          'event': 'cta_click',
+          'cta_name': el.getAttribute('data-track'),
+          'cta_text': el.innerText || el.value || ''
+        });
+      });
+    });
+  });
+</script>
+
+</body></html>
