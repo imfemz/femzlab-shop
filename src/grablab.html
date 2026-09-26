@@ -1121,8 +1121,14 @@ main>section:last-of-type{padding-bottom:clamp(16px,2.5vh,26px)}
 .gw-jobs{list-style:none;display:flex;flex-direction:column;gap:0;margin:0;padding:0;min-height:0}
 /* La carte ne surgit pas : sa rangée passe de 0fr à 1fr, donc elle POUSSE et
    la fenêtre grandit avec elle. L'écart entre cartes est porté par l'intérieur,
-   sinon un espace de 7 px apparaîtrait avant la carte elle-même. */
-.gw-job{display:grid;grid-template-rows:0fr;opacity:0;
+   sinon un espace de 7 px apparaîtrait avant la carte elle-même.
+   grid-template-columns:1fr est nécessaire — sans lui (colonnes implicites),
+   WebKit calcule mal la largeur de .gw-in pendant l'animation de la rangée
+   et le fige à ~38px : le titre et le statut du téléchargement restent
+   invisibles en permanence (reproduit sur Safari desktop et iPhone réel,
+   dans le héros ET dans la démo plus bas — pas un artefact de perspective
+   3D). Chromium n'est pas affecté, donc jamais repéré avant. */
+.gw-job{display:grid;grid-template-columns:1fr;grid-template-rows:0fr;opacity:0;
   transition:grid-template-rows .55s cubic-bezier(.22,1,.36,1),opacity .4s ease .06s}
 .gw-job.ouvert{grid-template-rows:1fr;opacity:1}
 /* min-height:0 est indispensable : sans lui, un élément de grille refuse de
@@ -1176,7 +1182,14 @@ main>section:last-of-type{padding-bottom:clamp(16px,2.5vh,26px)}
   .gw-seg,.gw-seg.wide{width:100%;flex:none}
   .gw-seg button{font-size:9.5px;padding:5px 2px;min-width:0}
   .gdemo .gw-stage{padding:13px}
-  .gw-job{grid-template-columns:38px 1fr auto;gap:7px}
+  /* Mauvais sélecteur depuis toujours : ça visait la colonne du thumb
+     (44px→38px, cf. .gw-thumb juste en dessous), mais c'est .gw-job qui
+     recevait ces 3 colonnes — alors qu'il n'a qu'un seul enfant (.gw-in).
+     Résultat : grille implicite bancale, .gw-in figé à ~38px de large et
+     son titre/statut invisibles en permanence sous 560px, sur toutes les
+     versions du panel (héros ET démo), sur tous les navigateurs — pas
+     repéré avant faute de zoomer sur la carte de téléchargement en cours. */
+  .gw-in{grid-template-columns:38px 1fr auto;gap:7px}
   .gw-thumb{width:38px;height:22px}
 }
 
@@ -1365,19 +1378,19 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
   <div class="frank">
     <div class="frank-card rv">
       <ul>
-        <li><i></i><span>Au-delà de 1080p, <b>YouTube ne sert plus que du VP9 ou de l'AV1</b>. Ces fichiers-là, Premiere, After Effects et QuickTime ne savent pas toujours les lire : tu récupères une 4K inutilisable pour ton montage.</span></li>
-        <li><i></i><span>GrabLAB <b>reconvertit en H.264 avec l'encodeur matériel de ta machine</b> — 3,5× le temps réel en 4K sur un Mac Apple Silicon (mesuré sur M4 Max). Le fichier s'ouvre partout, y compris sur iPhone.</span></li>
-        <li><i></i><span>Qualité mesurée, pas promise : <b>SSIM 0,9906</b> contre la source 4K d'origine. Autrement dit, la différence ne se voit pas.</span></li>
-        <li><i></i><span>Tu préfères le fichier brut ? Le réglage <b>« Au-delà de 1080p »</b> offre H.264, HEVC ou Original — aucune conversion, le fichier exact de la plateforme.</span></li>
+        <li><i></i><span>Au-delà de 1080p, YouTube envoie un format que <b>ton logiciel de montage ne sait pas toujours ouvrir :</b> ta 4K arrive, mais elle reste inutilisable.</span></li>
+        <li><i></i><span>GrabLAB <b>la convertit automatiquement dans un format que tout lit</b> — vite, grâce à la puce de ta machine. Le fichier s'ouvre partout, y compris sur iPhone.</span></li>
+        <li><i></i><span>La qualité ne bouge pas : <b>à l'œil, tu ne verras aucune différence</b> avec l'original.</span></li>
+        <li><i></i><span>Tu préfères le fichier tel quel ? Un réglage permet de <b>garder l'original, sans aucune conversion</b>.</span></li>
       </ul>
     </div>
   </div>
 
   <div class="specs rv">
-    <div class="spec"><b>4K</b><span>Jusqu'à 2160p quand la vidéo l'a. Sinon, la meilleure définition disponible — et l'app te le dit sur la carte.</span></div>
-    <div class="spec"><b>Sans filigrane</b><span>Le sélecteur écarte les formats marqués. Vérifié sur TikTok par les métadonnées, la durée et les images.</span></div>
-    <div class="spec"><b>MP3 320</b><span>Le son seul, avec les métadonnées. Si la source plafonne plus bas, l'étiquette affiche le vrai débit.</span></div>
-    <div class="spec"><b>À jour</b><span>Le moteur se met à jour tout seul, une fois par jour : c'est ce qui le fait tenir quand les plateformes changent.</span></div>
+    <div class="spec"><b>4K</b><span>La meilleure définition disponible pour la vidéo, jusqu'à la 4K — l'app te le dit sur la carte.</span></div>
+    <div class="spec"><b>Sans filigrane</b><span>Le format avec filigrane est automatiquement écarté sur TikTok.</span></div>
+    <div class="spec"><b>MP3 320</b><span>Le son seul, à la meilleure qualité disponible pour la vidéo source.</span></div>
+    <div class="spec"><b>À jour</b><span>L'app se met à jour toute seule, chaque jour — elle continue de marcher même quand les plateformes changent.</span></div>
   </div>
 
   </div>
@@ -1394,7 +1407,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
       <div class="demo-panel">
         <div class="dp-row"><span class="dp-lbl">Essais</span></div>
         <div class="dp-list">
-          <button type="button" class="dp-item on" data-scene="4k" data-track="cta_gl_demo_scene"><span class="dp-name">Une vidéo en 4K</span><span class="dp-desc">Téléchargement, puis conversion en H.264 pour Premiere.</span></button>
+          <button type="button" class="dp-item on" data-scene="4k" data-track="cta_gl_demo_scene"><span class="dp-name">Une vidéo en 4K</span><span class="dp-desc">Téléchargement, puis conversion automatique pour ton montage.</span></button>
           <button type="button" class="dp-item" data-scene="mp3" data-track="cta_gl_demo_scene"><span class="dp-name">Le son en MP3</span><span class="dp-desc">320 kbps, métadonnées comprises.</span></button>
           <button type="button" class="dp-item" data-scene="multi" data-track="cta_gl_demo_scene"><span class="dp-name">Trois liens d'un coup</span><span class="dp-desc">Une carte par vidéo, deux téléchargements en parallèle.</span></button>
           <button type="button" class="dp-item" data-scene="limite" data-track="cta_gl_demo_scene"><span class="dp-name">La 4K n'existe pas</span><span class="dp-desc">L'app prend la meilleure définition et te le dit.</span></button>
@@ -1447,7 +1460,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
         <li><svg viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><path d="M20 6 9 17l-5-5"/></svg><span><b>Activation par ton email d'achat</b> : tu la fais une fois, sur autant de tes machines que tu veux. L'app marche ensuite sans connexion.</span></li>
       </ul>
       <a data-track="cta_gl_acheter_carte" class="btn-buy" href="https://pay.femzlab.shop/grablab">Acheter GrabLAB <span class="p">3,99&nbsp;€</span></a>
-      <p class="buy-compat">Paiement unique, pas d'abonnement. CB ou PayPal via Podia.</p>
+      <p class="buy-compat">Paiement unique, pas d'abonnement. CB ou PayPal.</p>
     </div>
   </div>
 
@@ -1483,7 +1496,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     </details>
     <details class="rv" name="faq" style="--d:.15s">
       <summary>Mon email est refusé à l'activation</summary>
-      <p>Neuf fois sur dix, c'est une autre adresse que celle du paiement. Réessaie avec celle qui a reçu le reçu Podia, et si ça coince toujours, écris-moi à <a data-track="cta_gl_contact_faq_activation" href="mailto:hello@imfemz.com">hello@imfemz.com</a> : je débloque ton accès dans la journée.</p>
+      <p>Neuf fois sur dix, c'est une autre adresse que celle du paiement. Réessaie avec celle qui a reçu le reçu de paiement, et si ça coince toujours, écris-moi à <a data-track="cta_gl_contact_faq_activation" href="mailto:hello@imfemz.com">hello@imfemz.com</a> : je débloque ton accès dans la journée.</p>
     </details>
     <details class="rv" name="faq" style="--d:.2s">
       <summary>Est-ce que je peux télécharger une playlist entière ?</summary>
@@ -1491,7 +1504,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     </details>
     <details class="rv" name="faq" style="--d:.25s">
       <summary>Les vidéos privées ou avec limite d'âge ?</summary>
-      <p>Une vidéo privée reste privée : rien à faire. Pour une limite d'âge ou un Instagram qui demande une connexion, les réglages proposent « Cookies du navigateur » : GrabLAB réutilise alors la session de ton navigateur. macOS peut demander l'accès au trousseau à ce moment-là.</p>
+      <p>Une vidéo privée reste privée : rien à faire. Pour une limite d'âge ou un Instagram qui demande une connexion, les réglages proposent « Cookies du navigateur » : GrabLAB réutilise alors la session de ton navigateur. macOS peut te demander ton mot de passe à ce moment-là.</p>
     </details>
     <details class="rv" name="faq" style="--d:.3s">
       <summary>Et si ça ne me convient pas ?</summary>
@@ -1656,8 +1669,8 @@ if(navToggle&&navMenu){
   function EN(){ return document.documentElement.lang==='en'; }
   var MOTS={
     analyse:['Analyse du lien…','Reading the link…'],
-    conv:['Conversion H.264','Converting H.264'],
-    convPoints:['Conversion H.264…','Converting H.264…'],
+    conv:['Conversion','Converting'],
+    convPoints:['Conversion…','Converting…'],
     afficher:['Afficher','Show'],
     debit:['Mo/s','MB/s'],
     colle:['Colle un lien YouTube, TikTok ou Instagram','Paste a YouTube, TikTok or Instagram link'],
@@ -1667,7 +1680,7 @@ if(navToggle&&navMenu){
   function M(k,n){ var t=MOTS[k][EN()?1:0]; return n===undefined?t:t.replace('{n}',n); }
   function txt(o,champ){ var v=EN()&&o[champ+'En']!==undefined?o[champ+'En']:o[champ]; return v||''; }
   var SCENES={
-    '4k':{q:'4K',kind:'video',jobs:[{t:'Aftermovie — Paris, 3 jours',tEn:'Aftermovie — Paris, 3 days',p:'YouTube',v:'yt',badge:'4K',taille:'1,4 Go',tailleEn:'1.4 GB',conv:true}]},
+    '4k':{q:'4K',kind:'video',jobs:[{t:'Mon voyage en Asie',tEn:'My trip to Asia',p:'YouTube',v:'yt',badge:'4K',taille:'1,4 Go',tailleEn:'1.4 GB',conv:true}]},
     'mp3':{q:'320 kbps',kind:'audio',jobs:[{t:'Interview — le montage sans temps mort',tEn:'Interview — editing with no dead air',p:'YouTube',v:'yt2',badge:'MP3 320',taille:'42,7 Mo',tailleEn:'42.7 MB'}]},
     'multi':{q:'1080p',kind:'video',jobs:[
       {t:'Reel — la lumière de fin de journée',tEn:'Reel — late afternoon light',p:'Instagram',v:'ig',badge:'1080p',taille:'38,2 Mo',tailleEn:'38.2 MB'},
@@ -1743,7 +1756,21 @@ if(navToggle&&navMenu){
           note=li.querySelector('.gw-note'), go=li.querySelector('.gw-go'),
           barre=li.querySelector('.gw-bar-p i');
       jobs.prepend(li);
-      while (jobs.children.length > 3) replie(jobs.lastElementChild);
+      /* replie() ne retire jamais la carte tout de suite : la suppression
+         attend la transition, ou au pire 700ms. Rejouer la scène ou coller
+         plusieurs liens avant ce délai fait retomber cette boucle sur la
+         MÊME dernière carte, déjà marquée « en cours de repli » — son
+         garde-fou la renvoie aussitôt sans rien enlever, et la condition
+         reste vraie indéfiniment : boucle synchrone infinie, onglet gelé
+         (reproduit en collant 3 liens coup sur coup dans la démo). On
+         n'insiste plus sur une carte déjà en repli : elle partira d'elle-
+         même ; la liste reste temporairement à plus de 3 le temps qu'elle
+         parte, sans jamais bloquer le thread. */
+      while (jobs.children.length > 3) {
+        var derniere = jobs.lastElementChild;
+        if (derniere.dataset.replie) break;
+        replie(derniere);
+      }
       /* la transition n'existe que s'il y a DEUX états : on ouvre à l'image
          suivante, une fois la carte posée fermée dans le document */
       requestAnimationFrame(function(){ requestAnimationFrame(function(){ li.classList.add('ouvert'); }); });
@@ -1920,7 +1947,7 @@ if(navToggle&&navMenu){
     "La fenêtre ci-dessous est la vraie interface de GrabLAB. Clique : choisis un format, une définition, colle un lien.":"The window below is GrabLAB's real interface. Click around: pick a format, a resolution, paste a link.",
     "Essais":"Try",
     "Une vidéo en 4K":"A 4K video",
-    "Téléchargement, puis conversion en H.264 pour Premiere.":"Download, then conversion to H.264 for Premiere.",
+    "Téléchargement, puis conversion automatique pour ton montage.":"Download, then automatic conversion for your edit.",
     "Le son en MP3":"Audio as MP3",
     "320 kbps, métadonnées comprises.":"320 kbps, metadata included.",
     "Trois liens d'un coup":"Three links at once",
@@ -1977,24 +2004,23 @@ if(navToggle&&navMenu){
     "Le détail qui change tout":"The detail that changes everything",
     "Une 4K qui s'ouvre dans Premiere":"A 4K that opens in Premiere",
     "C'est là que les téléchargeurs gratuits te lâchent, et c'est pour ça que cette app existe.":"This is where free downloaders let you down, and why this app exists.",
-    "Au-delà de 1080p,":"Above 1080p,",
-    "YouTube ne sert plus que du VP9 ou de l'AV1":"YouTube only serves VP9 or AV1",
-    ". Ces fichiers-là, Premiere, After Effects et QuickTime ne savent pas toujours les lire : tu récupères une 4K inutilisable pour ton montage.":". Premiere, After Effects and QuickTime can't always read those files: you end up with a 4K that's useless for your edit.",
+    "Au-delà de 1080p, YouTube envoie un format que":"Above 1080p, YouTube sends a format that",
+    "ton logiciel de montage ne sait pas toujours ouvrir :":"your editing software can't always open:",
+    "ta 4K arrive, mais elle reste inutilisable.":"your 4K arrives, but it's unusable.",
     "GrabLAB":"GrabLAB",
-    "reconvertit en H.264 avec l'encodeur matériel de ta machine":"re-encodes to H.264 with your machine's hardware encoder",
-    "— 3,5× le temps réel en 4K sur un Mac Apple Silicon (mesuré sur M4 Max). Le fichier s'ouvre partout, y compris sur iPhone.":"— 3.5× real time in 4K on an Apple Silicon Mac (measured on an M4 Max). The file opens anywhere, iPhone included.",
-    "Qualité mesurée, pas promise :":"Quality measured, not promised:",
-    "SSIM 0,9906":"SSIM 0.9906",
-    "contre la source 4K d'origine. Autrement dit, la différence ne se voit pas.":"against the original 4K source. In other words, you can't see the difference.",
-    "Tu préfères le fichier brut ? Le réglage":"Prefer the raw file? The",
-    "« Au-delà de 1080p »":"“Above 1080p”",
-    "offre H.264, HEVC ou Original — aucune conversion, le fichier exact de la plateforme.":"setting offers H.264, HEVC or Original — no conversion, the platform's exact file.",
-    "Jusqu'à 2160p quand la vidéo l'a. Sinon, la meilleure définition disponible — et l'app te le dit sur la carte.":"Up to 2160p when the video has it. Otherwise the best available resolution — and the app says so on the card.",
+    "la convertit automatiquement dans un format que tout lit":"converts it automatically into a format everything reads",
+    "— vite, grâce à la puce de ta machine. Le fichier s'ouvre partout, y compris sur iPhone.":"— fast, thanks to your machine's chip. The file opens anywhere, iPhone included.",
+    "La qualité ne bouge pas :":"The quality doesn't move:",
+    "à l'œil, tu ne verras aucune différence":"to the eye, you won't see any difference",
+    "avec l'original.":"from the original.",
+    "Tu préfères le fichier tel quel ? Un réglage permet de":"Prefer the file as-is? A setting lets you",
+    "garder l'original, sans aucune conversion":"keep the original, with no conversion at all",
+    "La meilleure définition disponible pour la vidéo, jusqu'à la 4K — l'app te le dit sur la carte.":"The best resolution available for the video, up to 4K — the app tells you on the card.",
     "Sans filigrane":"No watermark",
-    "Le sélecteur écarte les formats marqués. Vérifié sur TikTok par les métadonnées, la durée et les images.":"The selector rules out watermarked formats. Verified on TikTok through metadata, duration and frames.",
-    "Le son seul, avec les métadonnées. Si la source plafonne plus bas, l'étiquette affiche le vrai débit.":"Audio only, with metadata. If the source caps lower, the label shows the real bitrate.",
+    "Le format avec filigrane est automatiquement écarté sur TikTok.":"The watermarked format is automatically ruled out on TikTok.",
+    "Le son seul, à la meilleure qualité disponible pour la vidéo source.":"Audio only, at the best quality available for the source video.",
     "À jour":"Up to date",
-    "Le moteur se met à jour tout seul, une fois par jour : c'est ce qui le fait tenir quand les plateformes changent.":"The engine updates itself once a day: that's what keeps it working when platforms change.",
+    "L'app se met à jour toute seule, chaque jour — elle continue de marcher même quand les plateformes changent.":"The app updates itself, every day — it keeps working even when platforms change.",
     "L'interface":"The interface",
     "Claire, sombre, française ou anglaise":"Light, dark, French or English",
     "Une fenêtre, pas un tableau de bord. Elle suit le thème de ton système, ou celui que tu lui imposes.":"A window, not a dashboard. It follows your system theme, or the one you force on it.",
@@ -2012,7 +2038,7 @@ if(navToggle&&navMenu){
     ", et le moteur qui se met à jour seul chaque jour.":", and the engine that updates itself every day.",
     "Activation par ton email d'achat":"Activation with your purchase email",
     ": tu la fais une fois, sur autant de tes machines que tu veux. L'app marche ensuite sans connexion.":": do it once, on as many of your machines as you like. The app then works offline.",
-    "Paiement unique, pas d'abonnement. CB ou PayPal via Podia.":"One-time payment, no subscription. Card or PayPal through Podia.",
+    "Paiement unique, pas d'abonnement. CB ou PayPal.":"One-time payment, no subscription. Card or PayPal.",
     "Sans enrobage":"No sugar-coating",
     "Tout ce qui pourrait te faire regretter l'achat est écrit ici, pas caché dans une note de bas de page.":"Everything that could make you regret this purchase is written here, not buried in a footnote.",
     "macOS bloque l'app au premier lancement.":"macOS blocks the app on first launch.",
@@ -2039,12 +2065,12 @@ if(navToggle&&navMenu){
     "Ça marche sur combien d'ordinateurs ?":"How many computers can I use it on?",
     "Sur les tiens. L'activation se fait avec l'email de ton achat, sans limite de machines pour un usage personnel. Elle est valable 30 jours hors connexion, et se revalide toute seule ensuite.":"Yours. Activation uses your purchase email, with no machine limit for personal use. It lasts 30 days offline, then revalidates by itself.",
     "Mon email est refusé à l'activation":"My email is rejected at activation",
-    "Neuf fois sur dix, c'est une autre adresse que celle du paiement. Réessaie avec celle qui a reçu le reçu Podia, et si ça coince toujours, écris-moi à":"Nine times out of ten it's a different address from the payment one. Try the one that received the Podia receipt, and if it still fails, write to",
+    "Neuf fois sur dix, c'est une autre adresse que celle du paiement. Réessaie avec celle qui a reçu le reçu de paiement, et si ça coince toujours, écris-moi à":"Nine times out of ten it's a different address from the payment one. Try the one that received the payment receipt, and if it still fails, write to",
     ": je débloque ton accès dans la journée.":": I'll unlock your access the same day.",
     "Est-ce que je peux télécharger une playlist entière ?":"Can I download a whole playlist?",
     "Oui. Colle le lien de la playlist ou du carrousel : GrabLAB le déplie et crée une carte par vidéo (50 au maximum), puis les enchaîne deux par deux.":"Yes. Paste the playlist or carousel link: GrabLAB unfolds it, creates one card per video (50 maximum), then runs them two at a time.",
     "Les vidéos privées ou avec limite d'âge ?":"What about private or age-restricted videos?",
-    "Une vidéo privée reste privée : rien à faire. Pour une limite d'âge ou un Instagram qui demande une connexion, les réglages proposent « Cookies du navigateur » : GrabLAB réutilise alors la session de ton navigateur. macOS peut demander l'accès au trousseau à ce moment-là.":"A private video stays private: nothing to do. For an age limit or an Instagram that wants you signed in, the settings offer “Browser cookies”: GrabLAB then reuses your browser session. macOS may ask for keychain access at that point.",
+    "Une vidéo privée reste privée : rien à faire. Pour une limite d'âge ou un Instagram qui demande une connexion, les réglages proposent « Cookies du navigateur » : GrabLAB réutilise alors la session de ton navigateur. macOS peut te demander ton mot de passe à ce moment-là.":"A private video stays private: nothing to do. For an age limit or an Instagram that wants you signed in, the settings offer “Browser cookies”: GrabLAB then reuses your browser session. macOS may ask for your password at that point.",
     "Et si ça ne me convient pas ?":"What if it's not for me?",
     "C'est un fichier numérique, il n'y a pas de remboursement automatique. Mais écris-moi — on trouve une solution. Le détail est dans les":"It's a digital file, so there's no automatic refund. But write to me — we'll sort something out. The details are in the",
     "C'est légal ?":"Is it legal?",
