@@ -34,7 +34,8 @@ PAGES = [("index.html", "index.html"),
 
 # Fichiers SEO servis tels quels à la racine, et le dossier des images de
 # partage (og:image doit être une URL absolue, jamais du base64).
-FICHIERS_RACINE = ("_headers", "motionlab-version.json", "robots.txt", "sitemap.xml")
+FICHIERS_RACINE = ("_headers", "motionlab-version.json", "robots.txt", "sitemap.xml",
+                    "1be7764c06fa51a255811def8e8e78b3.txt")
 OG = SRC / "og"
 ICONS = SRC / "icons"
 

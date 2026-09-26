@@ -6,3 +6,6 @@ Allow: /
 Disallow: /espace/
 
 Sitemap: https://www.femzlab.shop/sitemap.xml
+# IndexNow (Bing, Brave Search, Yandex) : notifie les mises à jour sans passer
+# par leur crawl périodique. Clé statique, aucun compte requis.
+
