@@ -506,6 +506,15 @@ def main():
             if img.is_file():
                 shutil.copyfile(img, DIST / "og" / img.name)
         print(f"dist/og/ ({sum(1 for f in OG.iterdir() if f.is_file())} images)")
+    # visuels des e-mails (logo, GIF, motif) : servis en fichiers, les clients mail
+    # n'affichent que des images hébergées en https
+    EMAIL = SRC / "email"
+    if EMAIL.is_dir():
+        (DIST / "email").mkdir(exist_ok=True)
+        for f in sorted(EMAIL.iterdir()):
+            if f.is_file():
+                shutil.copyfile(f, DIST / "email" / f.name)
+        print(f"dist/email/ ({sum(1 for f in EMAIL.iterdir() if f.is_file())} fichiers)")
     # icônes : Google exige un favicon en vrai fichier (pas de data-URI), carré,
     # multiple de 48 px ; favicon.ico à la racine sert de repli universel.
     if ICONS.is_dir():
