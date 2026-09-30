@@ -14,6 +14,8 @@
      accent #5EA2FF, Montserrat 800 en capitales, Inter. Le jeton SALUT (entre doubles accolades) devient « Salut Prénom, ». */
   body{margin:0;padding:0;background:#E4E4DF;}
   a{text-decoration:none;}
+  a[x-apple-data-detectors]{color:inherit !important;text-decoration:none !important;}
+  u + #body a{color:inherit;text-decoration:none;}
   @media (max-width:620px){
     .wrap{width:100% !important;}
     .pad{padding-left:22px !important;padding-right:22px !important;}
@@ -24,7 +26,7 @@
   }
 </style>
 </head>
-<body style="margin:0;padding:0;background:#E4E4DF;">
+<body id="body" style="margin:0;padding:0;background:#E4E4DF;">
 <div style="display:none;max-height:0;overflow:hidden;opacity:0;color:#E4E4DF;font-size:1px;line-height:1px;">12 styles, 881 emojis animés, lettre, mot ou ligne — et toujours un clic pour tout poser.&#8199;&#65279;&#847;&#8199;&#65279;&#847;&#8199;&#65279;&#847;&#8199;&#65279;&#847;&#8199;&#65279;&#847;&#8199;&#65279;&#847;&#8199;&#65279;&#847;&#8199;&#65279;&#847;</div>
 
 <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" bgcolor="#E4E4DF" background="https://www.femzlab.shop/email/dots.png" style="background:#E4E4DF url('https://www.femzlab.shop/email/dots.png') repeat;">
@@ -32,13 +34,13 @@
 
   <table role="presentation" class="wrap" width="600" cellpadding="0" cellspacing="0" border="0" style="width:600px;max-width:600px;">
     <!-- la carte sombre -->
-    <tr><td bgcolor="#141518" style="background:#141518;border-radius:18px;">
+    <tr><td bgcolor="#141518" style="background-color:#141518;border-radius:18px;">
       <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
 
         <!-- visuel d'en-tête -->
-        <tr><td style="padding:0;line-height:0;font-size:0;">
-          <a href="https://www.femzlab.shop/motionlab/?utm_source=email&amp;utm_medium=email&amp;utm_campaign=motionlab_v2&amp;utm_content=hero" target="_blank">
-            <img class="hero" src="https://www.femzlab.shop/email/motionlab-v2-hero.jpg" width="600" height="330" alt="MotionLAB V2 est là — 12 styles, 881 emojis, 1 clic." style="display:block;border:0;width:600px;height:auto;border-radius:18px 18px 0 0;">
+        <tr><td bgcolor="#0E1440" style="padding:0;line-height:0;font-size:0;background-color:#0E1440;border-radius:18px 18px 0 0;">
+          <a href="https://www.femzlab.shop/motionlab/?utm_source=email&amp;utm_medium=email&amp;utm_campaign=motionlab_v2&amp;utm_content=hero" target="_blank" style="text-decoration:none;">
+            <img class="hero" src="https://www.femzlab.shop/email/motionlab-v2-hero.jpg" width="600" height="330" alt="MotionLAB V2 est là — 12 styles, 881 emojis, 1 clic." style="display:block;border:0;width:600px;height:auto;border-radius:18px 18px 0 0;font-family:Helvetica,Arial,sans-serif;font-size:20px;line-height:26px;font-weight:700;color:#9CC2FF;">
           </a>
         </td></tr>
 
@@ -46,8 +48,10 @@
         <tr><td class="pad" style="padding:28px 36px 0;">
           <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
             <tr>
-              <td align="left" style="font-family:Inter,Helvetica,Arial,sans-serif;font-size:10px;font-weight:700;letter-spacing:.24em;text-transform:uppercase;">
-                <span style="background:#5EA2FF;color:#0A0A08;padding:3px 6px 3px 8px;">FemzLab</span>
+              <td align="left">
+                <table role="presentation" cellpadding="0" cellspacing="0" border="0"><tr>
+                  <td bgcolor="#5EA2FF" style="background-color:#5EA2FF;padding:3px 6px 3px 8px;font-family:Inter,Helvetica,Arial,sans-serif;font-size:10px;line-height:14px;font-weight:700;letter-spacing:.24em;text-transform:uppercase;color:#0A0A08;">FemzLab</td>
+                </tr></table>
               </td>
               <td align="right" style="font-family:Inter,Helvetica,Arial,sans-serif;font-size:10px;font-weight:700;letter-spacing:.22em;text-transform:uppercase;color:#7C818A;">Nouveau&nbsp;·&nbsp;V2</td>
             </tr>
@@ -65,20 +69,20 @@
         <!-- gros bouton -->
         <tr><td class="pad" style="padding:26px 36px 0;">
           <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
-            <tr><td align="center" bgcolor="#5EA2FF" style="background:#5EA2FF;border-radius:12px;">
+            <tr><td align="center" bgcolor="#5EA2FF" style="background-color:#5EA2FF;border-radius:12px;">
               <a href="https://www.femzlab.shop/motionlab/?utm_source=email&amp;utm_medium=email&amp;utm_campaign=motionlab_v2&amp;utm_content=bouton" target="_blank"
-                 style="display:block;padding:19px 18px;font-family:Inter,Helvetica,Arial,sans-serif;font-size:16px;font-weight:700;color:#0A0A08;border-radius:12px;">&#9654;&#xFE0E;&nbsp;&nbsp;Voir la V2 en 15 secondes</a>
+                 style="display:block;padding:19px 18px;font-family:Inter,Helvetica,Arial,sans-serif;font-size:16px;font-weight:700;color:#0A0A08;text-decoration:none;border-radius:12px;">&#9658;&nbsp;&nbsp;Voir la V2 en 15 secondes</a>
             </td></tr>
           </table>
         </td></tr>
 
         <!-- encart produit -->
         <tr><td class="pad" style="padding:24px 36px 0;">
-          <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" bgcolor="#1E2024" style="background:#1E2024;border-radius:16px;">
+          <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" bgcolor="#1E2024" style="background-color:#1E2024;border-radius:16px;">
             <tr>
               <td class="tcell" width="140" valign="middle" style="padding:16px 0 16px 16px;width:140px;">
-                <a href="https://www.femzlab.shop/motionlab/?utm_source=email&amp;utm_medium=email&amp;utm_campaign=motionlab_v2&amp;utm_content=vignette" target="_blank">
-                  <img class="thumb" src="https://www.femzlab.shop/email/motionlab-v2-thumb.gif" width="140" height="140" alt="881 emojis animés, posés en un clic." style="display:block;border:0;width:140px;height:140px;border-radius:12px;">
+                <a href="https://www.femzlab.shop/motionlab/?utm_source=email&amp;utm_medium=email&amp;utm_campaign=motionlab_v2&amp;utm_content=vignette" target="_blank" style="text-decoration:none;">
+                  <img class="thumb" src="https://www.femzlab.shop/email/motionlab-v2-thumb.gif" width="140" height="140" alt="881 emojis animés, posés en un clic." style="display:block;border:0;width:140px;height:140px;border-radius:12px;background-color:#2A2D31;font-family:Helvetica,Arial,sans-serif;font-size:12px;color:#7C818A;">
                 </a>
               </td>
               <td valign="middle" style="padding:16px 18px 16px 18px;font-family:Inter,Helvetica,Arial,sans-serif;">
@@ -86,8 +90,8 @@
                 <div style="margin-top:6px;font-family:Montserrat,'Arial Black',Helvetica,Arial,sans-serif;font-weight:800;font-size:19px;line-height:22px;text-transform:uppercase;color:#F4F5F7;">MotionLAB V2</div>
                 <div style="margin-top:6px;font-size:13px;line-height:19px;color:#A7ABB3;">11 presets, 12 styles, 881 emojis animés, 10 outils. <b style="color:#F4F5F7;">39&nbsp;€</b>&nbsp;·&nbsp;paiement&nbsp;unique.</div>
                 <table role="presentation" cellpadding="0" cellspacing="0" border="0" style="margin-top:12px;">
-                  <tr><td bgcolor="#5EA2FF" style="background:#5EA2FF;border-radius:999px;">
-                    <a href="https://www.femzlab.shop/motionlab/?utm_source=email&amp;utm_medium=email&amp;utm_campaign=motionlab_v2&amp;utm_content=encart" target="_blank" style="display:inline-block;padding:10px 18px;font-size:13px;font-weight:700;color:#0A0A08;border-radius:999px;">Découvrir&nbsp;→</a>
+                  <tr><td bgcolor="#5EA2FF" style="background-color:#5EA2FF;border-radius:999px;">
+                    <a href="https://www.femzlab.shop/motionlab/?utm_source=email&amp;utm_medium=email&amp;utm_campaign=motionlab_v2&amp;utm_content=encart" target="_blank" style="display:inline-block;padding:10px 18px;font-size:13px;font-weight:700;color:#0A0A08;text-decoration:none;border-radius:999px;">Découvrir&nbsp;→</a>
                   </td></tr>
                 </table>
               </td>
@@ -102,16 +106,16 @@
 
         <!-- signature -->
         <tr><td class="pad" style="padding:26px 36px 34px;">
-          <span style="background:#5EA2FF;color:#0A0A08;font-family:Montserrat,'Arial Black',Helvetica,Arial,sans-serif;font-weight:800;font-size:15px;text-transform:uppercase;letter-spacing:.02em;padding:2px 6px;">Femz</span>
-          <div style="margin-top:10px;font-family:Inter,Helvetica,Arial,sans-serif;font-size:10px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:#6E737C;">Réponds quand tu veux, c'est moi qui lis.</div>
+          <a href="https://www.femzlab.shop/?utm_source=email&amp;utm_medium=email&amp;utm_campaign=motionlab_v2&amp;utm_content=logo" target="_blank" style="text-decoration:none;"><img src="https://www.femzlab.shop/email/logo-femzlab-white.png" width="130" height="30" alt="FemzLab" style="display:block;border:0;width:130px;height:30px;font-family:Montserrat,'Arial Black',Helvetica,Arial,sans-serif;font-weight:800;font-size:18px;color:#F4F5F7;"></a>
+          <div style="margin-top:12px;font-family:Inter,Helvetica,Arial,sans-serif;font-size:10px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:#6E737C;">Réponds quand tu veux, c'est moi qui lis.</div>
         </td></tr>
       </table>
     </td></tr>
 
     <!-- pied, sur le papier -->
     <tr><td align="center" style="padding:20px 24px 0;font-family:Inter,Helvetica,Arial,sans-serif;font-size:12px;line-height:19px;color:#77776F;">
-      <a href="https://www.femzlab.shop/?utm_source=email&amp;utm_medium=email&amp;utm_campaign=motionlab_v2" target="_blank" style="color:#0A0A08;font-weight:700;">femzlab.shop</a>
-      &nbsp;·&nbsp; <a href="mailto:hello@imfemz.com" style="color:#77776F;">hello@imfemz.com</a><br>
+      <a href="https://www.femzlab.shop/?utm_source=email&amp;utm_medium=email&amp;utm_campaign=motionlab_v2" target="_blank" style="color:#0A0A08;font-weight:700;text-decoration:none;">femzlab.shop</a>
+      &nbsp;·&nbsp; <a href="mailto:hello@imfemz.com" style="color:#77776F;text-decoration:none;">hello@imfemz.com</a><br>
       Tu reçois cet e-mail parce que tu es client FemzLab.<br>
       Tu ne veux plus recevoir mes nouveautés&nbsp;? Réponds simplement «&nbsp;stop&nbsp;».
     </td></tr>
